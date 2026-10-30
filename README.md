@@ -1,35 +1,98 @@
 # U jednoho stolu
 
-Jednoduchý český online herní stůl pro vlastní partu a společné fantasy dobrodružství. Čtverečkovaný papír, deníky, kostky a místo pro Pána jeskyně. **V jednoduchosti je síla.**
+**Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
 
-[Licence MIT](LICENSE) · [Vlastní hosting](docs/SELF_HOSTING.md) · [Změny ve verzích](CHANGELOG.md) · [Vývoj a architektura](docs/DEVELOPMENT.md) · [Plán další práce](docs/ROADMAP.md) · [Přispívání](CONTRIBUTING.md)
+Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu“ přenáší atmosféru večerního hraní do prohlížeče: PJ připraví jeskyni, družina ji společně prozkoumává a příběh vzniká při hře. Mapa, deníky, hody i hlasový hovor jsou po ruce.
+
+> V jednoduchosti je síla. Příběh vedete vy, aplikace pomáhá s mapou, evidencí a hody.
+
+[Přejít k první hře](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Hlasové volání](#hlas-družiny) · [Plán projektu](docs/ROADMAP.md) · [Licence MIT](LICENSE)
+
+![Ukázka herního stolu: čtverečkovaná mapa, družina v levém panelu a chat s hlasovým hovorem vpravo](docs/images/herni-stul.jpg)
+
+*Ukázka testovací družiny: PJ vidí celou připravenou mapu, hráči pouze objevená místa. Vpravo je hlasový hovor se zvýrazněným mluvčím.*
+
+## Pro koho je projekt určený
+
+Pro menší partu, která chce hrát současně po večerech a mít společné místo pro své dobrodružství. Jeden hráč vede hru jako **Pán jeskyně**, ostatní hrají své postavy. Každý se připojí přes prohlížeč pomocí pozvánky; přístup ke své postavě si může obnovit osobním klíčem.
+
+Vzhled a způsob hraní vycházejí z klasických českých fantasy her: kreslená mapa, postupné odhalování podzemí, pochodové pořadí a rozhodování PJ. Vlastnosti a bojové hody se inspirují DrD; konkrétní situace, následky kouzel a výjimky zůstávají na vaší domluvě a PJ.
+
+Projekt je open source pod MIT a lze jej provozovat na vlastním serveru. Jde o aktivně vyvíjenou ranou verzi pro důvěryhodnou partu. Tento přehled popisuje hlavní vývojovou větev; změny ve stabilních vydáních najdeš v [historii verzí](CHANGELOG.md).
+
+## Jak vypadá jeden večer
+
+PJ připraví několik místností, poznámky, příšery a kořist. Hráči otevřou své deníky a připojí se k hovoru. Vedoucí družiny ukáže, kam skupina jde; za rohem se odkryje další část mapy a PJ dostane upozornění na připravené místo v blízkosti.
+
+U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. PJ potvrdí následky a družina si po boji rozdělí nález. Objevená mapa, deníky i příprava zůstanou uložené na příště.
 
 ## Co už umí
 
-- Herní místnosti, společný chat, šeptání a hody generované na serveru.
-- Volitelné hlasové volání přes vlastní LiveKit: mikrofon, poslech, výběr zařízení a označení mluvícího. Pouze zvuk, samostatná místnost pro družinu.
-- Deníky s pěti vlastnostmi, bojovými hodnotami, výbavou a zkušenostmi přidělovanými PJ.
-- Kreslení místností, chodeb, příček, dveří a schodišť na čtverečkovaném papíru. Překrývající se místnosti se spojí.
-- Patra, propojení schodišti, posouvání a přibližování mapy.
-- Generátor jeskyně pro PJ: počet pater a místností, velikosti, chodby a další propojení, opakovatelné semínko, náhledy a nové varianty. Vytvoří propojené mapy a schodiště; po vložení lze vše upravovat ručně.
-- Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
-- Příšery připravované PJ: číslované značky, skryté údaje, životy a vratná archivace.
-- Poznámky PJ ukotvené v políčkách mapy: tajná příprava a zvlášť zveřejňovaný popis místa, který hráči otevřou u odhaleného políčka. PJ dostane upozornění při přiblížení družiny (výchozí dosah 2 pole, nastavitelný na 1–6 nebo vypnutelný). Upozornění funguje i přes stěny, nic neodhaluje hráčům a během pobytu v okolí se neopakuje.
-- Ručně posouvaný čas průzkumu a společná světla družiny: doba svícení, zhasnutí, vyhoření a vrácení posledního posunu.
-- Odpočinek a léčení řízené PJ: obnova životů a magenergie jednotlivým postavám i družině, náhled změn a soukromý záznam výsledku.
-- Vlastní kouzla a schopnosti v deníku, magenergie a použití s odečtením ceny. Seznam je soukromý pro hráče a PJ; oznámení družině je volitelné.
-- Stavy hrdinů a příšer s vlastními názvy, poznámkami a ručně odečítanými koly. Tajné stavy vidí jen PJ.
-- Vyřazení postav: nula životů upozorní PJ, který určí vyřazení, bezvědomí, smrt nebo návrat do hry. Stav vidí družina, poznámku jen hráč a PJ. Léčení potvrzený stav samo neruší; soubojové pořadí zůstává ručně řízené.
-- Soubojové pořadí s výběrem hrdinů a příšer, ručním řazením, aktuálním tahem a počítáním kol. Řídí ho PJ; skryté příšery se hráčům neprozradí.
-- Hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ. Rozpracované akce zůstávají dostupné i po ořezu chatu.
-- Zkoušky a pasti: PJ vyzve konkrétního hráče k hodu na vlastnost, může skrýt nebezpečnost i celou výzvu před ostatními. Server provede jeden hod z uloženého deníku; následky potvrdí PJ. Výzvu lze připravit z poznámky na mapě, rozpracované zkoušky nezmizí s historií chatu.
-- Kořist: tajné přípravy nálezů, zveřejnění družině, převzetí předmětů a mincí do deníku, přidělení PJ a rovné rozdělení mincí se zachováním zbytku. Historie zaznamenává, kdo co získal; souběžné převzetí nemůže kořist zdvojit.
-- Správa výbavy a měšce v deníku: přidání a úpravy položek, použití kusu, příjem mincí a platby s důvodem. Majitel nebo PJ; soukromý záznam a ochrana souběhu s novou kořistí. Účinky předmětů vyhodnocuje PJ.
-- Osobní obnovovací klíče pro hráče i PJ, archivace postav a úplná záloha kampaně s obnovou do nové místnosti.
-- Ochrana rozepsaných formulářů a souběžných změn: uložení poznámky nevrátí mezitím odečtené životy.
-- Vlastní hosting přes Docker Compose s SQLite a správou instalace na `/admin`: aktualizace ze stabilních vydání, záloha databáze a návrat předchozí verze.
+### Čtverečkovaná mapa a průzkum
 
-Jde o ranou verzi pro menší důvěryhodnou partu. Volání přímo u stolu zapne správce podle [návodu LiveKit](docs/VOICE.md). Bez této volitelné služby si hlasový hovor pusťte zvlášť.
+- Kreslení místností, chodeb, příček, dveří a schodišť. Překrývající se místnosti se spojí a obvod se přizpůsobí.
+- Až osm propojených pater, značky vchodu a východu a zahájení dobrodružství u vchodu.
+- Generátor jeskyně s počtem pater a místností, velikostmi, chodbami, náhledy a opakovatelnými variantami podle semínka. Vytvořenou mapu lze dál ručně upravovat.
+- Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
+- Posouvání papíru tažením, přibližování a přizpůsobení pohledu oknu.
+
+### Příprava Pána jeskyně
+
+- Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací.
+- Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu.
+- Zkoušky a pasti s výzvou konkrétnímu hráči, volitelně tajnou nebezpečností a ručním potvrzením následků.
+- Tajná příprava kořisti, zveřejnění nálezu, přidělení hráčům a rovné rozdělení mincí se zachováním zbytku.
+- Čas průzkumu, světla a odpočet doby svícení. Odpočinek a léčení s náhledem obnovovaných životů a magenergie.
+
+### Postavy, kostky a souboj
+
+- Deníky s pěti vlastnostmi, bojovými hodnotami, úrovní a zkušenostmi přidělovanými PJ.
+- Výbava a měšec: položky, spotřeba kusů, příjmy, platby a převzetí kořisti do deníku.
+- Vlastní kouzla a schopnosti, magenergie a její odečítání při použití. Účinky vyhodnocuje PJ.
+- Hody generované na serveru: běžné kostky, hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ.
+- Soubojové pořadí, aktuální účastník a číslo kola. Vlastní stavy postav a příšer s ručně odečítaným trváním.
+- Upozornění při nule životů a rozhodnutí PJ o vyřazení, bezvědomí, smrti nebo návratu do hry.
+
+### Společný stůl a uložená hra
+
+- Společný chat, soukromé šeptání a volitelný hlasový hovor pro každou družinu.
+- Osobní obnovovací klíče, archivace a návrat postav.
+- Úplná záloha kampaně včetně všech pater a tajné přípravy, s obnovou do nové místnosti.
+- Ochrana rozepsaných formulářů a souběžných změn; uložení poznámky nepřepíše mezitím odečtené životy.
+- Vlastní hosting přes Docker Compose, SQLite a správu instalace na `/admin`, včetně aktualizací ze stabilních vydání a návratu předchozí verze.
+
+## Jak začít hrát
+
+1. **Svolejte družinu.** PJ založí místnost a pošle pozvánku hráčům. Každý zadá jméno své postavy a přes avatar nahoře vpravo si uloží **obnovovací klíč**.
+2. **Vyplňte deníky.** Zapište vlastnosti, bojové hodnoty, životy, výbavu a vlastní kouzla či schopnosti. Jejich účinky řešte podle svých pravidel.
+3. **Připravte dobrodružství.** PJ mapu nakreslí nebo použije generátor, přidá příšery a poznámky. Nastaví vedoucího, dohled a umístí družinu, například tlačítkem **Umístit družinu u vchodu**.
+4. **Připojte se k hovoru.** Je-li služba zapnutá, v panelu **Hlas družiny** zvolte **Připojit k hovoru**. Mikrofon je zpočátku vypnutý a každý si ho zapne sám.
+5. **Prozkoumávejte.** Vedoucí kliknutím posouvá společnou družinu. **Ctrl + levé tažení** nebo nástroj **Ruka** posouvají papír; **Ctrl + kolečko** mění měřítko. Hráči uvidí postupně objevovaná místa a sdílené popisy.
+6. **Nechte promluvit kostky.** Nabídka **Hody a souboj** slouží k hodům na vlastnosti, útok a obranu. PJ připraví pořadí souboje a potvrdí zranění. Do chatu lze napsat i vlastní hod, například `/hod 2k6+1`.
+7. **Rozdělte nález a vraťte se příště.** Kořist převezměte do deníků. PJ může obnovit životy či magenergii a stáhnout úplnou zálohu kampaně. Běžné změny se ukládají průběžně.
+
+Na mobilu najdeš společná nastavení v panelu **Družina, čas a patra**. Souboj má vlastní rozbalovací panel u mapy.
+
+<details>
+<summary>Další ovládání při hře</summary>
+
+- **Stavy:** PJ je spravuje přes **Spravovat stavy** v hlavičce souboje. Počet kol odečítá ručně; nula stav sama neodstraní. Stavy automaticky nemění hody ani životy.
+- **Kouzla a schopnosti:** v **Můj deník → Kouzla a schopnosti** nastav magenergii a vlastní záznamy s cenou. **Použít** odečte cenu a zaznamená použití pro hráče a PJ; oznámení celé družině je volitelné.
+- **Odpočinek a léčení:** PJ v **Hody a souboj → Odpočinek a léčení** vybere postavy, určí obnovu, zkontroluje náhled a potvrdí ji. Potvrzené vyřazení, stavy a kola souboje se tím samy nemění.
+- **Čas a světlo:** PJ eviduje světla a posouvá průzkumný čas. Odpočítávají se pouze rozsvícené zdroje se zadanou dobou. Poslední posun lze vrátit, dokud světla dál neupravíš. Dohled na mapě se nastavuje samostatně.
+- **Poznámky:** nástrojem **Poznámka** klikne PJ na podlahu. **Uložit přípravu** zachová vše u PJ; **Uložit a sdílet popis** zveřejní nadpis a popis po odhalení místa. Běžné pozdější úpravy nezmění již sdílenou verzi. Hráči otevřou popis přes značku „i“.
+- **Upozornění na místo:** výchozí dosah je 2 pole, nastavitelný na 1–6 nebo vypnutelný. Upozornění funguje i přes stěny, nic neodhaluje hráčům a během pobytu v okolí se neopakuje.
+- **Přístupy a zálohy:** PJ může vydat hráči nový obnovovací klíč a archivovat nebo vrátit postavu. Obnova klíče odvolá starý herní token a vydá nový klíč. Úplná záloha obsahuje také tajnou přípravu; stahuje ji jen PJ. Obnova vytvoří novou místnost a nové přístupy, původní kampaň nepřepíše.
+
+</details>
+
+## Hlas družiny
+
+Volitelný **LiveKit** přidává společné volání přímo k hernímu stolu. Každá družina má vlastní hlasovou místnost. K dispozici je mikrofon, ztlumení poslechu, výběr vstupního zařízení a označení účastníků i právě mluvícího.
+
+Připojení začíná s vypnutým mikrofonem. Aplikace používá pouze hlas: vstupenky vydávané serverem povolují publikovat jen mikrofon. Kamera, sdílení obrazovky, nahrávání ani přepis nejsou součástí tohoto řešení. Šeptání v chatu nemění, komu je slyšet hlas.
+
+Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veřejné nasazení je potřeba HTTPS/WSS a síťové nastavení pro WebRTC; příslušný Docker profil a TURN popisuje [návod k hlasovému volání](docs/VOICE.md).
 
 ## Generátor jeskyně
 
@@ -98,27 +161,15 @@ Otevři [http://127.0.0.1:5173](http://127.0.0.1:5173). Databázové migrace se 
 
 Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro vývoj a integrační testy používáme `npm run dev` na portu 5173.
 
-## Jak začít hrát
+## Dokumentace a zapojení do projektu
 
-1. PJ založí místnost a pošle odkaz vlastní partě. Hráči se připojí se jmény postav.
-2. Přes avatar nahoře vpravo si každý uloží svůj **obnovovací klíč**. Jeho použití obnoví přístup ke stejné postavě, odpojí starý token a vydá nový klíč.
-3. PJ připraví mapu, určí vedoucího, nastaví dohled a umístí družinu na podlahu.
-4. Vedoucí kliknutím posouvá společnou družinu. Ctrl + levé tažení nebo nástroj Ruka posouvají papír; Ctrl + kolečko mění měřítko.
-5. V deníku nebo nabídce **Hody a souboj** se hází na vlastnosti a útok. Obránce nebo PJ odpoví v chatu; zranění se odečte až po potvrzení PJ.
-
-6. V levém panelu otevři **Připravit souboj**, vyber účastníky a uprav jejich pořadí šipkami. Po uložení PJ zahájí souboj a tlačítkem **Další na řadě** posouvá tahy a kola. Na mobilu je souboj v rozbalovacím panelu u mapy.
-
-7. Přes ikonu štítků **Spravovat stavy** v hlavičce souboje PJ přidává, upravuje a odebírá stavy. Počet kol odečítá ručně; nula stav sama neodstraní. Stavy automaticky nemění hody ani životy.
-
-8. V **Můj deník → Kouzla a schopnosti** nastav magenergii a přidej vlastní záznamy s cenou. **Použít** odečte cenu a zapíše použití do chatu pro hráče a PJ. Oznámení celé družině je volitelné; účinek a potřebné hody řešte zvlášť.
-
-9. PJ v **Hody a souboj → Odpočinek a léčení** vybere postavy a určí počet obnovovaných životů či magenergie, případně doplnění do maxima. Zkontroluje náhled a potvrdí obnovu. Stavy a kola souboje se tím nemění.
-
-10. V levém panelu otevři **Čas a světlo**; na mobilu přes **Družina, čas a patra**. PJ eviduje světla a posouvá průzkumný čas. Odpočítávají se pouze rozsvícené zdroje se zadanou dobou. Poslední posun lze vrátit, dokud světla dál neupravíš. Dohled na mapě se nastavuje samostatně.
-
-11. Nástrojem **Poznámka** klikne PJ na podlahu mapy a připraví místo. **Uložit přípravu** zachová vše u PJ; **Uložit a sdílet popis** zveřejní nadpis a popis po odhalení políčka. Tajná příprava zůstává soukromá. Pozdější běžné úpravy nemění již sdílenou verzi. Hráči otevřou popis přes malou značku „i“ v mapě.
-
-PJ může vydat hráči nový obnovovací klíč a archivovat nebo vrátit postavu. Úplná záloha obsahuje všechna patra a tajnou přípravu; stahuje ji jen PJ. Obnova vždy vytvoří novou místnost a nové přístupy, původní kampaň nepřepíše.
+| Chci… | Kde začít |
+| --- | --- |
+| Provozovat vlastní herní stůl | [Vlastní hosting, HTTPS, zálohy a obnova](docs/SELF_HOSTING.md) |
+| Zapnout hlasový hovor | [LiveKit a hlas družiny](docs/VOICE.md) |
+| Podívat se na změny a další plány | [Historie verzí](CHANGELOG.md) a [plán práce](docs/ROADMAP.md) |
+| Porozumět kódu | [Vývoj a architektura](docs/DEVELOPMENT.md) |
+| Přispět opravou nebo nápadem | [Pravidla přispívání](CONTRIBUTING.md) a [issues](https://github.com/cert4u/u-jednoho-stolu/issues) |
 
 ## Testování
 
