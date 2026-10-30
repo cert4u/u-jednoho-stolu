@@ -19,7 +19,7 @@ const attempts=new Map();
 function session(value){return createHmac('sha256',sessionKey).update(value).digest('hex');}
 function authorized(req){const cookie=String(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('stul_admin='))?.slice(11)||'';const [expiry,nonce,signature]=cookie.split('.');return Number(expiry)>Date.now()&&Number(expiry)<Date.now()+8*3600e3+1000&&equal(signature,session(`${expiry}.${nonce}`));}
 function cookie(value,age){return `stul_admin=${value}; HttpOnly; SameSite=Strict; Path=/admin; Max-Age=${age}${origin.protocol==='https:'?'; Secure':''}`;}
-async function updater(endpoint,method='GET',data){const url=new URL(process.env.STUL_UPDATER_URL||'http://updater:8090');if(url.protocol!=='http:'||url.username||url.password)throw new Error('Neplatná adresa aktualizátoru.');url.pathname=endpoint;url.search='';const response=await fetch(url,{method,headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},...(data?{body:JSON.stringify(data)}:{}),signal:AbortSignal.timeout(20000)});const result=await response.json();if(!response.ok)throw new Error(result.error||'Aktualizační služba není dostupná.');return result;}
+async function updater(endpoint,method='GET',data){const url=new URL(process.env.STUL_UPDATER_URL||'http://updater:8090');if(url.protocol!=='http:'||url.username||url.password)throw new Error('Neplatná adresa aktualizátoru.');url.pathname=endpoint;url.search='';let response;try{response=await fetch(url,{method,headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},...(data?{body:JSON.stringify(data)}:{}),signal:AbortSignal.timeout(20000)});}catch{throw new Error('Aktualizační služba není dostupná. Ověř, že běží Docker updater.');}const result=await response.json();if(!response.ok)throw new Error(result.error||'Aktualizační služba není dostupná.');return result;}
 const server=createServer(async(req,res)=>{try{
  const pathname=new URL(req.url,'http://localhost').pathname;
  if(pathname==='/healthz'){json(res,200,{ok:true,...info,maintenance:existsSync(flag)});return;}
@@ -52,7 +52,11 @@ const server=createServer(async(req,res)=>{try{
   }
   if(!authorized(req)){json(res,401,{error:'Přihlas se jako správce instalace.'});return;}
   if(pathname==='/admin/api/logout'&&req.method==='POST'){res.setHeader('Set-Cookie',cookie('',0));json(res,200,{ok:true});return;}
-  if(pathname==='/admin/api/status'&&req.method==='GET'){json(res,200,{installed:info,...await updater('/status')});return;}
+  if(pathname==='/admin/api/status'&&req.method==='GET'){
+   try{json(res,200,{installed:info,...await updater('/status'),updaterAvailable:true});}
+   catch{json(res,200,{installed:info,updaterAvailable:false,latest:null,job:null,canRollback:false,releaseError:'Aktualizační služba není dostupná. Správa instalace funguje, aktualizace a návrat verze jsou do připojení služby vypnuté. Pro aktualizace spusť aplikaci přes Docker Compose.'});}
+   return;
+  }
   if(['/admin/api/update','/admin/api/rollback'].includes(pathname)&&req.method==='POST'){const b=await body(req);json(res,202,await updater(pathname.endsWith('rollback')?'/rollback':'/update','POST',b));return;}
   json(res,404,{error:'Nenalezeno.'});return;
  }
