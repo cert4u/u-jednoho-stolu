@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Čitelnější herní stůl a dialogy bez viditelných posuvníků: kompaktní zkratky, nestlačované bloky levého panelu, větší a kontrastnější popisky, pevné záhlaví dialogů se zavíráním a dostupné posouvání obsahu. Odstraněn překryv nápovědy se soubojem na úzkých obrazovkách.
+
 - Soukromé upozornění PJ při přiblížení družiny k poznámce: výchozí vzdálenost 2 pole, nastavení 1–6 nebo vypnutí, zachycení průchodu kolem místa i přechodu mezi patry. Otevření přípravy z upozornění chrání rozepsaný formulář.
 
 - Poznámky k místům na mapě: tajná příprava PJ, samostatný zveřejněný popis, značky u odhalených políček, odvolání sdílení a ochrana souběžných úprav. Hráčům se neposílají tajné ani dosud nezveřejněné texty; poznámky jsou v úplné záloze.
