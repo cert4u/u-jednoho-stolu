@@ -1,0 +1,16 @@
+name: Nápad
+description: Navrhnout zjednodušení nebo novou funkci.
+title: "[Nápad] "
+body:
+  - type: textarea
+    id: situation
+    attributes:
+      label: Jakou situaci při hraní řešíš?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Jak by mohla vypadat jednoduchá změna?
+    validations:
+      required: true

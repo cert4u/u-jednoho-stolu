@@ -1,0 +1,21 @@
+name: Chyba
+description: Nahlásit problém při hraní nebo vývoji.
+title: "[Chyba] "
+body:
+  - type: markdown
+    attributes:
+      value: "Použij smyšlené údaje. Nepřikládej přístupové klíče, databáze ani skutečné zálohy kampaní."
+  - type: textarea
+    id: steps
+    attributes:
+      label: Jak chybu zopakovat
+      description: Role PJ/hráč, kroky, očekávaný a skutečný výsledek.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Prostředí
+      description: Prohlížeč, zařízení, verze projektu a způsob spuštění.
+    validations:
+      required: true
