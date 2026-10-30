@@ -7,6 +7,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 ## Co už umí
 
 - Herní místnosti, společný chat, šeptání a hody generované na serveru.
+- Volitelné hlasové volání přes vlastní LiveKit: mikrofon, poslech, výběr zařízení a označení mluvícího. Pouze zvuk, samostatná místnost pro družinu.
 - Deníky s pěti vlastnostmi, bojovými hodnotami, výbavou a zkušenostmi přidělovanými PJ.
 - Kreslení místností, chodeb, příček, dveří a schodišť na čtverečkovaném papíru. Překrývající se místnosti se spojí.
 - Patra, propojení schodišti, posouvání a přibližování mapy.
@@ -28,7 +29,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Ochrana rozepsaných formulářů a souběžných změn: uložení poznámky nevrátí mezitím odečtené životy.
 - Vlastní hosting přes Docker Compose s SQLite a správou instalace na `/admin`: aktualizace ze stabilních vydání, záloha databáze a návrat předchozí verze.
 
-Jde o ranou verzi pro menší důvěryhodnou partu. Hlasový hovor si pusťte zvlášť.
+Jde o ranou verzi pro menší důvěryhodnou partu. Volání přímo u stolu zapne správce podle [návodu LiveKit](docs/VOICE.md). Bez této volitelné služby si hlasový hovor pusťte zvlášť.
 
 ## Generátor jeskyně
 

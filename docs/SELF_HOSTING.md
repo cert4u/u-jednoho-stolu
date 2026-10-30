@@ -80,3 +80,7 @@ Při ruční obnově:
 Pouze updater má Docker socket. Přístup k němu znamená správu celého Docker hostitele; službu nepublikuj na internet a nedávej její token hráčům. Aktualizace spouští kód vydaný správcem repozitáře `cert4u/u-jednoho-stolu`; před potvrzením si přečti poznámky k vydání. App kontejner běží jako uživatel `node` a socket nemá. Správa instalace používá samostatné heslo, HttpOnly/SameSite cookie a kontrolu původu změnových požadavků.
 
 Oficiální podklady: [Docker a ochrana daemonu](https://docs.docker.com/engine/security/protect-access/), [sestavení ze zdrojů v Git](https://docs.docker.com/build/concepts/context/#git-repositories), [GitHub Releases API](https://docs.github.com/en/rest/releases/releases).
+
+## Volitelné hlasové volání
+
+Pro čistě hlasový hovor přidej LiveKit podle [návodu Hlas družiny](VOICE.md). `compose.voice.yaml` je volitelný doplněk; běžná hra jej nevyžaduje. Aplikace potřebuje tři proměnné `STUL_LIVEKIT_*`, které aktualizátor při výměně kontejneru zachová. Hlasový server se spravuje samostatně.

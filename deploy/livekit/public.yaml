@@ -1,0 +1,20 @@
+# Veřejný server: HTTPS/WSS reverzní proxy a firewall dle docs/VOICE.md.
+port: 7880
+bind_addresses: [0.0.0.0]
+rtc:
+  use_external_ip: true
+  tcp_port: 7881
+  udp_port: 7882
+room:
+  max_participants: 12
+logging:
+  level: warn
+# Pro klienty v omezených sítích přidej TURN dle dokumentace LiveKitu.
+# turn:
+#   enabled: true
+#   domain: turn.example.cz
+#   tls_port: 5349
+#   udp_port: 3478
+#   cert_file: /etc/livekit-certs/fullchain.pem
+#   key_file: /etc/livekit-certs/privkey.pem
+# Certifikáty musíš do kontejneru připojit samostatným read-only volume.

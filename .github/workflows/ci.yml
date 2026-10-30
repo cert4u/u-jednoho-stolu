@@ -56,5 +56,6 @@ jobs:
           echo 'STUL_ADMIN_PASSWORD=test-admin-password-long-enough' >> .env
           echo 'STUL_UPDATER_TOKEN=test-updater-token-long-enough-123456' >> .env
           ./deploy/stul.sh config --quiet
+          STUL_LIVEKIT_API_KEY=test-voice-key STUL_LIVEKIT_API_SECRET=test-voice-secret-with-at-least-32-characters docker compose -f compose.yaml -f compose.voice.yaml config --quiet
       - name: Test real Docker replacement and recovery
         run: sudo "$(command -v node)" scripts/test-docker.mjs

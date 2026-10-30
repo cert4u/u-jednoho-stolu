@@ -1,0 +1,11 @@
+# Volitelná hlasová služba pro Linux. Použij spolu s compose.yaml.
+services:
+  livekit:
+    image: livekit/livekit-server:v1.13.11
+    restart: unless-stopped
+    network_mode: host
+    command: ["--config", "/etc/livekit.yaml"]
+    environment:
+      LIVEKIT_KEYS: "${STUL_LIVEKIT_API_KEY:?Nastav klic LiveKitu}: ${STUL_LIVEKIT_API_SECRET:?Nastav tajemstvi LiveKitu}"
+    volumes:
+      - ${STUL_LIVEKIT_CONFIG:-./deploy/livekit/local.yaml}:/etc/livekit.yaml:ro

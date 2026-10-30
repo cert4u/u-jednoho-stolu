@@ -10,6 +10,7 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 - [x] Správa předmětů a měšce, odečítání použitých kusů a ruční příjmy/platby.
 - [x] Vyřazení při 0 životech, potvrzení dalšího stavu a návratu do hry Pánem jeskyně.
 - [x] Generátor propojené jeskyně podle parametrů PJ s náhledy, variantami a schodišti.
+- [x] Volitelné čistě hlasové volání družiny přes vlastní LiveKit.
 - [ ] Krátké ukázání místa na mapě ostatním bez posunu družiny.
 - [x] Čas průzkumu a světla družiny s odpočtem doby svícení a vrácením posledního posunu.
 - [x] Odpočinek a léčení s výběrem postav, náhledem a obnovou životů i magenergie podle PJ.
