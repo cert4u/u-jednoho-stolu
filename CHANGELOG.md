@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Zkoušky a pasti: výzva PJ konkrétnímu hráči, volitelně tajná nebezpečnost a soukromá viditelnost, jeden serverový hod na uloženou vlastnost, ruční následky a zrušení. Výzva může vycházet z poznámky na mapě; rozpracované zkoušky a historie se zachovají i v úplné záloze.
+
 - Čitelnější herní stůl a dialogy bez viditelných posuvníků: kompaktní zkratky, nestlačované bloky levého panelu, větší a kontrastnější popisky, pevné záhlaví dialogů se zavíráním a dostupné posouvání obsahu. Odstraněn překryv nápovědy se soubojem na úzkých obrazovkách.
 
 - Soukromé upozornění PJ při přiblížení družiny k poznámce: výchozí vzdálenost 2 pole, nastavení 1–6 nebo vypnutí, zachycení průchodu kolem místa i přechodu mezi patry. Otevření přípravy z upozornění chrání rozepsaný formulář.

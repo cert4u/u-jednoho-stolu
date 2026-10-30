@@ -104,3 +104,21 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 @media(max-width:620px){.overlay{padding:12px}.modal:has(>.dialog-scroll){max-height:calc(100dvh - 24px)}.dialog-scroll{padding:20px;max-height:calc(100dvh - 74px)}.paper-overlay{top:164px}.paper-controls .paper-tools button span,.paper-overlay .paper-tools button span{font-size:9px}.modal h2{font-size:22px}.experience-total{flex-wrap:wrap}.experience-total p{max-width:none;flex-basis:100%;margin-left:0;font-size:11px}.paper-help{font-size:9px}.paper-help>span:last-child{font-size:9px}.paper-help>span{white-space:normal}.paper-overlay .exploration-details{width:100%}.paper-overlay .exploration-controls{width:100%}.map-note-toast{max-height:calc(100dvh - 32px);overflow:auto}}
 @media(min-width:651px){.modal .monster-list{max-height:50dvh;overflow:auto}}
 @media(max-width:850px){.paper-help,.paper-editor>.under-map{display:none}}
+
+.challenge-pending{padding:12px;border:1px solid #ded6bc;border-radius:6px;background:#f5f0df;margin-bottom:18px;max-height:45dvh;overflow:auto}
+.challenge-pending h3{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:10px}
+.challenge-card{padding:10px 0;border-top:1px solid #e3dcc5;overflow-wrap:anywhere}
+.challenge-card>strong{font-size:12px;display:block}
+.challenge-card p,.challenge-card>small{font-size:11px;line-height:1.7;color:#6f765f}
+.challenge-card>div{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.challenge-card button{border:1px solid #d1d8bd;background:#e5ead8;border-radius:4px;padding:7px 9px;font-size:11px}
+.challenge-check{display:flex!important;align-items:center;gap:9px;font-size:12px!important}
+.challenge-check input{width:auto!important;margin:0!important;accent-color:var(--green)}
+.challenge-source{background:#f2eddd;padding:10px;border-radius:5px;font-size:12px;line-height:1.7;color:#77694b}
+.challenge-history{margin-top:24px;border-top:1px solid var(--line);padding-top:16px}
+.challenge-history h3{font-size:17px;margin-bottom:12px}
+.challenge-history button{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;gap:4px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px;overflow-wrap:anywhere}
+.challenge-history small{color:#78826d;font-size:11px}
+.challenge-history details{margin-top:16px;font-size:12px}
+.challenge-history summary{cursor:pointer}
+.chat-panel>.challenge-pending{flex-shrink:0;max-height:min(300px,35dvh,max(80px,calc(100% - 310px)));margin:12px 12px 0}
