@@ -2,7 +2,10 @@ name: stul
 services:
   app:
     image: ${STUL_APP_IMAGE:-stul-app:local}
-    build: .
+    build:
+      context: .
+      args:
+        STUL_REVISION: ${STUL_BOOTSTRAP_REVISION:-unknown}
     container_name: ${STUL_APP_CONTAINER:-stul-app}
     restart: unless-stopped
     init: true

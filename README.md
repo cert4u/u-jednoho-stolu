@@ -20,6 +20,8 @@ Jde o ranou verzi pro menší důvěryhodnou partu. Hlasový hovor si pusťte zv
 
 ## Rychlé lokální spuštění
 
+Pro trvalý provoz na vlastním serveru použij [Docker Compose a správu aktualizací](docs/SELF_HOSTING.md). Následující postup je vývojové prostředí s emulací Cloudflare.
+
 Potřebuješ Git, npm a **Node.js 22.15 nebo novější**. Současný server používá Cloudflare Workers a D1; místní prostředí emuluje Wrangler, účet Cloudflare není pro lokální hraní potřeba.
 
 ```bash

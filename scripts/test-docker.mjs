@@ -37,6 +37,7 @@ try{
  assert.equal((await fetch(`${origin}/api/game?room=${game.room}`,{headers:auth})).status,200);assert.match(readFileSync(path.join(stateDir,'runtime.env'),'utf8'),/stul-app:local/);
  console.log('PASS: real Docker build, updater image/daemon, replacement, persistent campaign, SQLite rollback and failed-image recovery.');
 }finally{
+ spawnSync('docker',['logs','--tail','25','stul-updater-smoke'],{stdio:'inherit'});
  if(manager?.state.job)console.log(manager.state.job.phase,manager.state.job.logs.join('\n'));
  try{spawnSync('docker',['rm','-f','stul-updater-smoke'],{stdio:'inherit'});const containers=spawnSync('docker',['ps','-aq','--filter','name=stul-app'],{encoding:'utf8'}).stdout.trim().split(/\s+/).filter(Boolean);if(containers.length)cli(['rm','-f',...containers]);}finally{spawnSync('docker',['network','rm','stul-smoke'],{stdio:'inherit'});rmSync(dir,{recursive:true,force:true});}
 }
