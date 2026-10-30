@@ -12,6 +12,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Patra, propojení schodišti, posouvání a přibližování mapy.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
 - Příšery připravované PJ: číslované značky, skryté údaje, životy a vratná archivace.
+- Stavy hrdinů a příšer s vlastními názvy, poznámkami a ručně odečítanými koly. Tajné stavy vidí jen PJ.
 - Soubojové pořadí s výběrem hrdinů a příšer, ručním řazením, aktuálním tahem a počítáním kol. Řídí ho PJ; skryté příšery se hráčům neprozradí.
 - Hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ. Rozpracované akce zůstávají dostupné i po ořezu chatu.
 - Osobní obnovovací klíče pro hráče i PJ, archivace postav a úplná záloha kampaně s obnovou do nové místnosti.
@@ -83,6 +84,8 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 5. V deníku nebo nabídce **Hody a souboj** se hází na vlastnosti a útok. Obránce nebo PJ odpoví v chatu; zranění se odečte až po potvrzení PJ.
 
 6. V levém panelu otevři **Připravit souboj**, vyber účastníky a uprav jejich pořadí šipkami. Po uložení PJ zahájí souboj a tlačítkem **Další na řadě** posouvá tahy a kola. Na mobilu je souboj v rozbalovacím panelu u mapy.
+
+7. Přes ikonu štítků **Spravovat stavy** v hlavičce souboje PJ přidává, upravuje a odebírá stavy. Počet kol odečítá ručně; nula stav sama neodstraní. Stavy automaticky nemění hody ani životy.
 
 PJ může vydat hráči nový obnovovací klíč a archivovat nebo vrátit postavu. Úplná záloha obsahuje všechna patra a tajnou přípravu; stahuje ji jen PJ. Obnova vždy vytvoří novou místnost a nové přístupy, původní kampaň nepřepíše.
 

@@ -6,7 +6,7 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 - [x] Jednoduchá iniciativa, číslo kola a aktuální účastník souboje; nezávisle na pochodovém pořadí.
 - [ ] Poznámky PJ přímo u místností a políček, s možností zveřejnit vybraný text.
 - [ ] Krátké ukázání místa na mapě ostatním bez posunu družiny.
-- [ ] Jednoduché značky stavů postav a příšer.
+- [x] Jednoduché značky stavů postav a příšer, tajné poznámky a ruční počítání kol.
 - [x] Příprava vlastního hostingu a dokumentovaný provoz včetně obnovy záloh.
 - [ ] Další rozdělení rozsáhlých komponent a sjednocení klientských/serverových typů.
 

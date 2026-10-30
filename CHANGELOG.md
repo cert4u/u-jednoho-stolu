@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Stavy hrdinů a příšer: vlastní název a poznámka, tajný stav pro PJ, ruční odečítání kol a označení doběhlého stavu. Stavy se zobrazují v družině a pořadí souboje a přenášejí se v záloze.
+
 - Soubojové pořadí oddělené od pochodového: PJ vybírá hrdiny a příšery, upravuje pořadí a posouvá tahy a kola.
 - Sdílený přehled v levém panelu a rozbalovací panel na mobilu. Skryté příšery zůstávají pouze u PJ.
 - Ochrana proti dvojímu posunutí a souběžným úpravám; pořadí i rozehraný souboj se přenáší v úplné záloze.

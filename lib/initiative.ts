@@ -1,9 +1,10 @@
+import {visibleConditions,type Condition} from './conditions';
 import type {Game,Member} from './game';
 import {monsterVisible} from './monsters';
 import {EditConflict} from './sheets';
 export type InitiativeRef={type:'member'|'monster';id:string};
 export type Initiative={revision:number;active:boolean;round:number;current:string|null;order:InitiativeRef[]};
-export type InitiativeEntry=InitiativeRef & {key:string;name:string;defeated:boolean};
+export type InitiativeEntry=InitiativeRef & {key:string;name:string;defeated:boolean;conditions?:Condition[]};
 export type InitiativeView=Omit<Initiative,'order'> & {order:InitiativeEntry[]};
 export const initiativeKey=(ref:InitiativeRef)=>`${ref.type}:${ref.id}`;
 function exists(g:Game,ref:InitiativeRef){return ref.type==='member'?g.members.some(m=>m.id===ref.id&&m.role==='player'&&!m.archived):(g.monsters||[]).some(m=>m.id===ref.id&&!m.archived);}
@@ -31,10 +32,10 @@ export function reconcileInitiative(g:Game){if(!g.initiative)return;const state=
 export function initiativeView(g:Game,pj:boolean):InitiativeView{
  const state=initiativeState(g),level=g.atlas?.location?.levelId||'ground';
  const order=state.order.flatMap(ref=>{
-  if(ref.type==='member'){const m=g.members.find(m=>m.id===ref.id)!;return [{...ref,key:initiativeKey(ref),name:m.name,defeated:m.hp===0}];}
+  if(ref.type==='member'){const m=g.members.find(m=>m.id===ref.id)!;return [{...ref,key:initiativeKey(ref),name:m.name,defeated:m.hp===0,conditions:visibleConditions(m.conditions,pj)}];}
   const m=g.monsters!.find(m=>m.id===ref.id)!;
   if(!pj&&!monsterVisible(g,m,level))return [];
-  return [{...ref,key:initiativeKey(ref),name:`${m.name} #${m.number}`,defeated:m.hp===0}];
+  return [{...ref,key:initiativeKey(ref),name:`${m.name} #${m.number}`,defeated:m.hp===0,conditions:visibleConditions(m.conditions,pj)}];
  });
  return {...state,order,current:order.some(r=>r.key===state.current)?state.current:null};
 }
