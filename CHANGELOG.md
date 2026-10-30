@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Soukromý seznam vlastních kouzel a schopností v deníku, magenergie, použití s odečtením uložené ceny a volitelné oznámení družině. Oprávnění hráče/PJ, ochrana proti dvojímu použití a uchování v zálohách.
+
 - Stavy hrdinů a příšer: vlastní název a poznámka, tajný stav pro PJ, ruční odečítání kol a označení doběhlého stavu. Stavy se zobrazují v družině a pořadí souboje a přenášejí se v záloze.
 
 - Soubojové pořadí oddělené od pochodového: PJ vybírá hrdiny a příšery, upravuje pořadí a posouvá tahy a kola.
