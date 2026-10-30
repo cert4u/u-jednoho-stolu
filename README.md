@@ -12,6 +12,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Patra, propojení schodišti, posouvání a přibližování mapy.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
 - Příšery připravované PJ: číslované značky, skryté údaje, životy a vratná archivace.
+- Soubojové pořadí s výběrem hrdinů a příšer, ručním řazením, aktuálním tahem a počítáním kol. Řídí ho PJ; skryté příšery se hráčům neprozradí.
 - Hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ. Rozpracované akce zůstávají dostupné i po ořezu chatu.
 - Osobní obnovovací klíče pro hráče i PJ, archivace postav a úplná záloha kampaně s obnovou do nové místnosti.
 - Ochrana rozepsaných formulářů a souběžných změn: uložení poznámky nevrátí mezitím odečtené životy.
@@ -81,6 +82,8 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 4. Vedoucí kliknutím posouvá společnou družinu. Ctrl + levé tažení nebo nástroj Ruka posouvají papír; Ctrl + kolečko mění měřítko.
 5. V deníku nebo nabídce **Hody a souboj** se hází na vlastnosti a útok. Obránce nebo PJ odpoví v chatu; zranění se odečte až po potvrzení PJ.
 
+6. V levém panelu otevři **Připravit souboj**, vyber účastníky a uprav jejich pořadí šipkami. Po uložení PJ zahájí souboj a tlačítkem **Další na řadě** posouvá tahy a kola. Na mobilu je souboj v rozbalovacím panelu u mapy.
+
 PJ může vydat hráči nový obnovovací klíč a archivovat nebo vrátit postavu. Úplná záloha obsahuje všechna patra a tajnou přípravu; stahuje ji jen PJ. Obnova vždy vytvoří novou místnost a nové přístupy, původní kampaň nepřepíše.
 
 ## Testování
@@ -106,7 +109,7 @@ Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovac
 - Nejvýše 8 pater, 12 aktivních účastníků, 200 postav a 200 příšer včetně archivovaných.
 - Chat uchovává posledních 500 zpráv. Soubojové akce se ukládají samostatně.
 - Synchronizace probíhá přibližně každé dvě sekundy.
-- Bojové hodnoty se zapisují ručně. Iniciativa, automatické schopnosti povolání a individuální světelné zdroje zatím nejsou implementované.
+- Bojové hodnoty se zapisují ručně. Automatické určování iniciativy podle pravidel, schopnosti povolání a individuální světelné zdroje zatím nejsou implementované.
 - Úplná záloha verze 1 dovoluje nejvýše 3 MB serializovaných dat. Starý částečný zápis chatu nenahrazuje plnou zálohu.
 - Obnovovací klíč je přístup k postavě. Nepřidávej klíče, herní zálohy ani databáze do repozitáře či veřejného issue.
 

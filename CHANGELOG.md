@@ -1,5 +1,12 @@
 # Změny
 
+## Příští vydání
+
+- Soubojové pořadí oddělené od pochodového: PJ vybírá hrdiny a příšery, upravuje pořadí a posouvá tahy a kola.
+- Sdílený přehled v levém panelu a rozbalovací panel na mobilu. Skryté příšery zůstávají pouze u PJ.
+- Ochrana proti dvojímu posunutí a souběžným úpravám; pořadí i rozehraný souboj se přenáší v úplné záloze.
+- Administrace se otevře i při nedostupném Docker updateru a zobrazí vysvětlení.
+
 ## 0.2.0
 
 - Vlastní hosting přes Docker Compose, Node.js a SQLite; původní Cloudflare varianta zůstává dostupná.
