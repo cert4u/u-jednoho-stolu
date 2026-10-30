@@ -6,6 +6,7 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 - [x] Jednoduchá iniciativa, číslo kola a aktuální účastník souboje; nezávisle na pochodovém pořadí.
 - [ ] Poznámky PJ přímo u místností a políček, s možností zveřejnit vybraný text.
 - [ ] Krátké ukázání místa na mapě ostatním bez posunu družiny.
+- [x] Odpočinek a léčení s výběrem postav, náhledem a obnovou životů i magenergie podle PJ.
 - [x] Vlastní kouzla a schopnosti, magenergie a její odečítání při použití.
 - [x] Jednoduché značky stavů postav a příšer, tajné poznámky a ruční počítání kol.
 - [x] Příprava vlastního hostingu a dokumentovaný provoz včetně obnovy záloh.
