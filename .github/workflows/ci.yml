@@ -37,3 +37,24 @@ jobs:
         run: npm run db:init
       - name: Integrační testy
         run: npm run test:ci
+      - name: Node hosting a správa instalace
+        run: npm run build:node && npm run test:hosting
+
+  docker:
+    name: Docker hosting and upgrade
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+      - run: npm run test:updater
+      - name: Validate compose configuration
+        run: |
+          cp .env.example .env
+          echo 'STUL_ADMIN_PASSWORD=test-admin-password-long-enough' >> .env
+          echo 'STUL_UPDATER_TOKEN=test-updater-token-long-enough-123456' >> .env
+          ./deploy/stul.sh config --quiet
+      - name: Test real Docker replacement and recovery
+        run: sudo "$(command -v node)" scripts/test-docker.mjs

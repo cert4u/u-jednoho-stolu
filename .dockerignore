@@ -1,0 +1,13 @@
+.git
+node_modules
+dist
+.next
+.wrangler
+.sites-runtime
+.stul-data
+.stul-state
+.env
+.env.*
+*.log
+outputs
+work

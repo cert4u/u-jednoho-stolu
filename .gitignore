@@ -28,6 +28,7 @@ yarn-error.log*
 
 # Local environment and keys
 .env*
+!.env.example
 .dev.vars*
 *.pem
 
@@ -55,3 +56,7 @@ kampan-zaloha*.json
 obnovovaci-klic*.txt
 # Local hosting customization
 /wrangler.local.*
+
+# Self-hosted runtime and update state
+/.stul-data/
+/.stul-state/

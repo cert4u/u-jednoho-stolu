@@ -10,6 +10,7 @@ import { connectorPreview } from "./scripts/vite/connector-preview-plugin.mjs";
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   "00000000-0000-4000-8000-000000000000";
 
+const nodeRuntime=process.env.STUL_RUNTIME==='node';
 const { d1, r2 } = hostingConfig;
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
@@ -43,9 +44,10 @@ export default defineConfig(async ({ command }) => {
   configureToolEnvironment(process.cwd());
 
   // Wrangler snapshots its log path while the Cloudflare plugin is imported.
-  const { cloudflare } = await import("@cloudflare/vite-plugin");
+  const cloudflare = nodeRuntime?null:(await import("@cloudflare/vite-plugin")).cloudflare;
 
   return {
+    resolve: {alias: nodeRuntime?[{find:"cloudflare:workers",replacement:resolve(process.cwd(),"server/cloudflare-node.ts")}]:[]},
     server: {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }
@@ -56,9 +58,9 @@ export default defineConfig(async ({ command }) => {
     },
     plugins: [
       vinext(),
-      sites({ mockAuth: !managedLinux }),
+      ...(nodeRuntime?[]:[sites({ mockAuth: !managedLinux }),
       connectorPreview(),
-      cloudflare({
+      cloudflare!({
         viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
         inspectorPort: false,
         config: {
@@ -88,7 +90,7 @@ export default defineConfig(async ({ command }) => {
               ],
             }
           : {}),
-      }),
+      })]),
     ],
   };
 });

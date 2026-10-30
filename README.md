@@ -83,3 +83,7 @@ Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Převzat�
 Projekt vznikl jako neoficiální pomůcka inspirovaná původním českým hraním DrD. Nejde o produkt ani schválenou aplikaci nakladatelství ALTAR. Repozitář neobsahuje text pravidlových příruček, bestiář ani převzaté ilustrace. Licence k aplikaci neuděluje práva k cizím značkám nebo pravidlovým textům.
 
 Základ hodů vychází z veřejných [zjednodušených pravidel ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), která jsou odvozena od verze 1.6. Úplnou shodu se všemi pravidly 1.5 ani 1.6 aplikace neslibuje; výjimky a situace vyhodnocuje PJ.
+
+## Vlastní hosting a aktualizace
+
+Pro vlastní server je připravený Docker Compose s SQLite a samostatnou správou na `/admin`. Správce může nainstalovat poslední stabilní GitHub Release; před výměnou vznikne záloha databáze a při chybném startu proběhne pokus o návrat. Podrobné spuštění, obnova a údržba jsou v [návodu pro Docker](docs/SELF_HOSTING.md).
