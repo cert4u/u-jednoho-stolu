@@ -20,6 +20,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Soubojové pořadí s výběrem hrdinů a příšer, ručním řazením, aktuálním tahem a počítáním kol. Řídí ho PJ; skryté příšery se hráčům neprozradí.
 - Hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ. Rozpracované akce zůstávají dostupné i po ořezu chatu.
 - Zkoušky a pasti: PJ vyzve konkrétního hráče k hodu na vlastnost, může skrýt nebezpečnost i celou výzvu před ostatními. Server provede jeden hod z uloženého deníku; následky potvrdí PJ. Výzvu lze připravit z poznámky na mapě, rozpracované zkoušky nezmizí s historií chatu.
+- Kořist: tajné přípravy nálezů, zveřejnění družině, převzetí předmětů a mincí do deníku, přidělení PJ a rovné rozdělení mincí se zachováním zbytku. Historie zaznamenává, kdo co získal; souběžné převzetí nemůže kořist zdvojit.
 - Osobní obnovovací klíče pro hráče i PJ, archivace postav a úplná záloha kampaně s obnovou do nové místnosti.
 - Ochrana rozepsaných formulářů a souběžných změn: uložení poznámky nevrátí mezitím odečtené životy.
 - Vlastní hosting přes Docker Compose s SQLite a správou instalace na `/admin`: aktualizace ze stabilních vydání, záloha databáze a návrat předchozí verze.
@@ -124,6 +125,7 @@ Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovac
 - Mapa jednoho patra má 28 × 20 polí; okolní papír je prostor pro posouvání pohledu.
 - Nejvýše 8 pater, 12 aktivních účastníků, 200 postav a 200 příšer včetně archivovaných.
 - Nejvýše 200 poznámek na mapě v celém dobrodružství; jedna poznámka na políčko a patro.
+- Nejvýše 50 připravených/otevřených nálezů a 100 uzavřených, po 24 položkách a 200 záznamech převzetí. Získaná výbava má nejvýše 200 názvů na postavu.
 - Nejvýše 50 rozpracovaných zkoušek a historie posledních 100 uzavřených.
 - Chat uchovává posledních 500 zpráv. Soubojové akce se ukládají samostatně.
 - Synchronizace probíhá přibližně každé dvě sekundy.

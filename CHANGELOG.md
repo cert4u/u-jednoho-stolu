@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Kořist družiny: soukromá příprava a zveřejnění nálezů, převzetí předmětů a mincí, přidělování PJ a rovné dělení se zbytkem. Měšec a získané předměty v deníku, historie rozdělení, ochrana souběhu a úplné zálohy. Nález lze připravit z poznámky na mapě.
+
 - Zkoušky a pasti: výzva PJ konkrétnímu hráči, volitelně tajná nebezpečnost a soukromá viditelnost, jeden serverový hod na uloženou vlastnost, ruční následky a zrušení. Výzva může vycházet z poznámky na mapě; rozpracované zkoušky a historie se zachovají i v úplné záloze.
 
 - Čitelnější herní stůl a dialogy bez viditelných posuvníků: kompaktní zkratky, nestlačované bloky levého panelu, větší a kontrastnější popisky, pevné záhlaví dialogů se zavíráním a dostupné posouvání obsahu. Odstraněn překryv nápovědy se soubojem na úzkých obrazovkách.
