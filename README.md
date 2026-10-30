@@ -10,6 +10,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Deníky s pěti vlastnostmi, bojovými hodnotami, výbavou a zkušenostmi přidělovanými PJ.
 - Kreslení místností, chodeb, příček, dveří a schodišť na čtverečkovaném papíru. Překrývající se místnosti se spojí.
 - Patra, propojení schodišti, posouvání a přibližování mapy.
+- Generátor jeskyně pro PJ: počet pater a místností, velikosti, chodby a další propojení, opakovatelné semínko, náhledy a nové varianty. Vytvoří propojené mapy a schodiště; po vložení lze vše upravovat ručně.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
 - Příšery připravované PJ: číslované značky, skryté údaje, životy a vratná archivace.
 - Poznámky PJ ukotvené v políčkách mapy: tajná příprava a zvlášť zveřejňovaný popis místa, který hráči otevřou u odhaleného políčka. PJ dostane upozornění při přiblížení družiny (výchozí dosah 2 pole, nastavitelný na 1–6 nebo vypnutelný). Upozornění funguje i přes stěny, nic neodhaluje hráčům a během pobytu v okolí se neopakuje.
@@ -28,6 +29,17 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Vlastní hosting přes Docker Compose s SQLite a správou instalace na `/admin`: aktualizace ze stabilních vydání, záloha databáze a návrat předchozí verze.
 
 Jde o ranou verzi pro menší důvěryhodnou partu. Hlasový hovor si pusťte zvlášť.
+
+## Generátor jeskyně
+
+PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
+
+1. Nastav název, počet pater a místností, velikost místností, chodby a semínko.
+2. Zvol **Vytvořit náhled**; přepínačem prohlédni jednotlivá patra. **Nová varianta** změní semínko a vytvoří jiný návrh.
+3. Potvrď **Vložit tato patra do dobrodružství**. Při existující mapě se přidají nová patra; zcela prázdné výchozí patro se využije pro první vygenerované patro.
+4. V přípravě můžeš kresbu upravit. Pro zahájení průzkumu nastav vedoucího a umísti družinu; vygenerovaná kresba se hráčům sama neodhalí.
+
+Celkem lze mít 8 pater po 28 × 20 polích. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností a označený vstup jsou orientační značky náhledu.
 
 ## Vlastní server s Dockerem
 

@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Generátor jeskyně s náhledem a opakovatelnými variantami: parametry pater, místností a chodeb, propojená kresba a schodiště. Vkládá nová patra nebo využije prázdné výchozí; ochrana souběhu, soukromí, limitu a opakování žádosti. Vygenerované mapy lze ručně upravit a zahrnují se do úplné zálohy.
+
 - Vyřazení a návrat postav: automatické označení při 0 životech, rozhodnutí PJ o vyřazení/bezvědomí/smrti, soukromá poznámka, označení v družině a iniciativě. Léčení vybrané postavy přímo z rozhodnutí, ochrana souběhu a úplná záloha.
 
 - Výbava a měšec: vlastní položky, úprava počtu a názvu, použití kusu, příjem a platby mincí s důvodem. Oprávnění majitele/PJ, soukromé záznamy, společná revize s kořistí a načtení aktuálního stavu s ochranou rozepsaných formulářů.
