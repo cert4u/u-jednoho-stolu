@@ -2,6 +2,10 @@
 
 ## Příští vydání
 
+- Soukromé upozornění PJ při přiblížení družiny k poznámce: výchozí vzdálenost 2 pole, nastavení 1–6 nebo vypnutí, zachycení průchodu kolem místa i přechodu mezi patry. Otevření přípravy z upozornění chrání rozepsaný formulář.
+
+- Poznámky k místům na mapě: tajná příprava PJ, samostatný zveřejněný popis, značky u odhalených políček, odvolání sdílení a ochrana souběžných úprav. Hráčům se neposílají tajné ani dosud nezveřejněné texty; poznámky jsou v úplné záloze.
+
 - Čas a světlo: ruční posun průzkumu, společná evidence světel, odpočet pouze při rozsvícení, vyhoření a vrácení posledního posunu včetně spotřeby. Read-only přehled pro hráče, ochrana souběhu a zahrnutí do záloh. Dohled zůstává v pravomoci PJ.
 
 - Odpočinek a léčení řízené PJ: jednotlivá i hromadná obnova životů a magenergie, doplnění do maxima, náhled a soukromé výsledky. Ochrana proti dvojímu provedení a souběžným změnám celé vybrané skupiny.

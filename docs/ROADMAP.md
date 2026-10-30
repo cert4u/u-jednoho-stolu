@@ -4,7 +4,7 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 
 - [ ] Krátké testovací dobrodružství s celou partou a opravy podle jeho průběhu.
 - [x] Jednoduchá iniciativa, číslo kola a aktuální účastník souboje; nezávisle na pochodovém pořadí.
-- [ ] Poznámky PJ přímo u místností a políček, s možností zveřejnit vybraný text.
+- [x] Poznámky PJ k místům ukotveným v políčku, s odděleným sdílením popisu pro družinu a upozorněním při přiblížení.
 - [ ] Krátké ukázání místa na mapě ostatním bez posunu družiny.
 - [x] Čas průzkumu a světla družiny s odpočtem doby svícení a vrácením posledního posunu.
 - [x] Odpočinek a léčení s výběrem postav, náhledem a obnovou životů i magenergie podle PJ.

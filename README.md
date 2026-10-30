@@ -12,6 +12,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Patra, propojení schodišti, posouvání a přibližování mapy.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
 - Příšery připravované PJ: číslované značky, skryté údaje, životy a vratná archivace.
+- Poznámky PJ ukotvené v políčkách mapy: tajná příprava a zvlášť zveřejňovaný popis místa, který hráči otevřou u odhaleného políčka. PJ dostane upozornění při přiblížení družiny (výchozí dosah 2 pole, nastavitelný na 1–6 nebo vypnutelný). Upozornění funguje i přes stěny, nic neodhaluje hráčům a během pobytu v okolí se neopakuje.
 - Ručně posouvaný čas průzkumu a společná světla družiny: doba svícení, zhasnutí, vyhoření a vrácení posledního posunu.
 - Odpočinek a léčení řízené PJ: obnova životů a magenergie jednotlivým postavám i družině, náhled změn a soukromý záznam výsledku.
 - Vlastní kouzla a schopnosti v deníku, magenergie a použití s odečtením ceny. Seznam je soukromý pro hráče a PJ; oznámení družině je volitelné.
@@ -96,6 +97,8 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 
 10. V levém panelu otevři **Čas a světlo**; na mobilu přes **Družina, čas a patra**. PJ eviduje světla a posouvá průzkumný čas. Odpočítávají se pouze rozsvícené zdroje se zadanou dobou. Poslední posun lze vrátit, dokud světla dál neupravíš. Dohled na mapě se nastavuje samostatně.
 
+11. Nástrojem **Poznámka** klikne PJ na podlahu mapy a připraví místo. **Uložit přípravu** zachová vše u PJ; **Uložit a sdílet popis** zveřejní nadpis a popis po odhalení políčka. Tajná příprava zůstává soukromá. Pozdější běžné úpravy nemění již sdílenou verzi. Hráči otevřou popis přes malou značku „i“ v mapě.
+
 PJ může vydat hráči nový obnovovací klíč a archivovat nebo vrátit postavu. Úplná záloha obsahuje všechna patra a tajnou přípravu; stahuje ji jen PJ. Obnova vždy vytvoří novou místnost a nové přístupy, původní kampaň nepřepíše.
 
 ## Testování
@@ -119,6 +122,7 @@ Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovac
 
 - Mapa jednoho patra má 28 × 20 polí; okolní papír je prostor pro posouvání pohledu.
 - Nejvýše 8 pater, 12 aktivních účastníků, 200 postav a 200 příšer včetně archivovaných.
+- Nejvýše 200 poznámek na mapě v celém dobrodružství; jedna poznámka na políčko a patro.
 - Chat uchovává posledních 500 zpráv. Soubojové akce se ukládají samostatně.
 - Synchronizace probíhá přibližně každé dvě sekundy.
 - Bojové hodnoty se zapisují ručně. Automatické určování iniciativy podle pravidel, vyhodnocování účinků kouzel a schopností povolání ani individuální světelné zdroje zatím nejsou implementované.
