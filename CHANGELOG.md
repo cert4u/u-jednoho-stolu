@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Vyřazení a návrat postav: automatické označení při 0 životech, rozhodnutí PJ o vyřazení/bezvědomí/smrti, soukromá poznámka, označení v družině a iniciativě. Léčení vybrané postavy přímo z rozhodnutí, ochrana souběhu a úplná záloha.
+
 - Výbava a měšec: vlastní položky, úprava počtu a názvu, použití kusu, příjem a platby mincí s důvodem. Oprávnění majitele/PJ, soukromé záznamy, společná revize s kořistí a načtení aktuálního stavu s ochranou rozepsaných formulářů.
 
 - Kořist družiny: soukromá příprava a zveřejnění nálezů, převzetí předmětů a mincí, přidělování PJ a rovné dělení se zbytkem. Měšec a získané předměty v deníku, historie rozdělení, ochrana souběhu a úplné zálohy. Nález lze připravit z poznámky na mapě.

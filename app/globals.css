@@ -161,3 +161,17 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 .equipment-items small{display:block;color:#738167;font-size:11px;margin-top:4px}
 .equipment-items button{padding:8px 10px;border:1px solid #d5ddc7;border-radius:5px;background:#edf0e3;font-size:12px}
 @media(max-width:480px){.equipment-item-fields{grid-template-columns:minmax(0,1fr) 85px;gap:8px}}
+
+.life-badge{display:inline-block;padding:3px 6px;margin-top:5px;border:1px solid #c89c72;border-radius:4px;background:#f4e5d3;color:#805636;font-size:10px;line-height:1.5;font-weight:600;white-space:normal}
+.life-dead{background:#e9e4e2;border-color:#a79b96;color:#61554f}
+.life-unconscious{background:#eee7d9;color:#776441;border-color:#cbb98e}
+.life-summary{border-top:1px solid #dfd4bf;margin:10px 0 14px;padding-top:10px}
+.life-summary>p{font-size:11px;line-height:1.6;color:#8d573b;background:#f4e6d4;border-radius:5px;padding:9px}
+.life-summary>div{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}
+.life-summary>div>span{flex:1;min-width:0;overflow-wrap:anywhere}
+.life-summary .life-badge{display:block}
+.life-summary button{font-size:10px;padding:7px 4px;color:#825c38}
+.life-summary .life-manage{width:100%;justify-content:flex-start}
+.life-notice{padding:12px;border-left:3px solid #b78b59;background:#f5ebdc;color:#795a36;font-size:12px;line-height:1.8;margin:14px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.member-info>.life-badge{align-self:flex-start}
+.initiative-list .life-badge{display:block;font-size:9px}

@@ -17,6 +17,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Odpočinek a léčení řízené PJ: obnova životů a magenergie jednotlivým postavám i družině, náhled změn a soukromý záznam výsledku.
 - Vlastní kouzla a schopnosti v deníku, magenergie a použití s odečtením ceny. Seznam je soukromý pro hráče a PJ; oznámení družině je volitelné.
 - Stavy hrdinů a příšer s vlastními názvy, poznámkami a ručně odečítanými koly. Tajné stavy vidí jen PJ.
+- Vyřazení postav: nula životů upozorní PJ, který určí vyřazení, bezvědomí, smrt nebo návrat do hry. Stav vidí družina, poznámku jen hráč a PJ. Léčení potvrzený stav samo neruší; soubojové pořadí zůstává ručně řízené.
 - Soubojové pořadí s výběrem hrdinů a příšer, ručním řazením, aktuálním tahem a počítáním kol. Řídí ho PJ; skryté příšery se hráčům neprozradí.
 - Hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ. Rozpracované akce zůstávají dostupné i po ořezu chatu.
 - Zkoušky a pasti: PJ vyzve konkrétního hráče k hodu na vlastnost, může skrýt nebezpečnost i celou výzvu před ostatními. Server provede jeden hod z uloženého deníku; následky potvrdí PJ. Výzvu lze připravit z poznámky na mapě, rozpracované zkoušky nezmizí s historií chatu.

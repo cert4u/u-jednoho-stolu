@@ -10,12 +10,13 @@ type Person = {
     mana?: Mana;
 };
 type Mode = 'none' | 'amount' | 'full';
-export default function RecoveryPanel({ members, busy, onAction }: {
+export default function RecoveryPanel({ members, busy, onAction, initialMemberId }: {
     members: Person[];
+    initialMemberId?: string;
     busy: boolean;
     onAction: (values: Record<string, unknown>) => Promise<boolean | undefined>;
 }) {
-    const defaults = members.filter(m => m.role === 'player').map(m => m.id);
+    const defaults = initialMemberId && members.some(m=>m.id===initialMemberId) ? [initialMemberId] : members.filter(m => m.role === 'player').map(m => m.id);
     const [selected, setSelected] = useState<string[]>(defaults.length ? defaults : members.slice(0, 1).map(m => m.id)), [hpMode, setHpMode] = useState<Mode>('amount'), [manaMode, setManaMode] = useState<Mode>('none'), [hpAmount, setHpAmount] = useState(1), [manaAmount, setManaAmount] = useState(1), [reason, setReason] = useState('');
     const settings = { members: [...selected].sort(), hpMode, manaMode, hpAmount, manaAmount, reason: reason.trim() }, signature = JSON.stringify(settings), [initial] = useState(signature), pending = useRef<{
         signature: string;
