@@ -21,6 +21,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ. Rozpracované akce zůstávají dostupné i po ořezu chatu.
 - Zkoušky a pasti: PJ vyzve konkrétního hráče k hodu na vlastnost, může skrýt nebezpečnost i celou výzvu před ostatními. Server provede jeden hod z uloženého deníku; následky potvrdí PJ. Výzvu lze připravit z poznámky na mapě, rozpracované zkoušky nezmizí s historií chatu.
 - Kořist: tajné přípravy nálezů, zveřejnění družině, převzetí předmětů a mincí do deníku, přidělení PJ a rovné rozdělení mincí se zachováním zbytku. Historie zaznamenává, kdo co získal; souběžné převzetí nemůže kořist zdvojit.
+- Správa výbavy a měšce v deníku: přidání a úpravy položek, použití kusu, příjem mincí a platby s důvodem. Majitel nebo PJ; soukromý záznam a ochrana souběhu s novou kořistí. Účinky předmětů vyhodnocuje PJ.
 - Osobní obnovovací klíče pro hráče i PJ, archivace postav a úplná záloha kampaně s obnovou do nové místnosti.
 - Ochrana rozepsaných formulářů a souběžných změn: uložení poznámky nevrátí mezitím odečtené životy.
 - Vlastní hosting přes Docker Compose s SQLite a správou instalace na `/admin`: aktualizace ze stabilních vydání, záloha databáze a návrat předchozí verze.

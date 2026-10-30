@@ -7,6 +7,7 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 - [x] Poznámky PJ k místům ukotveným v políčku, s odděleným sdílením popisu pro družinu a upozorněním při přiblížení.
 - [x] Výzvy ke zkouškám a pastem: hráčský hod, tajná nebezpečnost a rozhodnutí PJ.
 - [x] Kořist, měšec a připsání získaných předmětů do deníku s bezpečným rozdělováním mezi hráče.
+- [x] Správa předmětů a měšce, odečítání použitých kusů a ruční příjmy/platby.
 - [ ] Krátké ukázání místa na mapě ostatním bez posunu družiny.
 - [x] Čas průzkumu a světla družiny s odpočtem doby svícení a vrácením posledního posunu.
 - [x] Odpočinek a léčení s výběrem postav, náhledem a obnovou životů i magenergie podle PJ.

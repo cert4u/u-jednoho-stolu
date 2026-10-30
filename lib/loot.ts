@@ -53,6 +53,7 @@ export function lootAction(g:Game,me:Member,b:Record<string,unknown>){
    // Validate every recipient before transferring anything, including group splits.
    for(let i=0;i<recipients.length;i++){const who=recipients[i],award=awards[i];for(const c of CURRENCIES)if((who.purse?.[c.key]||0)+award.coins[c.key]>999999999)throw new Error(`${who.name}: měšec už dosáhl limitu.`);for(const item of award.items){const owned=who.possessions?.find(p=>p.name===item.name);if(owned&&owned.quantity+item.quantity>999999||!owned&&(who.possessions?.length||0)>=200)throw new Error(`${who.name}: získaná výbava už dosáhla limitu.`);}}
    for(let i=0;i<recipients.length;i++){const who=recipients[i],award=awards[i];who.purse??=emptyCoins();for(const c of CURRENCIES){who.purse[c.key]+=award.coins[c.key];l.coins[c.key]-=award.coins[c.key];}for(const item of award.items){who.possessions??=[];const owned=who.possessions.find(p=>p.name===item.name);if(owned)owned.quantity+=item.quantity;else who.possessions.push({id:crypto.randomUUID(),...item});l.items.find(p=>p.id===b.itemId)!.quantity-=item.quantity;}
+    who.equipmentRevision=(who.equipmentRevision??0)+1;
     l.claims.push({id:crypto.randomUUID(),memberId:who.id,memberName:who.name,...award,at:Date.now()});const description=[...award.items.map(item=>`${item.name} × ${item.quantity}`),...CURRENCIES.filter(c=>award.coins[c.key]).map(c=>`${award.coins[c.key]} ${c.label.toLocaleLowerCase('cs')}`)].join(', ');log(`${l.title} · ${who.name} získává: ${description}.`);
    }
   }

@@ -153,3 +153,11 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 .possessions li span{min-width:0;overflow-wrap:anywhere}
 .possessions li strong{white-space:nowrap}
 @media(max-width:480px){.loot-editor-items>div{grid-template-columns:minmax(0,1fr) 65px 24px;gap:6px}.loot-stock{font-size:12px}.loot-stock>div{flex-wrap:wrap}.loot-stock>div>span{flex-basis:100%}.loot-coin-fields{gap:6px}.loot-coin-fields input{padding:10px 7px}.chat-tabs{gap:9px}}
+
+.equipment-item-fields{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:12px}
+.equipment-items{margin:16px 0;border-top:1px solid var(--line)}
+.equipment-items>div{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.equipment-items>div>span{flex:1;min-width:120px;overflow-wrap:anywhere;font-size:12px}
+.equipment-items small{display:block;color:#738167;font-size:11px;margin-top:4px}
+.equipment-items button{padding:8px 10px;border:1px solid #d5ddc7;border-radius:5px;background:#edf0e3;font-size:12px}
+@media(max-width:480px){.equipment-item-fields{grid-template-columns:minmax(0,1fr) 85px;gap:8px}}

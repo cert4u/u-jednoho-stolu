@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Výbava a měšec: vlastní položky, úprava počtu a názvu, použití kusu, příjem a platby mincí s důvodem. Oprávnění majitele/PJ, soukromé záznamy, společná revize s kořistí a načtení aktuálního stavu s ochranou rozepsaných formulářů.
+
 - Kořist družiny: soukromá příprava a zveřejnění nálezů, převzetí předmětů a mincí, přidělování PJ a rovné dělení se zbytkem. Měšec a získané předměty v deníku, historie rozdělení, ochrana souběhu a úplné zálohy. Nález lze připravit z poznámky na mapě.
 
 - Zkoušky a pasti: výzva PJ konkrétnímu hráči, volitelně tajná nebezpečnost a soukromá viditelnost, jeden serverový hod na uloženou vlastnost, ruční následky a zrušení. Výzva může vycházet z poznámky na mapě; rozpracované zkoušky a historie se zachovají i v úplné záloze.
