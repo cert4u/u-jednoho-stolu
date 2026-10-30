@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Čas a světlo: ruční posun průzkumu, společná evidence světel, odpočet pouze při rozsvícení, vyhoření a vrácení posledního posunu včetně spotřeby. Read-only přehled pro hráče, ochrana souběhu a zahrnutí do záloh. Dohled zůstává v pravomoci PJ.
+
 - Odpočinek a léčení řízené PJ: jednotlivá i hromadná obnova životů a magenergie, doplnění do maxima, náhled a soukromé výsledky. Ochrana proti dvojímu provedení a souběžným změnám celé vybrané skupiny.
 
 - Soukromý seznam vlastních kouzel a schopností v deníku, magenergie, použití s odečtením uložené ceny a volitelné oznámení družině. Oprávnění hráče/PJ, ochrana proti dvojímu použití a uchování v zálohách.

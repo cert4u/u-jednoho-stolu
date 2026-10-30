@@ -12,6 +12,7 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Patra, propojení schodišti, posouvání a přibližování mapy.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
 - Příšery připravované PJ: číslované značky, skryté údaje, životy a vratná archivace.
+- Ručně posouvaný čas průzkumu a společná světla družiny: doba svícení, zhasnutí, vyhoření a vrácení posledního posunu.
 - Odpočinek a léčení řízené PJ: obnova životů a magenergie jednotlivým postavám i družině, náhled změn a soukromý záznam výsledku.
 - Vlastní kouzla a schopnosti v deníku, magenergie a použití s odečtením ceny. Seznam je soukromý pro hráče a PJ; oznámení družině je volitelné.
 - Stavy hrdinů a příšer s vlastními názvy, poznámkami a ručně odečítanými koly. Tajné stavy vidí jen PJ.
@@ -92,6 +93,8 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 8. V **Můj deník → Kouzla a schopnosti** nastav magenergii a přidej vlastní záznamy s cenou. **Použít** odečte cenu a zapíše použití do chatu pro hráče a PJ. Oznámení celé družině je volitelné; účinek a potřebné hody řešte zvlášť.
 
 9. PJ v **Hody a souboj → Odpočinek a léčení** vybere postavy a určí počet obnovovaných životů či magenergie, případně doplnění do maxima. Zkontroluje náhled a potvrdí obnovu. Stavy a kola souboje se tím nemění.
+
+10. V levém panelu otevři **Čas a světlo**; na mobilu přes **Družina, čas a patra**. PJ eviduje světla a posouvá průzkumný čas. Odpočítávají se pouze rozsvícené zdroje se zadanou dobou. Poslední posun lze vrátit, dokud světla dál neupravíš. Dohled na mapě se nastavuje samostatně.
 
 PJ může vydat hráči nový obnovovací klíč a archivovat nebo vrátit postavu. Úplná záloha obsahuje všechna patra a tajnou přípravu; stahuje ji jen PJ. Obnova vždy vytvoří novou místnost a nové přístupy, původní kampaň nepřepíše.
 
