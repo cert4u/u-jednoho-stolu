@@ -7,7 +7,7 @@ export type GenerationOperation={id:string;levelIds:string[]};
 export type GenerationState={available:number;reuseEmpty:boolean;stamp:string};
 export function generationState(g:Game):GenerationState{
  const levels=g.atlas?.levels||[{id:'ground',map:dungeonFor(g),history:g.mapHistory||[],memory:emptyDungeon(),visible:[]}],ground=levels[0];
- const reuseEmpty=levels.length===1&&ground.id==='ground'&&!ground.map.floors.length&&!Object.keys(ground.map.edges).length&&!Object.keys(ground.map.stairMarks||{}).length&&!ground.history.length&&!ground.memory.floors.length&&!ground.memory.revealed.length&&!g.atlas?.location&&!g.atlas?.stairs.length&&!g.mapNotes?.some(n=>n.levelId==='ground')&&!g.monsters?.some(m=>m.levelId==='ground');
+ const reuseEmpty=levels.length===1&&ground.id==='ground'&&!ground.map.floors.length&&!Object.keys(ground.map.edges).length&&!Object.keys(ground.map.stairMarks||{}).length&&!Object.keys(ground.map.access||{}).length&&!ground.history.length&&!ground.memory.floors.length&&!ground.memory.revealed.length&&!g.atlas?.location&&!g.atlas?.stairs.length&&!g.mapNotes?.some(n=>n.levelId==='ground')&&!g.monsters?.some(m=>m.levelId==='ground');
  return {available:8-levels.length+(reuseEmpty?1:0),reuseEmpty,stamp:JSON.stringify({ids:levels.map(l=>l.id),reuseEmpty})};
 }
 export function generationAction(g:Game,me:Member,b:Record<string,unknown>):string[]{

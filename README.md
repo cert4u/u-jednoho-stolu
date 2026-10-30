@@ -39,7 +39,9 @@ PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. 
 3. Potvrď **Vložit tato patra do dobrodružství**. Při existující mapě se přidají nová patra; zcela prázdné výchozí patro se využije pro první vygenerované patro.
 4. V přípravě můžeš kresbu upravit. Pro zahájení průzkumu nastav vedoucího a umísti družinu; vygenerovaná kresba se hráčům sama neodhalí.
 
-Celkem lze mít 8 pater po 28 × 20 polích. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností a označený vstup jsou orientační značky náhledu.
+Celkem lze mít 8 pater po 28 × 20 polích. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností slouží jen náhledu. První nové patro je přízemí s trvalou značkou vchodu; volba **Samostatný východ na přízemí** přidá druhou značku. Další patra vedou do hloubky.
+
+V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každém patře může být jedna značka každého druhu; dalším kliknutím ji přesuneš, gumou odstraníš. Tlačítko **Umístit družinu u vchodu** zahájí průzkum od vchodu zobrazeného patra. Samotné vložení značky družinu nepřesouvá. Východ je orientační značka, přechod do venkovní mapy zatím neprovádí. Hráči značky uvidí až po odkrytí; navštívená místa zůstávají v paměti mapy.
 
 ## Vlastní server s Dockerem
 

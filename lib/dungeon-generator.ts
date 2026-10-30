@@ -1,5 +1,5 @@
 import {emptyDungeon,perimeter,cellKey,type Dungeon,type Point} from './dungeon';
-export type GeneratorOptions={name:string;levels:number;rooms:number;size:'small'|'medium'|'large';corridors:'direct'|'winding';connections:number;seed:string};
+export type GeneratorOptions={separateExit:boolean;name:string;levels:number;rooms:number;size:'small'|'medium'|'large';corridors:'direct'|'winding';connections:number;seed:string};
 export type GeneratedRoom={x:number;y:number;width:number;height:number;center:Point};
 export type GeneratedFloor={name:string;map:Dungeon;rooms:GeneratedRoom[]};
 export type GeneratedDungeon={options:GeneratorOptions;floors:GeneratedFloor[];stairs:{from:number;to:number;a:Point;b:Point}[];entry:Point};
@@ -10,7 +10,8 @@ export function generatorOptions(value:unknown):GeneratorOptions{
  if(typeof v.name!=='string'||!v.name.trim()||v.name.trim().length>35)throw new Error('Název jeskyně musí mít 1 až 35 znaků.');
  if(!Object.hasOwn(sizes,v.size)||!['direct','winding'].includes(v.corridors))throw new Error('Vyber velikost místností a podobu chodeb.');
  if(typeof v.seed!=='string'||!v.seed.trim()||v.seed.trim().length>64)throw new Error('Semínko musí mít 1 až 64 znaků.');
- return {name:v.name.trim(),levels:integer(v.levels,1,8,'Počet pater'),rooms:integer(v.rooms,2,v.size==='large'?6:12,'Místností na patro'),size:v.size,corridors:v.corridors,connections:integer(v.connections,0,4,'Další propojení'),seed:v.seed.trim()};
+ if(v.separateExit!==undefined&&typeof v.separateExit!=='boolean')throw new Error('Vyber, zda vytvořit samostatný východ.');
+ return {separateExit:v.separateExit??false,name:v.name.trim(),levels:integer(v.levels,1,8,'Počet pater'),rooms:integer(v.rooms,2,v.size==='large'?6:12,'Místností na patro'),size:v.size,corridors:v.corridors,connections:integer(v.connections,0,4,'Další propojení'),seed:v.seed.trim()};
 }
 function randomFor(seed:string){let state=2166136261;for(let i=0;i<seed.length;i++)state=Math.imul(state^seed.charCodeAt(i),16777619);return ()=>{state=(state+0x6D2B79F5)|0;let n=state;n=Math.imul(n^(n>>>15),n|1);n^=n+Math.imul(n^(n>>>7),n|61);return ((n^(n>>>14))>>>0)/4294967296;};}
 export function generateDungeon(raw:unknown):GeneratedDungeon{
@@ -38,8 +39,9 @@ export function generateDungeon(raw:unknown):GeneratedDungeon{
    for(let i=1;i<points.length;i++)draw(points[i-1],points[i]);
   }
   const boundary=[...perimeter(cells)],map:Dungeon={...emptyDungeon(),floors:[...cells],edges:Object.fromEntries(boundary.map(edge=>[edge,'wall'])),autoEdges:boundary,stairMarks:{}};
-  floors.push({name:`${options.name} · ${level+1}. patro`,map,rooms});
+  floors.push({name:level===0?`${options.name} · přízemí`:`${options.name} · -${level}. patro`,map,rooms});
  }
  const stairs:GeneratedDungeon['stairs']=[];for(let i=0;i<floors.length-1;i++){const a=floors[i].rooms.at(-1)!.center,b=floors[i+1].rooms[0].center;stairs.push({from:i,to:i+1,a,b});floors[i].map.stairMarks![cellKey(...a)]='down';floors[i+1].map.stairMarks![cellKey(...b)]='up';}
- return {options,floors,stairs,entry:floors[0].rooms[0].center};
+ const entry=floors[0].rooms[0].center;floors[0].map.access={entrance:[...entry]};if(options.separateExit){const room=floors[0].rooms[1],exit:Point=[...room.center];if(floors[0].map.stairMarks?.[cellKey(...exit)])exit[0]+=exit[0]+1<room.x+room.width?1:-1;floors[0].map.access.exit=exit;}
+ return {options,floors,stairs,entry};
 }

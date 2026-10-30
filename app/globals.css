@@ -191,3 +191,5 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 .paper-controls>.generator-open{order:1;pointer-events:auto;flex-shrink:0;background:#fbf9ee;border:1px solid #dcd8c2;border-radius:5px;padding:9px 12px;font-size:11px;color:#697957}
 @media(max-width:850px){.paper-controls>.generator-open{display:none}}
 @media(max-width:480px){.generator-fields{grid-template-columns:1fr}.generator-actions .secondary{flex:1}}
+
+.generator-exit{display:flex!important;align-items:center;gap:.6rem;margin:.8rem 0}.generator-exit input{width:auto;flex:none}

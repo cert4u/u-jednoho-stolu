@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Trvalé značky vchodu a samostatného východu, ruční umístění na podlahu a zahájení průzkumu u vchodu. Generátor vytváří přízemí s vchodem, volitelný východ a podzemní patra; značky respektují odkrývání, paměť mapy, mazání, vrácení tahu a úplné zálohy.
+
 - Generátor jeskyně s náhledem a opakovatelnými variantami: parametry pater, místností a chodeb, propojená kresba a schodiště. Vkládá nová patra nebo využije prázdné výchozí; ochrana souběhu, soukromí, limitu a opakování žádosti. Vygenerované mapy lze ručně upravit a zahrnují se do úplné zálohy.
 
 - Vyřazení a návrat postav: automatické označení při 0 životech, rozhodnutí PJ o vyřazení/bezvědomí/smrti, soukromá poznámka, označení v družině a iniciativě. Léčení vybrané postavy přímo z rozhodnutí, ochrana souběhu a úplná záloha.

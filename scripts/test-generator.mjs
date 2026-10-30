@@ -3,7 +3,7 @@ import {generateDungeon} from './generator-test-import.mjs';
 const base=process.argv[2]||'http://127.0.0.1:5173';
 async function post(s,action,data={}){const r=await fetch(base+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(s?{Authorization:'Bearer '+s.token}:{})},body:JSON.stringify({action,room:s?.room,...data})});return {status:r.status,...await r.json()};}
 async function get(s,level=''){return (await fetch(base+'/api/game?room='+s.room+'&level='+level,{headers:{Authorization:'Bearer '+s.token}})).json();}
-const pj=await post(null,'create',{name:'Generátor PJ'}),a=await post(null,'join',{room:pj.room,name:'Průzkumník'}),options={name:'TAJNÁ_JESKYNĚ',levels:3,rooms:6,size:'medium',corridors:'winding',connections:2,seed:'preview-seed'};
+const pj=await post(null,'create',{name:'Generátor PJ'}),a=await post(null,'join',{room:pj.room,name:'Průzkumník'}),options={name:'TAJNÁ_JESKYNĚ',levels:3,rooms:6,size:'medium',corridors:'winding',connections:2,seed:'preview-seed',separateExit:true};
 let g=await get(pj);assert.equal(g.generation.available,8);assert.equal(g.generation.reuseEmpty,true);const state=g.generation.stamp;
 const apply=(s,settings=options,expectedState=state,requestId=crypto.randomUUID())=>post(s,'generate',{options:settings,expectedState,requestId});
 assert.equal((await apply(a)).status,403);assert.equal((await apply(pj,options,'old')).status,409);assert.equal((await apply(pj,{...options,levels:9})).status,400);assert.equal((await apply(pj,{...options,rooms:13})).status,400);assert.equal((await get(pj)).generation.stamp,state);

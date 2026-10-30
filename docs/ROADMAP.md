@@ -19,3 +19,5 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 - [ ] Další rozdělení rozsáhlých komponent a sjednocení klientských/serverových typů.
 
 Mapa, dohled, deníky, hody, potvrzované zranění, obnova přístupů a celé kampaně už fungují. Podrobné automatické vyhodnocování povolání, kouzel a oficiální bestiář nejsou cílem současné verze.
+
+Vchod a samostatný východ jsou trvalé značky mapy; PJ může zahájit průzkum u vchodu. Generátor je připraví na přízemí. Přechod do venkovní mapy je případné další rozšíření.
