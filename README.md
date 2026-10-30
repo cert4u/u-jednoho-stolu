@@ -2,7 +2,7 @@
 
 Jednoduchý český online herní stůl pro vlastní partu a společné fantasy dobrodružství. Čtverečkovaný papír, deníky, kostky a místo pro Pána jeskyně. **V jednoduchosti je síla.**
 
-[Licence MIT](LICENSE) · [Vývoj a architektura](docs/DEVELOPMENT.md) · [Plán další práce](docs/ROADMAP.md) · [Přispívání](CONTRIBUTING.md)
+[Licence MIT](LICENSE) · [Vlastní hosting](docs/SELF_HOSTING.md) · [Změny ve verzích](CHANGELOG.md) · [Vývoj a architektura](docs/DEVELOPMENT.md) · [Plán další práce](docs/ROADMAP.md) · [Přispívání](CONTRIBUTING.md)
 
 ## Co už umí
 
@@ -15,14 +15,50 @@ Jednoduchý český online herní stůl pro vlastní partu a společné fantasy 
 - Hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ. Rozpracované akce zůstávají dostupné i po ořezu chatu.
 - Osobní obnovovací klíče pro hráče i PJ, archivace postav a úplná záloha kampaně s obnovou do nové místnosti.
 - Ochrana rozepsaných formulářů a souběžných změn: uložení poznámky nevrátí mezitím odečtené životy.
+- Vlastní hosting přes Docker Compose s SQLite a správou instalace na `/admin`: aktualizace ze stabilních vydání, záloha databáze a návrat předchozí verze.
 
 Jde o ranou verzi pro menší důvěryhodnou partu. Hlasový hovor si pusťte zvlášť.
 
-## Rychlé lokální spuštění
+## Vlastní server s Dockerem
 
-Pro trvalý provoz na vlastním serveru použij [Docker Compose a správu aktualizací](docs/SELF_HOSTING.md). Následující postup je vývojové prostředí s emulací Cloudflare.
+Pro vlastní server je od verze **0.2.0** připravený Docker Compose. Aplikace běží na Node.js 22 a ukládá data do SQLite v trvalém Docker volume. Cloudflare účet není potřeba.
 
-Potřebuješ Git, npm a **Node.js 22.15 nebo novější**. Současný server používá Cloudflare Workers a D1; místní prostředí emuluje Wrangler, účet Cloudflare není pro lokální hraní potřeba.
+Potřebuješ Linux s **Docker Engine 28+ a Compose v2**, Git a OpenSSL. Pro sestavení počítej přibližně se 2 GB volné RAM a několika GB místa na disku.
+
+```bash
+git clone https://github.com/cert4u/u-jednoho-stolu.git
+cd u-jednoho-stolu
+cp .env.example .env
+openssl rand -hex 32
+openssl rand -hex 32
+```
+
+Do `.env` vlož dvě různé vygenerované hodnoty jako `STUL_ADMIN_PASSWORD` a `STUL_UPDATER_TOKEN`. Nastav `PUBLIC_ORIGIN` na adresu své instalace; pro místní vyzkoušení použij `http://localhost:8080`.
+
+```bash
+chmod 600 .env
+./deploy/stul.sh up -d --build
+./deploy/stul.sh logs --tail=50
+```
+
+Pro místní vyzkoušení otevři [http://localhost:8080](http://localhost:8080). Na veřejném serveru nastav HTTPS reverzní proxy před výchozí adresu `127.0.0.1:8080`.
+
+**[Podrobný návod pro Docker, HTTPS, zálohování a obnovu](docs/SELF_HOSTING.md)** popisuje také podporované prostředí a údržbu instalace.
+
+### Aktualizace z administrace
+
+Na adrese **`/admin`** se přihlas heslem správce instalace. Tento přístup je oddělený od role PJ a hráčů.
+
+- Administrace nabídne poslední stabilní GitHub Release a odkaz na poznámky k vydání.
+- Po potvrzení se sestaví image z přesného commitu vydání. Během sestavování lze dál hrát.
+- Před výměnou se pozastaví změny a uloží záloha celé databáze. Pokud nová verze nenastartuje, updater se pokusí obnovit původní verzi i databázi.
+- Ruční návrat předchozí verze obnovuje také její databázi; novější změny se před návratem uloží do další zálohy.
+
+Pro další spouštění používej `./deploy/stul.sh up -d` nebo `./deploy/stul.sh restart`. Wrapper zachovává aktivní image po aktualizaci. Ze starého checkoutu znovu nespouštěj `up --build`. Samotný updater a zdrojový checkout se udržují ručně podle [návodu](docs/SELF_HOSTING.md#další-spouštění-compose).
+
+## Lokální vývoj s Cloudflare
+
+Vývojová varianta používá Workers a D1 emulované Wranglerem. Potřebuješ Git, npm a **Node.js 22.15 nebo novější**; Cloudflare účet pro místní vývoj není nutný.
 
 ```bash
 git clone https://github.com/cert4u/u-jednoho-stolu.git
@@ -62,7 +98,7 @@ npm run test:integration
 npm run test:integration -- http://127.0.0.1:8787
 ```
 
-Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovací instanci; nepouštěj je proti své rozehrané produkční kampani. `npm run test:ci` spustí a po testech ukončí vlastní místní server. Předem vyžaduje sestavení a `npm run db:init`. Stejný postup provádí GitHub Actions.
+Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovací instanci; nepouštěj je proti své rozehrané produkční kampani. `npm run test:ci` spustí a po testech ukončí vlastní místní server. Předem vyžaduje sestavení a `npm run db:init`. GitHub Actions navíc ověřuje Node/SQLite variantu, přihlášení do administrace a skutečnou výměnu Docker kontejnerů včetně obnovy kampaně. Samostatné testy aktualizační logiky spustíš pomocí `npm run test:updater`; testy Node serveru a administrace pomocí `npm run build:node` a `npm run test:hosting`.
 
 ## Současná omezení
 
@@ -74,10 +110,6 @@ Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovac
 - Úplná záloha verze 1 dovoluje nejvýše 3 MB serializovaných dat. Starý částečný zápis chatu nenahrazuje plnou zálohu.
 - Obnovovací klíč je přístup k postavě. Nepřidávej klíče, herní zálohy ani databáze do repozitáře či veřejného issue.
 
-## Vlastní hosting
-
-Tento repozitář lze sestavit a testovat samostatně. Současná infrastruktura používá Workers/D1; přechod na vlastní hosting je další plánovaná etapa. Není zde hotový Docker/VPS deployment ani automatické nasazování na cizí účet. [Vývojová dokumentace](docs/DEVELOPMENT.md) popisuje dnešní vazby na prostředí.
-
 ## Licence a původ
 
 Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Převzaté součásti si zachovávají své původní licence a oznámení, viz [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
@@ -85,7 +117,3 @@ Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Převzat�
 Projekt vznikl jako neoficiální pomůcka inspirovaná původním českým hraním DrD. Nejde o produkt ani schválenou aplikaci nakladatelství ALTAR. Repozitář neobsahuje text pravidlových příruček, bestiář ani převzaté ilustrace. Licence k aplikaci neuděluje práva k cizím značkám nebo pravidlovým textům.
 
 Základ hodů vychází z veřejných [zjednodušených pravidel ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), která jsou odvozena od verze 1.6. Úplnou shodu se všemi pravidly 1.5 ani 1.6 aplikace neslibuje; výjimky a situace vyhodnocuje PJ.
-
-## Vlastní hosting a aktualizace
-
-Pro vlastní server je připravený Docker Compose s SQLite a samostatnou správou na `/admin`. Správce může nainstalovat poslední stabilní GitHub Release; před výměnou vznikne záloha databáze a při chybném startu proběhne pokus o návrat. Podrobné spuštění, obnova a údržba jsou v [návodu pro Docker](docs/SELF_HOSTING.md).
