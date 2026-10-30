@@ -28,6 +28,8 @@ try{
  const login=await fetch(origin+'/admin/api/login',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({password})});assert.equal(login.status,200);const cookie=login.headers.get('set-cookie');
  let status;for(let i=0;i<20;i++){status=await fetch(origin+'/admin/api/status',{headers:{Cookie:cookie}});if(status.ok)break;await new Promise(r=>setTimeout(r,500));}assert.equal(status.status,200,await status.text());
  cli(['stop','stul-updater-smoke']); // Only one writer runs real replacement tests below.
+ // docker stop blocks this harness for ~10s: drain socket-close events before reusing fetch.
+ await new Promise(resolve=>setTimeout(resolve,100));
 
  const create=await fetch(origin+'/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',name:'Docker PJ',title:'Docker test'})});assert.equal(create.status,200);const game=await create.json();assert.ok(game.room);
  await manager.begin('update','docker-update-12345678');await manager.running;assert.match(manager.state.job.phase,/Hotovo/);assert.equal((await call('/healthz')).revision,newSha);assert.equal(statSync(path.join(stateDir,'runtime.env')).uid,1001);
