@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Číslované místnosti s názvy, přesouváním značek, seznamem míst a odděleně sdíleným číslem/popisem. Nově generovaná patra dostanou soukromé značky automaticky; čísla v náhledu se nepřekrývají se schodištěm či vstupy.
+
 Generátor V2 je sloučený v `main` přes [PR #1](https://github.com/cert4u/u-jednoho-stolu/pull/1). Tato sekce popisuje dosud nevydané změny; sloučení ani nasazení ze zdrojů nevytváří stabilní GitHub Release.
 
 - Generátor V2: logický graf a skutečně oddělené průchody, A* chodby, dveře, odlišné styly hradu/dolu/jeskyně, šest hodnocených kandidátů na patro a tři opakovatelné varianty. Zmrazené V1 výstupy, soukromý původ generování, životní cyklus metadat, kompatibilní zálohy, nezávislé edge-aware testy a benchmark.

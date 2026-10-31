@@ -28,3 +28,24 @@ for(const edit of [n=>n.push(n[0]),n=>n.push({...n[0],id:'duplicate-location'}),
 const capacity=structuredClone(backup);capacity.game.mapNotes=Array.from({length:200},(_,i)=>({...capacity.game.mapNotes[0],id:'capacity-note-'+i,levelId:'ground',x:i%28,y:Math.floor(i/28)}));const full=await post(null,'restore',{backup:capacity});assert.equal(full.status,200);assert.equal((await run(full,'save',{levelId:'ground',x:12,y:8,...fields,expectedRevision:null})).status,400);
 const current=(await get(pj,basement)).mapNotes[0],removeId=crypto.randomUUID(),remove={levelId:basement,x:2,y:2,noteId:current.id,expectedRevision:current.revision};assert.equal((await run(pj,'remove',remove,removeId)).status,200);assert.equal((await run(pj,'remove',remove,removeId)).status,200);assert.deepEqual((await get(a)).mapNotes,[]);assert.equal((await run(pj,'save',{...remove,...fields,publish:false})).status,409);
 console.log('PASS: map note secrecy, separate published snapshots, fog/grey memory and floor privacy, PJ permissions, create/edit races and replay, unpublish/delete, editable orphan notes, limits and full backup validation.');
+
+// Room markers keep private numbering separate from the published snapshot.
+const rooms=await post(null,'create',{name:'Číslování místností'});await draw(rooms,'room',{from:[1,1],to:[9,9]});
+const roomAnchor={levelId:'ground',x:2,y:2};
+let saved=await run(rooms,'save',{...roomAnchor,...fields,title:'Zbrojnice',roomNumber:7,publish:true,expectedRevision:null});assert.equal(saved.status,200);let label=saved.game.mapNotes[0];
+const viewer=await post(null,'join',{room:rooms.room,name:'Čtenář mapy'});assert.deepEqual((await get(viewer)).mapNotes,[]);await draw(rooms,'reveal',{from:[1,1],to:[9,9]});assert.equal((await get(viewer)).mapNotes[0].roomNumber,7);
+const update={...roomAnchor,...fields,title:'Tajný název',roomNumber:8,noteId:label.id,expectedRevision:label.revision};saved=await run(rooms,'save',update);assert.equal(saved.status,200);label=saved.game.mapNotes[0];assert.equal((await get(viewer)).mapNotes[0].roomNumber,7);
+assert.equal((await run(rooms,'save',{...roomAnchor,x:3,...fields,roomNumber:8,expectedRevision:null})).status,400);
+for(const roomNumber of [0,1000,1.5,'7'])assert.equal((await run(rooms,'save',{...roomAnchor,x:3,...fields,roomNumber,expectedRevision:null})).status,400);
+const move={...roomAnchor,op:'move',noteId:label.id,expectedRevision:label.revision,toX:5,toY:5};const moveId=crypto.randomUUID();assert.equal((await run(rooms,'move',move,moveId)).status,200);assert.equal((await run(rooms,'move',move,moveId)).status,200);assert.equal((await run(viewer,'move',move)).status,403);assert.equal((await run(rooms,'move',move)).status,409);
+label=(await get(rooms)).mapNotes[0];assert.equal(label.id,saved.game.mapNotes[0].id);assert.equal(label.x,5);assert.equal(label.y,5);assert.equal(label.roomNumber,8);assert.equal(label.secret,fields.secret);assert.equal((await get(viewer)).mapNotes[0].roomNumber,7);
+assert.equal((await run(rooms,'move',{...move,x:5,y:5,expectedRevision:label.revision,toX:0,toY:0})).status,400);
+saved=await run(rooms,'save',{...update,x:5,y:5,expectedRevision:label.revision,roomNumber:null});assert.equal(saved.status,200);assert.equal(saved.game.mapNotes[0].roomNumber,undefined);assert.equal((await get(viewer)).mapNotes[0].roomNumber,7);
+const roomBackup=await(await fetch(base+'/api/game?room='+rooms.room+'&download=backup',{headers:{Authorization:'Bearer '+rooms.token}})).json();const roomRestored=await post(null,'restore',{backup:roomBackup});assert.equal(roomRestored.status,200);assert.equal(roomRestored.game.mapNotes[0].published.roomNumber,7);assert.equal(roomRestored.game.mapNotes[0].x,5);
+console.log('PASS: room numbering, per-floor uniqueness, private/public snapshots, movement with stable IDs, permissions, revision conflicts, replay and backup.');
+
+for(const mutate of [b=>b.game.mapNotes[0].roomNumber=0,b=>b.game.mapNotes[0].published.roomNumber=1000]){const invalid=structuredClone(roomBackup);mutate(invalid);assert.equal((await post(null,'restore',{backup:invalid})).status,400);}
+const another=await run(rooms,'save',{levelId:'ground',x:3,y:3,...fields,roomNumber:8,expectedRevision:null});assert.equal(another.status,200);
+label=(await get(rooms)).mapNotes.find(n=>n.x===5);assert.equal((await run(rooms,'move',{levelId:'ground',x:5,y:5,noteId:label.id,expectedRevision:label.revision,toX:3,toY:3})).status,400);
+const duplicateBackup=await(await fetch(base+'/api/game?room='+rooms.room+'&download=backup',{headers:{Authorization:'Bearer '+rooms.token}})).json();duplicateBackup.game.mapNotes[0].roomNumber=8;assert.equal((await post(null,'restore',{backup:duplicateBackup})).status,400);
+console.log('PASS: room-marker backup ranges/duplicate numbers and occupied move targets.');

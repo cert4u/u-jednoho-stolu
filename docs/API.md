@@ -46,7 +46,7 @@ Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty s
 | `initiative`, `condition` | Jen PJ: soubojové pořadí a stavy. |
 | `power` | Majitel/PJ: vlastní kouzla, magenergie a použití. |
 | `recovery`, `journey`, `life` | Jen PJ: obnova životů/magenergie, čas/světlo a vyřazení. |
-| `map-note` | Jen PJ: pracovní a zveřejněný popis místa. |
+| `map-note` | Jen PJ: pracovní a zveřejněný popis místa, volitelné `roomNumber` (1–999, unikátní na patře; `null` odstraní označení). Operace `move` přesune značku na `toX`/`toY` ve stejném patře, vyžaduje původní kotvu, `noteId` a `expectedRevision`. Přesun zachová ID a vazby na kořist/zkoušky. |
 | `challenge` | Příprava/následky/rušení PJ; hod cílový hráč nebo PJ. |
 | `loot` | Příprava/uzavření/dělení PJ; převzetí hráč pro sebe nebo PJ pro hráče. |
 | `equipment` | Majitel/PJ: položky a měšec konkrétního člena. |

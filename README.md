@@ -46,6 +46,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 ### Příprava Pána jeskyně
 
 - Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací.
+- Číslované místnosti s názvy přímo v mapě, přesouváním značek a seznamem pro rychlé hledání. Nově generovaná patra dostanou soukromá označení automaticky.
 - Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu.
 - Zkoušky a pasti s výzvou konkrétnímu hráči, volitelně tajnou nebezpečností a ručním potvrzením následků.
 - Tajná příprava kořisti, zveřejnění nálezu, přidělení hráčům a rovné rozdělení mincí se zachováním zbytku.

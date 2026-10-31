@@ -8,3 +8,7 @@ for(let seed=0;seed<25;seed++)check(generateDungeon({...defaults,rooms:2,levels:
 const first=generateDungeon(defaults);assert.deepEqual(generateDungeon(defaults),first);assert.notDeepEqual(generateDungeon({...defaults,seed:'different'}).floors,first.floors);check(generateDungeon({...defaults,levels:8,rooms:12}));
 for(const invalid of [{separateExit:'true'},{levels:0},{levels:9},{rooms:1},{rooms:13},{size:'large',rooms:7},{name:''},{name:'x'.repeat(36)},{seed:''},{seed:'x'.repeat(65)},{size:'__proto__'},{corridors:'missing'},{connections:-1},{connections:5},{rooms:2.5}])assert.throws(()=>generateDungeon({...defaults,...invalid}));
 console.log('PASS: deterministic generator across 450 configurations, exact room counts, disjoint rooms, bounded/connected floors, perimeter walls, staircase chain, hidden maps, maximum size and invalid parameters.');
+
+const {roomLabelPoint}=await import('../lib/room-labels.ts');
+for(const style of ['castle','mine','cave'])for(let seed=0;seed<20;seed++)for(const floor of generateDungeon({...defaults,version:'v2',style,separateExit:true,seed:String(seed)}).floors)for(const room of floor.rooms){const point=roomLabelPoint(room,floor.map),key=point.join(',');assert(room.cells.includes(key));assert(!floor.map.stairMarks?.[key]);assert(!Object.values(floor.map.access||{}).some(p=>p.join(',')===key));}
+console.log('PASS: room label positions stay inside irregular rooms and avoid stairs, entrance and exit across all V2 styles.');

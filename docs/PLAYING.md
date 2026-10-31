@@ -69,7 +69,9 @@ Patra PJ připravuje nezávisle na poloze družiny. Pro funkční schodiště pr
 
 ## Poznámky, příšery a pasti
 
-Nástrojem **Poznámka** PJ otevře přípravu místa. **Uložit přípravu** nic nesdílí; **Uložit a sdílet popis** publikuje samostatnou verzi nadpisu a popisu, dostupnou hráčům u odhaleného políčka přes značku „i“. Tajný text zůstane u PJ. Běžná úprava pracovní verze nezmění již zveřejněný text; sdílení lze odvolat.
+Nově vložené generované jeskyně dostanou číslované soukromé značky automaticky. Čísla se při přesunu nemění a jsou oddělená od čísel příšer. Automatické značky mají upozornění při přiblížení vypnuté; PJ je může zapnout pro vybraná místa. Čísla v náhledu se umísťují mimo schodiště, vchod a východ. Dříve uložené mapy se zpětně nepřepisují.
+
+Nástrojem **Označit místo** PJ klikne na podlahu a otevře přípravu místa. Volba **Označit jako místnost v mapě** přidá číslo (1–999, unikátní na patře) a název přímo do mapy. Bez této volby zůstane malá značka „i“. Značku lze v nástroji **Označit místo** nebo **Postavy/Družina** přetáhnout na jiné volné políčko podlahy; kliknutí otevře přípravu. Tlačítko **Místa** zobrazí seznam číslovaných místností na aktuálním patře, umožní najít značku nebo otevřít přípravu/popisek. **Uložit přípravu** nic nesdílí; **Uložit a sdílet popis** publikuje samostatnou verzi čísla, nadpisu a popisu, dostupnou hráčům u odhaleného políčka přes značku v mapě. Tajný text zůstane u PJ. Běžná úprava pracovní verze nezmění již zveřejněný text; sdílení lze odvolat.
 
 Upozornění při přiblížení má výchozí dosah 2 pole, nastavení 1–6 nebo vypnutí. Funguje i přes stěny a sleduje průchod družiny kolem místa. Během pobytu v okolí se neopakuje. Je soukromou připomínkou PJ, nic automaticky neodhaluje ani nespouští hod či poškození.
 
