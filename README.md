@@ -1,5 +1,12 @@
 # U jednoho stolu
 
+[![CI](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml)
+[![Licence MIT](https://img.shields.io/badge/licence-MIT-blue?style=flat)](LICENSE)
+[![Verze v main](https://img.shields.io/github/package-json/v/cert4u/u-jednoho-stolu/main?label=main&color=8b5cf6)](CHANGELOG.md)
+[![Node.js ≥ 22.15](https://img.shields.io/badge/Node.js-%E2%89%A5%2022.15-339933?logo=nodedotjs&logoColor=white)](docs/DEVELOPMENT.md)
+[![Docker · vlastní hosting](https://img.shields.io/badge/Docker-vlastn%C3%AD%20hosting-2496ED?logo=docker&logoColor=white)](docs/SELF_HOSTING.md)
+[![LiveKit · hlas družiny](https://img.shields.io/badge/LiveKit-hlas%20dru%C5%BEiny-f59e0b)](docs/VOICE.md)
+
 **Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
 
 Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu“ přenáší atmosféru večerního hraní do prohlížeče: PJ připraví jeskyni, družina ji společně prozkoumává a příběh vzniká při hře. Mapa, deníky, hody i hlasový hovor jsou po ruce.
