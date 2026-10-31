@@ -6,7 +6,7 @@ Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu�
 
 > V jednoduchosti je síla. Příběh vedete vy, aplikace pomáhá s mapou, evidencí a hody.
 
-[Přejít k první hře](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Hlasové volání](#hlas-družiny) · [Plán projektu](docs/ROADMAP.md) · [Licence MIT](LICENSE)
+[Kompletní dokumentace](docs/README.md) · [Přejít k první hře](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Hlasové volání](#hlas-družiny) · [Plán projektu](docs/ROADMAP.md) · [Licence MIT](LICENSE)
 
 ![Ukázka herního stolu: čtverečkovaná mapa, družina v levém panelu a chat s hlasovým hovorem vpravo](docs/images/herni-stul.jpg)
 
@@ -165,15 +165,20 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 
 | Chci… | Kde začít |
 | --- | --- |
+| Najít správnou příručku | [Rozcestník dokumentace](docs/README.md) |
+| Hrát a připravovat dobrodružství | [Herní příručka pro hráče a PJ](docs/PLAYING.md) |
+| Vyřešit problém nebo ověřit limit | [Řešení problémů](docs/TROUBLESHOOTING.md) a [limity](docs/LIMITS.md) |
 | Provozovat vlastní herní stůl | [Vlastní hosting, HTTPS, zálohy a obnova](docs/SELF_HOSTING.md) |
 | Zapnout hlasový hovor | [LiveKit a hlas družiny](docs/VOICE.md) |
 | Podívat se na změny a další plány | [Historie verzí](CHANGELOG.md) a [plán práce](docs/ROADMAP.md) |
-| Porozumět kódu | [Vývoj a architektura](docs/DEVELOPMENT.md) |
+| Porozumět kódu | [Vývoj a architektura](docs/DEVELOPMENT.md) a [interní API](docs/API.md) |
+| Připravit nové vydání | [Postup pro správce vydání](docs/RELEASING.md) |
 | Přispět opravou nebo nápadem | [Pravidla přispívání](CONTRIBUTING.md) a [issues](https://github.com/cert4u/u-jednoho-stolu/issues) |
 
 ## Testování
 
 ```bash
+npm run check:docs
 npm run check
 npm test
 ```
@@ -189,6 +194,8 @@ npm run test:integration -- http://127.0.0.1:8787
 Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovací instanci; nepouštěj je proti své rozehrané produkční kampani. `npm run test:ci` spustí a po testech ukončí vlastní místní server. Předem vyžaduje sestavení a `npm run db:init`. GitHub Actions navíc ověřuje Node/SQLite variantu, přihlášení do administrace a skutečnou výměnu Docker kontejnerů včetně obnovy kampaně. Samostatné testy aktualizační logiky spustíš pomocí `npm run test:updater`; testy Node serveru a administrace pomocí `npm run build:node` a `npm run test:hosting`.
 
 ## Současná omezení
+
+Úplný přehled technických i herních hranic je v [limitech](docs/LIMITS.md); při potížích začni [řešením problémů](docs/TROUBLESHOOTING.md).
 
 - Mapa jednoho patra má 28 × 20 polí; okolní papír je prostor pro posouvání pohledu.
 - Nejvýše 8 pater, 12 aktivních účastníků, 200 postav a 200 příšer včetně archivovaných.

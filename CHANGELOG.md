@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Sjednocená komunitní dokumentace: příručka hráče/PJ, dva runtime, interní API, provoz, hlas, limity, řešení problémů a vydávání. Kontrola místních odkazů, kotev a npm příkazů jako `check:docs` v CI.
+
 - Čistě hlasový hovor družiny přes volitelný vlastní LiveKit: připojení se ztlumeným mikrofonem, mikrofon, poslech, výběr zařízení a účastníci/mluvící. Oddělené místnosti, krátkodobé serverem podepsané tokeny pouze pro mikrofon, úklid připojení při odchodu a lokální/veřejná Docker konfigurace s návodem.
 
 - Trvalé značky vchodu a samostatného východu, ruční umístění na podlahu a zahájení průzkumu u vchodu. Generátor vytváří přízemí s vchodem, volitelný východ a podzemní patra; značky respektují odkrývání, paměť mapy, mazání, vrácení tahu a úplné zálohy.

@@ -27,6 +27,8 @@ jobs:
           cache: npm
       - name: Instalace uzamčených závislostí
         run: npm run install:ci
+      - name: Dokumentace
+        run: npm run check:docs
       - name: TypeScript
         run: npm run check
       - name: Geometrie mapy

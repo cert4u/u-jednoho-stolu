@@ -13,6 +13,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "check": "tsc --noEmit",
+    "check:docs": "node scripts/check-docs.mjs",
     "test": "node --experimental-strip-types scripts/test-union.mjs",
     "db:init": "node scripts/init-db.mjs",
     "test:integration": "node scripts/test-integration.mjs",

@@ -1,8 +1,10 @@
 # Hlas družiny (volitelný LiveKit)
 
+[Dokumentace](README.md) · [Hosting](SELF_HOSTING.md) · [Řešení problémů](TROUBLESHOOTING.md#hlasový-hovor)
+
 Každý herní stůl má vlastní hlasovou místnost. Panel **Hlas družiny** je u chatu. Hráč zvolí **Připojit k hovoru**; připojí se s vypnutým mikrofonem. Potom může mikrofon zapnout, ztlumit poslech, vybrat vstupní zařízení nebo odejít. Jména a zvýraznění ukazují účastníky a mluvící. Při odchodu od stolu nebo změně přístupu se hovor odpojí.
 
-Aplikace používá pouze mikrofon. Server vydává token s právem publikovat jen zdroj `microphone`, bez kamery, sdílení obrazovky, datových zpráv, správy místnosti nebo nahrávání. Nepřidáváme záznam ani přepis hovoru. Klíče jsou pouze na serveru; krátkodobý token se neukládá do kampaně ani localStorage. Hovor funguje odděleně od chatového šeptání: šeptání v chatu nezmění, komu je slyšet hlas.
+Aplikace používá pouze mikrofon. Správce LiveKit serveru je součástí důvěryhodné infrastruktury; aplikace nezapíná dodatečné koncové E2EE. Server vydává token s právem publikovat jen zdroj `microphone`, bez kamery, sdílení obrazovky, datových zpráv, správy místnosti nebo nahrávání. Nepřidáváme záznam ani přepis hovoru. Klíče jsou pouze na serveru; krátkodobý token se neukládá do kampaně ani localStorage. Hovor funguje odděleně od chatového šeptání: šeptání v chatu nezmění, komu je slyšet hlas.
 
 ## Nastavení aplikace
 
@@ -20,12 +22,22 @@ Klíč vygeneruj například `openssl rand -hex 12`, tajemství `openssl rand -h
 ## Lokální Docker na Linuxu
 
 ```bash
-docker compose -f compose.yaml -f compose.voice.yaml up -d --build
+./deploy/stul.sh -f compose.yaml -f compose.voice.yaml up -d
+```
+
+Předtím dokonči první sestavení aplikace podle [hostingu](SELF_HOSTING.md#první-spuštění). Hlas můžeš přidat k existující instalaci tímto příkazem bez nového buildu aplikace. Wrapper načítá aktivní image po aktualizaci; přímé `docker compose` ho nemusí zachovat. Pro první sestavení z aktuálně zvolených zdrojů lze přidat `--build`, ale nikdy nebuildovat starý checkout po webovém upgradu.
+
+Pro další spouštění, logy a změny prostředí zachovej overlay:
+
+```bash
+./deploy/stul.sh -f compose.yaml -f compose.voice.yaml ps
+./deploy/stul.sh -f compose.yaml -f compose.voice.yaml logs --tail=100 livekit
+./deploy/stul.sh -f compose.yaml -f compose.voice.yaml up -d --force-recreate app
 ```
 
 Volitelný soubor přidá připnutý LiveKit server v1.13.11 v hostitelské síti. Výchozí `local.yaml` používá loopback pro signalizaci i média a limit 12 účastníků. Otevři aplikaci na `http://localhost:8080`; každý účastník testu musí být na stejném počítači. Tento profil neslouží pro další počítače v LAN ani veřejný internet.
 
-Bez Dockeru lze použít oficiální binárku LiveKitu s `--config deploy/livekit/local.yaml`. Proměnná `LIVEKIT_KEYS` musí obsahovat `<klic>: <tajemstvi>`. Aplikaci spusť s jejími třemi `STUL_LIVEKIT_*` proměnnými a `npm run start:node`. Nestartuj veřejný server v režimu `--dev`.
+Bez Dockeru lze použít oficiální binárku LiveKitu s `--config deploy/livekit/local.yaml`. Proměnná `LIVEKIT_KEYS` musí obsahovat `<klic>: <tajemstvi>`. Aplikaci nejprve sestav pomocí `npm run build:node` a spusť s jejími třemi `STUL_LIVEKIT_*` proměnnými. Pro `.env` použij `node --env-file=.env server/start.mjs`; samotné `npm run start:node` soubor prostředí nenačítá. Potřebuješ i základní heslo správce a interní token podle [nativního startu](DEVELOPMENT.md#rychlý-start-node-bez-dockeru). Nestartuj veřejný server v režimu `--dev`.
 
 ## Veřejný server
 
