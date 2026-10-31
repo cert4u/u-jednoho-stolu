@@ -2,7 +2,7 @@
 
 [Dokumentace](README.md) · [Historie změn](../CHANGELOG.md)
 
-Zaškrtnuté položky jsou implementované v této větvi, ne nutně součástí posledního stabilního vydání. Nezaškrtnuté položky nemají slíbený termín.
+Zaškrtnuté položky jsou implementované v hlavní větvi `main`, ne nutně součástí posledního stabilního vydání. Generátor V2 byl začleněn přes [PR #1](https://github.com/cert4u/u-jednoho-stolu/pull/1). Nezaškrtnuté položky nemají slíbený termín.
 
 Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásada: jednoduchost ovládání a spolehlivost mají přednost před počtem pravidel.
 

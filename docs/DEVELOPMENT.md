@@ -47,6 +47,26 @@ Port musí být volný; tuto instanci pak otevři na `http://127.0.0.1:18089`. K
 
 Administrace se otevře i bez updateru a vysvětlí, proč nejsou dostupné aktualizace a návrat verze. Provozní Docker instalace je popsaná v [SELF_HOSTING.md](SELF_HOSTING.md).
 
+## Aktualizace nativní Node instalace
+
+Tento postup platí pro vlastní běh `server/start.mjs`, ne pro Docker updater. Předem si poznamenej `/healthz` a uložený commit. Zastav aplikaci svým správcem procesu (při běhu v terminálu `Ctrl+C`) a vytvoř soukromou konzistentní zálohu databáze; při kopírování zastavené instalace zachovej i případný WAL/SHM a `.env`. [Zálohy a obnova](SELF_HOSTING.md#data-a-zálohy) popisují rozdíl oproti exportu jedné kampaně.
+
+Pro nasazení ověřené hlavní větve v čistém checkoutu:
+
+```bash
+git fetch origin
+git merge --ff-only origin/main
+npm run install:ci
+npm run build:node
+node --env-file=.env server/start.mjs
+```
+
+Před aktualizací musí checkout již být na `main`; lokální úpravy nejprve bezpečně vyřeš. Pro vydanou verzi místo hlavní větve použij konkrétní ověřený tag a jeho dokumentaci. Existující `.env`, data ani obnovovací klíče nenahrazuj vzorovými soubory. Pokud je pro danou instalaci soubor prostředí jinde, nahraď cestu v posledním příkazu.
+
+Ověř `/healthz`: správný `revision`, očekávaný `version` a `maintenance: false`. Zkontroluj otevření původní kampaně a rozhraní; změny se v již otevřené kartě mohou projevit až po obnovení stránky. Databázové migrace aplikuje start. Při selhání nespouštěj náhodně starší kód proti nově změněným datům: vrať společně odpovídající kód a zálohu podle provozního postupu.
+
+LiveKit spravuješ samostatně. Jeho běžící proces ani uložené klíče se sestavením aplikace nenahrazují; pokud je vypnutý, spusť jej s původní konfigurací podle [hlasového návodu](VOICE.md). Samostatné Node spuštění nezajišťuje automatický start po restartu počítače; ten nastavuje správce provozu.
+
 ## Lokální Cloudflare vývoj
 
 ```bash

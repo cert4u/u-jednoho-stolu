@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+Generátor V2 je sloučený v `main` přes [PR #1](https://github.com/cert4u/u-jednoho-stolu/pull/1). Tato sekce popisuje dosud nevydané změny; sloučení ani nasazení ze zdrojů nevytváří stabilní GitHub Release.
+
 - Generátor V2: logický graf a skutečně oddělené průchody, A* chodby, dveře, odlišné styly hradu/dolu/jeskyně, šest hodnocených kandidátů na patro a tři opakovatelné varianty. Zmrazené V1 výstupy, soukromý původ generování, životní cyklus metadat, kompatibilní zálohy, nezávislé edge-aware testy a benchmark.
 
 - Sjednocená komunitní dokumentace: příručka hráče/PJ, dva runtime, interní API, provoz, hlas, limity, řešení problémů a vydávání. Kontrola místních odkazů, kotev a npm příkazů jako `check:docs` v CI.

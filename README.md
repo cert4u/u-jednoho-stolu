@@ -96,6 +96,8 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 ## Generátor jeskyně
 
+**V2 je začleněný do hlavní větve `main`** ([PR #1](https://github.com/cert4u/u-jednoho-stolu/pull/1)). Nasazení ze zdrojů této větve používá nové rozhraní; původní V1 je v pokročilém nastavení. Aktualizátor v administraci nabízí pouze stabilní GitHub Releases, takže sloučení do `main` samo o sobě nevydává novou stabilní verzi. Při aktualizaci porovnávej i commit, nejen číslo verze.
+
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 
 1. Nastav název, styl, počet pater a místností, velikost a složitost. Pokročilá část obsahuje verzi algoritmu, seed, chodby a dodatečná propojení.

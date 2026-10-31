@@ -16,7 +16,7 @@ Náhled běží v prohlížeči ze sdílené funkce. Server při potvrzení geom
 6. Ukládat původ generování i mapová metadata pouze do přípravy PJ. Strukturální ruční změna označí metadata za neaktuální; vrácení tahu vrátí předchozí snapshot. Otevření dveří či pohyb nejsou změnou struktury.
 7. Doplnit nezávislé edge-aware testy tisíců konfigurací, integrace/zálohy/soukromí/replay, benchmark bez křehkého CI časového limitu a jednoduchý výběr stylu/verze/varianty.
 
-Nejde o produkční nasazení ani nové vydání. Následující části popisují implementaci V2 v této větvi.
+Vývojové ověření proběhlo před nasazením a bez nového vydání. V2 je nyní začleněný do `main` přes [PR #1](https://github.com/cert4u/u-jednoho-stolu/pull/1). Následující části popisují jeho implementaci a ověření.
 
 ## Datové struktury a životní cyklus
 
@@ -120,6 +120,10 @@ Skutečně provedené lokální kontroly:
 - Integrační testy ověřily staré kampaně a zálohy, chybějící/poškozený původ, validní i ručně změněná metadata, schodiště a jejich odstranění/undo, souběh a opakování, neveřejný graf i budoucí tajný obsah a skutečné otevření dveří před pohybem.
 - V prohlížeči: náhled všech tří stylů, změna varianty a patra, přepnutí V1/V2, potvrzení přírodní jeskyně, umístění u vchodu a oddělený hráčský pohled. Mobil 390 × 844: šířka dokumentu 390 px, dialog 366 px, obsah 364 px, bez vodorovného přetékání.
 
-Buildy a databáze pro ověření vznikly v oddělených dočasných kopiích; nešlo o produkční nasazení nebo vydání releasu. GitHub Actions workflow zůstává zachované. Výše uvedené jsou skutečné lokální běhy jeho příkazů, nikoli tvrzení o výsledku vzdáleného CI. Skutečný Docker engine v tomto prostředí nebyl dostupný, takže vzdálený Docker job je nutné posoudit podle kontrol pull requestu.
+Buildy a databáze pro ověření vznikly v oddělených dočasných kopiích; nešlo o produkční nasazení nebo vydání releasu. GitHub Actions workflow zůstává zachované. Nad rámec uvedených lokálních běhů prošel i [vzdálený CI běh 41200241404](https://github.com/cert4u/u-jednoho-stolu/actions/runs/41200241404): job `test` i `Docker hosting and upgrade` skončily úspěšně. Druhý job ověřil skutečnou výměnu Docker kontejnerů a obnovu databáze; lokálně Docker engine dostupný nebyl.
 
 Ve vyjmenovaných konfiguracích nebyla zjištěna kritická geometrická chyba. Nejde o důkaz pro každý možný seed; další nepodporované či neřešitelné konfigurace mohou bezpečně skončit chybou. Rozměry, prostorová slotová strategie, synchronní výpočet a výše uvedené neimplementované mechaniky zůstávají přiznanými hranicemi řešení.
+
+## Dostupnost a nasazení
+
+V2 je dostupný ze zdrojů hlavní větve po sloučení PR #1. Samostatný stabilní release tím nevznikl. Pro nativní Node instalaci použij [postup aktualizace](DEVELOPMENT.md#aktualizace-nativní-node-instalace), pro Docker [provozní návod](SELF_HOSTING.md). Již uložené mapy se při startu nepřegenerují. Nový generátor se použije až při přípravě dalšího návrhu.
