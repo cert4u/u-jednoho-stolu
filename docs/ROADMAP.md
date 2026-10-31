@@ -36,14 +36,14 @@ Vchod a samostatný východ jsou trvalé značky mapy; PJ může zahájit průzk
 
 [Posouzení k 31. 10. 2026](MECHANICS.md) doporučuje postupně:
 
-- [ ] Oddělit společný průzkum a rozestavení jednotlivých postav v boji, včetně rozhodnutí o dohledu a seskupení.
-- [ ] Předávání předmětů a mincí mezi postavami jednou společnou operací.
+- [x] Oddělit společný průzkum a rozestavení jednotlivých postav v boji, včetně rozhodnutí o dohledu a seskupení.
+- [x] Předávání předmětů a mincí mezi postavami jednou společnou operací.
 - [ ] Volitelně propojit světlo s dohledem.
-- [ ] Přidat jednoduché zámky a bezpečně skrývané tajné dveře.
+- [x] Přidat jednoduché zámky a bezpečně skrývané tajné dveře.
 - [ ] Ulehčit odečítání stavů, spotřební předměty a postup úrovní bez povinného plného pravidlového enginu.
 
 Samostatně zbývá rozšiřování kreslicí plochy za současných 28 × 20 polí. Označování místností ani inspekce tento limit neodstranily. Rozsah a pořadí navržených funkcí potvrdí zkušenost z hraní.
 
 ## Možná další rozšíření k diskusi
 
-Předávání výbavy mezi hráči, rozestavení postav pro boj a opakovaně použitelné přípravy PJ jsou návrhy. Nemají schválený rozsah ani termín a nejsou automatickou součástí hotových funkcí. Priority upravíme podle prvního společného hraní.
+Předávání a bojové rozestavení jsou ve vývojové větvi po 0.3.0 hotové. Opakovaně použitelné přípravy PJ zůstávají návrhem. Nemají schválený rozsah ani termín a nejsou automatickou součástí hotových funkcí. Priority upravíme podle prvního společného hraní.

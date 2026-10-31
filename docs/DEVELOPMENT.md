@@ -158,7 +158,7 @@ npm run test:ci
 
 `test:ci` si spustí a ukončí vývojový server, ale používá místní D1 úložiště a přidané testovací místnosti v něm zůstanou. Proti již spuštěné oddělené místní instanci lze použít `npm run test:integration -- http://127.0.0.1:5173`. Testy nepouštěj proti rozehrané instalaci; vytvářejí i obnovují vlastní syntetické kampaně.
 
-Současných 23 integračních sad v `scripts/test-integration.mjs`:
+Současných 24 integračních sad v `scripts/test-integration.mjs`:
 
 | Sada `test-*.mjs` | Ověřuje |
 | --- | --- |
@@ -168,6 +168,7 @@ Současných 23 integračních sad v `scripts/test-integration.mjs`:
 | `journey`, `map-notes`, `note-alerts`, `challenges` | Čas a světlo, soukromou přípravu, přiblížení a zkoušky. |
 | `loot`, `equipment` | Převzetí nálezů, měšec a výbavu bez zdvojování. |
 | `generator-core`, `generator-v2`, `generator`, `generation-v2-integration`, `access` | Deterministické mapy, vložení, propojení, vchody a východy. `access` zde znamená mapové vstupy. |
+| `basic-mechanics` | Zamčené/tajné dveře a paměť, individuální bojový pohyb a sdílený dohled, seskupení, soukromé atomické transfery, zálohy a souběh. |
 | `voice`, `repairs` | Hlasová oprávnění a regresní případy souběhu, přístupů a úplných záloh. |
 
 Samostatné `npm test` ověřuje spojování půdorysů (`test-union.mjs`) a vymezení prostoru inspekce (`test-map-inspection.mjs`): dveře i otevřené, příčky, diagonální oddělení, platné V2 místnosti a přechod na současnou geometrii po ruční změně. Testy `map-notes` kontrolují také čísla, přesouvání, oddělené publikované verze a zálohy; testy generátoru ověřují polohy čísel mimo schody/vstupy. `test:updater` používá simulovaný Docker engine; skutečné kontejnery a obnovu ověřuje CI pomocí `scripts/test-docker.mjs` na Linuxu s Dockerem. Volitelný [mediální test LiveKitu](VOICE.md#ověření-skutečného-přenosu-zvuku) přenese syntetický zvuk bez mikrofonu.

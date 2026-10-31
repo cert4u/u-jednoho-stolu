@@ -7,8 +7,19 @@ export function equipmentAction(g:Game,me:Member,b:Record<string,unknown>){
  const operation=me.id+':'+b.requestId;if(g.equipmentOperations?.includes(operation))return;
  const who=g.members.find(m=>m.id===b.memberId&&!m.archived);if(!who||me.role!=='pj'&&who.id!==me.id)throw new Error('Tuto výbavu nemůžeš upravovat.');
  if(b.expectedRevision!==(who.equipmentRevision??0))throw new EditConflict('Výbava nebo měšec se mezitím změnily. Načti aktuální stav; rozepsané údaje zůstávají tady.');
- let description:string;
- if(b.op==='add'||b.op==='edit'){
+ let description:string;let recipientId:string|undefined;
+ if(b.op==='transfer'){
+  const recipient=g.members.find(m=>m.id===b.recipientId&&!m.archived&&m.role==='player');if(!recipient||recipient.id===who.id)throw new Error('Vyber jinou aktivní hráčskou postavu.');
+  if(b.kind==='item'){
+   const item=who.possessions?.find(i=>i.id===b.itemId);if(!item)throw new EditConflict('Předmět už není ve výbavě.');const quantity=integer(b.quantity,1,999999,'Předávaný počet');if(quantity>item.quantity)throw new EditConflict('Tolik kusů už postava nemá.');
+   const target=structuredClone(recipient.possessions||[]),existing=target.find(i=>i.name===item.name);if(existing){if(existing.quantity+quantity>999999)throw new Error('Příjemce by překročil limit kusů.');existing.quantity+=quantity;}else{if(target.length>=200)throw new Error('Příjemce má plnou výbavu.');target.push({id:crypto.randomUUID(),name:item.name,quantity});}
+   const source=structuredClone(who.possessions!);source.find(i=>i.id===item.id)!.quantity-=quantity;who.possessions=source.filter(i=>i.quantity>0);recipient.possessions=target;description=`předáno ${recipient.name}: ${item.name} × ${quantity}`;
+  }else if(b.kind==='coins'){
+   const raw=b.coins as Coins;if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Zadej mince.');const amounts=Object.fromEntries(CURRENCIES.map(c=>[c.key,integer(raw[c.key],0,1000000,c.label)])) as Coins;if(!CURRENCIES.some(c=>amounts[c.key]>0))throw new Error('Zadej alespoň jednu minci.');
+   const source={...(who.purse||emptyCoins())},target={...(recipient.purse||emptyCoins())};for(const c of CURRENCIES){if(source[c.key]<amounts[c.key])throw new Error('V měšci není dost mincí.');if(target[c.key]+amounts[c.key]>999999999)throw new Error('Příjemce by překročil limit měšce.');source[c.key]-=amounts[c.key];target[c.key]+=amounts[c.key];}who.purse=source;recipient.purse=target;description=`předáno ${recipient.name}: ${CURRENCIES.filter(c=>amounts[c.key]>0).map(c=>`${amounts[c.key]} ${c.label.toLocaleLowerCase('cs')}`).join(', ')}`;
+  }else throw new Error('Vyber předmět nebo mince.');
+  recipient.equipmentRevision=(recipient.equipmentRevision??0)+1;recipientId=recipient.id;
+ }else if(b.op==='add'||b.op==='edit'){
   if(typeof b.name!=='string'||!b.name.trim()||b.name.trim().length>60)throw new Error('Název předmětu musí mít 1 až 60 znaků.');
   const name=b.name.trim(),quantity=integer(b.quantity,b.op==='add'?1:0,b.op==='add'?9999:999999,'Počet předmětů');
   const items=who.possessions||[];
@@ -28,5 +39,5 @@ export function equipmentAction(g:Game,me:Member,b:Record<string,unknown>){
   description=`${b.mode==='spend'?'zaplaceno':'přidáno'} ${CURRENCIES.filter(c=>amounts[c.key]>0).map(c=>`${amounts[c.key]} ${c.label.toLocaleLowerCase('cs')}`).join(', ')} · ${b.reason.trim()}`;
  }else throw new Error('Neznámá změna výbavy.');
  who.equipmentRevision=(who.equipmentRevision??0)+1;
- const pj=g.members.find(m=>m.role==='pj'&&!m.archived)!;g.messages.push({id:crypto.randomUUID(),from:me.id,name:me.name,text:`${who.name} · výbava: ${description}.`,to:who.id===me.id?pj.id:who.id,audience:[...new Set([who.id,pj.id])],time:Date.now()});g.messages=g.messages.slice(-500);g.equipmentOperations=[...(g.equipmentOperations||[]),operation].slice(-256);
+ const pj=g.members.find(m=>m.role==='pj'&&!m.archived)!;g.messages.push({id:crypto.randomUUID(),from:me.id,name:me.name,text:`${who.name} · výbava: ${description}.`,to:who.id===me.id?pj.id:who.id,audience:[...new Set([who.id,pj.id,...(recipientId?[recipientId]:[])])],time:Date.now()});g.messages=g.messages.slice(-500);g.equipmentOperations=[...(g.equipmentOperations||[]),operation].slice(-256);
 }

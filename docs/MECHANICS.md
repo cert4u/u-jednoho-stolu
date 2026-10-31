@@ -2,9 +2,9 @@
 
 [Dokumentace](README.md) · [Herní příručka](PLAYING.md) · [Plán práce](ROADMAP.md) · [Limity](LIMITS.md)
 
-Posouzení k 31. 10. 2026 pro verzi **0.3.0**. Vychází z implementace hlavní větve po přidání inspekce mapy. Jde o audit podpory herního večera v aplikaci, nikoli o kontrolu shody s konkrétní edicí DrD. Nezastupuje společnou zkoušku celé party.
+Posouzení k 31. 10. 2026 pro **vývojovou větev po 0.3.0**. Nové zámky/tajné dveře, předávání a bojové rozestavení nejsou součástí neměnného tagu 0.3.0. Vychází z implementace hlavní větve po přidání inspekce mapy. Jde o audit podpory herního večera v aplikaci, nikoli o kontrolu shody s konkrétní edicí DrD. Nezastupuje společnou zkoušku celé party.
 
-Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Největší zbývající herní mezera je přechod ze společného průzkumu na samostatné postavení hrdinů v boji. Druhou praktickou mezerou je předávání výbavy mezi postavami.
+Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Samostatné bojové postavení, návrat do průzkumu a předávání výbavy už jsou ve vývojové větvi. Nejbližší zbývající návazností je světlo/dohled a lehká podpora vyhodnocování stavů či spotřebních předmětů.
 
 ## Co skutečně funguje
 
@@ -18,13 +18,13 @@ Aplikace už podporuje základní průběh dobrodružství: přípravu → průz
 | Příprava místností | Čísla a názvy, poznámky, tajný a sdílený popis, upozornění při přiblížení, inspekce obsahu. | Obsah připravuje PJ; generátor nevytváří setkání ani odměny. |
 | Zkoušky a pasti | Serverový hod na vlastnost, nebezpečnost, soukromá výzva a zaznamenané vyhodnocení. | Spuštění výzvy, následky, případné zranění nebo stav. |
 | Souboj | Útok → obrana → návrh zranění → potvrzení PJ; iniciativa, tah a kolo. | Pořadí je ruční, akce nejsou vynucené tahem a nemají rozpočet pohybu/akcí. |
-| Poloha v boji | Značky příšer; samostatné značky postav před zahájením společného průzkumu. | Při společném průzkumu se postavy pohybují společně; chybí oddělený bojový režim. |
+| Poloha v boji | Samostatné rozestavení, pohyb hrdinů po známých cestách, sdílený dohled, seskupení podle PJ. | Rozpočet akcí/pohybu a dodržení pořadí; rozdělení na různá patra není podporované. |
 | Střelba | Lze použít obecný útok s ruční opravou. | Dostřel, kryt, přímka střelby a odečet munice nejsou zvláštní propojená mechanika. |
 | Stavy a vyřazení | Vlastní stavy s počtem kol, 0 životů, bezvědomí/smrt/vyřazení a návrat potvrzený PJ. | Účinky stavů a odečet jejich kol; léčení samo neruší potvrzené vyřazení. |
 | Kouzla a schopnosti | Vlastní záznamy, uložená cena a odečet magenergie. | Cíl, hod, trvání a účinek se vyhodnotí zvlášť. |
 | Odpočinek a léčení | Výběr postav, náhled a potvrzení obnovy životů/magenergie. | Podmínky odpočinku a posun herního času. |
-| Kořist a výbava | Nálezy, přidělení, rovné dělení mincí, měšec a spotřeba kusů. | Přímé předání mezi hráči, hmotnost/nosnost, automatický účinek lektvaru či nasazení výbavy. |
-| Dveře | Otevírání/zavírání, omezení pohybu a dohledu. | Zámek, klíč, vypáčení a objevení tajných dveří se řeší popisem a zkouškou. |
+| Kořist a výbava | Nálezy, přidělení, dělení mincí, měšec, spotřeba a atomické předání mezi postavami. | Hmotnost/nosnost, automatický účinek lektvaru či nasazení výbavy. |
+| Dveře | Otevírání/zavírání, zamčení a utajení; neodhalené dveře jsou pro hráče zdí. | PJ potvrzuje odhalení a odemčení; klíče a výsledek zkoušky nejsou automaticky provázané. |
 | Čas a světlo | Ruční posun času, zdroje, odpočet a zhasnutí vyhořelého světla. | Světlo nemění dohled; pohyb, boj a odpočinek neposouvají čas samy. |
 | Pokračování hry | Serverové uložení, obnovovací klíče a úplná záloha kampaně. | PJ určuje konec večera a pořizuje zálohu; není to historie všech změn. |
 
@@ -32,13 +32,13 @@ Aplikace už podporuje základní průběh dobrodružství: přípravu → průz
 
 Jde o návrh priorit, nikoli o závazek implementace všech položek. Každý krok by měl jít používat samostatně a ponechat PJ možnost ručního rozhodnutí.
 
-### 1. Oddělit průzkum a bojové postavení
+### 1. Průzkum a bojové postavení — hotový základ
 
-PJ spustí boj z aktuálního místa, rozestaví hrdiny a příšery, po skončení zvolí bod opětovného seskupení. Začít samotným postavením; automatické dostřely a složitý rozpočet akcí přidávat až podle potřeby.
+PJ zapne rozestavení z aktuálního místa, posune jednotlivé hrdiny a po skončení zvolí známý bod seskupení. Výhled je společný z aktivních hrdinů; hráč ovládá jen vlastní značku. Automatické dostřely a složitý rozpočet akcí zůstávají dalším případným rozšířením.
 
-Před implementací rozhodnout, z jakých bodů se během boje počítá společný dohled a kdo může posunout kterou postavu. Zkouška musí ověřit neprůchodné zdi/dveře, návrat do průzkumu i zachování fog-of-war.
+Identifikátor rozestavení a očekávané pozice/revize chrání před opožděnými akcemi. Testy pokrývají oprávnění, zdi/dveře, společný výhled, návrat do průzkumu a zálohy.
 
-### 2. Přímé předání předmětů a mincí
+### 2. Přímé předání předmětů a mincí — hotovo
 
 Odesílatel zvolí příjemce a počet, aplikace provede odečet i připsání společně a zaznamená předání. Nelze jen vytvořit dva nezávislé zápisy do deníků: při opakování nebo souběhu nesmí vzniknout předmět navíc ani se ztratit.
 
@@ -46,9 +46,9 @@ Odesílatel zvolí příjemce a počet, aplikace provede odečet i připsání s
 
 Volitelná vazba aktivních světel a dosahu vidění by odstranila ruční přepínání po dohoření pochodně. PJ musí mít přepsání dosahu pro jiné prostředí či zvláštní vidění. Neslibovat správné chování ve tmě, dokud se neupraví skutečný výpočet výhledu a neověří hráčský pohled.
 
-### 4. Jednoduché zámky a tajné dveře
+### 4. Jednoduché zámky a tajné dveře — hotový základ
 
-Navázat stav na hranu mapy; PJ určí odhalení, odemknutí nebo úspěšnou zkoušku. Tajná zeď se hráči nesmí před objevením prozradit jako dveře v mapových datech. V první verzi stačí ruční potvrzení PJ, není nutný katalog klíčů.
+Stav je navázaný na hranu mapy. PJ přes inspekci nastaví zámek/utajení a potvrdí odhalení či odemčení. Hráči před objevením nedostanou dveřní hranu ani tajná nastavení; paměť obsahuje zeď. Další případný krok jsou klíče nebo přímá návaznost na úspěšnou zkoušku.
 
 ### 5. Ulehčit opakované vyhodnocování
 

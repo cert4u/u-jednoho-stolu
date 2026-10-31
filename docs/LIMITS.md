@@ -34,8 +34,8 @@ Podrobný [audit herních mechanik](MECHANICS.md) rozlišuje funkční evidenci,
 
 - Výpočet bojových hodnot z rasy, povolání a vybavení, postup úrovní, iniciativa podle pravidel a účinky kouzel/stavů.
 - Převod pohybu, boje a odpočinku na herní čas, odpočty kol stavů a dopad světla na dohled.
-- Rozestavení jednotlivých postav při boji se společným průzkumem; rozdělení družiny na více nezávislých skupin.
-- Předávání předmětů mezi hráči, zamčené/tajné dveře jako zvláštní mechanika a přechod východem do venkovní mapy.
+- Bojové akce, dostřely a čas pohybu; rozdělení družiny na nezávislé skupiny či různá patra není podporované. Bojové rozestavení sdílí výhled všech aktivních hrdinů na jednom patře.
+- Hledání/odemčení dveří: PJ ručně potvrdí odhalení či odemčení. Zámky a utajení jsou podporované; katalog klíčů a automatické spuštění zkoušky nejsou. Přechod východem do venkovní mapy zůstává ruční.
 - Generátor připravuje mapu, nikoli automatický obsah místností, pravidlový bestiář nebo kompletní dobrodružství.
 
 ## Hlas a veřejný provoz

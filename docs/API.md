@@ -58,7 +58,7 @@ Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty s
 
 `explore.op`: `enable`, `level-add`, `level-rename`, `settings`, `place`, `stairs-add`, `stairs-remove` jsou jen pro PJ. `move`, `door`, `travel` ovládá PJ nebo určený vedoucí. `order` mohou měnit aktivní hráči/PJ; musí obsahovat úplné pochodové pořadí bez duplicit.
 
-`map.tool`: `room`, `floor`, `subtract`, `wall`, `door`, `erase`, `reveal`, `hide`, `stairsUp`, `stairsDown`, `stairsBoth`, `entrance`, `exit`, `undo`. Obdélníky používají `from` a `to`, tahy `points`, hrany `edges`, guma případně `cells`. Mapové značky a skutečné propojení schodišť jsou různé údaje.
+`map.tool`: `door-settings`, `room`, `floor`, `subtract`, `wall`, `door`, `erase`, `reveal`, `hide`, `stairsUp`, `stairsDown`, `stairsBoth`, `entrance`, `exit`, `undo`. Obdélníky používají `from` a `to`, tahy `points`, hrany `edges`, guma případně `cells`. Mapové značky a skutečné propojení schodišť jsou různé údaje.
 
 Inspekce **Prozkoumat** je klientské čtení již filtrovaného pohledu PJ. Neexistuje `map.tool=inspect` ani nový zapisovací endpoint. Číslované značky jsou `mapNotes`, nikoli hrany nebo podlaha; číslo není identifikátor poznámky ani ID logické místnosti. `published.roomNumber` uchovává samostatně sdílené číslo. Nové generování V1/V2 vytvoří soukromé poznámky pro místnosti, s vypnutým upozorněním.
 
@@ -108,3 +108,13 @@ Obvyklý tvar chyby je `{error: "zpráva"}`. Zprávy jsou pro uživatele, nestav
 ## Soukromá metadata generátoru
 
 V2 má `dungeon.generation` se stavem `valid` nebo `modified`, grafem místností, konkrétními trasami a parametry. `generationRuns` uchovává původ všech nových vložení včetně V1 a mapuje pořadí generovaných pater na uložená ID. Obě pole jsou pouze pro PJ a úplné zálohy; nikdy nepatří do hráčské paměti. Identita místnosti je dvojice `(levelId, roomId)`, nikoli samotné lokální ID. Souběžné stejné vložení nevytváří nový záznam. Pouze `valid` lze použít jako živý logický graf; `modified` zachovává historické identifikátory a původ. Viz [schéma a životní cyklus](GENERATOR_V2.md).
+
+## Mechaniky ve vývojové větvi po 0.3.0
+
+- `map` / `tool=door-settings`: PJ předá `edge`, tři booleany `locked`, `secret`, `discovered` a `expected` se třemi původními hodnotami. Změna patří do mapové historie. `dungeon.doorSettings` je pouze pro PJ; hráčská geometrie nahrazuje neodhalené tajné dveře zdí, paměť nikdy neukládá tajná nastavení.
+- `equipment` / `op=transfer`: `memberId` odesílatele, `recipientId` aktivního hráče, `expectedRevision` výbavy odesílatele, `kind=item` s `itemId`/`quantity` nebo `kind=coins` s `coins`. Obě výbavy/měšce a jejich revize se mění atomicky v řádku kampaně. Nepotřebuje ani neodhaluje soukromou revizi příjemce.
+- `explore` / `battle-start`: pouze PJ, vyžaduje umístěnou družinu; vytvoří `exploration.battle` (`id`, `levelId`, `origin`, `revision`).
+- `explore` / `battle-move`: `battleId`, `memberId`, cílové `x`/`y`, `expected={x,y}` původní pozice; vlastník postavy nebo PJ. Známá průchozí cesta, společný výhled všech aktivních hrdinů; žádný rozpočet akcí.
+- `explore` / `battle-end`: pouze PJ, `battleId`, `expectedRevision` rozestavení, známé cílové `x`/`y` pro seskupení na stejném patře. `move`, `place` a `travel` pro společnou družinu jsou během rozestavení blokované.
+
+Nová pole jsou volitelná ve formátu záloh 1. Import ověřuje dveřní nastavení proti existujícím dveřím, soukromí paměti a platné patro/polohy aktivního rozestavení.

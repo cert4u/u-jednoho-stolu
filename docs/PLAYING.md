@@ -48,7 +48,11 @@ V **Příprava mapy** PJ kreslí na podlahu/příslušné hrany:
 
 **Generátor V2** vytvoří náhled podle stylu, počtu pater a místností, velikosti a složitosti. Hradní podzemí má pravidelné komnaty a dveře, důl protáhlé pracovní prostory a větvení, jeskyně nepravidelné půdorysy. Stejná verze, nastavení, semínko a varianta dávají stejný návrh. Tři varianty se vybírají jednotlivě, nové semínko vytvoří novou sadu. Pokročilá část nabízí i původní V1 pro opakování starých seedů. Změníš-li nastavení nebo se změní kapacita pater, vytvoř nový náhled před vložením.
 
-Potvrzená patra se přidají ke stávajícím. Jen skutečně prázdné výchozí patro lze využít znovu. Generátor vytvoří propojenou podlahu, obvodové zdi, schodiště mezi novými patry a vchod na jejich přízemí, volitelně samostatný východ. V2 přidává otevíratelné dveře, nikoli zámky; nepřidává příšery, pasti ani kořist a neodhalí mapu. Družinu nepřesouvá. Přípravu lze ručně upravit; propojení ke starší mapě nastavuje PJ. V2 ukládá původ generování a soukromý graf. Změna podlahy, hran nebo značek označí graf za neaktuální; otevření dveří nebo odkrytí mapy jej nezneplatní. Zpět obnovuje mapové snapshoty včetně metadat, pokud stále odpovídá navazující propojení schodů.
+Potvrzená patra se přidají ke stávajícím. Jen skutečně prázdné výchozí patro lze využít znovu. Generátor vytvoří propojenou podlahu, obvodové zdi, schodiště mezi novými patry a vchod na jejich přízemí, volitelně samostatný východ. V2 přidává otevíratelné dveře; jejich zámky a utajení může PJ následně nastavit přes **Prozkoumat**; nepřidává příšery, pasti ani kořist a neodhalí mapu. Družinu nepřesouvá. Přípravu lze ručně upravit; propojení ke starší mapě nastavuje PJ. V2 ukládá původ generování a soukromý graf. Změna podlahy, hran nebo značek označí graf za neaktuální; otevření dveří nebo odkrytí mapy jej nezneplatní. Zpět obnovuje mapové snapshoty včetně metadat, pokud stále odpovídá navazující propojení schodů.
+
+### Zámky a tajné dveře
+
+V režimu **Prozkoumat (i)** klikni těsně na hranu dveří. PJ může zapnout **Zamčené**, **Tajné dveře** a u tajných dveří **Odhalené družině**, potom uloží nastavení. Zamčení či utajení dveře zavře. Hráči dostávají neodhalené tajné dveře jako zeď, včetně paměti mapy; jejich skrytá nastavení se neposílají. Zkoušku hledání, vypáčení nebo odemykání zadá PJ zvlášť a úspěch potvrdí odhalením/odemčením. Katalog klíčů ani automatické provázání se zkouškou není součástí této verze. Dveře lze poté otevřít běžným nástrojem vedoucího/PJ.
 
 ## Průzkum, dohled a patra
 
@@ -99,6 +103,14 @@ Implementovaná mechanika v **Hody a souboj**:
 
 V **Připravit souboj** PJ vybere účastníky a ručně určí pořadí. **Další na řadě** mění tah, po oběhu zvyšuje kolo. Pořadí není odvozené od vlastností ani od pochodového pořadí. Samo nerozestavuje hrdiny na jednotlivá bojová políčka a nevynucuje pořadí všech ostatních akcí.
 
+### Samostatné bojové rozestavení
+
+Po umístění společné družiny PJ zvolí **Rozestavit do boje** v ovládání mapy. Všichni aktivní hrdinové začnou na místě družiny. Nástroj **Postavy** umožní vybrat hrdinu (také v levém seznamu) a kliknout na cíl nebo značku přetáhnout. Hráč ovládá jen vlastní postavu, PJ kteréhokoli hrdinu. Pohyb vede známou průchozí podlahou a respektuje zdi, zavřené/zamčené a neodhalené dveře. Překryv postav je dovolený; počet akcí, tah a dostřel se nevynucují.
+
+Výhled družiny je společný součet výhledů všech aktivních hrdinů na bojišti. Pohyb i opuštění místnosti mění aktuální dohled a šedou paměť. Při rozestavení nelze přesouvat společnou družinu ani přejít na jiné patro. PJ ji po boji seskupí **u začátku boje** nebo **na vybraném políčku** známé podlahy; výběr políčka udělá kliknutím do mapy nebo šipkami. Seskupení je rozhodnutí PJ, ne samostatná cesta každého hrdiny. Poté pokračuje společný průzkum a dohled opět vychází ze společného bodu.
+
+Bojové rozestavení a pořadí iniciativy jsou samostatné pomůcky: PJ spravuje pořadí v soubojovém panelu a postavení na mapě. Pozice se zachovají při obnovení stránky i v úplné záloze. Identifikátor rozestavení chrání před opožděným tahem ze starého boje.
+
 ## Stavy, nula životů, léčení a kouzla
 
 **Spravovat stavy** přidává názvy, poznámky, tajnost a dobu v kolech. PJ kola odečítá ručně; nula stav sama neodstraní. Stav není automatickým postihem k hodům.
@@ -111,7 +123,7 @@ V **Kouzla a schopnosti** majitel nebo PJ spravuje vlastní záznamy a magenergi
 
 PJ nález připraví tajně, může ho propojit s poznámkou a zveřejnit. Z otevřeného nálezu hráč přebírá předměty/mince pro sebe, PJ je může přidělit hráči. Získané věci se připíšou do výbavy, mince do měšce. Rovné dělení rozděluje jednotlivé druhy mincí a zbytek ponechá v nálezu. Historie zachová, kdo co získal.
 
-V deníku lze přidat a přejmenovat položku, změnit počet nebo použít kusy. Počet nula při editaci položku odstraní. Platba/příjem eviduje konkrétní mince a důvod, neprovádí automatickou směnu měn. Použití lektvaru samo neléčí. Přímé předávání výbavy mezi hráči zatím není samostatná funkce; domluvte se s PJ a upravte evidenci.
+V deníku lze přidat a přejmenovat položku, změnit počet nebo použít kusy. Počet nula při editaci položku odstraní. Platba/příjem eviduje konkrétní mince a důvod, neprovádí automatickou směnu měn. Použití lektvaru samo neléčí. V **Výbava a měšec → Předat spoluhráči** vyber aktivní hráčskou postavu, předmět a počet, nebo konkrétní mince. Odesílatel ovládá vlastní výbavu, PJ může předávat za kteroukoli postavu. Odečet a připsání proběhnou společně; stejné názvy předmětů se u příjemce sloučí. Nestačí-li zásoby, místo nebo kapacita měšce, předání se neprovede. Záznam uvidí odesílatel, příjemce a PJ. Mince se při předání nesměňují.
 
 ## Čas, světlo, hlas a uložení
 
@@ -123,4 +135,4 @@ Běžné změny se ukládají na server. PJ navíc přes nabídku přístupu st�
 
 ## Co aplikace nevyhodnotí sama
 
-[Audit herního základu](MECHANICS.md) shrnuje zejména bojové rozestavení, předávání výbavy, světlo/dohled, zámky a návaznost stavů či spotřebních předmětů. Pro současnou hru rozhoduje o těchto situacích PJ.
+[Audit herního základu](MECHANICS.md) odlišuje hotové rozestavení, předávání a ruční potvrzení dveří od zbývající vazby světla/dohledu a návaznosti stavů či spotřebních předmětů. Pro současnou hru rozhoduje o těchto situacích PJ.

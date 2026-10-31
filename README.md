@@ -46,6 +46,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 
 ### Příprava Pána jeskyně
 
+- Zámky a tajné dveře nastavované PJ přes **Prozkoumat**; neodhalené dveře hráči vidí jako zeď.
 - Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací.
 - Nástroj **(i) Prozkoumat** pro PJ: detail značky nebo souhrn obsahu místnosti včetně tajné přípravy a navázané kořisti/zkoušek.
 - Číslované místnosti s názvy přímo v mapě, přesouváním značek a seznamem pro rychlé hledání. Nově generovaná patra dostanou soukromá označení automaticky.
@@ -57,9 +58,10 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 ### Postavy, kostky a souboj
 
 - Deníky s pěti vlastnostmi, bojovými hodnotami, úrovní a zkušenostmi přidělovanými PJ.
-- Výbava a měšec: položky, spotřeba kusů, příjmy, platby a převzetí kořisti do deníku.
+- Výbava a měšec: položky, spotřeba kusů, příjmy, platby, převzetí kořisti a přímé předávání předmětů/mincí mezi hráči.
 - Vlastní kouzla a schopnosti, magenergie a její odečítání při použití. Účinky vyhodnocuje PJ.
 - Hody generované na serveru: běžné kostky, hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ.
+- Samostatné bojové rozestavení hrdinů se sdíleným výhledem, pohybem po známých cestách a seskupením zpět do společného průzkumu.
 - Soubojové pořadí, aktuální účastník a číslo kola. Vlastní stavy postav a příšer s ručně odečítaným trváním.
 - Upozornění při nule životů a rozhodnutí PJ o vyřazení, bezvědomí, smrti nebo návratu do hry.
 

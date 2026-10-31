@@ -2,7 +2,9 @@
 
 ## Příští vydání
 
-Změny po verzi 0.3.0 budou uvedeny zde.
+- Zámky a tajné dveře: nastavení PJ přes inspekci, ochrana před odhalením v hráčských datech/paměti, kontrola otevření a průchodnosti.
+- Přímé předávání předmětů a mincí: společný odečet/připsání, soukromý záznam a ochrana souběhu/opakování.
+- Bojové rozestavení jednotlivých hrdinů: známé průchozí cesty, sdílený dohled, výběr bodu seskupení, identita rozestavení a úplné zálohy.
 
 ## 0.3.0 — 2026-10-31
 
