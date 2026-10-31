@@ -1,5 +1,7 @@
 # Dokumentace U jednoho stolu
 
+> „U jednoho stolu vzniklo pro všechny, kteří kdysi sedávali s kamarády nad čtverečkovaným papírem, házeli kostkami a společně prožívali dobrodružství. Dnes nás možná dělí stovky kilometrů, ale příběhy mohou pokračovat. Nechceme nahradit Pána jeskyně ani představivost hráčů. Chceme jim jen vrátit společný stůl.“
+
 Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde nemusí být ve starším stabilním vydání. Při provozu vydané verze používej dokumentaci z jejího tagu; rozdíly popisuje [CHANGELOG](../CHANGELOG.md). Automatická aktualizace instalace vybírá stabilní GitHub Release, nikoli větev `main`.
 
 | Pro koho | Návod |

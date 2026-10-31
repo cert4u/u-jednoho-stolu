@@ -1,5 +1,7 @@
 # U jednoho stolu
 
+> „U jednoho stolu vzniklo pro všechny, kteří kdysi sedávali s kamarády nad čtverečkovaným papírem, házeli kostkami a společně prožívali dobrodružství. Dnes nás možná dělí stovky kilometrů, ale příběhy mohou pokračovat. Nechceme nahradit Pána jeskyně ani představivost hráčů. Chceme jim jen vrátit společný stůl.“
+
 [![CI](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml)
 [![Stabilní vydání](https://img.shields.io/github/v/release/cert4u/u-jednoho-stolu?label=vyd%C3%A1n%C3%AD&color=2ea44f)](https://github.com/cert4u/u-jednoho-stolu/releases/latest)
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-blue?style=flat)](LICENSE)
@@ -24,7 +26,7 @@ Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu�
 
 Pro menší partu, která chce hrát současně po večerech a mít společné místo pro své dobrodružství. Jeden hráč vede hru jako **Pán jeskyně**, ostatní hrají své postavy. Každý se připojí přes prohlížeč pomocí pozvánky; přístup ke své postavě si může obnovit osobním klíčem.
 
-Vzhled a způsob hraní vycházejí z klasických českých fantasy her: kreslená mapa, postupné odhalování podzemí, pochodové pořadí a rozhodování PJ. Vlastnosti a bojové hody se inspirují DrD; konkrétní situace, následky kouzel a výjimky zůstávají na vaší domluvě a PJ.
+Výchozí inspirací projektu je hraní **Dračího doupěte 1.5**: kreslená mapa, postupné odhalování podzemí, pochodové pořadí a rozhodování PJ. Implementované mechaniky jsou vlastní zjednodušenou a místy upravenou adaptací klasického DrD. Konkrétní situace, následky kouzel a výjimky zůstávají na vaší domluvě a PJ; [herní příručka](docs/PLAYING.md#pravidlový-základ-a-úpravy) popisuje skutečné chování aplikace.
 
 Projekt je open source pod MIT a lze jej provozovat na vlastním serveru. Jde o aktivně vyvíjenou ranou verzi pro důvěryhodnou partu. Tento přehled popisuje hlavní vývojovou větev; změny ve stabilních vydáních najdeš v [historii verzí](CHANGELOG.md).
 
@@ -228,4 +230,4 @@ Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Převzat�
 
 Projekt vznikl jako neoficiální pomůcka inspirovaná původním českým hraním DrD. Nejde o produkt ani schválenou aplikaci nakladatelství ALTAR. Repozitář neobsahuje text pravidlových příruček, bestiář ani převzaté ilustrace. Licence k aplikaci neuděluje práva k cizím značkám nebo pravidlovým textům.
 
-Základ hodů vychází z veřejných [zjednodušených pravidel ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), která jsou odvozena od verze 1.6. Úplnou shodu se všemi pravidly 1.5 ani 1.6 aplikace neslibuje; výjimky a situace vyhodnocuje PJ.
+Projekt čerpá inspiraci z DrD 1.5, referencí pro dosavadní základ hodů jsou však veřejná [zjednodušená pravidla ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), odvozená podle jejich tiráže od verze 1.6, edice E. Nejde tedy o přesný přepis ani úplnou implementaci DrD 1.5 či 1.6. Mechaniky jsou místy zjednodušené nebo upravené pro online hraní; rozhodující je popsané chování aplikace a domluva s PJ.

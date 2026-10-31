@@ -2,6 +2,9 @@
 
 ## Příští vydání
 
+- Oprava odhalování při skupinovém přesunu: každý krok respektuje světelný režim ještě před zápisem do paměti. Regresní test pokrývá vyhořelou pochodeň, nenulový dohled bez světla, nesené světlo i ruční dohled. Dříve chybně odhalenou mapu oprava zpětně nemaže.
+- Upřesněný pravidlový základ: inspirace hraním DrD 1.5, reference hodů ze zjednodušených pravidel odvozených z 1.6 a vlastní úpravy aplikace.
+
 - Volitelný dohled podle světel: dosahy a nosiči, přímý výhled omezený osvětlením, dohled bez světla a ruční přepsání PJ. Dohoření, zhasnutí, pohyb nosiče a vrácení času přepočítají viditelnost; paměť mapy zůstává. Kompatibilní zálohy a testy v průzkumu i bojovém rozestavení.
 
 - Zámky a tajné dveře: nastavení PJ přes inspekci, ochrana před odhalením v hráčských datech/paměti, kontrola otevření a průchodnosti.

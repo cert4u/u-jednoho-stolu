@@ -169,7 +169,7 @@ Současných 25 integračních sad v `scripts/test-integration.mjs`:
 | `journey`, `map-notes`, `note-alerts`, `challenges` | Čas a světlo, soukromou přípravu, přiblížení a zkoušky. |
 | `loot`, `equipment` | Převzetí nálezů, měšec a výbavu bez zdvojování. |
 | `generator-core`, `generator-v2`, `generator`, `generation-v2-integration`, `access` | Deterministické mapy, vložení, propojení, vchody a východy. `access` zde znamená mapové vstupy. |
-| `lighting` | Dohoření/undo, šedou paměť a příšery, nosiče v boji, nesčítání dosahů, průhlednost hran, přepsání PJ a zálohy. |
+| `lighting` | Dohoření/undo, šedou paměť a příšery, skupinový průchod za tmy i se světlem (včetně mezikroků), nosiče v boji, nesčítání dosahů, průhlednost hran, přepsání PJ a zálohy. |
 | `basic-mechanics` | Zamčené/tajné dveře a paměť, individuální bojový pohyb a sdílený dohled, seskupení, soukromé atomické transfery, zálohy a souběh. |
 | `voice`, `repairs` | Hlasová oprávnění a regresní případy souběhu, přístupů a úplných záloh. |
 

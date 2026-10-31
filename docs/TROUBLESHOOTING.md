@@ -70,6 +70,10 @@ V **Čas a světlo** ověř, zda je zapnuté řízení světly, některý zdroj 
 
 Dosah světla neruší maximální dohled u mapy a neobchází zavřené dveře či zdi. Viditelnost zkontroluj přes **Pohled družiny**; PJ v přípravě stále vidí i skrytou kresbu.
 
+## Mapa se dříve odhalila při pohybu ve tmě
+
+Ve vývojové verzi po 0.3.0 mohl běžný skupinový přesun zapsat do paměti maximální dohled i při zapnutém omezení světly. Oprava vyhodnocuje světlo na každém kroku cesty. Již uloženou paměť zpětně nemaže: nelze rozlišit dřívější legitimní odhalení od chybného. PJ může dotčenou oblast ručně skrýt nástrojem **Skrýt**; úplná obnova ze starší zálohy vrátí také ostatní herní změny.
+
 ## Co uvést do hlášení
 
 Verzi nebo commit, způsob spuštění, prohlížeč, roli, očekávaný a skutečný výsledek a krátké opakovatelné kroky na smyšlené hře. U hovoru doplň lokální/veřejný profil a typ sítě bez citlivých adres. Screenshot nejprve zbav tajné přípravy a osobních údajů. [Bezpečnostní problémy](../SECURITY.md) nepatří s podrobnostmi do veřejných issues.

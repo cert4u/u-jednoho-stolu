@@ -4,6 +4,12 @@
 
 Tato příručka popisuje chování aplikace, nikoli úplná pravidla DrD. Pravidla vaší skupiny a rozhodnutí PJ určují následky situací. Aplikace eviduje mapu, postavy a výsledky; automaticky nepřepočítává povolání, vybavení ani účinky kouzel.
 
+## Pravidlový základ a úpravy
+
+Výchozí inspirací projektu je hraní **Dračího doupěte 1.5**. Aplikace používá vlastní zjednodušenou a místy upravenou adaptaci klasického DrD; nejde o úplný ani přesný přepis pravidel této verze. Referencí pro dosavadní základ hodů jsou veřejná [zjednodušená pravidla ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), která podle své tiráže vycházejí z DrD 1.6, edice E.
+
+Konkrétní vzorce hodů uvádí část [Hody a souboj](#hody-a-souboj). Volitelný společný dohled podle světel, samostatné bojové rozestavení bez rozpočtu akcí a ručně potvrzované následky jsou pomůcky této aplikace. Nepředstavují úplný pravidlový engine konkrétní edice. Tvorbu a postup postav, účinky kouzel a sporné situace určuje vaše skupina s PJ; [audit mechanik](MECHANICS.md) uvádí hranice automatizace.
+
 ## Role a přístupy
 
 | Role | Úloha |
@@ -137,6 +143,8 @@ PJ v **Čas a světlo** posouvá čas a spravuje zdroje světla. Ubývá pouze d
 4. Zapálení, zhasnutí, dohoření, doplnění a odebrání světla přepočítají viditelnost. Vrácení posledního posunu času obnoví odpovídající světla a dohled, ale nevrací pohyb postav.
 
 Při společném průzkumu jsou světla u družiny. V bojovém rozestavení svítí od svého nosiče; **Společné světlo** nese vedoucí, případně první aktivní hráč. Světlo přiřazené archivované postavě se do dohledu nepočítá; PJ ho může přidělit jinému nosiči. Bez hráčů je společné světlo u bodu družiny.
+
+Při běžném přesunu se osvětlení vyhodnocuje na každém políčku cesty, nikoli až v cíli. Do paměti se ukládá jen skutečně viděná oblast; cesta za úplné tmy neodhalí okolní prostory.
 
 Políčko musí být v přímém dohledu některého hrdiny a buď osvětlené, nebo v jeho dohledu bez světla. Světlo ani vidění neprocházejí zdmi, zavřenými či neodhalenými tajnými dveřmi. Více světel skládá osvětlené oblasti, jejich dosahy se nesčítají. Zhasnutí skryje příšery mimo aktuální výhled; objevený půdorys nevymaže. Doba svícení se řídí ručním herním časem, ne hodinami počítače.
 

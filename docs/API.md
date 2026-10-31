@@ -126,3 +126,5 @@ Nová pole jsou volitelná ve formátu záloh 1. Import ověřuje dveřní nasta
 `journey` / `add` a `update` mohou obsahovat `radius` (1–12) a `carrierId` hráčské postavy; `null` zruší konkrétního nosiče. Vynechané údaje při úpravě zachovají předchozí nastavení. Starý zdroj bez dosahu používá 4 pole. Společný zdroj v boji následuje vedoucího/prvního aktivního hráče, jinak bod družiny; zdroj archivovaného nosiče se ignoruje. Backup formát 1 zachovává nová volitelná pole včetně historie světel a validuje odkazy na nosiče.
 
 Při zapnuté automatice se výhled přepočítá po změnách hry i při obnovení zálohy: přímý dohled hrdinů omezený `radius` se protne s osvětlenými políčky, navíc platí dohled bez světla. Každý světelný zdroj respektuje stejné zdi/dveře jako pohled. Přepočet paměť nemaže. Oprávnění měnit čas/světla zůstává jen PJ.
+
+Při `explore` / `move` se stejný výpočet dohledu provádí na každém kroku známé cesty. Paměť neukládá samotný maximální dohled před omezením světlem. Viditelné mezilehlé oblasti zůstávají zapamatované i mimo konečný výhled.
