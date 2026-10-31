@@ -69,6 +69,10 @@ Patra PJ připravuje nezávisle na poloze družiny. Pro funkční schodiště pr
 
 ## Poznámky, příšery a pasti
 
+PJ zapne nástroj **Prozkoumat** s ikonou **(i)** v přípravě i odkrývání. Kliknutí na poznámku nebo příšeru otevře její detail; kliknutí na podlahu zobrazí místa a tajnou přípravu, příšery, navázanou kořist/zkoušky, dveře, schodiště, vstupy a postavy v daném prostoru. Kliknutí těsně na hranu ukáže zeď či stav dveří. Klávesnicí vyber políčko šipkami a potvrď Enterem. Inspekce nic nekreslí, neposouvá ani neodhaluje hráčům.
+
+U nezměněné V2 mapy odpovídá přehled logické místnosti generátoru. U ruční či strukturálně upravené mapy vychází z podlahy propojené bez zdí a dveří; dveře tvoří hranici i otevřené. Volně průchozí chodby mohou propojit více místností do jednoho přehledu. Kořist a zkoušky jsou zahrnuté podle vazby na poznámky uvnitř prostoru.
+
 Nově vložené generované jeskyně dostanou číslované soukromé značky automaticky. Čísla se při přesunu nemění a jsou oddělená od čísel příšer. Automatické značky mají upozornění při přiblížení vypnuté; PJ je může zapnout pro vybraná místa. Čísla v náhledu se umísťují mimo schodiště, vchod a východ. Dříve uložené mapy se zpětně nepřepisují.
 
 Nástrojem **Označit místo** PJ klikne na podlahu a otevře přípravu místa. Volba **Označit jako místnost v mapě** přidá číslo (1–999, unikátní na patře) a název přímo do mapy. Bez této volby zůstane malá značka „i“. Značku lze v nástroji **Označit místo** nebo **Postavy/Družina** přetáhnout na jiné volné políčko podlahy; kliknutí otevře přípravu. Tlačítko **Místa** zobrazí seznam číslovaných místností na aktuálním patře, umožní najít značku nebo otevřít přípravu/popisek. **Uložit přípravu** nic nesdílí; **Uložit a sdílet popis** publikuje samostatnou verzi čísla, nadpisu a popisu, dostupnou hráčům u odhaleného políčka přes značku v mapě. Tajný text zůstane u PJ. Běžná úprava pracovní verze nezmění již zveřejněný text; sdílení lze odvolat.
