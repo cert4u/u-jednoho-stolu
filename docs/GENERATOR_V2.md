@@ -70,6 +70,12 @@ Na každém patře vznikne šest kandidátů se samostatnými deterministickými
 
 Tři tlačítka variant zachovávají seed a mění index varianty; návrhy se počítají jednotlivě. Nemáme formální párovou metriku minimální odlišnosti těchto tří variant. Větší sada seedů a variant se liší skutečným půdorysem i topologií, ale neslibujeme unikátní mapu pro každý možný seed. Počet kandidátů, PRNG, routing a váhy jsou součástí verze algoritmu; změna výstupu vyžaduje nové verzování nebo vědomé řešení kompatibility.
 
+## Označení a inspekce místností
+
+Nové vložení V1/V2 vytváří v `Game.mapNotes` pro každou místnost soukromou značku s číslem a názvem. `roomLabelPoint` vybírá podlahu místnosti mimo schody/vstupy; stejná poloha čísla se používá v náhledu. Nejde o automatické generování herního obsahu a značky se započítávají do limitu 200 poznámek. Staré mapy se nedoplňují migrací. Poznámka má vlastní stabilní ID; její číslo ani přesunutí nemění ID logické místnosti generátoru.
+
+Inspekce používá `cells` logické místnosti pouze při `status=valid`. U ruční nebo `modified` mapy prochází současnou podlahu bez překročení zdi či dveří, včetně otevřených. Čtení nemění graf, historii, odkrytí ani databázi.
+
 ## Budoucí obsah bez AI závislosti
 
 `LogicalRoom.content` připravuje volitelné pole pro název, hráčský text, tajný text, ID příšer/zkoušek/kořisti a popsané vazby na další místnosti. V této etapě jej generátor automaticky nenaplňuje ani nevytváří příběh. Stabilní dvojice ID a explicitní stav platnosti umožní budoucímu nástroji propojit přípravu s místem a odmítnout použití zastaralé geometrie.
@@ -126,4 +132,4 @@ Ve vyjmenovaných konfiguracích nebyla zjištěna kritická geometrická chyba.
 
 ## Dostupnost a nasazení
 
-V2 je dostupný ze zdrojů hlavní větve po sloučení PR #1. Samostatný stabilní release tím nevznikl. Pro nativní Node instalaci použij [postup aktualizace](DEVELOPMENT.md#aktualizace-nativní-node-instalace), pro Docker [provozní návod](SELF_HOSTING.md). Již uložené mapy se při startu nepřegenerují. Nový generátor se použije až při přípravě dalšího návrhu.
+V2 je součástí vydání [0.3.0](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.3.0), spolu s označením místností a inspekcí PJ. Samotné dřívější sloučení PR #1 ještě vydáním nebylo. Pro nativní Node instalaci použij [postup aktualizace](DEVELOPMENT.md#aktualizace-nativní-node-instalace), pro Docker [provozní návod](SELF_HOSTING.md). Již uložené mapy se při startu nepřegenerují. Nový generátor se použije až při přípravě dalšího návrhu.

@@ -12,7 +12,8 @@ Jde o limity aktuálního kódu v této větvi, nikoli o příslib vhodnosti pro
 | Příšery | 200 včetně archivovaných na dobrodružství. |
 | Generátor | 1–8 nových pater podle zbývající kapacity; 2–12 místností na patro, u velkých 2–6. Samostatná kapacita se počítá se znovuvyužitím skutečně prázdného výchozího patra. |
 | Dohled | 1–12 polí. |
-| Poznámky na mapě | 200 na dobrodružství, nejvýše jedna na políčko a patro; upozornění 1–6 polí, výchozí 2. |
+| Poznámky a místnosti na mapě | 200 dohromady na dobrodružství včetně automatických značek generátoru, nejvýše jedna na políčko a patro. Volitelné číslo 1–999 je unikátní na patře; upozornění 1–6 polí, výchozí 2 (automatické značky je mají vypnuté). |
+| Inspekce mapy | Jen PJ. Platný V2 graf vymezuje logickou místnost; ruční/změněná mapa používá propojenou podlahu ohraničenou zdmi a dveřmi. Volná chodba může spojit více místností. Kořist a zkoušky se hledají podle vazby na poznámky v prostoru. |
 | Soubojové pořadí | Nejvýše 64 účastníků. Až 100 rozpracovaných útoků; uzavřená soubojová historie se omezuje samostatně. |
 | Stavy | Nejvýše 12 na postavu/příšeru, trvání 0–999 kol nebo neurčené. |
 | Vlastní kouzla a schopnosti | Nejvýše 30 na postavu; magenergie a cena 0–9999. |
@@ -27,10 +28,12 @@ Jde o limity aktuálního kódu v této větvi, nikoli o příslib vhodnosti pro
 | Historie mapy | Nejvýše 12 tahů; není historií všech změn kampaně. |
 | Provoz | Jedna replika aplikace a jedna SQLite databáze v Docker variantě. Rootless Docker, Swarm a škálování na více replik nejsou podporovaným postupem. |
 
+Podrobný [audit herních mechanik](MECHANICS.md) rozlišuje funkční evidenci, ruční rozhodování a navržené priority.
+
 ## Co se řeší ručně
 
-- Výpočet bojových hodnot z rasy, povolání a vybavení, postup úrovní, initiative podle pravidel a účinky kouzel/stavů.
-- Doba průzkumu, odpočty kol stavů a dopad světla na dohled.
+- Výpočet bojových hodnot z rasy, povolání a vybavení, postup úrovní, iniciativa podle pravidel a účinky kouzel/stavů.
+- Převod pohybu, boje a odpočinku na herní čas, odpočty kol stavů a dopad světla na dohled.
 - Rozestavení jednotlivých postav při boji se společným průzkumem; rozdělení družiny na více nezávislých skupin.
 - Předávání předmětů mezi hráči, zamčené/tajné dveře jako zvláštní mechanika a přechod východem do venkovní mapy.
 - Generátor připravuje mapu, nikoli automatický obsah místností, pravidlový bestiář nebo kompletní dobrodružství.

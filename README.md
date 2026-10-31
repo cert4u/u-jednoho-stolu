@@ -1,6 +1,7 @@
 # U jednoho stolu
 
 [![CI](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml)
+[![Stabilní vydání](https://img.shields.io/github/v/release/cert4u/u-jednoho-stolu?label=vyd%C3%A1n%C3%AD&color=2ea44f)](https://github.com/cert4u/u-jednoho-stolu/releases/latest)
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-blue?style=flat)](LICENSE)
 [![Verze v main](https://img.shields.io/github/package-json/v/cert4u/u-jednoho-stolu/main?label=main&color=8b5cf6)](CHANGELOG.md)
 [![Node.js ≥ 22.15](https://img.shields.io/badge/Node.js-%E2%89%A5%2022.15-339933?logo=nodedotjs&logoColor=white)](docs/DEVELOPMENT.md)
@@ -13,7 +14,7 @@ Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu�
 
 > V jednoduchosti je síla. Příběh vedete vy, aplikace pomáhá s mapou, evidencí a hody.
 
-[Kompletní dokumentace](docs/README.md) · [Přejít k první hře](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Hlasové volání](#hlas-družiny) · [Plán projektu](docs/ROADMAP.md) · [Licence MIT](LICENSE)
+[Kompletní dokumentace](docs/README.md) · [Přejít k první hře](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Hlasové volání](#hlas-družiny) · [Herní mechaniky a další kroky](docs/MECHANICS.md) · [Plán projektu](docs/ROADMAP.md) · [Licence MIT](LICENSE)
 
 ![Ukázka herního stolu: čtverečkovaná mapa, družina v levém panelu a chat s hlasovým hovorem vpravo](docs/images/herni-stul.jpg)
 
@@ -105,7 +106,7 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 ## Generátor jeskyně
 
-**V2 je začleněný do hlavní větve `main`** ([PR #1](https://github.com/cert4u/u-jednoho-stolu/pull/1)). Nasazení ze zdrojů této větve používá nové rozhraní; původní V1 je v pokročilém nastavení. Aktualizátor v administraci nabízí pouze stabilní GitHub Releases, takže sloučení do `main` samo o sobě nevydává novou stabilní verzi. Při aktualizaci porovnávej i commit, nejen číslo verze.
+**Generátor V2, označování místností a inspekce PJ jsou součástí [vydání 0.3.0](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.3.0).** Původní V1 zůstává v pokročilém nastavení. Aktualizátor v administraci nabízí stabilní GitHub Releases; změna větve `main` sama o sobě další vydání nevytvoří. Při aktualizaci porovnávej i commit a poznámky k vydání.
 
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 

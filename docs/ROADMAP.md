@@ -2,12 +2,14 @@
 
 [Dokumentace](README.md) · [Historie změn](../CHANGELOG.md)
 
-Zaškrtnuté položky jsou implementované v hlavní větvi `main`, ne nutně součástí posledního stabilního vydání. Generátor V2 byl začleněn přes [PR #1](https://github.com/cert4u/u-jednoho-stolu/pull/1). Nezaškrtnuté položky nemají slíbený termín.
+Zaškrtnuté položky jsou implementované v hlavní větvi `main`, ne nutně součástí posledního stabilního vydání. Generátor V2, číslované místnosti a inspekce PJ jsou zahrnuté ve vydání 0.3.0. Nezaškrtnuté položky nemají slíbený termín.
 
 Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásada: jednoduchost ovládání a spolehlivost mají přednost před počtem pravidel.
 
 - [ ] Krátké testovací dobrodružství s celou partou a opravy podle jeho průběhu.
 - [x] Jednoduchá iniciativa, číslo kola a aktuální účastník souboje; nezávisle na pochodovém pořadí.
+- [x] Číslované a pojmenované místnosti, přesouvání značek, automatické označení nových generovaných pater a seznam míst.
+- [x] Inspekce mapy (i) pro PJ: detail značek a přehled místnosti včetně přípravy, příšer, dveří, schodů a navázaných nálezů/zkoušek.
 - [x] Poznámky PJ k místům ukotveným v políčku, s odděleným sdílením popisu pro družinu a upozorněním při přiblížení.
 - [x] Výzvy ke zkouškám a pastem: hráčský hod, tajná nebezpečnost a rozhodnutí PJ.
 - [x] Kořist, měšec a připsání získaných předmětů do deníku s bezpečným rozdělováním mezi hráče.
@@ -29,6 +31,18 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 Mapa, dohled, deníky, hody, potvrzované zranění, obnova přístupů a celé kampaně už fungují. Podrobné automatické vyhodnocování povolání, kouzel a oficiální bestiář nejsou cílem současné verze.
 
 Vchod a samostatný východ jsou trvalé značky mapy; PJ může zahájit průzkum u vchodu. Generátor je připraví na přízemí. Přechod do venkovní mapy je případné další rozšíření.
+
+## Priority podle auditu herních mechanik
+
+[Posouzení k 31. 10. 2026](MECHANICS.md) doporučuje postupně:
+
+- [ ] Oddělit společný průzkum a rozestavení jednotlivých postav v boji, včetně rozhodnutí o dohledu a seskupení.
+- [ ] Předávání předmětů a mincí mezi postavami jednou společnou operací.
+- [ ] Volitelně propojit světlo s dohledem.
+- [ ] Přidat jednoduché zámky a bezpečně skrývané tajné dveře.
+- [ ] Ulehčit odečítání stavů, spotřební předměty a postup úrovní bez povinného plného pravidlového enginu.
+
+Samostatně zbývá rozšiřování kreslicí plochy za současných 28 × 20 polí. Označování místností ani inspekce tento limit neodstranily. Rozsah a pořadí navržených funkcí potvrdí zkušenost z hraní.
 
 ## Možná další rozšíření k diskusi
 

@@ -60,6 +60,8 @@ Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty s
 
 `map.tool`: `room`, `floor`, `subtract`, `wall`, `door`, `erase`, `reveal`, `hide`, `stairsUp`, `stairsDown`, `stairsBoth`, `entrance`, `exit`, `undo`. Obdélníky používají `from` a `to`, tahy `points`, hrany `edges`, guma případně `cells`. Mapové značky a skutečné propojení schodišť jsou různé údaje.
 
+Inspekce **Prozkoumat** je klientské čtení již filtrovaného pohledu PJ. Neexistuje `map.tool=inspect` ani nový zapisovací endpoint. Číslované značky jsou `mapNotes`, nikoli hrany nebo podlaha; číslo není identifikátor poznámky ani ID logické místnosti. `published.roomNumber` uchovává samostatně sdílené číslo. Nové generování V1/V2 vytvoří soukromé poznámky pro místnosti, s vypnutým upozorněním.
+
 ### Ochrana souběžných změn
 
 - `expected` porovnává původní hodnoty jen změněných polí formuláře, typicky jako řetězce.

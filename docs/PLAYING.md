@@ -34,6 +34,8 @@ V **Příprava mapy** PJ kreslí na podlahu/příslušné hrany:
 
 | Nástroj | Chování |
 | --- | --- |
+| Prozkoumat (i) | Jen PJ: detail značky nebo přehled obsahu místnosti. V přípravě i odkrývání; nemění herní stav. |
+| Označit místo | Číslo, název, popis a tajná příprava; volitelné sdílení. |
 | Místnost | Tažení mezi rohy vytvoří půdorys. Překryvy se spojí, společný obvod se upraví. |
 | Chodba | Tažení přes políčka přidává podlahu a upraví obvod. |
 | Příčka | Ruční zeď mezi průsečíky; zůstává i při spojování místností. |
@@ -118,3 +120,7 @@ PJ v **Čas a světlo** posouvá čas a spravuje zdroje světla. Ubývá pouze d
 [Hlas družiny](VOICE.md) je volitelná služba správce instalace. Začíná s vypnutým mikrofonem, umožní ztlumit poslech a vybrat mikrofon. Chatové šeptání nepřepíná hlas do soukromého hovoru. Kamera ani sdílení obrazovky se nepoužívají.
 
 Běžné změny se ukládají na server. PJ navíc přes nabídku přístupu stáhne **úplnou zálohu kampaně**. Obnova vytvoří novou místnost, převezmeš PJ a hráčům vydáš nové klíče. Obnova nevrací původní přístupové tokeny. JSON je soukromý i bez tokenů, obsahuje tajnou přípravu a chat. Snapshot celé instalace je jiný druh zálohy; viz [hosting](SELF_HOSTING.md#data-a-zálohy).
+
+## Co aplikace nevyhodnotí sama
+
+[Audit herního základu](MECHANICS.md) shrnuje zejména bojové rozestavení, předávání výbavy, světlo/dohled, zámky a návaznost stavů či spotřebních předmětů. Pro současnou hru rozhoduje o těchto situacích PJ.

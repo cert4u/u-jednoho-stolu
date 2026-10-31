@@ -6,6 +6,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | --- | --- |
 | Zájemce o projekt | [Představení a první hra](../README.md) |
 | Hráč a Pán jeskyně | [Herní příručka](PLAYING.md) |
+| Návrh dalších mechanik | [Audit herního základu a priority](MECHANICS.md) |
 | Správce serveru | [Docker, konfigurace, zálohy a aktualizace](SELF_HOSTING.md) |
 | Správce hlasového hovoru | [LiveKit: lokální a veřejné nasazení](VOICE.md) |
 | Uživatel, kterému něco nefunguje | [Řešení problémů](TROUBLESHOOTING.md) |
