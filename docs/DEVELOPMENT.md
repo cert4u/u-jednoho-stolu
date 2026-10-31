@@ -93,6 +93,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | `lib/powers.ts`, `lib/conditions.ts`, `lib/life.ts`, `lib/recovery.ts` | Kouzla/magenergie, stavy, vyřazení a obnova životů/magenergie. |
 | `lib/map-inspection.ts`, `lib/room-labels.ts`, `components/map-inspector.tsx` | Výběr celé místnosti/propojeného prostoru pro PJ, rozložení čísel mimo schody/vstupy a čtecí přehled. |
 | `lib/map-notes.ts`, `lib/map-note-alerts.ts`, `lib/challenges.ts` | Příprava míst, upozornění při přiblížení a zkoušky. |
+| `lib/lighting.ts`, `components/light-sight-settings.tsx` | Průnik osvětlení a přímého výhledu, dohled bez světla a volba automatiky. Nosiče a přepočet paměti napojuje `lib/exploration.ts`. |
 | `lib/loot.ts`, `lib/equipment.ts`, `lib/journey.ts` | Kořist, výbava/měšec a čas/světlo. |
 | `lib/access.ts`, `lib/backup.ts` | Obnovovací klíče a přenositelné úplné zálohy. |
 | `components/` | Mapa, dialogy a herní panely; `voice-panel.tsx` spravuje WebRTC spojení. |
@@ -158,7 +159,7 @@ npm run test:ci
 
 `test:ci` si spustí a ukončí vývojový server, ale používá místní D1 úložiště a přidané testovací místnosti v něm zůstanou. Proti již spuštěné oddělené místní instanci lze použít `npm run test:integration -- http://127.0.0.1:5173`. Testy nepouštěj proti rozehrané instalaci; vytvářejí i obnovují vlastní syntetické kampaně.
 
-Současných 24 integračních sad v `scripts/test-integration.mjs`:
+Současných 25 integračních sad v `scripts/test-integration.mjs`:
 
 | Sada `test-*.mjs` | Ověřuje |
 | --- | --- |
@@ -168,6 +169,7 @@ Současných 24 integračních sad v `scripts/test-integration.mjs`:
 | `journey`, `map-notes`, `note-alerts`, `challenges` | Čas a světlo, soukromou přípravu, přiblížení a zkoušky. |
 | `loot`, `equipment` | Převzetí nálezů, měšec a výbavu bez zdvojování. |
 | `generator-core`, `generator-v2`, `generator`, `generation-v2-integration`, `access` | Deterministické mapy, vložení, propojení, vchody a východy. `access` zde znamená mapové vstupy. |
+| `lighting` | Dohoření/undo, šedou paměť a příšery, nosiče v boji, nesčítání dosahů, průhlednost hran, přepsání PJ a zálohy. |
 | `basic-mechanics` | Zamčené/tajné dveře a paměť, individuální bojový pohyb a sdílený dohled, seskupení, soukromé atomické transfery, zálohy a souběh. |
 | `voice`, `repairs` | Hlasová oprávnění a regresní případy souběhu, přístupů a úplných záloh. |
 

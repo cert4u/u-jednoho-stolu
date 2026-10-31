@@ -11,13 +11,13 @@ Jde o limity aktuálního kódu v této větvi, nikoli o příslib vhodnosti pro
 | Hráči | 12 aktivních účastníků včetně PJ, 200 postav včetně archivovaných. |
 | Příšery | 200 včetně archivovaných na dobrodružství. |
 | Generátor | 1–8 nových pater podle zbývající kapacity; 2–12 místností na patro, u velkých 2–6. Samostatná kapacita se počítá se znovuvyužitím skutečně prázdného výchozího patra. |
-| Dohled | 1–12 polí. |
+| Dohled | Ruční maximum 1–12 polí. Volitelná automatika: dohled bez světla 0–12, omezený tímto maximem; nula znamená vlastní políčko. |
 | Poznámky a místnosti na mapě | 200 dohromady na dobrodružství včetně automatických značek generátoru, nejvýše jedna na políčko a patro. Volitelné číslo 1–999 je unikátní na patře; upozornění 1–6 polí, výchozí 2 (automatické značky je mají vypnuté). |
 | Inspekce mapy | Jen PJ. Platný V2 graf vymezuje logickou místnost; ruční/změněná mapa používá propojenou podlahu ohraničenou zdmi a dveřmi. Volná chodba může spojit více místností. Kořist a zkoušky se hledají podle vazby na poznámky v prostoru. |
 | Soubojové pořadí | Nejvýše 64 účastníků. Až 100 rozpracovaných útoků; uzavřená soubojová historie se omezuje samostatně. |
 | Stavy | Nejvýše 12 na postavu/příšeru, trvání 0–999 kol nebo neurčené. |
 | Vlastní kouzla a schopnosti | Nejvýše 30 na postavu; magenergie a cena 0–9999. |
-| Světla | Nejvýše 24 zdrojů na dobrodružství. |
+| Světla | Nejvýše 24 zdrojů na dobrodružství, dosah 1–12 polí (starší bez údaje: 4). Nosič je hráčská postava nebo společné světlo vedoucího; archivovaný nosič nepřispívá k výhledu. |
 | Kořist | 50 připravených/otevřených nálezů, 100 posledních uzavřených; 24 položek a 200 převzetí na nález. |
 | Výbava | 200 názvů položek na postavu; nejvýše 999999 kusů jedné položky. |
 | Zkoušky | 50 rozpracovaných a posledních 100 uzavřených. |
@@ -33,7 +33,7 @@ Podrobný [audit herních mechanik](MECHANICS.md) rozlišuje funkční evidenci,
 ## Co se řeší ručně
 
 - Výpočet bojových hodnot z rasy, povolání a vybavení, postup úrovní, iniciativa podle pravidel a účinky kouzel/stavů.
-- Převod pohybu, boje a odpočinku na herní čas, odpočty kol stavů a dopad světla na dohled.
+- Převod pohybu, boje a odpočinku na herní čas a odpočty kol stavů. Automatický vliv světla na dohled PJ volitelně zapne; vidění podle rasy či povolání se neodvozuje.
 - Bojové akce, dostřely a čas pohybu; rozdělení družiny na nezávislé skupiny či různá patra není podporované. Bojové rozestavení sdílí výhled všech aktivních hrdinů na jednom patře.
 - Hledání/odemčení dveří: PJ ručně potvrdí odhalení či odemčení. Zámky a utajení jsou podporované; katalog klíčů a automatické spuštění zkoušky nejsou. Přechod východem do venkovní mapy zůstává ruční.
 - Generátor připravuje mapu, nikoli automatický obsah místností, pravidlový bestiář nebo kompletní dobrodružství.

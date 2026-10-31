@@ -38,7 +38,7 @@ Vchod a samostatný východ jsou trvalé značky mapy; PJ může zahájit průzk
 
 - [x] Oddělit společný průzkum a rozestavení jednotlivých postav v boji, včetně rozhodnutí o dohledu a seskupení.
 - [x] Předávání předmětů a mincí mezi postavami jednou společnou operací.
-- [ ] Volitelně propojit světlo s dohledem.
+- [x] Volitelně propojit světlo s dohledem, dosahy/nosiče zdrojů, dohoření a společný výhled v boji.
 - [x] Přidat jednoduché zámky a bezpečně skrývané tajné dveře.
 - [ ] Ulehčit odečítání stavů, spotřební předměty a postup úrovní bez povinného plného pravidlového enginu.
 

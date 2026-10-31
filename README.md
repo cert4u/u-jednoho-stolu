@@ -53,7 +53,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 - Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu.
 - Zkoušky a pasti s výzvou konkrétnímu hráči, volitelně tajnou nebezpečností a ručním potvrzením následků.
 - Tajná příprava kořisti, zveřejnění nálezu, přidělení hráčům a rovné rozdělení mincí se zachováním zbytku.
-- Čas průzkumu, světla a odpočet doby svícení. Odpočinek a léčení s náhledem obnovovaných životů a magenergie.
+- Čas průzkumu, světla a odpočet doby svícení. Volitelný dohled podle světel, jejich dosahu a nosičů včetně dohoření, tmy a ručního přepsání PJ. Odpočinek a léčení s náhledem obnovovaných životů a magenergie.
 
 ### Postavy, kostky a souboj
 

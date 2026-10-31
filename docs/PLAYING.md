@@ -56,7 +56,7 @@ V režimu **Prozkoumat (i)** klikni těsně na hranu dveří. PJ může zapnout 
 
 ## Průzkum, dohled a patra
 
-PJ v **Nastavení a schodiště** určí vedoucího a dohled, potom umístí družinu na podlahu. Existuje-li vchod zobrazeného patra, tlačítko **Umístit družinu u vchodu** nastaví začátek přímo tam. Východ je orientační značka, automatický přechod do venkovní mapy není implementovaný.
+PJ v **Nastavení a schodiště** určí vedoucího a maximální dohled, potom umístí družinu na podlahu. Existuje-li vchod zobrazeného patra, tlačítko **Umístit družinu u vchodu** nastaví začátek přímo tam. Východ je orientační značka, automatický přechod do venkovní mapy není implementovaný.
 
 Vedoucí nebo PJ klikne na známé průchozí místo. Pohyb vede známou podlahou a neprojde zavřenými dveřmi. Pokud je cíl nedostupný, postupuj blíž nebo nejprve otevři dveře. Dveře hráč ovládá až u družiny stojící vedle jejich hrany. Zdi, rohy a zavřené dveře omezují výhled. Dříve objevená mapa zůstává šedá; skryté pozdější úpravy se do její paměti nepromítnou, dokud se místo znovu neobjeví.
 
@@ -107,7 +107,7 @@ V **Připravit souboj** PJ vybere účastníky a ručně určí pořadí. **Dal�
 
 Po umístění společné družiny PJ zvolí **Rozestavit do boje** v ovládání mapy. Všichni aktivní hrdinové začnou na místě družiny. Nástroj **Postavy** umožní vybrat hrdinu (také v levém seznamu) a kliknout na cíl nebo značku přetáhnout. Hráč ovládá jen vlastní postavu, PJ kteréhokoli hrdinu. Pohyb vede známou průchozí podlahou a respektuje zdi, zavřené/zamčené a neodhalené dveře. Překryv postav je dovolený; počet akcí, tah a dostřel se nevynucují.
 
-Výhled družiny je společný součet výhledů všech aktivních hrdinů na bojišti. Pohyb i opuštění místnosti mění aktuální dohled a šedou paměť. Při rozestavení nelze přesouvat společnou družinu ani přejít na jiné patro. PJ ji po boji seskupí **u začátku boje** nebo **na vybraném políčku** známé podlahy; výběr políčka udělá kliknutím do mapy nebo šipkami. Seskupení je rozhodnutí PJ, ne samostatná cesta každého hrdiny. Poté pokračuje společný průzkum a dohled opět vychází ze společného bodu.
+Výhled družiny je společný součet výhledů všech aktivních hrdinů na bojišti. Pokud je zapnuté řízení světly, navíc se zohledňuje osvětlení a nastavený dohled bez světla. Pohyb i opuštění místnosti mění aktuální dohled a šedou paměť. Při rozestavení nelze přesouvat společnou družinu ani přejít na jiné patro. PJ ji po boji seskupí **u začátku boje** nebo **na vybraném políčku** známé podlahy; výběr políčka udělá kliknutím do mapy nebo šipkami. Seskupení je rozhodnutí PJ, ne samostatná cesta každého hrdiny. Poté pokračuje společný průzkum a dohled opět vychází ze společného bodu.
 
 Bojové rozestavení a pořadí iniciativy jsou samostatné pomůcky: PJ spravuje pořadí v soubojovém panelu a postavení na mapě. Pozice se zachovají při obnovení stránky i v úplné záloze. Identifikátor rozestavení chrání před opožděným tahem ze starého boje.
 
@@ -127,7 +127,20 @@ V deníku lze přidat a přejmenovat položku, změnit počet nebo použít kusy
 
 ## Čas, světlo, hlas a uložení
 
-PJ v **Čas a světlo** posouvá čas a spravuje zdroje světla. Ubývá pouze doba rozsvícených zdrojů; vyhořelé zhasnou. Poslední posun lze vrátit, pokud se mezitím nezměnila evidence světel. Pohyb po mapě, kolo souboje ani léčení čas automaticky neposouvají. Světlo automaticky nepřepočítá dohled.
+PJ v **Čas a světlo** posouvá čas a spravuje zdroje světla. Ubývá pouze doba rozsvícených zdrojů; vyhořelé zhasnou. Poslední posun lze vrátit, pokud se mezitím nezměnila evidence světel. Pohyb po mapě, kolo souboje ani léčení čas automaticky neposouvají. Uložené i nově připravované hry používají ruční dohled, dokud PJ nezapne automatiku.
+
+### Dohled podle světel
+
+1. V **Čas a světlo → Dohled podle světel** zapni **Řídit dohled rozsvícenými světly**.
+2. Nastav **Dohled bez světla** (0–12 polí) a ulož řízení. Nula ponechá aktuálně viditelné jen vlastní políčko; dříve známá mapa zůstává šedá. Horní hranicí vidění je vždy maximální dohled nastavený u mapy.
+3. U každého světla zadej **Dosah světla** (1–12 polí) a případně **Nosiče světla**. Starší světla bez údaje mají při zapnutí automatiky dosah 4 pole.
+4. Zapálení, zhasnutí, dohoření, doplnění a odebrání světla přepočítají viditelnost. Vrácení posledního posunu času obnoví odpovídající světla a dohled, ale nevrací pohyb postav.
+
+Při společném průzkumu jsou světla u družiny. V bojovém rozestavení svítí od svého nosiče; **Společné světlo** nese vedoucí, případně první aktivní hráč. Světlo přiřazené archivované postavě se do dohledu nepočítá; PJ ho může přidělit jinému nosiči. Bez hráčů je společné světlo u bodu družiny.
+
+Políčko musí být v přímém dohledu některého hrdiny a buď osvětlené, nebo v jeho dohledu bez světla. Světlo ani vidění neprocházejí zdmi, zavřenými či neodhalenými tajnými dveřmi. Více světel skládá osvětlené oblasti, jejich dosahy se nesčítají. Zhasnutí skryje příšery mimo aktuální výhled; objevený půdorys nevymaže. Doba svícení se řídí ručním herním časem, ne hodinami počítače.
+
+Pro venkovní scénu nebo vlastní pravidla automatiku vypni a ulož nastavení; vrátí se ruční dohled PJ. Jde o společné nastavení družiny, nikoli o automatický výpočet vidění podle ras a povolání.
 
 [Hlas družiny](VOICE.md) je volitelná služba správce instalace. Začíná s vypnutým mikrofonem, umožní ztlumit poslech a vybrat mikrofon. Chatové šeptání nepřepíná hlas do soukromého hovoru. Kamera ani sdílení obrazovky se nepoužívají.
 
@@ -135,4 +148,4 @@ Běžné změny se ukládají na server. PJ navíc přes nabídku přístupu st�
 
 ## Co aplikace nevyhodnotí sama
 
-[Audit herního základu](MECHANICS.md) odlišuje hotové rozestavení, předávání a ruční potvrzení dveří od zbývající vazby světla/dohledu a návaznosti stavů či spotřebních předmětů. Pro současnou hru rozhoduje o těchto situacích PJ.
+[Audit herního základu](MECHANICS.md) odlišuje hotové rozestavení, předávání a ruční potvrzení dveří od zbývající návaznosti stavů či spotřebních předmětů. Řízení dohledu světly je volitelně podporované. Pro současnou hru rozhoduje o těchto situacích PJ.

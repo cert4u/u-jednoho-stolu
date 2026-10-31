@@ -64,6 +64,12 @@ Syntetický test přenosu a kontrola podpisu tokenů neověří fyzický mikrofo
 
 Přesný postup ruční obnovy je v [SELF_HOSTING.md](SELF_HOSTING.md#přerušení-a-ruční-obnova). `down -v`, odstranění dat nebo reset databáze nejsou běžné opravné kroky.
 
+## Po zhasnutí skoro nic nevidím
+
+V **Čas a světlo** ověř, zda je zapnuté řízení světly, některý zdroj svítí a má dosah. Nosič musí být aktivní hráčská postava; v boji světlo svítí od jeho aktuální pozice. Při dohledu bez světla 0 je bez osvětlení viditelné jen vlastní políčko, známá mapa zůstává šedá. To je očekávané chování. PJ může zdroj doplnit/rozsvítit, přiřadit jinému nosiči, změnit dohled bez světla nebo automatiku vypnout. Vyhořelý zdroj je nutné doplnit, samotné Rozsvítit nestačí.
+
+Dosah světla neruší maximální dohled u mapy a neobchází zavřené dveře či zdi. Viditelnost zkontroluj přes **Pohled družiny**; PJ v přípravě stále vidí i skrytou kresbu.
+
 ## Co uvést do hlášení
 
 Verzi nebo commit, způsob spuštění, prohlížeč, roli, očekávaný a skutečný výsledek a krátké opakovatelné kroky na smyšlené hře. U hovoru doplň lokální/veřejný profil a typ sítě bez citlivých adres. Screenshot nejprve zbav tajné přípravy a osobních údajů. [Bezpečnostní problémy](../SECURITY.md) nepatří s podrobnostmi do veřejných issues.

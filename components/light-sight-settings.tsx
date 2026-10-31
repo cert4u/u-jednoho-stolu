@@ -1,0 +1,8 @@
+'use client';
+import {useState,useRef} from 'react';
+import {defaultLighting,type LightingSettings} from '../lib/lighting';
+export default function LightSightSettings({settings,cap,busy,onSave}:{settings?:LightingSettings;cap:number;busy:boolean;onSave:(values:Record<string,unknown>)=>Promise<boolean|undefined>}){
+ const form=useRef<HTMLFormElement>(null);
+ const [baseline,setBaseline]=useState<LightingSettings>(()=>settings?{enabled:settings.enabled,darkRadius:settings.darkRadius}:defaultLighting()),[enabled,setEnabled]=useState(baseline.enabled),[darkRadius,setDarkRadius]=useState(baseline.darkRadius);
+ return <form ref={form} data-dirty={enabled!==baseline.enabled||darkRadius!==baseline.darkRadius} onSubmit={async e=>{e.preventDefault();const next={enabled,darkRadius};if(await onSave({...next,expected:baseline})){setBaseline(next);if(form.current)form.current.dataset.changed='false';}}}><h3>Dohled podle světel</h3><label className="map-note-notify"><input type="checkbox" checked={enabled} disabled={busy} onChange={e=>setEnabled(e.target.checked)}/> Řídit dohled rozsvícenými světly</label><label>Dohled bez světla (počet polí)<input type="number" min={0} max={12} required value={darkRadius} disabled={busy} onChange={e=>setDarkRadius(Number(e.target.value))}/></label><p className="sheet-hint">Nula ponechá viditelné jen vlastní políčko. Světlo i pohled zastavují zdi a zavřené dveře. Nejvyšší dohled postav je {cap} polí podle nastavení mapy. Vypnutím této volby se vrátíš k ručnímu dohledu PJ.</p><button className="secondary" disabled={busy||enabled===baseline.enabled&&darkRadius===baseline.darkRadius}>Uložit řízení dohledu</button></form>;
+}

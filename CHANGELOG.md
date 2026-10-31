@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Volitelný dohled podle světel: dosahy a nosiči, přímý výhled omezený osvětlením, dohled bez světla a ruční přepsání PJ. Dohoření, zhasnutí, pohyb nosiče a vrácení času přepočítají viditelnost; paměť mapy zůstává. Kompatibilní zálohy a testy v průzkumu i bojovém rozestavení.
+
 - Zámky a tajné dveře: nastavení PJ přes inspekci, ochrana před odhalením v hráčských datech/paměti, kontrola otevření a průchodnosti.
 - Přímé předávání předmětů a mincí: společný odečet/připsání, soukromý záznam a ochrana souběhu/opakování.
 - Bojové rozestavení jednotlivých hrdinů: známé průchozí cesty, sdílený dohled, výběr bodu seskupení, identita rozestavení a úplné zálohy.

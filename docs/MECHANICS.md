@@ -2,9 +2,9 @@
 
 [Dokumentace](README.md) · [Herní příručka](PLAYING.md) · [Plán práce](ROADMAP.md) · [Limity](LIMITS.md)
 
-Posouzení k 31. 10. 2026 pro **vývojovou větev po 0.3.0**. Nové zámky/tajné dveře, předávání a bojové rozestavení nejsou součástí neměnného tagu 0.3.0. Vychází z implementace hlavní větve po přidání inspekce mapy. Jde o audit podpory herního večera v aplikaci, nikoli o kontrolu shody s konkrétní edicí DrD. Nezastupuje společnou zkoušku celé party.
+Posouzení k 31. 10. 2026 pro **vývojovou větev po 0.3.0**. Nové zámky/tajné dveře, předávání, bojové rozestavení a dohled podle světel nejsou součástí neměnného tagu 0.3.0. Vychází z implementace hlavní větve po přidání inspekce mapy. Jde o audit podpory herního večera v aplikaci, nikoli o kontrolu shody s konkrétní edicí DrD. Nezastupuje společnou zkoušku celé party.
 
-Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Samostatné bojové postavení, návrat do průzkumu a předávání výbavy už jsou ve vývojové větvi. Nejbližší zbývající návazností je světlo/dohled a lehká podpora vyhodnocování stavů či spotřebních předmětů.
+Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Samostatné bojové postavení, návrat do průzkumu a předávání výbavy už jsou ve vývojové větvi. Volitelný dohled podle světel už je také hotový. Nejbližší zbývající návazností je lehká podpora vyhodnocování stavů či spotřebních předmětů.
 
 ## Co skutečně funguje
 
@@ -25,7 +25,7 @@ Aplikace už podporuje základní průběh dobrodružství: přípravu → průz
 | Odpočinek a léčení | Výběr postav, náhled a potvrzení obnovy životů/magenergie. | Podmínky odpočinku a posun herního času. |
 | Kořist a výbava | Nálezy, přidělení, dělení mincí, měšec, spotřeba a atomické předání mezi postavami. | Hmotnost/nosnost, automatický účinek lektvaru či nasazení výbavy. |
 | Dveře | Otevírání/zavírání, zamčení a utajení; neodhalené dveře jsou pro hráče zdí. | PJ potvrzuje odhalení a odemčení; klíče a výsledek zkoušky nejsou automaticky provázané. |
-| Čas a světlo | Ruční posun času, zdroje, odpočet a zhasnutí vyhořelého světla. | Světlo nemění dohled; pohyb, boj a odpočinek neposouvají čas samy. |
+| Čas a světlo | Ruční čas, odpočet, volitelný automatický dohled, dosahy a nosiči zdrojů, tma, zhasnutí a undo. | Pohyb, boj a odpočinek neposouvají čas samy; vidění podle rasy/povolání určí PJ. |
 | Pokračování hry | Serverové uložení, obnovovací klíče a úplná záloha kampaně. | PJ určuje konec večera a pořizuje zálohu; není to historie všech změn. |
 
 ## Doporučené pořadí další práce
@@ -42,9 +42,9 @@ Identifikátor rozestavení a očekávané pozice/revize chrání před opoždě
 
 Odesílatel zvolí příjemce a počet, aplikace provede odečet i připsání společně a zaznamená předání. Nelze jen vytvořit dva nezávislé zápisy do deníků: při opakování nebo souběhu nesmí vzniknout předmět navíc ani se ztratit.
 
-### 3. Propojit světlo s dohledem
+### 3. Světlo a dohled — hotovo
 
-Volitelná vazba aktivních světel a dosahu vidění by odstranila ruční přepínání po dohoření pochodně. PJ musí mít přepsání dosahu pro jiné prostředí či zvláštní vidění. Neslibovat správné chování ve tmě, dokud se neupraví skutečný výpočet výhledu a neověří hráčský pohled.
+PJ v Čas a světlo zapne automatiku a nastaví dohled bez světla. Zdroje mají dosah a nosiče; v boji svítí od skutečných pozic. Viditelnost kombinuje osvětlení, neprůhledné hrany a maximální dohled hrdinů. Dohoření/zhasnutí a vrácení posunu času mění výhled i viditelnost příšer, zachovávají paměť mapy. PJ může vrátit ruční režim. Testy a hráčský náhled pokrývají i úplnou tmu a vzdálení hrdiny od nosiče.
 
 ### 4. Jednoduché zámky a tajné dveře — hotový základ
 

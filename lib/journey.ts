@@ -1,6 +1,8 @@
 import type { Game, Member } from './game';
 import { EditConflict } from './sheets';
 export type Light = {
+    radius?: number;
+    carrierId?: string;
     id: string;
     name: string;
     remaining: number | null;
@@ -21,10 +23,10 @@ export type JourneyView = Journey & {
 };
 export function journeyState(g: Game): Journey { return g.journey || { minutes: 0, revision: 0, lights: [] }; }
 export function journeyView(g: Game, pj: boolean): JourneyView { const state = journeyState(g); return { ...state, canUndo: pj && g.journeyUndo?.afterRevision === state.revision }; }
-function fields(b: Record<string, unknown>) { if (typeof b.name !== 'string' || !b.name.trim() || b.name.trim().length > 40)
+function fields(b: Record<string, unknown>,g:Game,previous?:Light) { if (typeof b.name !== 'string' || !b.name.trim() || b.name.trim().length > 40)
     throw new Error('Název světla musí mít 1 až 40 znaků.'); if (b.remaining !== null && (typeof b.remaining !== 'number' || !Number.isInteger(b.remaining) || b.remaining < 0 || b.remaining > 10080))
     throw new Error('Dobu svícení zadej v celých minutách od 0 do 10080, nebo ji nech nevyplněnou.'); if (typeof b.lit !== 'boolean')
-    throw new Error('Vyber, zda světlo svítí.'); return { name: b.name.trim(), remaining: b.remaining as number | null, lit: b.lit && b.remaining !== 0 }; }
+    throw new Error('Vyber, zda světlo svítí.'); const radius=b.radius===undefined?previous?.radius:b.radius; if(radius!==undefined&&(typeof radius!=='number'||!Number.isInteger(radius)||radius<1||radius>12))throw new Error('Dosah světla nastav na 1 až 12 polí.'); const carrierId=b.carrierId===undefined?previous?.carrierId:b.carrierId===null?undefined:b.carrierId;if(carrierId!==undefined&&(typeof carrierId!=='string'||!g.members.some(m=>m.id===carrierId&&m.role==='player')))throw new Error('Vyber platného nosiče světla.'); return { name: b.name.trim(), remaining: b.remaining as number | null, lit: b.lit && b.remaining !== 0,...(radius!==undefined?{radius:radius as number}:{}),carrierId:carrierId as string|undefined }; }
 export function journeyAction(g: Game, actor: Member, b: Record<string, unknown>) {
     if (actor.role !== 'pj')
         throw new Error('Čas a světla spravuje pouze Pán jeskyně.');
@@ -38,7 +40,7 @@ export function journeyAction(g: Game, actor: Member, b: Record<string, unknown>
         case 'add':
             if (next.lights.length >= 24)
                 throw new Error('Evidovat lze nejvýše 24 světel družiny.');
-            next.lights.push({ id: crypto.randomUUID(), ...fields(b), revision: 0 });
+            next.lights.push({ id: crypto.randomUUID(), ...fields(b,g), revision: 0 });
             break;
         case 'update':
         case 'toggle':
@@ -46,7 +48,7 @@ export function journeyAction(g: Game, actor: Member, b: Record<string, unknown>
             if (!light || b.expectedLightRevision !== light.revision)
                 throw new EditConflict('Světlo se mezitím změnilo nebo bylo odebráno. Otevři úpravu znovu.');
             if (b.op === 'update')
-                Object.assign(light, fields(b), { revision: light.revision + 1 });
+                Object.assign(light, fields(b,g,light), { revision: light.revision + 1 });
             else if (b.op === 'remove')
                 next.lights = next.lights.filter(l => l.id !== light.id);
             else {

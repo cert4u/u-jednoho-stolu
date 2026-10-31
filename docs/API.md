@@ -118,3 +118,11 @@ V2 má `dungeon.generation` se stavem `valid` nebo `modified`, grafem místnost�
 - `explore` / `battle-end`: pouze PJ, `battleId`, `expectedRevision` rozestavení, známé cílové `x`/`y` pro seskupení na stejném patře. `move`, `place` a `travel` pro společnou družinu jsou během rozestavení blokované.
 
 Nová pole jsou volitelná ve formátu záloh 1. Import ověřuje dveřní nastavení proti existujícím dveřím, soukromí paměti a platné patro/polohy aktivního rozestavení.
+
+### Dohled podle světel
+
+`explore` / `op=lighting` je pouze pro PJ. Přijímá `enabled`, `darkRadius` (celé 0–12) a `expected={enabled,darkRadius}` původního nastavení. Výchozí chybějící nastavení je `{enabled:false,darkRadius:1}`. Stav je v `atlas.lighting`; pohled `exploration.lighting` navíc vrací odvozené `activeLights`. `exploration.radius` zůstává horní hranicí dohledu (1–12).
+
+`journey` / `add` a `update` mohou obsahovat `radius` (1–12) a `carrierId` hráčské postavy; `null` zruší konkrétního nosiče. Vynechané údaje při úpravě zachovají předchozí nastavení. Starý zdroj bez dosahu používá 4 pole. Společný zdroj v boji následuje vedoucího/prvního aktivního hráče, jinak bod družiny; zdroj archivovaného nosiče se ignoruje. Backup formát 1 zachovává nová volitelná pole včetně historie světel a validuje odkazy na nosiče.
+
+Při zapnuté automatice se výhled přepočítá po změnách hry i při obnovení zálohy: přímý dohled hrdinů omezený `radius` se protne s osvětlenými políčky, navíc platí dohled bez světla. Každý světelný zdroj respektuje stejné zdi/dveře jako pohled. Přepočet paměť nemaže. Oprávnění měnit čas/světla zůstává jen PJ.
