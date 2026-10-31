@@ -44,9 +44,9 @@ V **Příprava mapy** PJ kreslí na podlahu/příslušné hrany:
 | Guma | Maže ruční hrany; středem políčka maže značky schodů, vchodu a východu. Pro změnu půdorysu použij Ubrat prostor. |
 | Zpět | Vrátí poslední uložený tah mapy z omezené historie, nikoli všechny herní akce. |
 
-**Generátor** vytvoří náhled podle počtu pater a místností, velikosti, chodeb, dodatečných propojení a semínka. Stejné nastavení a semínko dávají stejný návrh v této implementaci. Změníš-li nastavení nebo se změní kapacita pater, vytvoř nový náhled před vložením.
+**Generátor V2** vytvoří náhled podle stylu, počtu pater a místností, velikosti a složitosti. Hradní podzemí má pravidelné komnaty a dveře, důl protáhlé pracovní prostory a větvení, jeskyně nepravidelné půdorysy. Stejná verze, nastavení, semínko a varianta dávají stejný návrh. Tři varianty se vybírají jednotlivě, nové semínko vytvoří novou sadu. Pokročilá část nabízí i původní V1 pro opakování starých seedů. Změníš-li nastavení nebo se změní kapacita pater, vytvoř nový náhled před vložením.
 
-Potvrzená patra se přidají ke stávajícím. Jen skutečně prázdné výchozí patro lze využít znovu. Generátor vytvoří propojenou podlahu, obvodové zdi, schodiště mezi novými patry a vchod na jejich přízemí, volitelně samostatný východ. Nepřidává příšery, pasti, dveře ani kořist a neodhalí mapu. Družinu nepřesouvá. Přípravu lze ručně upravit; propojení ke starší mapě nastavuje PJ.
+Potvrzená patra se přidají ke stávajícím. Jen skutečně prázdné výchozí patro lze využít znovu. Generátor vytvoří propojenou podlahu, obvodové zdi, schodiště mezi novými patry a vchod na jejich přízemí, volitelně samostatný východ. V2 přidává otevíratelné dveře, nikoli zámky; nepřidává příšery, pasti ani kořist a neodhalí mapu. Družinu nepřesouvá. Přípravu lze ručně upravit; propojení ke starší mapě nastavuje PJ. V2 ukládá původ generování a soukromý graf. Změna podlahy, hran nebo značek označí graf za neaktuální; otevření dveří nebo odkrytí mapy jej nezneplatní. Zpět obnovuje mapové snapshoty včetně metadat, pokud stále odpovídá navazující propojení schodů.
 
 ## Průzkum, dohled a patra
 

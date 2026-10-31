@@ -20,6 +20,7 @@
     "test:ci": "node scripts/test-ci.mjs",
     "build:node": "node scripts/build-node.mjs",
     "start:node": "node server/start.mjs",
+    "benchmark:generator": "node --experimental-strip-types scripts/benchmark-generator.mjs",
     "test:updater": "node scripts/test-updater.mjs",
     "test:hosting": "node scripts/test-hosting.mjs"
   },

@@ -1,0 +1,13 @@
+import type {Dungeon,Point} from './dungeon';
+export type GeneratorVersion='v1'|'v2';
+export type DungeonStyle='castle'|'mine'|'cave';
+export type GeneratorOptions={version:GeneratorVersion;style:DungeonStyle;variant:number;separateExit:boolean;name:string;levels:number;rooms:number;size:'small'|'medium'|'large';corridors:'direct'|'winding';connections:number;seed:string};
+export type RoomRole='entrance'|'room'|'junction'|'dead-end'|'chamber'|'goal';
+export type GeneratedRoom={x:number;y:number;width:number;height:number;center:Point;id?:string;cells?:string[];role?:RoomRole;neighbors?:string[];mainPath?:boolean};
+export type RoomContent={title?:string;playerText?:string;secret?:string;monsterIds?:string[];challengeIds?:string[];lootIds?:string[];links?:{roomId:string;kind:string}[]};
+export type LogicalRoom=GeneratedRoom & {id:string;cells:string[];content?:RoomContent;role:RoomRole;neighbors:string[];mainPath:boolean};
+export type RoomConnection={id:string;from:string;to:string;path:Point[];doors:string[];mainPath:boolean};
+export type GeneratorMetrics={score:number;mainPathLength:number;branches:number;loops:number;occupancy:number;roomVariety:number;turns:number};
+export type GenerationMetadata={version:'v2';options:GeneratorOptions;seed:string;style:DungeonStyle;variant:number;candidate:number;levelIndex:number;status:'valid'|'modified';rooms:LogicalRoom[];connections:RoomConnection[];metrics:GeneratorMetrics;goalRoomId:string};
+export type GeneratedFloor={name:string;map:Dungeon;rooms:GeneratedRoom[]};
+export type GeneratedDungeon={options:GeneratorOptions;floors:GeneratedFloor[];stairs:{from:number;to:number;a:Point;b:Point}[];entry:Point};

@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+// Independent oracle: do not import generation, topology or production validation helpers.
+// A floor cell belongs either to one room or to exactly one corridor interior.
+const key=([x,y])=>`${x},${y}`;
+function point(cell){assert.match(cell,/^(?:[0-9]|1[0-9]|2[0-7]),(?:[0-9]|1[0-9])$/);return cell.split(',').map(Number);}
+const adjacent=([x,y])=>[[x-1,y],[x+1,y],[x,y-1],[x,y+1]].filter(([a,b])=>a>=0&&a<28&&b>=0&&b<20);
+function edge(a,b){assert.equal(Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]),1,'non-cardinal connection step');return a[0]===b[0]?`h:${a[0]}:${Math.max(a[1],b[1])}`:`v:${Math.max(a[0],b[0])}:${a[1]}`;}
+function flood(start,cells,allowed){const seen=new Set([start]),queue=[start];for(let i=0;i<queue.length;i++){const a=point(queue[i]);for(const b of adjacent(a)){const next=key(b);if(cells.has(next)&&!seen.has(next)&&allowed(a,b)){seen.add(next);queue.push(next);}}}return seen;}
+export function checkGeneratedFloor(floor,{level,options}={}){
+ const map=floor.map,meta=map.generation;assert(meta,'missing persisted generation metadata');assert.equal(meta.version,'v2');assert.equal(meta.status,'valid');assert(Number.isInteger(meta.candidate)&&meta.candidate>=0);if(level!==undefined)assert.equal(meta.levelIndex,level);if(options){assert.equal(meta.seed,options.seed);assert.equal(meta.style,options.style);assert.equal(meta.variant,options.variant);assert.equal(meta.rooms.length,options.rooms);assert.deepEqual(meta.options,options);}
+ assert.equal(meta.rooms.length,floor.rooms.length);assert.deepEqual(map.revealed,[],'generation unexpectedly revealed map');
+ const cells=new Set(map.floors),rooms=new Map(),owner=new Map(),planned=new Set(),corridors=new Map(),declaredDoors=new Set();assert.equal(cells.size,map.floors.length);for(const cell of cells)point(cell);
+ for(const room of meta.rooms){assert.equal(typeof room.id,'string');assert(!rooms.has(room.id),'duplicate room ID');rooms.set(room.id,room);assert(room.cells.length>0);assert.equal(new Set(room.cells).size,room.cells.length);assert(room.cells.includes(key(room.center)),'room center outside its exact footprint');assert(Number.isInteger(room.x)&&Number.isInteger(room.y)&&room.width>0&&room.height>0);assert(room.x>=0&&room.y>=0&&room.x+room.width<=28&&room.y+room.height<=20);
+  for(const cell of room.cells){assert(cells.has(cell),'room metadata outside floor');assert(!owner.has(cell),'overlapping room footprints');const [x,y]=point(cell);assert(x>=room.x&&x<room.x+room.width&&y>=room.y&&y<room.y+room.height);owner.set(cell,room.id);}
+  const footprint=new Set(room.cells);assert.equal(flood(room.cells[0],footprint,()=>true).size,footprint.size,'room footprint disconnected');assert.equal(typeof room.mainPath,'boolean');assert(['entrance','room','junction','dead-end','chamber','goal'].includes(room.role));
+ }
+ const pairSet=new Set(),logical=new Map([...rooms.keys()].map(id=>[id,new Set()]));
+ for(const connection of meta.connections){assert.equal(typeof connection.id,'string');assert(!corridors.has(connection.id),'duplicate corridor ID');corridors.set(connection.id,connection);assert(rooms.has(connection.from)&&rooms.has(connection.to));assert.notEqual(connection.from,connection.to);const pair=[connection.from,connection.to].sort().join('|');assert(!pairSet.has(pair),'duplicate logical room link');pairSet.add(pair);logical.get(connection.from).add(connection.to);logical.get(connection.to).add(connection.from);
+  assert(connection.path.length>=2,'empty corridor');assert.equal(new Set(connection.path.map(key)).size,connection.path.length,'corridor repeats a cell');assert.equal(owner.get(key(connection.path[0])),connection.from);assert.equal(owner.get(key(connection.path.at(-1))),connection.to);
+  for(let i=0;i<connection.path.length;i++){const cell=key(connection.path[i]);assert(cells.has(cell),'corridor outside floor');if(i>0&&i<connection.path.length-1){assert(!owner.has(cell),'corridor crosses a room interior');owner.set(cell,`corridor:${connection.id}`);}if(i)planned.add(edge(connection.path[i-1],connection.path[i]));}
+  const boundary=new Set([edge(connection.path[0],connection.path[1]),edge(connection.path.at(-2),connection.path.at(-1))]);for(const door of connection.doors){assert(boundary.has(door),'door not at corridor endpoint boundary');assert.equal(map.edges[door],'door');assert(!declaredDoors.has(door),'door reused');declaredDoors.add(door);}
+ }
+ assert.equal(owner.size,cells.size,'unattributed floor cell');
+ // Independently enumerate every cardinal floor adjacency. No invisible shortcut may
+ // connect touching corridors/rooms unless the exact logical passage declares it.
+ for(const aKey of cells){const a=point(aKey);for(const b of adjacent(a)){const bKey=key(b);if(!cells.has(bKey))continue;const wall=map.edges[edge(a,b)],sameRoom=owner.get(aKey)===owner.get(bKey)&&rooms.has(owner.get(aKey)),expected=sameRoom||planned.has(edge(a,b));assert.equal(wall!=='wall',expected,`unplanned opening or blocked intended path: ${aKey} -> ${bKey}`);if(sameRoom)assert(!wall,'room interior partitioned unexpectedly');}}
+ for(const [edgeKey,kind] of Object.entries(map.edges)){assert(['wall','door'].includes(kind));assert.match(edgeKey,/^[hv]:\d+:\d+$/);const [axis,sx,sy]=edgeKey.split(':'),x=+sx,y=+sy;assert(x>=0&&x<=(axis==='h'?27:28)&&y>=0&&y<=(axis==='h'?20:19));const neighbors=axis==='h'?[`${x},${y-1}`,`${x},${y}`]:[`${x-1},${y}`,`${x},${y}`];const occupied=neighbors.filter(k=>cells.has(k));assert(occupied.length>0,'unattached wall');if(kind==='door'){assert.equal(occupied.length,2,'door does not join floor on both sides');assert(declaredDoors.has(edgeKey),'undeclared generated door');}}
+ for(const cell of cells){const [x,y]=point(cell);for(const [other,e] of [[`${x-1},${y}`,`v:${x}:${y}`],[`${x+1},${y}`,`v:${x+1}:${y}`],[`${x},${y-1}`,`h:${x}:${y}`],[`${x},${y+1}`,`h:${x}:${y+1}`]])if(!cells.has(other))assert.equal(map.edges[e],'wall','unwalled outside boundary');}
+ for(const room of rooms.values()){assert.deepEqual([...room.neighbors].sort(),[...logical.get(room.id)].sort(),'neighbors disagree with graph');assert.equal(new Set(room.neighbors).size,room.neighbors.length);}
+ const queue=[meta.rooms[0].id],seen=new Set(queue);for(let i=0;i<queue.length;i++)for(const id of logical.get(queue[i]))if(!seen.has(id)){seen.add(id);queue.push(id);}assert.equal(seen.size,rooms.size,'logical graph disconnected');assert(rooms.has(meta.goalRoomId));
+ const start=key(meta.rooms[0].center);assert.equal(flood(start,cells,(a,b)=>map.edges[edge(a,b)]!=='wall').size,cells.size,'not traversable when doors are opened');
+ for(const pointValue of Object.values(map.access||{}))assert(cells.has(key(pointValue)));for(const pointKey of Object.keys(map.stairMarks||{}))assert(cells.has(pointKey));
+ for(const value of Object.values(meta.metrics))assert(Number.isFinite(value),'non-finite quality metric');assert.equal(meta.metrics.loops,meta.connections.length-meta.rooms.length+1);
+ return {cells,rooms,planned,owner,declaredDoors};
+}
+export function checkGeneratedDungeon(draft){
+ assert.equal(draft.options.version,'v2');assert.equal(draft.floors.length,draft.options.levels);const allIds=new Set();for(let i=0;i<draft.floors.length;i++){const floor=draft.floors[i];checkGeneratedFloor(floor,{level:i,options:draft.options});for(const room of floor.map.generation.rooms){assert(!allIds.has(room.id),'room IDs repeated across floors');allIds.add(room.id);}}
+ assert.deepEqual(draft.entry,draft.floors[0].map.access.entrance);assert.equal(draft.stairs.length,draft.floors.length-1);for(const stair of draft.stairs){assert.equal(stair.to,stair.from+1);for(const [level,position,direction] of [[stair.from,stair.a,'down'],[stair.to,stair.b,'up']]){const map=draft.floors[level].map;assert(map.floors.includes(key(position)));const mark=map.stairMarks[key(position)];assert(mark===direction||mark==='both');}}
+ if(draft.options.separateExit){const first=draft.floors[0].map;assert(first.access.exit);assert.notDeepEqual(first.access.exit,first.access.entrance);assert(!first.stairMarks?.[key(first.access.exit)]);assert(first.generation.rooms.find(r=>r.id===first.generation.goalRoomId).cells.includes(key(first.access.exit)));}else assert(!draft.floors[0].map.access.exit);
+ return draft;
+}

@@ -32,7 +32,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 
 - Kreslení místností, chodeb, příček, dveří a schodišť. Překrývající se místnosti se spojí a obvod se přizpůsobí.
 - Až osm propojených pater, značky vchodu a východu a zahájení dobrodružství u vchodu.
-- Generátor jeskyně s počtem pater a místností, velikostmi, chodbami, náhledy a opakovatelnými variantami podle semínka. Vytvořenou mapu lze dál ručně upravovat.
+- Generátor V2 se styly hradního podzemí, dolu a přírodní jeskyně, logickým grafem místností, plánovanými průchody a automatickými dveřmi. Tři opakovatelné varianty, náhled a ruční úpravy; původní V1 je zachovaný pro staré seedy.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
 - Posouvání papíru tažením, přibližování a přizpůsobení pohledu oknu.
 
@@ -98,12 +98,12 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 
-1. Nastav název, počet pater a místností, velikost místností, chodby a semínko.
-2. Zvol **Vytvořit náhled**; přepínačem prohlédni jednotlivá patra. **Nová varianta** změní semínko a vytvoří jiný návrh.
+1. Nastav název, styl, počet pater a místností, velikost a složitost. Pokročilá část obsahuje verzi algoritmu, seed, chodby a dodatečná propojení.
+2. Zvol **Vytvořit náhled**; přepínačem prohlédni jednotlivá patra. **Varianta 1–3** vytvoří jiný reprodukovatelný návrh nad stejným seedem; nové semínko vytvoří novou sadu.
 3. Potvrď **Vložit tato patra do dobrodružství**. Při existující mapě se přidají nová patra; zcela prázdné výchozí patro se využije pro první vygenerované patro.
 4. V přípravě můžeš kresbu upravit. Pro zahájení průzkumu nastav vedoucího a umísti družinu; vygenerovaná kresba se hráčům sama neodhalí.
 
-Celkem lze mít 8 pater po 28 × 20 polích. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností slouží jen náhledu. První nové patro je přízemí s trvalou značkou vchodu; volba **Samostatný východ na přízemí** přidá druhou značku. Další patra vedou do hloubky.
+Celkem lze mít 8 pater po 28 × 20 polích. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností a role pomáhají PJ v náhledu. V2 ukládá graf a původ generování soukromě; po strukturální ruční úpravě se graf označí jako neaktuální. Podrobnosti, audit a měření jsou v [technickém popisu generátoru](docs/GENERATOR_V2.md). První nové patro je přízemí s trvalou značkou vchodu; volba **Samostatný východ na přízemí** přidá druhou značku. Další patra vedou do hloubky.
 
 V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každém patře může být jedna značka každého druhu; dalším kliknutím ji přesuneš, gumou odstraníš. Tlačítko **Umístit družinu u vchodu** zahájí průzkum od vchodu zobrazeného patra. Samotné vložení značky družinu nepřesouvá. Východ je orientační značka, přechod do venkovní mapy zatím neprovádí. Hráči značky uvidí až po odkrytí; navštívená místa zůstávají v paměti mapy.
 

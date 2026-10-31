@@ -50,7 +50,7 @@ Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty s
 | `challenge` | Příprava/následky/rušení PJ; hod cílový hráč nebo PJ. |
 | `loot` | Příprava/uzavření/dělení PJ; převzetí hráč pro sebe nebo PJ pro hráče. |
 | `equipment` | Majitel/PJ: položky a měšec konkrétního člena. |
-| `generate` | PJ: `options`, `expectedState` a `requestId`; server regeneruje geometrii z parametrů. |
+| `generate` | PJ: `options`, `expectedState` a `requestId`; server regeneruje geometrii z parametrů. `options.version` je `v1`/`v2`, chybějící znamená V1; V2 má `style` (`castle`, `mine`, `cave`) a `variant` 0–2. Nové UI volí V2. |
 
 `cell` je odmítnutý starý způsob kreslení, nikoli alternativní zapisovací API.
 
@@ -102,3 +102,7 @@ Obvyklý tvar chyby je `{error: "zpráva"}`. Zprávy jsou pro uživatele, nestav
 - `503`: služba/databáze nedostupná nebo údržba; údržba přidává `Retry-After`. `502` z Node proxy může znamenat start vnitřního serveru.
 
 Čtení hry a hlasové odpovědi nepoužívej z cache; klient má sám hlídat revize a životnost session. HTTPS je požadovaný způsob veřejného přenosu. Herní role, administrátorská cookie a interní token jsou tři různé mechanismy přístupu.
+
+## Soukromá metadata generátoru
+
+V2 má `dungeon.generation` se stavem `valid` nebo `modified`, grafem místností, konkrétními trasami a parametry. `generationRuns` uchovává původ všech nových vložení včetně V1 a mapuje pořadí generovaných pater na uložená ID. Obě pole jsou pouze pro PJ a úplné zálohy; nikdy nepatří do hráčské paměti. Identita místnosti je dvojice `(levelId, roomId)`, nikoli samotné lokální ID. Souběžné stejné vložení nevytváří nový záznam. Pouze `valid` lze použít jako živý logický graf; `modified` zachovává historické identifikátory a původ. Viz [schéma a životní cyklus](GENERATOR_V2.md).
