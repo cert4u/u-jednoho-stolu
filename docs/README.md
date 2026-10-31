@@ -10,6 +10,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | Správce hlasového hovoru | [LiveKit: lokální a veřejné nasazení](VOICE.md) |
 | Uživatel, kterému něco nefunguje | [Řešení problémů](TROUBLESHOOTING.md) |
 | Vývojář | [Runtime, architektura, data a testy](DEVELOPMENT.md) |
+| Autor generátoru | [Generátor V2: audit, model, invarianty a benchmark](GENERATOR_V2.md) |
 | Autor integrace | [Interní HTTP API a oprávnění](API.md) |
 | Přispěvatel | [Jak přispívat](../CONTRIBUTING.md) |
 | Správce vydání | [Příprava a ověření vydání](RELEASING.md) |

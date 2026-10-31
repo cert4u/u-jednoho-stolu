@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Generátor V2: logický graf a skutečně oddělené průchody, A* chodby, dveře, odlišné styly hradu/dolu/jeskyně, šest hodnocených kandidátů na patro a tři opakovatelné varianty. Zmrazené V1 výstupy, soukromý původ generování, životní cyklus metadat, kompatibilní zálohy, nezávislé edge-aware testy a benchmark.
+
 - Sjednocená komunitní dokumentace: příručka hráče/PJ, dva runtime, interní API, provoz, hlas, limity, řešení problémů a vydávání. Kontrola místních odkazů, kotev a npm příkazů jako `check:docs` v CI.
 
 - Čistě hlasový hovor družiny přes volitelný vlastní LiveKit: připojení se ztlumeným mikrofonem, mikrofon, poslech, výběr zařízení a účastníci/mluvící. Oddělené místnosti, krátkodobé serverem podepsané tokeny pouze pro mikrofon, úklid připojení při odchodu a lokální/veřejná Docker konfigurace s návodem.

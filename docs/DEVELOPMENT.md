@@ -67,7 +67,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | `app/api/voice/route.ts`, `lib/voice.ts` | Ověření členství a krátkodobá hlasová vstupenka pouze pro mikrofon. |
 | `lib/game.ts`, `db/schema.ts` | Vnitřní stav hry a tabulka místností. |
 | `lib/dungeon.ts`, `lib/exploration.ts` | Geometrie, patra, dveře, propojení schodů, dohled a paměť mapy. |
-| `lib/dungeon-generator.ts`, `lib/generation.ts` | Sdílený deterministický náhled, serverové vložení a ochrana kapacity/souběhu. |
+| `lib/dungeon-generator.ts`, `lib/generation.ts` | Verzovaný deterministický náhled, serverové vložení a ochrana kapacity/souběhu. V2 jádro, validátor a sdílené typy jsou v samostatných `generator-*.ts` modulech; [audit a návrh](GENERATOR_V2.md). |
 | `lib/monsters.ts`, `lib/initiative.ts`, `lib/mechanics.ts` | Příšery, pořadí souboje, hody, návaznost útoku/obrany a zranění. |
 | `lib/sheets.ts`, `lib/character.ts` | Deníky a ochrana změněných polí. |
 | `lib/powers.ts`, `lib/conditions.ts`, `lib/life.ts`, `lib/recovery.ts` | Kouzla/magenergie, stavy, vyřazení a obnova životů/magenergie. |
@@ -137,7 +137,7 @@ npm run test:ci
 
 `test:ci` si spustí a ukončí vývojový server, ale používá místní D1 úložiště a přidané testovací místnosti v něm zůstanou. Proti již spuštěné oddělené místní instanci lze použít `npm run test:integration -- http://127.0.0.1:5173`. Testy nepouštěj proti rozehrané instalaci; vytvářejí i obnovují vlastní syntetické kampaně.
 
-Současných 21 integračních sad v `scripts/test-integration.mjs`:
+Současných 23 integračních sad v `scripts/test-integration.mjs`:
 
 | Sada `test-*.mjs` | Ověřuje |
 | --- | --- |
@@ -146,7 +146,7 @@ Současných 21 integračních sad v `scripts/test-integration.mjs`:
 | `conditions`, `powers`, `recovery`, `life` | Stavy, magenergii, použití schopností, léčení a vyřazení. |
 | `journey`, `map-notes`, `note-alerts`, `challenges` | Čas a světlo, soukromou přípravu, přiblížení a zkoušky. |
 | `loot`, `equipment` | Převzetí nálezů, měšec a výbavu bez zdvojování. |
-| `generator-core`, `generator`, `access` | Deterministické mapy, vložení, propojení, vchody a východy. `access` zde znamená mapové vstupy. |
+| `generator-core`, `generator-v2`, `generator`, `generation-v2-integration`, `access` | Deterministické mapy, vložení, propojení, vchody a východy. `access` zde znamená mapové vstupy. |
 | `voice`, `repairs` | Hlasová oprávnění a regresní případy souběhu, přístupů a úplných záloh. |
 
 Samostatné `npm test` ověřuje spojování půdorysů (`test-union.mjs`). `test:updater` používá simulovaný Docker engine; skutečné kontejnery a obnovu ověřuje CI pomocí `scripts/test-docker.mjs` na Linuxu s Dockerem. Volitelný [mediální test LiveKitu](VOICE.md#ověření-skutečného-přenosu-zvuku) přenese syntetický zvuk bez mikrofonu.
@@ -154,3 +154,5 @@ Samostatné `npm test` ověřuje spojování půdorysů (`test-union.mjs`). `tes
 U změn UI doplň vizuální ověření PJ i hráčského pohledu, mobilního rozložení, dlouhých textů a klávesnice. U hlasu navíc reálný mikrofon, zamítnuté oprávnění, odpojení a veřejnou síť. Automatické testy přenosu nejsou zkouškou každé domácí sítě.
 
 CI provádí TypeScript, dokumentační odkazy/příkazy, geometrii, oba buildy, integrační sady, Node hosting a Docker upgrade. `npm run lint` je dostupný pomocný skript; neprezentuj jej jako kontrolu provedenou CI, pokud ji workflow nespouští.
+
+Informativní benchmark generátoru spustíš `npm run benchmark:generator`; nemá časový CI limit. V2 sada testuje 2160 konfigurací nezávislým validátorem skutečných hran a připíná původní V1 výstupy.

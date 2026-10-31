@@ -13,7 +13,7 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 - [x] Kořist, měšec a připsání získaných předmětů do deníku s bezpečným rozdělováním mezi hráče.
 - [x] Správa předmětů a měšce, odečítání použitých kusů a ruční příjmy/platby.
 - [x] Vyřazení při 0 životech, potvrzení dalšího stavu a návratu do hry Pánem jeskyně.
-- [x] Generátor propojené jeskyně podle parametrů PJ s náhledy, variantami a schodišti.
+- [x] Generátor V1 a V2: logický graf, tři prostorové styly, dveře, hodnocení kandidátů, původ generování a nezávislé geometrické testy.
 - [x] Volitelné čistě hlasové volání družiny přes vlastní LiveKit.
 - [x] Trvalé značky vchodu a východu a umístění družiny u vchodu.
 - [x] Komunitní příručky, provozní a vývojová dokumentace a kontrola odkazů v CI.
