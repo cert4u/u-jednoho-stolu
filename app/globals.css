@@ -264,6 +264,18 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 .situation-expanded p { overflow-y: auto; overflow-wrap: anywhere; min-height: 0; font-size: 18px; }
 .situation-expanded p:focus-visible { outline: 2px solid #a57a42; outline-offset: -2px; }
 .situation-expanded footer { margin-top: 18px; display: flex; justify-content: flex-end; }
+.situation-continue {
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1px solid #a27b47;
+  border-radius: 5px;
+  background: #ecd3a5;
+  color: #492e19;
+  font-weight: 650;
+}
+.situation-continue:hover { background: #e4c28a; filter: none; }
+.situation-continue:focus-visible { outline-color: #704722; }
+
 @keyframes situation-unroll {
   from { clip-path: inset(0 0 85%); transform: translateY(-8px); opacity: .4; }
   to { clip-path: inset(-48px); transform: translateY(0); opacity: 1; }

@@ -28,7 +28,7 @@ export function SituationCard({message, onDismiss}: {message: Msg; onDismiss?: (
       </header>
       <h3 id={heading}>{parchment.roomNumber ? `${parchment.roomNumber} · ` : ''}{parchment.title}</h3>
       <p tabIndex={onDismiss ? 0 : undefined}>{text}</p>
-      {onDismiss && <footer><button className="primary" onClick={onDismiss}>Pokračovat</button></footer>}
+      {onDismiss && <footer><button className="situation-continue" onClick={onDismiss}>Pokračovat</button></footer>}
     </article>
   );
 }
