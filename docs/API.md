@@ -109,7 +109,7 @@ Obvyklý tvar chyby je `{error: "zpráva"}`. Zprávy jsou pro uživatele, nestav
 
 V2 má `dungeon.generation` se stavem `valid` nebo `modified`, grafem místností, konkrétními trasami a parametry. `generationRuns` uchovává původ všech nových vložení včetně V1 a mapuje pořadí generovaných pater na uložená ID. Obě pole jsou pouze pro PJ a úplné zálohy; nikdy nepatří do hráčské paměti. Identita místnosti je dvojice `(levelId, roomId)`, nikoli samotné lokální ID. Souběžné stejné vložení nevytváří nový záznam. Pouze `valid` lze použít jako živý logický graf; `modified` zachovává historické identifikátory a původ. Viz [schéma a životní cyklus](GENERATOR_V2.md).
 
-## Mechaniky ve vývojové větvi po 0.3.0
+## Mechaniky přidané ve vydání 0.4.0
 
 - `map` / `tool=door-settings`: PJ předá `edge`, tři booleany `locked`, `secret`, `discovered` a `expected` se třemi původními hodnotami. Změna patří do mapové historie. `dungeon.doorSettings` je pouze pro PJ; hráčská geometrie nahrazuje neodhalené tajné dveře zdí, paměť nikdy neukládá tajná nastavení.
 - `equipment` / `op=transfer`: `memberId` odesílatele, `recipientId` aktivního hráče, `expectedRevision` výbavy odesílatele, `kind=item` s `itemId`/`quantity` nebo `kind=coins` s `coins`. Obě výbavy/měšce a jejich revize se mění atomicky v řádku kampaně. Nepotřebuje ani neodhaluje soukromou revizi příjemce.

@@ -34,7 +34,7 @@ Vchod a samostatný východ jsou trvalé značky mapy; PJ může zahájit průzk
 
 ## Priority podle auditu herních mechanik
 
-[Posouzení k 31. 10. 2026](MECHANICS.md) doporučuje postupně:
+[Posouzení k 5. 11. 2026](MECHANICS.md) doporučuje postupně:
 
 - [x] Oddělit společný průzkum a rozestavení jednotlivých postav v boji, včetně rozhodnutí o dohledu a seskupení.
 - [x] Předávání předmětů a mincí mezi postavami jednou společnou operací.
@@ -47,4 +47,4 @@ Samostatně zbývá rozšiřování kreslicí plochy za současných 28 × 20 po
 
 ## Možná další rozšíření k diskusi
 
-Předávání a bojové rozestavení jsou ve vývojové větvi po 0.3.0 hotové. Opakovaně použitelné přípravy PJ zůstávají návrhem. Nemají schválený rozsah ani termín a nejsou automatickou součástí hotových funkcí. Priority upravíme podle prvního společného hraní.
+Předávání a bojové rozestavení jsou součástí vydání 0.4.0. Opakovaně použitelné přípravy PJ zůstávají návrhem. Nemají schválený rozsah ani termín a nejsou automatickou součástí hotových funkcí. Priority upravíme podle prvního společného hraní.

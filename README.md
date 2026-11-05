@@ -113,7 +113,7 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 ## Generátor jeskyně
 
-**Generátor V2, označování místností a inspekce PJ jsou součástí [vydání 0.3.0](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.3.0).** Původní V1 zůstává v pokročilém nastavení. Aktualizátor v administraci nabízí stabilní GitHub Releases; změna větve `main` sama o sobě další vydání nevytvoří. Při aktualizaci porovnávej i commit a poznámky k vydání.
+**Vydání 0.4.0** přidává Situace nad mapou, připravená setkání, kroniku družiny a bojové pomůcky. Správce může vydání vybrat v administraci. Podrobnosti a postup aktualizace jsou v [poznámkách k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.4.0).
 
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 

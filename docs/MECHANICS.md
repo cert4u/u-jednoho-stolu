@@ -2,9 +2,9 @@
 
 [Dokumentace](README.md) · [Herní příručka](PLAYING.md) · [Plán práce](ROADMAP.md) · [Limity](LIMITS.md)
 
-Posouzení k 31. 10. 2026 pro **vývojovou větev po 0.3.0**. Nové zámky/tajné dveře, předávání, bojové rozestavení a dohled podle světel nejsou součástí neměnného tagu 0.3.0. Vychází z implementace hlavní větve po přidání inspekce mapy. Jde o audit podpory herního večera v aplikaci, nikoli o kontrolu shody s konkrétní edicí DrD. Nezastupuje společnou zkoušku celé party.
+Posouzení k 5. 11. 2026 pro vydání **0.4.0**. Audit sleduje průběh herního večera od přípravy po navázání na další sezení. Shodu s konkrétní edicí DrD a zkoušku celé party řeší samostatně příručka a plán práce.
 
-Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Samostatné bojové postavení, návrat do průzkumu a předávání výbavy už jsou ve vývojové větvi. Volitelný dohled podle světel už je také hotový. PJ může zapnout odpočet stavů po kole a potvrdit léčivý předmět podle náhledu.
+Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Vydání zahrnuje bojové rozestavení, předávání výbavy i volitelný dohled podle světel. PJ může zapnout odpočet stavů po kole a potvrdit léčivý předmět podle náhledu.
 
 ## Co skutečně funguje
 

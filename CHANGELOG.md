@@ -1,23 +1,16 @@
 # Změny
 
-## Příští vydání
+## 0.4.0 — 2026-11-05
 
-- Volitelný odpočet stavů po kole a léčivé předměty s náhledem životů a společným potvrzením spotřeby i obnovy.
+- **Situace nad mapou.** PJ připraví popis, který se při prvním vstupu družiny rozvine nad mapou, nebo ho ukáže ručně. Více situací se zobrazí postupně a přečtené texty zůstanou v chatu.
+- **Připravená setkání.** Soukromé upozornění PJ odkazuje přímo na rozpracovanou zkoušku, příšeru, přípravu souboje a kořist v daném prostoru.
+- **Kde jsme skončili.** Družina vidí poslední shrnutí, otevřené stopy a uložené místo, které lze zvýraznit na mapě.
+- **Dohled podle světla.** Dosah světla závisí na zdroji, nosiči a překážkách. PJ může nastavit dohled bez světla nebo přepnout na ruční řízení. Při přesunu každý krok respektuje osvětlení před zápisem do paměti mapy.
+- **Souboj.** Jednotliví hrdinové se mohou rozestavit a pak znovu seskupit. PJ může zapnout odpočet stavů po kole a u léčivého předmětu společně potvrdit spotřebu a obnovu životů.
+- **Zámky, tajné dveře a výbava.** PJ spravuje dveře přes inspekci. Hráči mohou předávat předměty a mince spoluhráčům.
+- **Vzhled a pravidla.** Ovládací prvky mají sjednocenou teplou paletu. Příručka rozlišuje inspiraci hraním DrD 1.5, referenci hodů ze zjednodušených pravidel odvozených z 1.6 a vlastní úpravy.
 
-- Kronika družiny **Kde jsme skončili** ukládá shrnutí posledního sezení, otevřené stopy a volitelné místo na mapě.
-
-- Soukromé upozornění pro PJ nabízí přímé odkazy na zkoušky, příšery, souboj a kořist připravené v daném prostoru.
-
-- Situace při prvním vstupu družiny do místnosti se rozvine nad mapou a zůstane v historii chatu. PJ může zkontrolovat plochu spuštění nebo situaci ukázat ručně.
-
-- Oprava odhalování při skupinovém přesunu: každý krok respektuje světelný režim ještě před zápisem do paměti. Regresní test pokrývá vyhořelou pochodeň, nenulový dohled bez světla, nesené světlo i ruční dohled. Dříve chybně odhalenou mapu oprava zpětně nemaže.
-- Upřesněný pravidlový základ: inspirace hraním DrD 1.5, reference hodů ze zjednodušených pravidel odvozených z 1.6 a vlastní úpravy aplikace.
-
-- Volitelný dohled podle světel: dosahy a nosiči, přímý výhled omezený osvětlením, dohled bez světla a ruční přepsání PJ. Dohoření, zhasnutí, pohyb nosiče a vrácení času přepočítají viditelnost; paměť mapy zůstává. Kompatibilní zálohy a testy v průzkumu i bojovém rozestavení.
-
-- Zámky a tajné dveře: nastavení PJ přes inspekci, ochrana před odhalením v hráčských datech/paměti, kontrola otevření a průchodnosti.
-- Přímé předávání předmětů a mincí: společný odečet/připsání, soukromý záznam a ochrana souběhu/opakování.
-- Bojové rozestavení jednotlivých hrdinů: známé průchozí cesty, sdílený dohled, výběr bodu seskupení, identita rozestavení a úplné zálohy.
+SQL migrace a požadavky na konfiguraci jsou stejné jako v 0.3.0. Úplné zálohy zůstávají ve formátu 1 a starší zálohy lze obnovit. Automatický dohled podle světel a odpočet stavů zapíná PJ. Případné dřívější chybné odhalení lze ručně zakrýt.
 
 ## 0.3.0 — 2026-10-31
 
