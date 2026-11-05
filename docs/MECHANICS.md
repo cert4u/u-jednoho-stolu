@@ -4,7 +4,7 @@
 
 Posouzení k 31. 10. 2026 pro **vývojovou větev po 0.3.0**. Nové zámky/tajné dveře, předávání, bojové rozestavení a dohled podle světel nejsou součástí neměnného tagu 0.3.0. Vychází z implementace hlavní větve po přidání inspekce mapy. Jde o audit podpory herního večera v aplikaci, nikoli o kontrolu shody s konkrétní edicí DrD. Nezastupuje společnou zkoušku celé party.
 
-Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Samostatné bojové postavení, návrat do průzkumu a předávání výbavy už jsou ve vývojové větvi. Volitelný dohled podle světel už je také hotový. Nejbližší zbývající návazností je lehká podpora vyhodnocování stavů či spotřebních předmětů.
+Aplikace už podporuje základní průběh dobrodružství: přípravu → průzkum → zkoušku nebo souboj → rozdělení nálezu → odpočinek → pokračování uložené hry. Samostatné bojové postavení, návrat do průzkumu a předávání výbavy už jsou ve vývojové větvi. Volitelný dohled podle světel už je také hotový. PJ může zapnout odpočet stavů po kole a potvrdit léčivý předmět podle náhledu.
 
 ## Co skutečně funguje
 
@@ -20,10 +20,10 @@ Aplikace už podporuje základní průběh dobrodružství: přípravu → průz
 | Souboj | Útok → obrana → návrh zranění → potvrzení PJ; iniciativa, tah a kolo. | Pořadí je ruční, akce nejsou vynucené tahem a nemají rozpočet pohybu/akcí. |
 | Poloha v boji | Samostatné rozestavení, pohyb hrdinů po známých cestách, sdílený dohled, seskupení podle PJ. | Rozpočet akcí/pohybu a dodržení pořadí; rozdělení na různá patra není podporované. |
 | Střelba | Lze použít obecný útok s ruční opravou. | Dostřel, kryt, přímka střelby a odečet munice nejsou zvláštní propojená mechanika. |
-| Stavy a vyřazení | Vlastní stavy s počtem kol, 0 životů, bezvědomí/smrt/vyřazení a návrat potvrzený PJ. | Účinky stavů a odečet jejich kol; léčení samo neruší potvrzené vyřazení. |
+| Stavy a vyřazení | Vlastní stavy s počtem kol, 0 životů, bezvědomí/smrt/vyřazení a návrat potvrzený PJ. | Účinky stavů a ruční úpravy trvání. Léčení samo neruší potvrzené vyřazení. |
 | Kouzla a schopnosti | Vlastní záznamy, uložená cena a odečet magenergie. | Cíl, hod, trvání a účinek se vyhodnotí zvlášť. |
 | Odpočinek a léčení | Výběr postav, náhled a potvrzení obnovy životů/magenergie. | Podmínky odpočinku a posun herního času. |
-| Kořist a výbava | Nálezy, přidělení, dělení mincí, měšec, spotřeba a atomické předání mezi postavami. | Hmotnost/nosnost, automatický účinek lektvaru či nasazení výbavy. |
+| Kořist a výbava | Nálezy, přidělení, dělení mincí, měšec, spotřeba a atomické předání mezi postavami. | Hmotnost, nosnost, nasazení výbavy a účinky mimo zadanou obnovu životů. |
 | Dveře | Otevírání/zavírání, zamčení a utajení; neodhalené dveře jsou pro hráče zdí. | PJ potvrzuje odhalení a odemčení; klíče a výsledek zkoušky nejsou automaticky provázané. |
 | Čas a světlo | Ruční čas, odpočet, volitelný automatický dohled, dosahy a nosiči zdrojů, tma, zhasnutí a undo. | Pohyb, boj a odpočinek neposouvají čas samy; vidění podle rasy/povolání určí PJ. |
 | Pokračování hry | Serverové uložení, obnovovací klíče a úplná záloha kampaně. | PJ určuje konec večera a pořizuje zálohu; není to historie všech změn. |
@@ -52,7 +52,7 @@ Stav je navázaný na hranu mapy. PJ přes inspekci nastaví zámek/utajení a p
 
 ### 5. Ulehčit opakované vyhodnocování
 
-Volitelné odečtení kol stavů při změně kola, použití spotřebního předmětu s náhledem účinku a připomenutí postupu úrovně. Oddělit připomenutí od automatického zásahu do postavy; cenu, cíle a následky musí být možné zkontrolovat před potvrzením.
+Hotový je volitelný odpočet při přechodu do dalšího kola a použití léčivého předmětu s náhledem životů. Dalším rozšířením může být připomenutí postupu úrovně.
 
 ## Podpůrné věci mimo herní pravidla
 

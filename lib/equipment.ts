@@ -8,7 +8,20 @@ export function equipmentAction(g:Game,me:Member,b:Record<string,unknown>){
  const who=g.members.find(m=>m.id===b.memberId&&!m.archived);if(!who||me.role!=='pj'&&who.id!==me.id)throw new Error('Tuto výbavu nemůžeš upravovat.');
  if(b.expectedRevision!==(who.equipmentRevision??0))throw new EditConflict('Výbava nebo měšec se mezitím změnily. Načti aktuální stav; rozepsané údaje zůstávají tady.');
  let description:string;let recipientId:string|undefined;
- if(b.op==='transfer'){
+ if(b.op==='use-healing'){
+  if(me.role!=='pj')throw new Error('Léčení předmětem potvrzuje pouze Pán jeskyně.');
+  const item=who.possessions?.find(item=>item.id===b.itemId);
+  if(!item||item.quantity<1)throw new EditConflict('Předmět už není ve výbavě.');
+  if(b.expectedHp!==who.hp||b.expectedMaxHp!==who.maxHp)throw new EditConflict('Životy se mezitím změnily. Zkontroluj náhled a potvrď použití znovu.');
+  const amount=integer(b.hpAmount,1,9999,'Obnova životů');
+  const hp=Math.min(who.maxHp,who.hp+amount);
+  const gained=hp-who.hp;
+  if(gained<=0)throw new Error('Postavě nechybí životy.');
+  item.quantity--;
+  if(!item.quantity)who.possessions=who.possessions?.filter(entry=>entry.id!==item.id);
+  who.hp=hp;
+  description=`použito ${item.name} × 1 · životy +${gained} (${hp}/${who.maxHp})`;
+ }else if(b.op==='transfer'){
   const recipient=g.members.find(m=>m.id===b.recipientId&&!m.archived&&m.role==='player');if(!recipient||recipient.id===who.id)throw new Error('Vyber jinou aktivní hráčskou postavu.');
   if(b.kind==='item'){
    const item=who.possessions?.find(i=>i.id===b.itemId);if(!item)throw new EditConflict('Předmět už není ve výbavě.');const quantity=integer(b.quantity,1,999999,'Předávaný počet');if(quantity>item.quantity)throw new EditConflict('Tolik kusů už postava nemá.');

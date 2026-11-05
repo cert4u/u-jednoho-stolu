@@ -26,6 +26,24 @@ for(const change of [list=>list.push(list[0]),list=>list[0].rounds=-1,list=>list
 const removeId=crypto.randomUUID();condition=(await get(pj)).members.find(m=>m.id===ar.id).conditions[0];await run(pj,'remove',{target:ar,conditionId:condition.id,expectedRevision:condition.revision},removeId);assert.equal((await run(pj,'remove',{target:ar,conditionId:condition.id,expectedRevision:condition.revision},removeId)).status,200);assert.equal((await run(pj,'remove',{target:ar,conditionId:condition.id,expectedRevision:condition.revision})).status,409);
 // A duration is a manual reminder and does not tick when initiative advances.
 const before=JSON.stringify((await get(pj)).monsters[0].conditions);g=await get(pj);await post(pj,'initiative',{op:'next',expectedRevision:g.initiative.revision,requestId:crypto.randomUUID()});g=await get(pj);await post(pj,'initiative',{op:'next',expectedRevision:g.initiative.revision,requestId:crypto.randomUUID()});assert.equal(JSON.stringify((await get(pj)).monsters[0].conditions),before);
+// Explicit round transitions apply the optional countdown exactly once.
+const initiative=(op,data={},requestId=crypto.randomUUID())=>post(pj,'initiative',{op,...data,requestId});
+const active=await get(pj);
+assert.equal((await initiative('roster',{order:[ar,mr],autoTick:'true',expectedRevision:active.initiative.revision})).status,400);
+assert.equal((await initiative('roster',{order:[ar,mr],autoTick:true,expectedRevision:active.initiative.revision})).status,200);
+const monsterConditions=async()=> (await get(pj)).monsters[0].conditions;
+const startRounds=await monsterConditions();
+const rostered=await get(pj);
+assert.equal((await initiative('next',{expectedRevision:rostered.initiative.revision})).status,200);
+assert.deepEqual(await monsterConditions(),startRounds);
+const last=await get(pj),wrapId=crypto.randomUUID();
+const wrapped=await Promise.all([initiative('next',{expectedRevision:last.initiative.revision},wrapId),initiative('next',{expectedRevision:last.initiative.revision},wrapId)]);
+assert(wrapped.every(result=>result.status===200));
+assert.deepEqual(await monsterConditions(),startRounds.map(condition=>({...condition,rounds:condition.rounds-1,revision:condition.revision+1})));
+assert.equal((await get(pj)).members.find(m=>m.id===ar.id).conditions[0].rounds,null);
+assert(!(await get(b)).initiative.order.find(r=>r.id===mr.id).conditions.some(c=>c.secret));
+const countdownBackup=await (await fetch(base+'/api/game?room='+pj.room+'&download=backup',{headers:{Authorization:'Bearer '+pj.token}})).json();
+assert.equal((await post(null,'restore',{backup:countdownBackup})).game.initiative.autoTick,true);
 await post(pj,'member-archive',{memberId:ar.id});assert.equal((await run(pj,'add',values)).status,400);await post(pj,'member-restore',{memberId:ar.id});assert.equal((await get(pj)).members.find(m=>m.id===ar.id).conditions.length,1);
 for(let i=0;i<11;i++)assert.equal((await run(pj,'add',{...values,label:'Stav '+i})).status,200);assert.equal((await run(pj,'add',values)).status,400);
 console.log('PASS: public/private conditions, PJ permissions, manual durations, idempotence and concurrent ticks, stale edits, HP preservation, hidden monster privacy in map/initiative, limits, archives and full backup validation.');

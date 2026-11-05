@@ -10,6 +10,12 @@ export type Condition = {
     revision: number;
 };
 export function visibleConditions(conditions: Condition[] | undefined, pj: boolean) { return (conditions || []).filter(c => pj || !c.secret); }
+export function tickCondition(condition: Condition): boolean {
+    if (condition.rounds === null || condition.rounds === 0) return false;
+    condition.rounds--;
+    condition.revision++;
+    return true;
+}
 function fields(b: Record<string, unknown>) {
     if (typeof b.label !== 'string' || !b.label.trim() || b.label.trim().length > 40)
         throw new Error('Název stavu musí mít 1 až 40 znaků.');
@@ -53,10 +59,8 @@ export function conditionAction(g: Game, actor: Member, b: Record<string, unknow
                 target.conditions = conditions.filter(c => c.id !== condition.id);
                 break;
             case 'tick':
-                if (condition.rounds === null || condition.rounds === 0)
+                if (!tickCondition(condition))
                     throw new Error('Tento stav nemá další kolo k odečtení.');
-                condition.rounds--;
-                condition.revision++;
                 break;
             default: throw new Error('Neznámá akce stavu.');
         }

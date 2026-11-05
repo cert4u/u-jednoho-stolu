@@ -134,3 +134,9 @@ Při `explore` / `move` se stejný výpočet dohledu provádí na každém kroku
 Při `map-note` / `save` lze volitelným booleanem `parchmentOnEntry` nastavit automatické zobrazení situace. `showParchment: true` uloží přípravu a hned zobrazí situaci a uloží ji do chatu. Oprávnění PJ a kontrola `expectedRevision` zůstávají stejné. `publish` řídí samostatný popis pod značkou na mapě.
 
 `explore` / `move` kontroluje přechod zvenčí dovnitř při každém kroku. `travel` vyhodnotí vstup na cílovém patře. Akce odešle pouze popis pro družinu jako zprávu s `parchment: {title, roomNumber?}` a uloží příznak `parchmentRevealed` přímo na poznámku. Díky tomu se situace neopakuje ani po ořezu historie chatu. Nastavení situace je ve zobrazení poznámky dostupné pouze PJ. Historie a příznak zveřejnění zůstávají v úplné záloze.
+
+### Odpočet stavů a léčivé předměty
+
+Při `initiative` / `roster` může PJ předat volitelný boolean `autoTick`. Vynechaná hodnota ponechá dosavadní nastavení. S aktivním odpočtem odečte `next` při přechodu do dalšího kola jeden krok u každého kladného trvání stavů účastníků. Kolo i stavy se uloží společně. Ochrana proti opakování požadavku platí pro obě změny.
+
+Operace `equipment` / `use-healing` je dostupná PJ. Vyžaduje `memberId`, `itemId`, kladné celé `hpAmount`, revizi výbavy `expectedRevision` a hodnoty z náhledu `expectedHp` a `expectedMaxHp`. Server ověří náhled, odečte jeden kus a přičte životy nejvýše do maxima. Při plných životech operaci odmítne. Záznam v chatu vidí postava a PJ.

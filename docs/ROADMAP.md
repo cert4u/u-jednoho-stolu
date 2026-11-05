@@ -24,7 +24,7 @@ Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásad
 - [x] Čas průzkumu a světla družiny s odpočtem doby svícení a vrácením posledního posunu.
 - [x] Odpočinek a léčení s výběrem postav, náhledem a obnovou životů i magenergie podle PJ.
 - [x] Vlastní kouzla a schopnosti, magenergie a její odečítání při použití.
-- [x] Jednoduché značky stavů postav a příšer, tajné poznámky a ruční počítání kol.
+- [x] Jednoduché značky stavů postav a příšer, tajné poznámky a ruční počítání kol a volitelný odpočet po kole.
 - [x] Příprava vlastního hostingu a dokumentovaný provoz včetně obnovy záloh.
 - [ ] Další rozdělení rozsáhlých komponent a sjednocení klientských/serverových typů.
 
@@ -40,7 +40,8 @@ Vchod a samostatný východ jsou trvalé značky mapy; PJ může zahájit průzk
 - [x] Předávání předmětů a mincí mezi postavami jednou společnou operací.
 - [x] Volitelně propojit světlo s dohledem, dosahy/nosiče zdrojů, dohoření a společný výhled v boji.
 - [x] Přidat jednoduché zámky a bezpečně skrývané tajné dveře.
-- [ ] Ulehčit odečítání stavů, spotřební předměty a postup úrovní bez povinného plného pravidlového enginu.
+- [x] Volitelný odpočet stavů po kole a použití léčivého předmětu s náhledem.
+- [ ] Připomenutí postupu úrovně.
 
 Samostatně zbývá rozšiřování kreslicí plochy za současných 28 × 20 polí. Označování místností ani inspekce tento limit neodstranily. Rozsah a pořadí navržených funkcí potvrdí zkušenost z hraní.
 

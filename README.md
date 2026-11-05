@@ -52,7 +52,8 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 - Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací.
 - Nástroj **(i) Prozkoumat** pro PJ: detail značky nebo souhrn obsahu místnosti včetně tajné přípravy a navázané kořisti/zkoušek.
 - Číslované místnosti s názvy přímo v mapě, přesouváním značek a seznamem pro rychlé hledání. Nově generovaná patra dostanou soukromá označení automaticky.
-- Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu.
+- Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu a může z něj otevřít připravenou zkoušku, příšeru, souboj nebo kořist.
+- Připravená **Situace** se při prvním vstupu družiny rozvine nad mapou. Po přečtení zůstane v chatu.
 - Zkoušky a pasti s výzvou konkrétnímu hráči, volitelně tajnou nebezpečností a ručním potvrzením následků.
 - Tajná příprava kořisti, zveřejnění nálezu, přidělení hráčům a rovné rozdělení mincí se zachováním zbytku.
 - Čas průzkumu, světla a odpočet doby svícení. Volitelný dohled podle světel, jejich dosahu a nosičů včetně dohoření, tmy a ručního přepsání PJ. Odpočinek a léčení s náhledem obnovovaných životů a magenergie.
@@ -61,15 +62,17 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 
 - Deníky s pěti vlastnostmi, bojovými hodnotami, úrovní a zkušenostmi přidělovanými PJ.
 - Výbava a měšec: položky, spotřeba kusů, příjmy, platby, převzetí kořisti a přímé předávání předmětů/mincí mezi hráči.
+- Léčení předmětem s náhledem životů. PJ potvrdí obnovu a spotřebu jednoho kusu společně.
 - Vlastní kouzla a schopnosti, magenergie a její odečítání při použití. Účinky vyhodnocuje PJ.
 - Hody generované na serveru: běžné kostky, hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ.
 - Samostatné bojové rozestavení hrdinů se sdíleným výhledem, pohybem po známých cestách a seskupením zpět do společného průzkumu.
-- Soubojové pořadí, aktuální účastník a číslo kola. Vlastní stavy postav a příšer s ručně odečítaným trváním.
+- Soubojové pořadí, aktuální účastník a číslo kola. Vlastní stavy postav a příšer s volitelným odpočtem po každém kole.
 - Upozornění při nule životů a rozhodnutí PJ o vyřazení, bezvědomí, smrti nebo návratu do hry.
 
 ### Společný stůl a uložená hra
 
 - Společný chat, soukromé šeptání a volitelný hlasový hovor pro každou družinu.
+- **Kde jsme skončili** uchovává poslední shrnutí, otevřené stopy a volitelné místo na mapě pro celou družinu.
 - Osobní obnovovací klíče, archivace a návrat postav.
 - Úplná záloha kampaně včetně všech pater a tajné přípravy, s obnovou do nové místnosti.
 - Ochrana rozepsaných formulářů a souběžných změn; uložení poznámky nepřepíše mezitím odečtené životy.
@@ -83,14 +86,14 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 4. **Připojte se k hovoru.** Je-li služba zapnutá, v panelu **Hlas družiny** zvolte **Připojit k hovoru**. Mikrofon je zpočátku vypnutý a každý si ho zapne sám.
 5. **Prozkoumávejte.** Vedoucí kliknutím posouvá společnou družinu. **Ctrl + levé tažení** nebo nástroj **Ruka** posouvají papír; **Ctrl + kolečko** mění měřítko. Hráči uvidí postupně objevovaná místa a sdílené popisy.
 6. **Nechte promluvit kostky.** Nabídka **Hody a souboj** slouží k hodům na vlastnosti, útok a obranu. PJ připraví pořadí souboje a potvrdí zranění. Do chatu lze napsat i vlastní hod, například `/hod 2k6+1`.
-7. **Rozdělte nález a vraťte se příště.** Kořist převezměte do deníků. PJ může obnovit životy či magenergii a stáhnout úplnou zálohu kampaně. Běžné změny se ukládají průběžně.
+7. **Rozdělte nález a vraťte se příště.** Kořist převezměte do deníků. PJ může zapsat, kde družina skončila, obnovit životy či magenergii a stáhnout úplnou zálohu kampaně. Běžné změny se ukládají průběžně.
 
 Na mobilu najdeš společná nastavení v panelu **Družina, čas a patra**. Souboj má vlastní rozbalovací panel u mapy.
 
 <details>
 <summary>Další ovládání při hře</summary>
 
-- **Stavy:** PJ je spravuje přes **Spravovat stavy** v hlavičce souboje. Počet kol odečítá ručně; nula stav sama neodstraní. Stavy automaticky nemění hody ani životy.
+- **Stavy:** PJ je spravuje přes **Spravovat stavy** v hlavičce souboje. Počet kol může odečítat ručně nebo zapnout odpočet v přípravě souboje. Při nule zůstane stav v přehledu k posouzení PJ.
 - **Kouzla a schopnosti:** v **Můj deník → Kouzla a schopnosti** nastav magenergii a vlastní záznamy s cenou. **Použít** odečte cenu a zaznamená použití pro hráče a PJ; oznámení celé družině je volitelné.
 - **Odpočinek a léčení:** PJ v **Hody a souboj → Odpočinek a léčení** vybere postavy, určí obnovu, zkontroluje náhled a potvrdí ji. Potvrzené vyřazení, stavy a kola souboje se tím samy nemění.
 - **Čas a světlo:** PJ eviduje světla a posouvá průzkumný čas. Odpočítávají se pouze rozsvícené zdroje se zadanou dobou. Poslední posun lze vrátit, dokud světla dál neupravíš. Dohled na mapě se nastavuje samostatně.

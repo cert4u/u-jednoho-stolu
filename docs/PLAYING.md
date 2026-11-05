@@ -133,7 +133,7 @@ Bojové rozestavení a pořadí iniciativy jsou samostatné pomůcky: PJ spravuj
 
 ## Stavy, nula životů, léčení a kouzla
 
-**Spravovat stavy** přidává názvy, poznámky, tajnost a dobu v kolech. PJ kola odečítá ručně; nula stav sama neodstraní. Stav není automatickým postihem k hodům.
+**Spravovat stavy** přidává názvy, poznámky, tajnost a dobu v kolech. PJ může kola odečítat ručně nebo v přípravě souboje zapnout **Odečítat trvání stavů na konci kola**. Po posledním tahu se každému účastníkovi odečte jedno kolo u stavů s kladnou dobou. Stavy bez určené doby běží podle rozhodnutí PJ. Při nule stav zůstává v přehledu k posouzení PJ.
 
 Nula životů označí dosud aktivní postavu jako čekající na rozhodnutí PJ. PJ potvrdí vyřazení, bezvědomí či smrt a může přidat poznámku viditelnou jen jemu a majiteli. Léčení samo potvrzený stav neruší; návrat do hry musí potvrdit PJ a vyžaduje alespoň jeden život. Smrt nastaví životy na nulu. Soubojové pořadí tím automaticky nemažeš.
 
@@ -143,7 +143,7 @@ V **Kouzla a schopnosti** majitel nebo PJ spravuje vlastní záznamy a magenergi
 
 PJ nález připraví tajně, může ho propojit s poznámkou a zveřejnit. Z otevřeného nálezu hráč přebírá předměty/mince pro sebe, PJ je může přidělit hráči. Získané věci se připíšou do výbavy, mince do měšce. Rovné dělení rozděluje jednotlivé druhy mincí a zbytek ponechá v nálezu. Historie zachová, kdo co získal.
 
-V deníku lze přidat a přejmenovat položku, změnit počet nebo použít kusy. Počet nula při editaci položku odstraní. Platba/příjem eviduje konkrétní mince a důvod, neprovádí automatickou směnu měn. Použití lektvaru samo neléčí. V **Výbava a měšec → Předat spoluhráči** vyber aktivní hráčskou postavu, předmět a počet, nebo konkrétní mince. Odesílatel ovládá vlastní výbavu, PJ může předávat za kteroukoli postavu. Odečet a připsání proběhnou společně; stejné názvy předmětů se u příjemce sloučí. Nestačí-li zásoby, místo nebo kapacita měšce, předání se neprovede. Záznam uvidí odesílatel, příjemce a PJ. Mince se při předání nesměňují.
+V deníku lze přidat a přejmenovat položku, změnit počet nebo použít kusy. Počet nula při editaci položku odstraní. Platba/příjem eviduje konkrétní mince a důvod, neprovádí automatickou směnu měn. PJ může u předmětu zvolit **Použít k léčení**, zadat obnovu a zkontrolovat náhled. Po potvrzení se odečte jeden kus a postava získá životy nejvýše do svého maxima. Potvrzené vyřazení pak PJ řeší v panelu **Vyřazení postav**. V **Výbava a měšec → Předat spoluhráči** vyber aktivní hráčskou postavu, předmět a počet, nebo konkrétní mince. Odesílatel ovládá vlastní výbavu, PJ může předávat za kteroukoli postavu. Odečet a připsání proběhnou společně; stejné názvy předmětů se u příjemce sloučí. Nestačí-li zásoby, místo nebo kapacita měšce, předání se neprovede. Záznam uvidí odesílatel, příjemce a PJ. Mince se při předání nesměňují.
 
 ## Čas, světlo, hlas a uložení
 
@@ -170,4 +170,4 @@ Běžné změny se ukládají na server. PJ navíc přes nabídku přístupu st�
 
 ## Co aplikace nevyhodnotí sama
 
-[Audit herního základu](MECHANICS.md) odlišuje hotové rozestavení, předávání a ruční potvrzení dveří od zbývající návaznosti stavů či spotřebních předmětů. Řízení dohledu světly je volitelně podporované. Pro současnou hru rozhoduje o těchto situacích PJ.
+[Audit herního základu](MECHANICS.md) odlišuje hotové rozestavení, předávání a ruční potvrzení dveří od dalšího plánovaného rozšíření pravidel. Řízení dohledu světly je volitelně podporované.

@@ -1,10 +1,10 @@
 import {lifeView,type LifeView} from './life';
-import {visibleConditions,type Condition} from './conditions';
+import {tickCondition,visibleConditions,type Condition} from './conditions';
 import type {Game,Member} from './game';
 import {monsterVisible} from './monsters';
 import {EditConflict} from './sheets';
 export type InitiativeRef={type:'member'|'monster';id:string};
-export type Initiative={revision:number;active:boolean;round:number;current:string|null;order:InitiativeRef[]};
+export type Initiative={autoTick?:boolean;revision:number;active:boolean;round:number;current:string|null;order:InitiativeRef[]};
 export type InitiativeEntry=InitiativeRef & {key:string;name:string;defeated:boolean;life?:LifeView;conditions?:Condition[]};
 export type InitiativeView=Omit<Initiative,'order'> & {order:InitiativeEntry[]};
 export const initiativeKey=(ref:InitiativeRef)=>`${ref.type}:${ref.id}`;
@@ -48,11 +48,21 @@ export function initiativeAction(g:Game,actor:Member,b:Record<string,unknown>){
  if(b.expectedRevision!==state.revision)throw new EditConflict('Souboj se mezitím změnil. Zkontroluj aktuální pořadí a zopakuj akci.');
  let next={...state};
  switch(b.op){
-  case 'roster':next=replaceOrder(state,roster(g,b.order));break;
+  case 'roster':
+   if(b.autoTick!==undefined&&typeof b.autoTick!=='boolean')throw new Error('Zvol, zda se mají odečítat stavy.');
+   next=replaceOrder(state,roster(g,b.order));
+   if(typeof b.autoTick==='boolean')next.autoTick=b.autoTick;
+   break;
   case 'start':if(state.active)throw new Error('Souboj už probíhá.');if(!state.order.length)throw new Error('Nejdřív vyber účastníky souboje.');next={...state,active:true,round:1,current:initiativeKey(state.order[0])};break;
   case 'next':{if(!state.active||!state.order.length)throw new Error('Souboj zatím neprobíhá.');const index=state.order.findIndex(r=>initiativeKey(r)===state.current)+1;next={...state,current:initiativeKey(state.order[index%state.order.length]),round:state.round+(index===state.order.length?1:0)};if(next.round>1000000)throw new Error('Souboj dosáhl nejvyššího počtu kol.');break;}
   case 'stop':if(!state.active)throw new Error('Souboj zatím neprobíhá.');next={...state,active:false,current:null};break;
   default:throw new Error('Neznámá akce souboje.');
+ }
+ if(b.op==='next'&&state.autoTick&&next.round>state.round){
+  for(const ref of state.order){
+   const participant=ref.type==='member'?g.members.find(member=>member.id===ref.id):g.monsters?.find(monster=>monster.id===ref.id);
+   for(const condition of participant?.conditions??[])tickCondition(condition);
+  }
  }
  g.initiative={...next,revision:state.revision+1};
  g.initiativeOperations=[...(g.initiativeOperations||[]),b.requestId].slice(-256);

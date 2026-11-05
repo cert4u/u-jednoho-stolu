@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Volitelný odpočet stavů po kole a léčivé předměty s náhledem životů a společným potvrzením spotřeby i obnovy.
+
 - Kronika družiny **Kde jsme skončili** ukládá shrnutí posledního sezení, otevřené stopy a volitelné místo na mapě.
 
 - Soukromé upozornění pro PJ nabízí přímé odkazy na zkoušky, příšery, souboj a kořist připravené v daném prostoru.

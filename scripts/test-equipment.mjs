@@ -21,5 +21,25 @@ r=await post(pj,'loot',{op:'save',expectedRevision:null,title:'Nález',secret:''
 assert.equal((await post(a,'character',{inventory:'Nová volná poznámka'})).status,200);assert.equal(member(await get(a)).purse.gold,6);assert.equal(member(await get(a)).possessions[0].quantity,11);
 const backup=await (await fetch(base+'/api/game?room='+pj.room+'&download=backup',{headers:{Authorization:'Bearer '+pj.token}})).json();const restored=await post(null,'restore',{backup});assert.equal(restored.status,200);assert.deepEqual(member(restored.game).possessions,member(await get(pj)).possessions);assert.equal(member(restored.game).equipmentRevision,11);assert.equal((await act(restored,'edit',{itemId:item.id,name:'Šípy do toulce',quantity:0,expectedRevision:11})).status,200);assert.deepEqual(member(await get(restored)).possessions,[]);
 const broken=structuredClone(backup);broken.game.members.find(m=>m.id===aid).equipmentRevision=-1;assert.equal((await post(null,'restore',{backup:broken})).status,400);
-assert.equal((await post(pj,'member-archive',{memberId:aid})).status,200);assert.equal((await act(pj,'wallet',{mode:'add',coins:{...zero,gold:1},reason:'Archiv',expectedRevision:11})).status,400);
+// Healing uses one item and a current HP preview in the same mutation.
+const potionAdded=await act(pj,'add',{name:'Léčivý lektvar',quantity:2,expectedRevision:11});
+assert.equal(potionAdded.status,200);
+const potion=member(potionAdded.game).possessions.find(entry=>entry.name==='Léčivý lektvar');
+assert.equal((await post(a,'character',{hp:7})).status,200);
+const hurt=member(await get(a));
+const healing={itemId:potion.id,expectedRevision:hurt.equipmentRevision,expectedHp:hurt.hp,expectedMaxHp:hurt.maxHp,hpAmount:20};
+assert.equal((await act(a,'use-healing',healing)).status,403);
+assert.equal((await act(pj,'use-healing',{...healing,expectedHp:6})).status,409);
+assert.equal((await act(pj,'use-healing',{...healing,hpAmount:0})).status,400);
+assert.equal(member(await get(a)).possessions.find(entry=>entry.id===potion.id).quantity,2);
+const healId=crypto.randomUUID();
+const healed=await Promise.all([act(pj,'use-healing',healing,healId),act(pj,'use-healing',healing,healId)]);
+assert(healed.every(result=>result.status===200));
+const afterHeal=member(await get(a));
+assert.equal(afterHeal.hp,hurt.maxHp);
+assert.equal(afterHeal.possessions.find(entry=>entry.id===potion.id).quantity,1);
+assert.equal((await act(pj,'use-healing',{...healing,expectedRevision:afterHeal.equipmentRevision,expectedHp:afterHeal.hp})).status,400);
+assert.equal(member(await get(a)).possessions.find(entry=>entry.id===potion.id).quantity,1);
+assert(!(await get(b)).messages.some(message=>message.text.includes('Léčivý lektvar')));
+assert.equal((await post(pj,'member-archive',{memberId:aid})).status,200);assert.equal((await act(pj,'wallet',{mode:'add',coins:{...zero,gold:1},reason:'Archiv',expectedRevision:afterHeal.equipmentRevision})).status,400);
 console.log('PASS: private equipment and purse, owner/PJ permissions, add/merge/edit/use-to-zero, one action across replay/races, atomic payments, loot revision conflicts, unrelated sheet edits, archived characters and backup.');
