@@ -296,3 +296,11 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 .encounter-links li button span { overflow-wrap: anywhere; }
 .encounter-links li button small { display: block; font-size: 10px; }
 .encounter-combat { font-size: 11px; }
+
+.recap-location { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; margin: 12px 0; background: var(--control); border: 1px solid var(--control-border); border-radius: 6px; color: var(--control-ink); }
+.recap-location span { display: inline-flex; gap: 6px; align-items: center; }
+.recap-location button { border: 1px solid var(--control-border); border-radius: 4px; padding: 6px 9px; background: var(--paper); }
+.recap-reading p { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width:850px) {
+  .mobile-journals:has(>button:nth-child(5)) > button { flex-basis: calc(33.333% - 8px); }
+}

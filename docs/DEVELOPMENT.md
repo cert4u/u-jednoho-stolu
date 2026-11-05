@@ -159,7 +159,7 @@ npm run test:ci
 
 `test:ci` si spustí a ukončí vývojový server, ale používá místní D1 úložiště a přidané testovací místnosti v něm zůstanou. Proti již spuštěné oddělené místní instanci lze použít `npm run test:integration -- http://127.0.0.1:5173`. Testy nepouštěj proti rozehrané instalaci; vytvářejí i obnovují vlastní syntetické kampaně.
 
-Současných 26 integračních sad v `scripts/test-integration.mjs`:
+Současných 27 integračních sad v `scripts/test-integration.mjs`:
 
 | Sada `test-*.mjs` | Ověřuje |
 | --- | --- |
@@ -170,6 +170,7 @@ Současných 26 integračních sad v `scripts/test-integration.mjs`:
 | `loot`, `equipment` | Převzetí nálezů, měšec a výbavu bez zdvojování. |
 | `generator-core`, `generator-v2`, `generator`, `generation-v2-integration`, `access` | Deterministické mapy, vložení, propojení, vchody a východy. `access` zde znamená mapové vstupy. |
 | `room-parchments` | Skutečný vstup a průchod místností, schodiště, ruční zveřejnění, soukromí, opakování a zálohy. |
+| `session-recap` | Zápis ze sezení, oprávnění, soukromí mapy, opakování, konflikty a zálohy. |
 | `lighting` | Dohoření/undo, šedou paměť a příšery, skupinový průchod za tmy i se světlem (včetně mezikroků), nosiče v boji, nesčítání dosahů, průhlednost hran, přepsání PJ a zálohy. |
 | `basic-mechanics` | Zamčené/tajné dveře a paměť, individuální bojový pohyb a sdílený dohled, seskupení, soukromé atomické transfery, zálohy a souběh. |
 | `voice`, `repairs` | Hlasová oprávnění a regresní případy souběhu, přístupů a úplných záloh. |

@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Kronika družiny **Kde jsme skončili** ukládá shrnutí posledního sezení, otevřené stopy a volitelné místo na mapě.
+
 - Soukromé upozornění pro PJ nabízí přímé odkazy na zkoušky, příšery, souboj a kořist připravené v daném prostoru.
 
 - Situace při prvním vstupu družiny do místnosti se rozvine nad mapou a zůstane v historii chatu. PJ může zkontrolovat plochu spuštění nebo situaci ukázat ručně.

@@ -10,6 +10,12 @@ Výchozí inspirací projektu je hraní **Dračího doupěte 1.5**. Aplikace pou
 
 Konkrétní vzorce hodů uvádí část [Hody a souboj](#hody-a-souboj). Volitelný společný dohled podle světel, samostatné bojové rozestavení bez rozpočtu akcí a ručně potvrzované následky jsou pomůcky této aplikace. Nepředstavují úplný pravidlový engine konkrétní edice. Tvorbu a postup postav, účinky kouzel a sporné situace určuje vaše skupina s PJ; [audit mechanik](MECHANICS.md) uvádí hranice automatizace.
 
+## Kde jsme skončili
+
+V nabídce **Kde jsme skončili** si družina přečte poslední shrnutí a otevřené stopy. PJ může po sezení přepsat shrnutí a připojit aktuální společnou polohu družiny. Při další úpravě může místo ponechat, přepsat nebo odebrat. Text vidí všichni u stolu.
+
+Tlačítko **Ukázat na mapě** zvýrazní uložené políčko bez přesunu družiny. Hráči ho mohou použít na aktuálním patře, pokud dané místo stále znají. PJ může otevřít i jiné patro. Zápis je součástí úplné zálohy kampaně.
+
 ## Role a přístupy
 
 | Role | Úloha |
