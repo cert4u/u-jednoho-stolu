@@ -281,3 +281,18 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
   to { clip-path: inset(-48px); transform: translateY(0); opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) { .situation-expanded { animation: none; } }
+
+.encounter-links { margin-top: 12px; border-top: 1px solid var(--control-border); padding-top: 9px; }
+.encounter-links ul { list-style: none; margin: 6px 0; padding: 0 4px; max-height: min(180px, 26dvh); overflow-y: auto; }
+.encounter-links li + li { margin-top: 4px; }
+.encounter-links li button, .encounter-combat {
+  padding: 6px 8px;
+  border: 1px solid var(--control-border);
+  border-radius: 5px;
+  background: var(--control);
+  color: var(--control-ink);
+}
+.encounter-links li button { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; text-align: left; width: 100%; }
+.encounter-links li button span { overflow-wrap: anywhere; }
+.encounter-links li button small { display: block; font-size: 10px; }
+.encounter-combat { font-size: 11px; }

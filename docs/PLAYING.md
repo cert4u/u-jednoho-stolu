@@ -97,7 +97,7 @@ Situace se rozvine nad mapou při přechodu společné družiny zvenčí dovnit�
 
 PJ může použít **Ukázat situaci teď**. Obě možnosti zobrazí popis jednou na místo. Po kliknutí na **Pokračovat** zůstane jeho aktuální znění v historii chatu. Při více situacích na jedné cestě se rozvinou postupně. Starší zprávy při návratu ke stolu zůstanou v chatu. Pozdější úprava poznámky historii nepřepisuje. Sdílený popis pod značkou na mapě se spravuje samostatně. Tajná příprava se v situaci nezobrazí.
 
-Upozornění při přiblížení má výchozí dosah 2 pole, nastavení 1–6 nebo vypnutí. Funguje i přes stěny a sleduje průchod družiny kolem místa. Během pobytu v okolí se neopakuje. Je soukromou připomínkou PJ, nic automaticky neodhaluje ani nespouští hod či poškození.
+Upozornění při přiblížení má výchozí dosah 2 pole, nastavení 1–6 nebo vypnutí. Funguje i přes stěny a sleduje průchod družiny kolem místa. Během pobytu v okolí se neopakuje. Je soukromou připomínkou PJ, nic automaticky neodhaluje ani nespouští hod či poškození. V části **Připravené setkání** otevřeš přímo rozpracovanou zkoušku, živou příšeru nebo kořist z daného prostoru. Pokud jsou v něm příšery, odtud také otevřeš přípravu souboje na příslušném patře. Po zavření panelu se připomínka vrátí, dokud ji nepotvrdíš.
 
 Příšeru PJ vytvoří v **Příšery** a umístí na podlahu. Má vlastní číslo, životy a bojové hodnoty. Ručně skrytá příšera zůstává skrytá i na viditelném místě. Hráči nedostanou její tajné statistiky a poznámky. Nula životů ji označí za poraženou; archivace a odebrání z mapy jsou samostatné operace.
 
