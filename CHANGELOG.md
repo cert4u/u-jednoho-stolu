@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- Objevený pergamen v chatu při prvním vstupu družiny do připravené místnosti. PJ může zkontrolovat plochu spuštění nebo pergamen ukázat ručně.
+
 - Oprava odhalování při skupinovém přesunu: každý krok respektuje světelný režim ještě před zápisem do paměti. Regresní test pokrývá vyhořelou pochodeň, nenulový dohled bez světla, nesené světlo i ruční dohled. Dříve chybně odhalenou mapu oprava zpětně nemaže.
 - Upřesněný pravidlový základ: inspirace hraním DrD 1.5, reference hodů ze zjednodušených pravidel odvozených z 1.6 a vlastní úpravy aplikace.
 

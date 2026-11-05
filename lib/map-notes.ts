@@ -2,10 +2,12 @@ import type {Game,Member} from './game';
 import {cellKey,dungeonFor,type Dungeon} from './dungeon';
 import {getLevel} from './exploration';
 import {EditConflict} from './sheets';
+import {publishParchment} from './room-parchments';
 export type NoteAnchor={levelId:string;x:number;y:number};
 export type PublicMapNote={title:string;text:string;roomNumber?:number};
-export type MapNote=NoteAnchor & PublicMapNote & {id:string;notify?:boolean;radius?:number;secret:string;revision:number;published?:PublicMapNote};
-export type MapNoteView=NoteAnchor & PublicMapNote & {id:string;shared:boolean;notify?:boolean;radius?:number;secret?:string;revision?:number;published?:PublicMapNote};
+type ParchmentSettings={parchmentOnEntry?:boolean;parchmentRevealed?:true};
+export type MapNote=NoteAnchor & PublicMapNote & ParchmentSettings & {id:string;notify?:boolean;radius?:number;secret:string;revision:number;published?:PublicMapNote};
+export type MapNoteView=NoteAnchor & PublicMapNote & ParchmentSettings & {id:string;shared:boolean;notify?:boolean;radius?:number;secret?:string;revision?:number;published?:PublicMapNote};
 export function mapNotesView(g:Game,pj:boolean,levelId:string,known:Dungeon):MapNoteView[]{return (g.mapNotes||[]).filter(n=>n.levelId===levelId).flatMap<MapNoteView>(n=>{
  if(pj)return [{...n,notify:n.notify??true,radius:n.radius??2,shared:!!n.published}];
  const key=cellKey(n.x,n.y);if(!n.published||!known.floors.includes(key)||!known.revealed.includes(key))return [];
@@ -21,9 +23,28 @@ export function mapNoteAction(g:Game,actor:Member,b:Record<string,unknown>){
  const notes=g.mapNotes||[],note=notes.find(n=>n.levelId===b.levelId&&n.x===b.x&&n.y===b.y);
  if(b.op==='save'){
   if(typeof b.publish!=='boolean')throw new Error('Vyber způsob uložení popisu.');
-  const values=fields(b,note);if(values.roomNumber&&notes.some(n=>n.levelId===b.levelId&&n.id!==note?.id&&n.roomNumber===values.roomNumber))throw new Error('Toto číslo místnosti už je na patře použité.');if(b.publish&&!values.text)throw new Error('Před sdílením napiš popis pro družinu.');
-  if(note){if(b.noteId!==note.id||b.expectedRevision!==note.revision)throw new EditConflict('Poznámka se mezitím změnila. Rozepsaný text zůstává zachovaný; otevři místo znovu.');Object.assign(note,values,{revision:note.revision+1});if(b.publish)note.published={title:values.title,text:values.text,...(values.roomNumber?{roomNumber:values.roomNumber}:{})};}
-  else{if(b.noteId||b.expectedRevision!==null)throw new EditConflict('Poznámka už neexistuje. Otevři místo znovu.');if(notes.length>=200)throw new Error('Dobrodružství může mít nejvýše 200 poznámek na mapě.');if(!(level?.map||dungeonFor(g)).floors.includes(cellKey(b.x,b.y)))throw new Error('Novou poznámku umísti na podlahu místnosti nebo chodby.');notes.push({id:crypto.randomUUID(),levelId:b.levelId,x:b.x,y:b.y,...values,revision:0,...(b.publish?{published:{title:values.title,text:values.text,...(values.roomNumber?{roomNumber:values.roomNumber}:{})}}:{})});g.mapNotes=notes;}
+  const values=fields(b,note);
+  const parchmentOnEntry=b.parchmentOnEntry===undefined?note?.parchmentOnEntry:b.parchmentOnEntry;
+  if(parchmentOnEntry!==undefined&&typeof parchmentOnEntry!=='boolean')throw new Error('Zvol, zda se pergamen ukáže při vstupu.');
+  if(b.showParchment!==undefined&&typeof b.showParchment!=='boolean')throw new Error('Zvol způsob zveřejnění pergamenu.');
+  if((b.publish||b.showParchment||parchmentOnEntry&&!note?.parchmentRevealed)&&!values.text)throw new Error('Nejdřív napiš popis pro družinu.');
+  if(values.roomNumber&&notes.some(n=>n.levelId===b.levelId&&n.id!==note?.id&&n.roomNumber===values.roomNumber))throw new Error('Toto číslo místnosti už je na patře použité.');
+
+  let saved: MapNote;
+  if(note){
+   if(b.noteId!==note.id||b.expectedRevision!==note.revision)throw new EditConflict('Poznámka se mezitím změnila. Rozepsaný text zůstává zachovaný; otevři místo znovu.');
+   saved=note;
+   Object.assign(saved,values,{parchmentOnEntry,revision:note.revision+1});
+  }else{
+   if(b.noteId||b.expectedRevision!==null)throw new EditConflict('Poznámka už neexistuje. Otevři místo znovu.');
+   if(notes.length>=200)throw new Error('Dobrodružství může mít nejvýše 200 poznámek na mapě.');
+   if(!(level?.map||dungeonFor(g)).floors.includes(cellKey(b.x,b.y)))throw new Error('Novou poznámku umísti na podlahu místnosti nebo chodby.');
+   saved={id:crypto.randomUUID(),levelId:b.levelId,x:b.x,y:b.y,...values,parchmentOnEntry,revision:0};
+   notes.push(saved);
+   g.mapNotes=notes;
+  }
+  if(b.publish)saved.published={title:values.title,text:values.text,...(values.roomNumber?{roomNumber:values.roomNumber}:{})};
+  if(b.showParchment)publishParchment(g,saved,actor);
  }else{
   if(!note||b.noteId!==note.id||b.expectedRevision!==note.revision)throw new EditConflict('Poznámka se mezitím změnila nebo byla odebrána. Otevři místo znovu.');
   if(b.op==='move'){

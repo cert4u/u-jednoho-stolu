@@ -128,3 +128,9 @@ Nová pole jsou volitelná ve formátu záloh 1. Import ověřuje dveřní nasta
 Při zapnuté automatice se výhled přepočítá po změnách hry i při obnovení zálohy: přímý dohled hrdinů omezený `radius` se protne s osvětlenými políčky, navíc platí dohled bez světla. Každý světelný zdroj respektuje stejné zdi/dveře jako pohled. Přepočet paměť nemaže. Oprávnění měnit čas/světla zůstává jen PJ.
 
 Při `explore` / `move` se stejný výpočet dohledu provádí na každém kroku známé cesty. Paměť neukládá samotný maximální dohled před omezením světlem. Viditelné mezilehlé oblasti zůstávají zapamatované i mimo konečný výhled.
+
+### Pergameny místností
+
+Při `map-note` / `save` lze volitelným booleanem `parchmentOnEntry` nastavit automatický pergamen. `showParchment: true` uloží přípravu a hned odešle pergamen do chatu. Oprávnění PJ a kontrola `expectedRevision` zůstávají stejné. `publish` řídí samostatný popis pod značkou na mapě.
+
+`explore` / `move` kontroluje přechod zvenčí dovnitř při každém kroku. `travel` vyhodnotí vstup na cílovém patře. Akce odešle pouze popis pro družinu jako zprávu s `parchment: {title, roomNumber?}` a uloží příznak `parchmentRevealed` přímo na poznámku. Díky tomu se pergamen neopakuje ani po ořezu historie chatu. Nastavení pergamenu je ve zobrazení poznámky dostupné pouze PJ. Historie a příznak zveřejnění zůstávají v úplné záloze.
