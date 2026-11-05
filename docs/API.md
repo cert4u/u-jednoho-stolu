@@ -129,8 +129,8 @@ Při zapnuté automatice se výhled přepočítá po změnách hry i při obnove
 
 Při `explore` / `move` se stejný výpočet dohledu provádí na každém kroku známé cesty. Paměť neukládá samotný maximální dohled před omezením světlem. Viditelné mezilehlé oblasti zůstávají zapamatované i mimo konečný výhled.
 
-### Pergameny místností
+### Situace v místnostech
 
-Při `map-note` / `save` lze volitelným booleanem `parchmentOnEntry` nastavit automatický pergamen. `showParchment: true` uloží přípravu a hned odešle pergamen do chatu. Oprávnění PJ a kontrola `expectedRevision` zůstávají stejné. `publish` řídí samostatný popis pod značkou na mapě.
+Při `map-note` / `save` lze volitelným booleanem `parchmentOnEntry` nastavit automatické zobrazení situace. `showParchment: true` uloží přípravu a hned zobrazí situaci a uloží ji do chatu. Oprávnění PJ a kontrola `expectedRevision` zůstávají stejné. `publish` řídí samostatný popis pod značkou na mapě.
 
-`explore` / `move` kontroluje přechod zvenčí dovnitř při každém kroku. `travel` vyhodnotí vstup na cílovém patře. Akce odešle pouze popis pro družinu jako zprávu s `parchment: {title, roomNumber?}` a uloží příznak `parchmentRevealed` přímo na poznámku. Díky tomu se pergamen neopakuje ani po ořezu historie chatu. Nastavení pergamenu je ve zobrazení poznámky dostupné pouze PJ. Historie a příznak zveřejnění zůstávají v úplné záloze.
+`explore` / `move` kontroluje přechod zvenčí dovnitř při každém kroku. `travel` vyhodnotí vstup na cílovém patře. Akce odešle pouze popis pro družinu jako zprávu s `parchment: {title, roomNumber?}` a uloží příznak `parchmentRevealed` přímo na poznámku. Díky tomu se situace neopakuje ani po ořezu historie chatu. Nastavení situace je ve zobrazení poznámky dostupné pouze PJ. Historie a příznak zveřejnění zůstávají v úplné záloze.

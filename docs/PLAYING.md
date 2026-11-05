@@ -89,13 +89,13 @@ Nově vložené generované jeskyně dostanou číslované soukromé značky aut
 
 Nástrojem **Označit místo** PJ klikne na podlahu a otevře přípravu místa. Volba **Označit jako místnost v mapě** přidá číslo (1–999, unikátní na patře) a název přímo do mapy. Bez této volby zůstane malá značka „i“. Značku lze v nástroji **Označit místo** nebo **Postavy/Družina** přetáhnout na jiné volné políčko podlahy; kliknutí otevře přípravu. Tlačítko **Místa** zobrazí seznam číslovaných místností na aktuálním patře, umožní najít značku nebo otevřít přípravu/popisek. **Uložit přípravu** nic nesdílí; **Uložit a sdílet popis** publikuje samostatnou verzi čísla, nadpisu a popisu, dostupnou hráčům u odhaleného políčka přes značku v mapě. Tajný text zůstane u PJ. Běžná úprava pracovní verze nezmění již zveřejněný text; sdílení lze odvolat.
 
-### Objevený pergamen
+### Situace při vstupu
 
-V přípravě místa napiš **Popis pro družinu**, zaškrtni **Zobrazit při prvním vstupu družiny** a stiskni **Uložit přípravu**. Náhled ukáže plochu, která pergamen spustí, a označí políčko poznámky. Dveře oddělují ručně kreslené prostory i v otevřeném stavu. Souvislá podlaha bez dveří může tvořit jeden prostor.
+V přípravě místa napiš **Popis pro družinu**, zaškrtni **Zobrazit při prvním vstupu družiny** a stiskni **Uložit přípravu**. Náhled ukáže plochu, která situaci spustí, a označí políčko poznámky. Dveře oddělují ručně kreslené prostory i v otevřeném stavu. Souvislá podlaha bez dveří může tvořit jeden prostor.
 
-Pergamen se objeví v chatu při přechodu společné družiny zvenčí dovnitř, i když jde jen o mezikrok delší cesty nebo příchod po schodech. Samotný dohled, přemístění PJ a pohyb jednotlivců v boji ho nespouští. Pro průchod ve tmě může PJ napsat zvuky, pachy a jiné vjemy nezávislé na světle.
+Situace se rozvine nad mapou při přechodu společné družiny zvenčí dovnitř, i když jde jen o mezikrok delší cesty nebo příchod po schodech. Samotný dohled, přemístění PJ a pohyb jednotlivců v boji ji nespouští. Pro průchod ve tmě může PJ napsat zvuky, pachy a jiné vjemy nezávislé na světle.
 
-PJ může použít **Ukázat pergamen teď**. Obě možnosti zobrazí popis jednou na místo a uloží jeho aktuální znění do historie chatu. Pozdější úprava poznámky historii nepřepisuje. Sdílený popis pod značkou na mapě se spravuje samostatně. Tajná příprava do pergamenu nevstupuje.
+PJ může použít **Ukázat situaci teď**. Obě možnosti zobrazí popis jednou na místo. Po kliknutí na **Pokračovat** zůstane jeho aktuální znění v historii chatu. Při více situacích na jedné cestě se rozvinou postupně. Starší zprávy při návratu ke stolu zůstanou v chatu. Pozdější úprava poznámky historii nepřepisuje. Sdílený popis pod značkou na mapě se spravuje samostatně. Tajná příprava se v situaci nezobrazí.
 
 Upozornění při přiblížení má výchozí dosah 2 pole, nastavení 1–6 nebo vypnutí. Funguje i přes stěny a sleduje průchod družiny kolem místa. Během pobytu v okolí se neopakuje. Je soukromou připomínkou PJ, nic automaticky neodhaluje ani nespouští hod či poškození.
 

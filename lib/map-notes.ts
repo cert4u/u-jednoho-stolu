@@ -25,8 +25,8 @@ export function mapNoteAction(g:Game,actor:Member,b:Record<string,unknown>){
   if(typeof b.publish!=='boolean')throw new Error('Vyber způsob uložení popisu.');
   const values=fields(b,note);
   const parchmentOnEntry=b.parchmentOnEntry===undefined?note?.parchmentOnEntry:b.parchmentOnEntry;
-  if(parchmentOnEntry!==undefined&&typeof parchmentOnEntry!=='boolean')throw new Error('Zvol, zda se pergamen ukáže při vstupu.');
-  if(b.showParchment!==undefined&&typeof b.showParchment!=='boolean')throw new Error('Zvol způsob zveřejnění pergamenu.');
+  if(parchmentOnEntry!==undefined&&typeof parchmentOnEntry!=='boolean')throw new Error('Zvol, zda se situace ukáže při vstupu.');
+  if(b.showParchment!==undefined&&typeof b.showParchment!=='boolean')throw new Error('Zvol způsob zveřejnění situace.');
   if((b.publish||b.showParchment||parchmentOnEntry&&!note?.parchmentRevealed)&&!values.text)throw new Error('Nejdřív napiš popis pro družinu.');
   if(values.roomNumber&&notes.some(n=>n.levelId===b.levelId&&n.id!==note?.id&&n.roomNumber===values.roomNumber))throw new Error('Toto číslo místnosti už je na patře použité.');
 
