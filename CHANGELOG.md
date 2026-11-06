@@ -1,9 +1,5 @@
 # Změny
 
-## Příští vydání
-
-Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
-
 ## 0.5.2 — 2026-11-06
 
 - Editor mapy odděluje vykreslení od obsluhy myši a klávesnice, včetně odesílání a opakování tahů.
