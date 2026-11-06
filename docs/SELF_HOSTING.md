@@ -44,6 +44,8 @@ Soubor `.env` připrav podle [příkladu](../.env.example). Změnu proměnných 
 | `STUL_UPDATER_TOKEN` | Jiná tajná hodnota, alespoň 32 znaků, shodná pro aplikaci a updater. |
 | `STUL_BIND`, `STUL_PORT` | Vazba Compose na hostiteli, výchozí `127.0.0.1:8080`; uvnitř app kontejneru zůstává port 8080. |
 | `STUL_APP_CONTAINER` | Výchozí jméno `stul-app`; aplikace i updater se na něm musí shodnout. |
+| `STUL_UPDATE_CHANNEL` | `stable` (výchozí), `preview` nebo `development`. |
+| `STUL_BACKUP_KEEP` | Počet automatických záloh k ponechání po úspěšné operaci. `0` (výchozí) vypíná automatické mazání. |
 | `STUL_APP_IMAGE` | Aktivní image, výchozí `stul-app:local`; updater ho zapisuje do `.stul-state/runtime.env`, které načítá wrapper. |
 | `STUL_LIVEKIT_URL` | Volitelná adresa hlasu dostupná z prohlížečů, veřejně `wss://`. |
 | `STUL_LIVEKIT_API_KEY`, `STUL_LIVEKIT_API_SECRET` | Volitelné hlasové klíče; tajemství alespoň 32 znaků, shodné s LiveKitem. |
@@ -57,14 +59,25 @@ Node server mimo Docker navíc čte `PORT`, `STUL_DATA_DIR` a případně `STUL_
 
 Otevři **`https://tvoje-adresa/admin`** a přihlas se vlastním `STUL_ADMIN_PASSWORD`. Neexistuje výchozí heslo. Toto heslo je oddělené od účtů PJ a hráčů.
 
-1. Administrace nabídne poslední stabilní GitHub Release s tagem `vX.Y.Z`. Kontrola je krátce cachovaná; GitHub může při vyčerpání veřejného API limitu vrátit chybu, což rozehraný stůl neovlivní.
-2. Po kliknutí na **Aktualizovat** updater sestaví image z přesného commitu vydání. Při sestavování se dál hraje. Stahování i build vyžadují internet (GitHub, Docker Hub a npm).
-3. Poté aplikace pozastaví změny, dokončí rozběhlé požadavky a uloží konzistentní zálohu celé SQLite databáze, včetně přístupů hráčů.
-4. Updater vymění kontejner a ověří start i identitu nové verze. Po úspěchu se opět povolí změny. Při neúspěchu se pokusí obnovit předchozí image a databázi; pokud selže i obnova, zůstane instalace v údržbě a vyžaduje zásah správce.
+Přehled ukazuje verzi, commit, režim údržby, velikost databáze včetně WAL, volné místo na jejím volume a poslední zálohu. Podrobnosti o updateru, konfiguraci hostingu a nastavení hlasu najdeš ve **Nastavení serveru**.
 
-Stránka správy může při výměně kontejneru na chvíli ztratit spojení. Po startu se znovu přihlas (relace se záměrně neuchovává mezi restarty). Průběh úlohy je uložený na disku a znovu se zobrazí. Aktualizace se nespouští automaticky a nikdy nebere rozpracovaný `main` místo vydání.
+| Kanál | Co může správce nainstalovat |
+| --- | --- |
+| Stable | Poslední stabilní GitHub Release označený `vX.Y.Z`. Doporučený kanál pro rozehrané kampaně. |
+| Preview | Nejvyšší podporovanou verzi ze seznamu posledních 20 vydání, včetně prerelease. |
+| Development | Výslovně zvolenou větev nebo plný commit z oficiálního GitHub repozitáře. Používej na zkušebním stole. Číslo verze u vývojového commitu nemusí vystihovat jeho stáří. |
 
-Tlačítko **Vrátit předchozí verzi** obnoví také databázi z okamžiku před posledním upgradem. Novější změny se před návratem uloží do další samostatné zálohy. Jde o jednu úroveň návratu; starší zálohy zůstávají pro ruční obnovu. Zastavené původní kontejnery se odstraní, image se zachová.
+Stable a Preview dovolí instalovat pouze vyšší verzi podle SemVer. Stejné číslo s jiným commitem vyžaduje nové vydání. Návrat je samostatná operace. Vývojovou větev nejdřív převeď na konkrétní commit tlačítkem **Ověřit commit**. Pokud se mezitím cíl změní, potvrď ho znovu.
+
+1. Projdi poznámky z GitHub Release, uvedené požadavky a výsledek CI pro vybraný commit. Hodnota „neuvedeno“ znamená, že vydání údaj nedeklarovalo. Instalaci vždy potvrdí správce.
+2. Updater sestaví image z ověřeného commitu a zkontroluje požadované verze updateru a hostingu. Během sestavování se dál hraje. GitHub, Docker Hub a npm musí být dostupné.
+3. Aplikace přejde do údržby, dokončí rozpracované požadavky a uloží konzistentní snapshot SQLite včetně přístupů.
+4. Updater vymění kontejner a ověří commit, integritu databáze, čtení herního API a dostupnost a ochranu administrace. Kontrola nepracuje s rozehranými kampaněmi. Teprve potom uvolní údržbu a označí operaci jako hotovou.
+5. Při selhání kontroly se obnoví původní kontejner a databáze. Pokud updater ztratí odpověď při uvolňování údržby, pokračuje s již ověřenou verzí. Tím chrání změny, které mohly mezitím vzniknout. Jestliže se nedokončí ani obnova, panel vyžádá zásah správce.
+
+Při výměně kontejneru se přihlas znovu. Průběh úlohy se načte z uloženého stavu. U návratu ke starému image bez nové kontroly služeb použije updater jeho `/healthz` a ověří commit.
+
+Tlačítko **Vrátit předchozí verzi** obnoví databázi z doby před posledním upgradem. Novější změny se před návratem uloží do samostatné zálohy. Jde o jednu úroveň návratu. Uchovej i odpovídající image, pokud chceš starší snapshot obnovit ručně.
 
 ### Další spouštění Compose
 
@@ -75,7 +88,17 @@ Vždy používej `./deploy/stul.sh`, který načte také `.stul-state/runtime.en
 ./deploy/stul.sh up -d
 ```
 
-Po aktualizaci přes administraci nespouštěj `up --build` ze starého checkoutu: sestavil by staré zdroje. Zdrojový checkout a samotná služba updateru se přes web nemění. Jejich údržba je ruční: získej odpovídající vydání přes Git, ponech `.env` a `.stul-state` a sestav jen updater (`./deploy/stul.sh up -d --build --no-deps updater`). Nová vydání musí případnou změnu způsobu nasazení uvést v poznámkách.
+### Aktualizace updateru a konfigurace hostingu
+
+Před přechodem ze staré infrastruktury si zkopíruj `.env`, `.stul-state` a databázi podle postupu níže. Získej zvolený a ověřený checkout přes Git. Potom spusť jen sestavení a výměnu updateru, bez závislých služeb.
+
+```sh
+./deploy/stul.sh up -d --build --no-deps updater
+```
+
+Stejným příkazem použiješ změnu kanálu nebo retence z `.env`. Spouštěj ho mimo probíhající aktualizaci nebo obnovu. V **Nastavení serveru** ověř protokol updateru a verzi konfigurace hostingu. První verze tohoto kontraktu je **1**. Updater porovnává požadavek sestaveného image s vlastní podporou a konfigurací Compose před vstupem do údržby. Aplikace s novou administrací vyžaduje updater s protokolem 1 pro webové operace. Dříve vydané aplikace mohou používat nový updater v režimu Stable.
+
+Aktualizace v administraci vyměňuje aplikační kontejner. Checkout, Compose, updater a případný LiveKit spravuješ samostatně. Změny aplikačních proměnných nebo připojení volume prováděj plánovaně přes Compose s aktivním image z `.stul-state/runtime.env`.
 
 ## Data a zálohy
 
@@ -83,11 +106,17 @@ Po aktualizaci přes administraci nespouštěj `up --build` ze starého checkout
 - `.stul-state/`: průběh aktualizace a aktivní image; adresář je chráněný režimem 700.
 - `.env`: heslo správce, interní token, adresa instalace a případné hlasové klíče.
 
-Zálohy obsahují soukromé poznámky a přístupové tokeny. Neukládej je do veřejného repozitáře. Zálohy se samy nemažou: sleduj disk a pravidelně je přenášej mimo server. Automatický snapshot na stejném disku nechrání proti ztrátě celého serveru. Při změně názvu projektu Compose se může změnit název volume; zachovej existující data. `down -v` databázi smaže.
+Zálohy obsahují soukromé poznámky a přístupové tokeny. Neukládej je do veřejného repozitáře. Výchozí retence je neomezená. Sleduj disk a pravidelně přenášej zálohy mimo server. Automatický snapshot na stejném disku nechrání proti ztrátě celého serveru. Při změně názvu projektu Compose se může změnit název volume; zachovej existující data. `down -v` databázi smaže.
+
+### Správa snapshotů v administraci
+
+V **Zálohy databáze** může správce vytvořit ruční konzistentní snapshot i během běžného provozu, projít stáří a velikost souborů a stáhnout je. **Obnovit databázi** je samostatná akce. Vyžaduje funkční updater, zadání přesného názvu souboru a krátkou údržbu. Před nahrazením databáze se uloží její současný stav. Úspěšná obnova nastaví nový výchozí stav a dřívější tlačítko pro návrat verze přestane nabízet zálohu z jiné historie kampaně.
+
+Při `STUL_BACKUP_KEEP=5` updater po dokončené operaci ponechá pět nejnovějších automatických snapshotů, potřebnou zálohu pro návrat a bezpečnostní snapshot právě dokončené operace. Ruční zálohy retence vynechává. Stahuj důležité snapshoty mimo server i při zapnuté retenci.
 
 ### Dvě různé zálohy
 
-| | Export kampaně JSON | Snapshot / kopie celé SQLite instalace |
+| | Export kampaně JSON | Snapshot SQLite databáze |
 | --- | --- | --- |
 | Rozsah | Jedna kampaň, všechna patra, tajná příprava a chat. | Všechny místnosti včetně původních přístupových tokenů. |
 | Kdo | PJ přes herní nabídku. | Správce, automaticky také updater před výměnou. |
@@ -96,7 +125,7 @@ Zálohy obsahují soukromé poznámky a přístupové tokeny. Neukládej je do v
 
 Oba typy obsahují soukromý obsah. Snapshot databáze nenahrazuje kopii `.env`, `.stul-state` a připnutých konfigurací pro obnovu celého serveru. Aktivní hlasová spojení nejsou součástí ani jedné zálohy.
 
-Před plánovanou ruční zálohou je nejsnazší zastavit aplikaci a updater a zkopírovat celý volume. Například pro základní Compose instalaci:
+Pro obnovu po ztrátě serveru ulož celý volume, konfiguraci a aktivní image. Zálohuj mimo probíhající aktualizaci, obnovu nebo údržbu. Příklad pro základní Compose instalaci.
 
 ```sh
 ./deploy/stul.sh stop app updater
@@ -104,7 +133,11 @@ mkdir -p backups/manual
 chmod 700 backups backups/manual
 STUL_BACKUP_APP=$(./deploy/stul.sh ps -aq app)
 test -n "$STUL_BACKUP_APP"
-docker cp "$STUL_BACKUP_APP:/data/." backups/manual/data
+docker cp -a "$STUL_BACKUP_APP:/data/." backups/manual/data
+STUL_BACKUP_IMAGE=$(docker inspect --format '{{.Config.Image}}' "$STUL_BACKUP_APP")
+docker image save -o backups/manual/app-image.tar "$STUL_BACKUP_IMAGE"
+git rev-parse HEAD > backups/manual/checkout
+cp -a compose.yaml backups/manual/
 # Podle vlastnictví souborů může být pro tuto kopii potřeba oprávnění správce:
 cp -a .env .stul-state backups/manual/
 ./deploy/stul.sh up -d
@@ -112,11 +145,18 @@ cp -a .env .stul-state backups/manual/
 
 Pokud kopie nastavení selže na oprávněních, dokonči ji jako správce před označením zálohy za hotovou. Adresář `backups/manual` musí být pro novou zálohu nový/prázdný; předchozí kopii nepřekrývej. U hlasu používej oba Compose soubory a přidej i případný vlastní YAML a TLS konfiguraci. Zálohu bezpečně přenes mimo server a ověř zkušební obnovu do izolované instalace.
 
+### Obnova na novém serveru
+
+1. Obnov zaznamenaný Git checkout, vlastní soubory Compose, `.env`, `.stul-state`, reverzní proxy a případnou konfiguraci LiveKitu. Použij stejnou adresu instalace, pokud mají zůstat v platnosti dřívější odkazy a relace hráčů.
+2. Načti uložený image pomocí `docker image load -i backups/manual/app-image.tar`. Vytvoř zastavený app kontejner příkazem `./deploy/stul.sh create app`. Překontroluj, že používá očekávaný image.
+3. Zkopíruj obsah uloženého `data/.` do `/data/` zastaveného kontejneru pomocí `docker cp -a`. Ověř, že soubory databáze může číst a měnit UID/GID 1000. Udržuj původní volume i zdroj zálohy samostatně až do ověření.
+4. Spusť aplikaci a updater a ověř verzi, přístup PJ i hráče a čitelnost kampaní. Pro použití předchozího návratu je nutný i jeho snapshot a původní image. Pokud chceš zachovat možnost tohoto návratu i po ztrátě serveru, ulož také předchozí image.
+
 Alternativou pro jednotlivou kampaň je existující export v zápisníku PJ. Ten je přenositelný i z Cloudflare verze; obnova v Docker instalaci vytvoří novou místnost a nové přístupy. Přímé automatické přenesení databáze z hostované služby není součástí upgradu.
 
 ## Přerušení a ruční obnova
 
-Po restartu updater z uloženého stavu dokončí potvrzenou výměnu, nebo obnoví původní verzi. Při chybě Dockeru či poškození disku ponechá stůl v údržbě a vypíše důvod v administraci/logu. Oprav příčinu a zkus `./deploy/stul.sh restart updater`. Neodstraňuj ručně soubor `maintenance`, dokud není databáze a běžící verze ověřená.
+Po restartu updater z uloženého stavu dokončí potvrzenou výměnu, nebo obnoví původní verzi. Při chybě Dockeru či poškození disku může operace vyžadovat zásah správce. Podrobnosti jsou v administraci a v logu updateru. Oprav příčinu a zkus `./deploy/stul.sh restart updater`. Neodstraňuj ručně soubor `maintenance`, dokud není databáze a běžící verze ověřená.
 
 Při ruční obnově:
 

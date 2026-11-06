@@ -1,3 +1,73 @@
-<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Správa instalace · U jednoho stolu</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f4f1e7;color:#353c30;font:16px/1.6 system-ui}main{max-width:780px;margin:5vh auto;padding:28px}h1{font-family:Georgia,serif;font-weight:normal}section{padding:24px;background:#fffcf3;border:1px solid #dcdcc9;border-radius:8px;margin:20px 0}button,input{font:inherit;padding:10px 14px;border:1px solid #a7b294;border-radius:5px}button{background:#76502f;color:#fff8ed;border-color:#76502f;cursor:pointer}button:disabled{opacity:.5;cursor:wait}input{width:100%;margin:8px 0 16px}small{color:#66745e}pre{white-space:pre-wrap;word-break:break-word;font:13px/1.7 monospace}#message{min-height:26px;color:#884820}a{color:#506844}.actions{display:flex;gap:12px;flex-wrap:wrap}[hidden]{display:none!important}
-</style><main><a href="/">← Zpět ke stolu</a><h1>Správa instalace</h1><p>Aktualizace celého serveru. Přístup má správce hostingu.</p><p id="message" role="status" aria-live="polite"></p><section id="login"><form id="login-form"><label for="password">Heslo správce instalace</label><input id="password" type="password" autocomplete="current-password" required maxlength="1024"><button>Přihlásit se</button></form></section><div id="panel" hidden><section><h2>Verze a aktualizace</h2><p id="installed"></p><p id="latest"></p><p><a id="release" target="_blank" rel="noopener" hidden>Poznámky k vydání na GitHubu ↗</a></p><div class="actions"><button id="refresh">Zkontrolovat vydání</button><button id="update" disabled>Aktualizovat</button></div><p><small>Před výměnou se uloží záloha celé databáze. Během údržby se pozastaví změny u stolu. Při neúspěšném startu se služba pokusí vrátit původní verzi i databázi.</small></p></section><section><h2>Průběh</h2><pre id="progress">Zatím bez aktualizace.</pre><button id="rollback" disabled>Vrátit předchozí verzi</button><p><small>Návrat obnoví také databázi z doby před aktualizací. Novější rozehrané změny zůstanou v samostatné záloze pro ruční obnovu.</small></p></section><button id="logout">Odhlásit se</button></div></main><script src="/admin/app.js" defer></script></html>
+<!doctype html>
+<html lang="cs">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Správa instalace · U jednoho stolu</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f1e7;color:#353c30;font:16px/1.6 system-ui}main{max-width:850px;margin:5vh auto;padding:clamp(16px,4vw,28px)}h1,h2{font-family:Georgia,serif;font-weight:normal}h2{margin-top:0}section{padding:clamp(14px,3vw,24px);background:#fffcf3;border:1px solid #dcdcc9;border-radius:8px;margin:20px 0}button,input{font:inherit;padding:8px 12px;border:1px solid #a7b294;border-radius:5px}button{background:#76502f;color:#fff8ed;border-color:#76502f;cursor:pointer}button.secondary{background:#fffcf3;color:#554128}button:disabled{opacity:.55;cursor:default}input{width:100%;margin:8px 0 12px}small{color:#56624f}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.65 monospace}#notes{max-height:22rem;overflow:auto}#message{color:#884820;min-height:1.5em}a{color:#506844}.actions,.backup-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:0}dt{color:#56624f;font-size:.86em}dd{margin:0;overflow-wrap:anywhere}ul{list-style:none;padding:0}li{padding:12px 0;border-top:1px solid #dcdcc9}li strong{overflow-wrap:anywhere}[hidden]{display:none!important}
+</style>
+<main>
+  <a href="/">← Zpět ke stolu</a>
+  <h1>Správa instalace</h1>
+  <p id="message" role="status" aria-live="polite"></p>
+  <section id="login">
+    <form id="login-form">
+      <label for="password">Heslo správce instalace</label>
+      <input id="password" type="password" autocomplete="current-password" required maxlength="1024">
+      <button>Přihlásit se</button>
+    </form>
+  </section>
+  <div id="panel" hidden>
+    <section aria-labelledby="overview">
+      <h2 id="overview">Přehled instalace</h2>
+      <dl>
+        <div><dt>Aplikace</dt><dd id="installed"></dd></div>
+        <div><dt>Commit</dt><dd id="revision"></dd></div>
+        <div><dt>Kanál</dt><dd id="channel"></dd></div>
+        <div><dt>Stav služby</dt><dd id="health"></dd></div>
+        <div><dt>Databáze SQLite</dt><dd id="database"></dd></div>
+        <div><dt>Volné místo</dt><dd id="storage"></dd></div>
+        <div><dt>Poslední záloha</dt><dd id="last-backup"></dd></div>
+      </dl>
+    </section>
+    <section aria-labelledby="updates">
+      <h2 id="updates">Aktualizace</h2>
+      <p id="latest"></p>
+      <form id="development" hidden>
+        <label for="ref">Větev nebo plný commit z GitHubu</label>
+        <input id="ref" type="text" required maxlength="120" autocomplete="off">
+        <button id="resolve" class="secondary">Ověřit commit</button>
+      </form>
+      <p id="update-blocked"></p>
+      <p id="release-facts" hidden></p>
+      <pre id="notes" hidden></pre>
+      <p><a id="release" target="_blank" rel="noopener noreferrer" hidden>Otevřít na GitHubu ↗</a>
+        <a id="ci" target="_blank" rel="noopener noreferrer" hidden>Kontroly commitu ↗</a></p>
+      <div class="actions">
+        <button id="refresh" class="secondary">Zkontrolovat vydání</button>
+        <button id="update" disabled>Aktualizovat</button>
+        <button id="rollback" class="secondary" disabled>Vrátit předchozí verzi</button>
+      </div>
+      <pre id="progress" role="status">Zatím bez aktualizace.</pre>
+    </section>
+    <section aria-labelledby="backups">
+      <h2 id="backups">Zálohy databáze</h2>
+      <p id="retention"></p>
+      <button id="snapshot" class="secondary">Vytvořit ruční zálohu</button>
+      <ul id="backup-list"></ul>
+      <p><small>Pro obnovu celého serveru ulož mimo server také konfiguraci hostingu a přístupové údaje. <a href="https://github.com/cert4u/u-jednoho-stolu/blob/main/docs/SELF_HOSTING.md#data-a-zálohy" target="_blank" rel="noopener noreferrer">Návod k zálohám ↗</a></small></p>
+    </section>
+    <section aria-labelledby="services">
+      <h2 id="services">Nastavení serveru</h2>
+      <dl>
+        <div><dt>Updater</dt><dd id="updater"></dd></div>
+        <div><dt>Konfigurace hostingu</dt><dd id="hosting"></dd></div>
+        <div><dt>LiveKit</dt><dd id="voice"></dd></div>
+      </dl>
+      <p><small>Kanál, retenci, updater a hlasovou službu nastavuje správce v konfiguraci hostingu.</small></p>
+    </section>
+    <button id="logout" class="secondary">Odhlásit se</button>
+  </div>
+</main>
+<script src="/admin/app.js" defer></script>
+</html>

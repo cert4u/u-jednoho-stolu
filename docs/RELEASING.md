@@ -8,7 +8,7 @@ Tento postup je pro správce projektu. Repozitář má CI, ale nemá automatick�
 
 - `main` obsahuje průběžný vývoj. Dokumentace této větve může popisovat více funkcí než poslední stabilní vydání.
 - `package.json` obsahuje verzi sestavení; samotná změna souboru ani push nevytvoří GitHub Release.
-- Updater vybírá poslední **stabilní GitHub Release**, vylučuje draft/prerelease a vyžaduje tag `vX.Y.Z`. Vyhodnotí skutečný plný commit tagu a sestaví jej; neinstaluje automaticky `main`.
+- Výchozí kanál Stable vybírá poslední **stabilní GitHub Release** s tagem `vX.Y.Z`. Další kanály a pravidla pro potvrzení commitu popisuje [provozní návod](SELF_HOSTING.md#aktualizace-z-administrace).
 - Runtime `/healthz` vrací `version`, `revision` a `builtAt`. Sleduj i commit, zejména u vývojové instalace se stejným číslem verze.
 
 Pokud má provozovatel novější vývojový commit než zveřejněný release, automatická aktualizace není bezpečnou zkratkou k „nejnovějším funkcím“. Vždy zkontroluj nabízený release a jeho změny.
@@ -41,3 +41,11 @@ Release notes mají obsahovat:
 - Upozornění, že rollback vrací i databázi do doby před upgradem; novější změny zůstanou v samostatném snapshotu pro ruční obnovu.
 
 Ověř, že Release API vrací zamýšlený stabilní tag a že testovací administrace ukazuje jeho správný commit. Neprováděj první zkoušku proti rozehrané družině. Archiv vydání obsahuje jeho vlastní dokumentaci; odkazy na vývojový README nejsou náhradou release notes.
+
+Pro stručný přehled požadavků v administraci může správce přidat na vlastní řádek poznámek vydání značku.
+
+```html
+<!-- stul-release {"migrations":false,"updater":true,"config":true} -->
+```
+
+Hodnoty jsou příklad. Správce vyplní skutečný stav. Vynechané pole se zobrazí jako „neuvedeno“. Kompatibilitu při instalaci určuje kontrakt image v Dockerfile. Stav CI se čte ze stejného commitu přes GitHub Actions. Záznam vydání má obsahovat ruční postup, pokud je potřeba nejdřív [aktualizovat infrastrukturu](SELF_HOSTING.md#aktualizace-updateru-a-konfigurace-hostingu).

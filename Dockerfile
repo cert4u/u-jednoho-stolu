@@ -9,6 +9,7 @@ ARG STUL_REVISION
 RUN STUL_VERSION="$STUL_VERSION" STUL_REVISION="$STUL_REVISION" npm run build:node
 
 FROM node:22-bookworm-slim
+LABEL cz.stul.updater-protocol="1" cz.stul.hosting-config="1"
 ENV NODE_ENV=production PORT=8080 STUL_DATA_DIR=/data
 WORKDIR /app
 COPY --from=build /app/node_modules ./node_modules

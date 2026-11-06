@@ -13,18 +13,18 @@ function cli(args,input){const result=spawnSync('docker',args,{encoding:'utf8',.
 async function call(endpoint,data){const r=await fetch(origin+endpoint,{method:data?'POST':'GET',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(data?{body:JSON.stringify(data)}:{}),signal:AbortSignal.timeout(18000)});if(!r.ok)throw new Error('App '+r.status);return r.json();}
 let manager;
 try{
- cli(['build','-t','stul-app:local','--build-arg',`STUL_REVISION=${oldSha}`,'.']);
- cli(['build','-t',`stul-app:${newSha}`,'--build-arg',`STUL_REVISION=${newSha}`,'.']);
+ cli(['build','-t','stul-app:local','--build-arg','STUL_VERSION=0.5.3','--build-arg',`STUL_REVISION=${oldSha}`,'.']);
+ cli(['build','-t',`stul-app:${newSha}`,'--build-arg','STUL_VERSION=0.6.0','--build-arg',`STUL_REVISION=${newSha}`,'.']);
  cli(['build','-t',`stul-app:${badSha}`,'-'],`FROM stul-app:${newSha}\nCMD ["node", "-e", "process.exit(1)"]\n`);
  cli(['build','-f','deploy/updater/Dockerfile','-t','stul-updater:test','.']);
  // Exercise the updater image and its native Docker CLI (not just manager mocks).
  cli(['run','--rm','-v','/var/run/docker.sock:/var/run/docker.sock','--entrypoint','sh','stul-updater:test','-c','node --version && docker version --format "{{.Server.Version}}"']);
  cli(['network','create','stul-smoke']);
  cli(['run','-d','--network','stul-smoke','--network-alias','app','--name','stul-app','--restart','unless-stopped','--init','-p','127.0.0.1:18089:8080','-v',`${dataDir}:/data`,'-e','STUL_UPDATER_URL=http://updater:8090','-e',`PUBLIC_ORIGIN=${origin}`,'-e',`STUL_ADMIN_PASSWORD=${password}`,'-e',`STUL_UPDATER_TOKEN=${token}`,'stul-app:local']);
- let target=newSha;manager=new UpdateManager({dataDir,stateDir,appFetch:call,release:async()=>({tag:'v0.2.0',sha:target,url:'https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.2.0'}),build:async sha=>'stul-app:'+sha});
+ let target=newSha;manager=new UpdateManager({dataDir,stateDir,hostingConfig:1,appFetch:call,release:async()=>({tag:'v0.6.0',sha:target,url:'https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.6.0'}),build:async sha=>'stul-app:'+sha});
  chownSync(stateDir,1001,1001); // runtime.env must remain readable to the host operator.
  await manager.healthy(oldSha);
- cli(['run','-d','--network','stul-smoke','--network-alias','updater','--name','stul-updater-smoke','-v','/var/run/docker.sock:/var/run/docker.sock','-v',`${dataDir}:/data`,'-v',`${stateDir}:/state`,'-e',`STUL_UPDATER_TOKEN=${token}`,'stul-updater:test']);
+ cli(['run','-d','--network','stul-smoke','--network-alias','updater','--name','stul-updater-smoke','-v','/var/run/docker.sock:/var/run/docker.sock','-v',`${dataDir}:/data`,'-v',`${stateDir}:/state`,'-e',`STUL_UPDATER_TOKEN=${token}`,'-e','STUL_HOSTING_CONFIG=1','stul-updater:test']);
  const login=await fetch(origin+'/admin/api/login',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({password})});assert.equal(login.status,200);const cookie=login.headers.get('set-cookie');
  let status;for(let i=0;i<20;i++){status=await fetch(origin+'/admin/api/status',{headers:{Cookie:cookie}});if(status.ok)break;await new Promise(r=>setTimeout(r,500));}assert.equal(status.status,200,await status.text());
  cli(['stop','stul-updater-smoke']); // Only one writer runs real replacement tests below.
@@ -32,10 +32,25 @@ try{
  await new Promise(resolve=>setTimeout(resolve,100));
 
  const create=await fetch(origin+'/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',name:'Docker PJ',title:'Docker test'})});assert.equal(create.status,200);const game=await create.json();assert.ok(game.room);
- await manager.begin('update','docker-update-12345678');await manager.running;assert.match(manager.state.job.phase,/Hotovo/);assert.equal((await call('/healthz')).revision,newSha);assert.equal(statSync(path.join(stateDir,'runtime.env')).uid,1001);
+ const loginAgain=await fetch(origin+'/admin/api/login',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({password})});
+ assert.equal(loginAgain.status,200);
+ const adminHeaders={Cookie:loginAgain.headers.get('set-cookie'),Origin:origin,'Content-Type':'application/json'};
+ const manualResponse=await fetch(origin+'/admin/api/backups',{method:'POST',headers:adminHeaders,body:'{}'});
+ assert.equal(manualResponse.status,201);
+ const {name:manual}=await manualResponse.json();
+ await manager.begin('update','docker-update-12345678',{expectedSha:newSha});await manager.running;assert.match(manager.state.job.phase,/Hotovo/);assert.equal((await call('/healthz')).revision,newSha);assert.equal(statSync(path.join(stateDir,'runtime.env')).uid,1001);
  const auth={Authorization:`Bearer ${game.token}`};assert.equal((await fetch(`${origin}/api/game?room=${game.room}`,{headers:auth})).status,200);
  await manager.begin('rollback','docker-rollback-12345678');await manager.running;assert.match(manager.state.job.phase,/Hotovo/);assert.equal((await call('/healthz')).revision,oldSha);assert.equal((await fetch(`${origin}/api/game?room=${game.room}`,{headers:auth})).status,200);
- target=badSha;await manager.begin('update','docker-broken-12345678');await manager.running;assert.match(manager.state.job.phase,/původní verze obnovena/);assert.equal((await call('/healthz')).revision,oldSha);assert.equal((await call('/healthz')).maintenance,false);
+ const laterResponse=await fetch(origin+'/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',name:'Pozdější PJ'})});
+ assert.equal(laterResponse.status,200);
+ const later=await laterResponse.json();
+ await manager.begin('restore','docker-restore-12345678',{snapshot:manual,confirmSnapshot:manual});
+ await manager.running;
+ assert.match(manager.state.job.phase,/záloha databáze obnovena/);
+ assert.equal((await call('/healthz')).revision,oldSha);
+ assert.equal((await fetch(`${origin}/api/game?room=${game.room}`,{headers:auth})).status,200);
+ assert.equal((await fetch(`${origin}/api/game?room=${later.room}`,{headers:{Authorization:`Bearer ${later.token}`}})).status,404);
+ target=badSha;await manager.begin('update','docker-broken-12345678',{expectedSha:badSha});await manager.running;assert.match(manager.state.job.phase,/původní verze obnovena/);assert.equal((await call('/healthz')).revision,oldSha);assert.equal((await call('/healthz')).maintenance,false);
  assert.equal((await fetch(`${origin}/api/game?room=${game.room}`,{headers:auth})).status,200);assert.match(readFileSync(path.join(stateDir,'runtime.env'),'utf8'),/stul-app:local/);
  console.log('PASS: real Docker build, updater image/daemon, replacement, persistent campaign, SQLite rollback and failed-image recovery.');
 }finally{
