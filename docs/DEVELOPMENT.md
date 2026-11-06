@@ -112,7 +112,9 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | `lib/map-notes.ts`, `lib/map-note-alerts.ts`, `lib/challenges.ts` | Příprava míst, upozornění při přiblížení a zkoušky. |
 | `lib/lighting.ts`, `components/light-sight-settings.tsx` | Průnik osvětlení a přímého výhledu, dohled bez světla a volba automatiky. Nosiče a přepočet paměti napojuje `lib/exploration.ts`. |
 | `lib/loot.ts`, `lib/equipment.ts`, `lib/journey.ts` | Kořist, výbava/měšec a čas/světlo. |
-| `lib/access.ts`, `lib/backup.ts` | Obnovovací klíče a přenositelné úplné zálohy. |
+| `lib/access.ts` | Vydávání a ověřování obnovovacích klíčů. |
+| [lib/backup.ts](../lib/backup.ts) | Export bez přístupových údajů, načtení zálohy a přidělení nových tokenů. |
+| [lib/backup/](../lib/backup) | Schémata uložených údajů podle oblastí hry. `campaign-schema.ts` je skládá do formátu zálohy. `validate-campaign.ts` kontroluje vazby mezi oblastmi, například zda příšera odkazuje na existující patro. |
 | `components/` | Mapa, dialogy a herní panely; `voice-panel.tsx` spravuje WebRTC spojení. |
 | `server/start.mjs`, `server/database.mjs` | Node obálka, administrace, údržba, SQLite a adaptérová vrstva. |
 | `deploy/updater/` | Oddělený Docker updater, stabilní vydání, výměna kontejnerů a rollback. |
