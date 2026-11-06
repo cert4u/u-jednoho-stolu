@@ -1,7 +1,6 @@
 import type {Dungeon,Point} from './dungeon';
-export type GeneratorVersion='v1'|'v2';
-export type DungeonStyle='castle'|'mine'|'cave';
-export type GeneratorOptions={version:GeneratorVersion;style:DungeonStyle;variant:number;separateExit:boolean;name:string;levels:number;rooms:number;size:'small'|'medium'|'large';corridors:'direct'|'winding';connections:number;seed:string};
+import type {DungeonStyle,GeneratorOptions} from './generator-options';
+export type {GeneratorOptions,GeneratorVersion,DungeonStyle} from './generator-options';
 export type RoomRole='entrance'|'room'|'junction'|'dead-end'|'chamber'|'goal';
 export type GeneratedRoom={x:number;y:number;width:number;height:number;center:Point;id?:string;cells?:string[];role?:RoomRole;neighbors?:string[];mainPath?:boolean};
 export type RoomContent={title?:string;playerText?:string;secret?:string;monsterIds?:string[];challengeIds?:string[];lootIds?:string[];links?:{roomId:string;kind:string}[]};

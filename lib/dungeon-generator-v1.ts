@@ -1,21 +1,9 @@
 import {emptyDungeon,perimeter,cellKey,type Dungeon,type Point} from './dungeon';
-export type GeneratorOptions={separateExit:boolean;name:string;levels:number;rooms:number;size:'small'|'medium'|'large';corridors:'direct'|'winding';connections:number;seed:string};
-export type GeneratedRoom={x:number;y:number;width:number;height:number;center:Point};
-export type GeneratedFloor={name:string;map:Dungeon;rooms:GeneratedRoom[]};
-export type GeneratedDungeon={options:GeneratorOptions;floors:GeneratedFloor[];stairs:{from:number;to:number;a:Point;b:Point}[];entry:Point};
+import type {GeneratedDungeon,GeneratedFloor,GeneratedRoom,GeneratorOptions} from './generator-types';
 const sizes={small:{min:2,max:4},medium:{min:3,max:6},large:{min:5,max:9}};
-function integer(value:unknown,min:number,max:number,label:string){if(typeof value!=='number'||!Number.isInteger(value)||value<min||value>max)throw new Error(`${label}: zadej celé číslo od ${min} do ${max}.`);return value;}
-export function generatorOptions(value:unknown):GeneratorOptions{
- const v=value as GeneratorOptions;if(!v||typeof v!=='object'||Array.isArray(v))throw new Error('Vyplň parametry jeskyně.');
- if(typeof v.name!=='string'||!v.name.trim()||v.name.trim().length>35)throw new Error('Název jeskyně musí mít 1 až 35 znaků.');
- if(!Object.hasOwn(sizes,v.size)||!['direct','winding'].includes(v.corridors))throw new Error('Vyber velikost místností a podobu chodeb.');
- if(typeof v.seed!=='string'||!v.seed.trim()||v.seed.trim().length>64)throw new Error('Semínko musí mít 1 až 64 znaků.');
- if(v.separateExit!==undefined&&typeof v.separateExit!=='boolean')throw new Error('Vyber, zda vytvořit samostatný východ.');
- return {separateExit:v.separateExit??false,name:v.name.trim(),levels:integer(v.levels,1,8,'Počet pater'),rooms:integer(v.rooms,2,v.size==='large'?6:12,'Místností na patro'),size:v.size,corridors:v.corridors,connections:integer(v.connections,0,4,'Další propojení'),seed:v.seed.trim()};
-}
 function randomFor(seed:string){let state=2166136261;for(let i=0;i<seed.length;i++)state=Math.imul(state^seed.charCodeAt(i),16777619);return ()=>{state=(state+0x6D2B79F5)|0;let n=state;n=Math.imul(n^(n>>>15),n|1);n^=n+Math.imul(n^(n>>>7),n|61);return ((n^(n>>>14))>>>0)/4294967296;};}
-export function generateDungeon(raw:unknown):GeneratedDungeon{
- const options=generatorOptions(raw),random=randomFor(options.seed),pick=(min:number,max:number)=>min+Math.floor(random()*(max-min+1));
+export function generateDungeon(options:GeneratorOptions):GeneratedDungeon{
+ const random=randomFor(options.seed),pick=(min:number,max:number)=>min+Math.floor(random()*(max-min+1));
  const shuffle=<T,>(input:T[])=>{const a=[...input];for(let i=a.length-1;i>0;i--){const j=pick(0,i);[a[i],a[j]]=[a[j],a[i]];}return a;};
  const divide=(total:number,count:number,min:number)=>{const parts=Array(count).fill(min) as number[];for(let left=total-count*min;left>0;left--)parts[pick(0,count-1)]++;return parts;};
  const floors:GeneratedFloor[]=[];

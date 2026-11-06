@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import catalog from '../content/dungeon-presets.json' with { type: 'json' };
 import { contentCatalog, contentId } from './content-schema';
-import { generatorOptionsSchema } from './generator-schema';
+import { generatorOptionsSchema } from './generator-options';
 
 const presetSchema = z
   .object({

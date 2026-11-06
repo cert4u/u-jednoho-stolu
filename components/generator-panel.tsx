@@ -7,6 +7,7 @@ import {
   dungeonPresets,
   findDungeonPreset,
 } from '../lib/dungeon-presets';
+import { generatorLimits, maxGeneratorRooms } from '../lib/generator-options';
 import type {
   GeneratedDungeon,
   GeneratorOptions,
@@ -305,7 +306,7 @@ export default function GeneratorPanel({
             Název jeskyně
             <input
               value={options.name}
-              maxLength={35}
+              maxLength={generatorLimits.maxNameLength}
               required
               onChange={(e) => update('name', e.target.value)}
             />
@@ -363,8 +364,8 @@ export default function GeneratorPanel({
               Místností na patro
               <input
                 type="number"
-                min={2}
-                max={options.size === 'large' ? 6 : 12}
+                min={generatorLimits.minRooms}
+                max={maxGeneratorRooms(options.size)}
                 required
                 value={options.rooms}
                 onChange={(e) => update('rooms', Number(e.target.value))}
@@ -379,13 +380,16 @@ export default function GeneratorPanel({
                   setOptions((o) => ({
                     ...o,
                     size,
-                    rooms: Math.min(o.rooms, size === 'large' ? 6 : 12),
+                    rooms: Math.min(o.rooms, maxGeneratorRooms(size)),
                   }));
                 }}
               >
                 <option value="small">Malé prostory</option>
                 <option value="medium">Střední prostory</option>
-                <option value="large">Velké prostory · max. 6 místností</option>
+                <option value="large">
+                  Velké prostory · max. {generatorLimits.maxLargeRooms}{' '}
+                  místností
+                </option>
               </select>
             </label>
           </div>
@@ -420,7 +424,7 @@ export default function GeneratorPanel({
                 <input
                   required
                   value={options.seed}
-                  maxLength={64}
+                  maxLength={generatorLimits.maxSeedLength}
                   onChange={(e) => update('seed', e.target.value)}
                 />
               </label>
@@ -444,7 +448,7 @@ export default function GeneratorPanel({
                 <input
                   type="number"
                   min={0}
-                  max={4}
+                  max={generatorLimits.maxConnections}
                   required
                   value={options.connections}
                   onChange={(e) =>
