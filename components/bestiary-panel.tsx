@@ -1,29 +1,47 @@
 'use client';
 
-import {useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 import {Plus} from 'lucide-react';
-import {bestiaryEntries, bestiaryEnvironments, findBestiaryEntry, type BestiaryEnvironment} from '../lib/bestiary';
+import {bestiaryEnvironments, type BestiaryEnvironment} from '../lib/bestiary-environments';
+import type {BestiaryEntry} from '../lib/bestiary';
+import {requestBestiary} from './game-table/game-client';
+import type {Session} from './game-table/types';
 
 function searchableName(value: string) {
   return value.trim().toLocaleLowerCase('cs').normalize('NFD').replace(/\p{M}/gu, '');
 }
 
-const sortedEntries = [...bestiaryEntries].sort((a, b) => a.name.localeCompare(b.name, 'cs'));
-
-export function BestiaryPortrait({templateId}: {templateId?: string}) {
-  const entry = findBestiaryEntry(templateId);
-  if (!entry) return null;
-
+export function BestiaryPortrait({portrait, name}: {portrait?: string; name: string}) {
+  if (!portrait) return null;
   return (
-    <img className="bestiary-portrait" src={`/monsters/${entry.portrait ?? entry.id}.webp`}
-      alt={`Ilustrace: ${entry.name}`} width={400} height={480} loading="lazy"/>
+    <img className="bestiary-portrait" src={`/monsters/${portrait}.webp`}
+      alt={`Ilustrace: ${name}`} width={400} height={480} loading="lazy"/>
   );
 }
 
-export default function BestiaryPanel({busy, onAdd}: {
+export default function BestiaryPanel({busy, onAdd, session}: {
   busy: boolean;
   onAdd: (templateId: string) => Promise<boolean | undefined>;
+  session: Session;
 }) {
+  const [entries, setEntries] = useState<BestiaryEntry[]>();
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    setEntries(undefined);
+    setError(false);
+    void requestBestiary(session, controller.signal).then(
+      data => { if (!controller.signal.aborted) setEntries(data); },
+      () => { if (!controller.signal.aborted) setError(true); },
+    );
+    return () => controller.abort();
+  }, [session, attempt]);
+
+  const sortedEntries = useMemo(
+    () => [...(entries ?? [])].sort((a, b) => a.name.localeCompare(b.name, 'cs')),
+    [entries],
+  );
   const [added, setAdded] = useState<{name: string; count: number}>();
 
   const [environment, setEnvironment] = useState<BestiaryEnvironment | ''>('');
@@ -33,6 +51,12 @@ export default function BestiaryPanel({busy, onAdd}: {
     (!environment || entry.environments.includes(environment)) &&
     searchableName(entry.name).includes(needle)
   );
+
+  if (error) return <div role="alert">
+    <p>Bestiář se nepodařilo načíst.</p>
+    <button type="button" className="secondary" onClick={() => setAttempt(value => value + 1)}>Zkusit znovu</button>
+  </div>;
+  if (!entries) return <p role="status">Načítám bestiář…</p>;
 
   return (
     <section aria-labelledby="bestiary-title">
@@ -60,7 +84,7 @@ export default function BestiaryPanel({busy, onAdd}: {
       <ul className="bestiary-grid">
         {visibleEntries.map(entry => (
           <li key={entry.id} className="bestiary-card">
-            <BestiaryPortrait templateId={entry.id}/>
+            <BestiaryPortrait portrait={entry.portrait ?? entry.id} name={entry.name}/>
             <h4>{entry.name}</h4>
             <p>{entry.description}</p>
             <p className="bestiary-gm-hint"><strong>Jak ji hrát</strong> {entry.gmHint}</p>

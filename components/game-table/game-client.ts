@@ -1,3 +1,4 @@
+import type { BestiaryEntry } from '../../lib/bestiary';
 import type { GameView } from '../../app/api/game/view';
 import type { Session } from './types';
 
@@ -57,4 +58,11 @@ export async function requestBackup(session: Session) {
   if (!response.ok)
     throw new Error(backup.error || 'Zálohu se nepodařilo stáhnout.');
   return backup;
+}
+
+export async function requestBestiary(session: Session, signal: AbortSignal) {
+  const query = new URLSearchParams({ room: session.room, catalog: 'bestiary' });
+  const response = await fetch(`/api/game?${query}`, { headers: authorization(session), signal });
+  if (!response.ok) throw new Error('Bestiář se nepodařilo načíst.');
+  return await response.json() as BestiaryEntry[];
 }

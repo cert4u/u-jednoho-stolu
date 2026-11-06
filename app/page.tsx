@@ -157,15 +157,19 @@ export default function Home() {
       !values.requestId
     )
       values = { ...values, requestId: crypto.randomUUID() };
+    const current = sessionCurrent.current;
+    const sessionChanged = () =>
+      Boolean(current && !sameSession(sessionCurrent.current, current));
     setBusy(true);
     setError('');
     try {
       const d = await sendGameAction(
-        session,
+        current,
         editorLevel || game?.exploration?.levelId,
         action,
         values,
       );
+      if (sessionChanged()) return false;
       if (d.recoveryCode) {
         setRecoveryCode(d.recoveryCode);
         const memberId = d.recoveryCode.split(':')[1];
@@ -174,6 +178,7 @@ export default function Home() {
         );
       }
       if (d.token) {
+        setBusy(false);
         setRecapFocus(undefined);
         setNoteSnapshot(undefined);
         setEditorLevel('');
@@ -201,10 +206,11 @@ export default function Home() {
       );
       return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Něco se nepodařilo.');
+      if (!sessionChanged())
+        setError(e instanceof Error ? e.message : 'Něco se nepodařilo.');
       return false;
     } finally {
-      setBusy(false);
+      if (!sessionChanged()) setBusy(false);
     }
   }
   function locateRecap(location: Location) {
@@ -409,6 +415,8 @@ export default function Home() {
     setModal('monsters');
   }
   function leave() {
+    sessionCurrent.current = null;
+    setBusy(false);
     setRecapFocus(undefined);
     setNoteSnapshot(undefined);
     localStorage.removeItem(sessionStorageKey);

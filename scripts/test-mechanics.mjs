@@ -13,6 +13,15 @@ async function get(s){return (await fetch(base+'/api/game?room='+s.room,{headers
 const run=(s,data,id=crypto.randomUUID())=>post(s,'mechanics',{...data,requestId:id});
 const pj=await post(null,'create',{name:'Test PJ'}),a=await post(null,'join',{room:pj.room,name:'Hrdina'}),b=await post(null,'join',{room:pj.room,name:'Obránce'});const ar={type:'member',id:a.game.me},br={type:'member',id:b.game.me};
 assert.equal((await post(a,'character',{strength:21,attackNumber:8,defenseNumber:5,damageBonus:2})).status,200);
+const aSheet = view => view.members.find(member => member.id === a.game.me);
+for (const authorized of [a, pj]) {
+  const sheet = aSheet(await get(authorized));
+  assert.equal(sheet.abilities.strength, 21);
+  assert.equal(sheet.combat.attack, 8);
+}
+const otherSheet = aSheet(await get(b));
+for (const key of ['abilities', 'combat', 'token', 'recoveryHash', 'recoveryReplay'])
+  assert(!Object.hasOwn(otherSheet, key), `Cizí pohled obsahuje ${key}`);
 let r=await run(a,{kind:'ability',actor:ar,ability:'strength',modifier:2,difficulty:1});assert.equal(r.status,200);let m=r.game.messages.at(-1);assert.equal(m.mechanics.base,5);assert.equal(m.mechanics.total,m.mechanics.dice[0]+7);assert(m.text.includes('úspěch'));
 assert.equal((await run(b,{kind:'ability',actor:ar,ability:'strength'})).status,400);
 assert.equal((await run(a,{kind:'attack',actor:ar,target:br,base:0.5})).status,400);

@@ -79,35 +79,30 @@ export function gameView(
             m.id === id ||
             m.role === 'pj'),
       )
-      .map(
-        ({
-          token,
-          recoveryHash,
-          recoveryReplay,
-          conditions,
-          powers,
-          mana,
-          purse,
-          possessions,
-          equipmentRevision,
-          life,
-          ...m
-        }) => ({
-          ...m,
-          life: lifeView({ ...m, life }, pj || m.id === id),
-          ...(pj || m.id === id
-            ? {
-                equipmentRevision: equipmentRevision ?? 0,
-                purse: purse || emptyCoins(),
-                possessions: possessions || [],
-                powers: powers || [],
-                mana: mana || { current: 0, max: 0, revision: 0 },
-              }
-            : {}),
-          conditions: visibleConditions(conditions, pj),
-          ...(!pj && m.id !== id ? { stats: '', inventory: '' } : {}),
-        }),
-      ),
+      .map(member => {
+        const ownSheet = pj || member.id === id;
+        const {
+          id: memberId, name, role, hp, maxHp, experience, race, profession,
+          level, x, y, color, seen, archived,
+        } = member;
+        return {
+          id: memberId, name, role, hp, maxHp, experience, race, profession,
+          level, x, y, color, seen, archived,
+          stats: ownSheet ? member.stats : '',
+          inventory: ownSheet ? member.inventory : '',
+          life: lifeView(member, ownSheet),
+          ...(ownSheet && {
+            abilities: member.abilities,
+            combat: member.combat,
+            equipmentRevision: member.equipmentRevision ?? 0,
+            purse: member.purse || emptyCoins(),
+            possessions: member.possessions || [],
+            powers: member.powers || [],
+            mana: member.mana || { current: 0, max: 0, revision: 0 },
+          }),
+          conditions: visibleConditions(member.conditions, pj),
+        };
+      }),
     messages: g.messages.filter((m) => canReadMessage(m, id)),
     me: id,
   };

@@ -3,6 +3,7 @@ import { getDb } from '../../../db';
 import { rooms } from '../../../db/schema';
 import { initialGame, type Game } from '../../../lib/game';
 import { makeBackup, readBackup } from '../../../lib/backup';
+import { bestiaryEntries } from '../../../lib/bestiary';
 import { startAdventure } from '../../../lib/start-adventure';
 import { issueRecovery, claimRecovery } from '../../../lib/access';
 import { pendingCombat } from '../../../lib/mechanics';
@@ -30,6 +31,10 @@ export async function GET(req: Request) {
     const g = JSON.parse(row.data) as Game;
     const me = g.members.find((m) => !m.archived && m.token === readToken(req));
     if (!me) return fail('Připoj se k místnosti.', 401);
+    if (u.searchParams.get('catalog') === 'bestiary') {
+      if (me.role !== 'pj') return fail('Bestiář je dostupný pouze PJ.', 403);
+      return Response.json(bestiaryEntries, { headers });
+    }
     if (u.searchParams.get('download') === 'backup') {
       if (me.role !== 'pj') return fail('Úplnou zálohu stahuje pouze PJ.', 403);
       pendingCombat(g, me.id);

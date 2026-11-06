@@ -365,6 +365,7 @@ export default function TableDialog({
         if (!pj) break;
         return (
           <MonsterManager
+            session={session}
             monsters={game.monsters || []}
             initialId={selectedMonster}
             busy={busy}

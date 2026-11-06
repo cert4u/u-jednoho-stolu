@@ -11,6 +11,7 @@ Zranitelnost oznam soukromě přes záložku Security, pokud je tato možnost v 
 ## Co je a není oddělené
 
 - Herní role se ověřují v API. Hráčský pohled nemá obsahovat tajnou mapu, statistiky příšer ani cizí soukromé deníky; tyto kontroly jsou součástí testů.
+- Bestiář se načítá po ověření role PJ a klientský build se kontroluje na texty určené PJ. Součástí veřejného Git repozitáře jsou zdrojové předlohy. Tajná příprava konkrétní kampaně patří do stolu a jeho soukromých záloh. Schopnosti, bojové hodnoty a výbavu cizího deníku hráčské API neposílá.
 - Herní token se uchovává v prohlížeči, v databázi je dostupný správci serveru. Obnovovací klíč se na serveru ukládá jako otisk; jeho použití rotuje herní přístup a vydá nový klíč. Samotná pozvánka umožňuje vytvořit novou postavu do kapacity místnosti.
 - PJ je role v jedné kampani. Heslo `/admin` spravuje celou instalaci; není účtem PJ. Správce serveru/databáze má fyzický přístup k soukromému hernímu obsahu, i když není jeho příjemcem přes herní API.
 - JSON export kampaně vynechává tokeny a otisky klíčů, ale obsahuje tajnou přípravu a chat. Snapshot celé databáze obsahuje i přístupy. Obě zálohy chraň jako soukromá data.

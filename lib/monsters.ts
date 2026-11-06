@@ -4,11 +4,27 @@ import {combatFields,type CombatStats} from './combat-rules';
 import type {Game,Member} from './game';
 import {dungeonFor,cellKey} from './dungeon';
 import {getLevel} from './exploration';
-import {findBestiaryEntry} from './bestiary';
+import {bestiaryPortrait,findBestiaryEntry} from './bestiary';
 export type Monster={templateId?:string;conditions?:Condition[];combat?:CombatStats;id:string;number:number;name:string;levelId:string;x:number|null;y:number|null;hp:number;maxHp:number;stats:string;notes:string;hidden:boolean;archived:boolean};
-export type MonsterView=Pick<Monster,'id'|'number'|'name'|'levelId'|'x'|'y'> & {templateId?:string;conditions?:Condition[];combat?:CombatStats;defeated:boolean;visibleToPlayers?:boolean;hp?:number;maxHp?:number;stats?:string;notes?:string;hidden?:boolean;archived?:boolean};
+export type MonsterView=Pick<Monster,'id'|'number'|'name'|'levelId'|'x'|'y'> & {templateId?:string;portrait?:string;conditions?:Condition[];combat?:CombatStats;defeated:boolean;visibleToPlayers?:boolean;hp?:number;maxHp?:number;stats?:string;notes?:string;hidden?:boolean;archived?:boolean};
 export function monsterVisible(g:Game,monster:Monster,levelId:string){if(monster.archived||monster.hidden||monster.levelId!==levelId||monster.x===null||monster.y===null)return false;const map=g.atlas?getLevel(g.atlas,levelId).map:dungeonFor(g);const key=cellKey(monster.x,monster.y);if(!map.floors.includes(key))return false;if(g.atlas?.location){if(g.atlas.location.levelId!==levelId)return false;return getLevel(g.atlas,levelId).visible.includes(key);}return map.revealed.includes(key);}
-export function monsterViews(g:Game,pj:boolean,levelId:string):MonsterView[]{return (g.monsters||[]).filter(m=>m.levelId===levelId&&(pj||monsterVisible(g,m,levelId))).map(m=>pj?{...m,defeated:m.hp===0,visibleToPlayers:monsterVisible(g,m,levelId)}:{id:m.id,number:m.number,name:m.name,levelId:m.levelId,x:m.x,y:m.y,defeated:m.hp===0,conditions:visibleConditions(m.conditions,false)});}
+export function monsterViews(g: Game, pj: boolean, levelId: string): MonsterView[] {
+  return (g.monsters ?? []).flatMap<MonsterView>(monster => {
+    if (monster.levelId !== levelId) return [];
+    if (pj) {
+      const entry = findBestiaryEntry(monster.templateId);
+      return [{
+        ...monster,
+        ...(entry && { portrait: bestiaryPortrait(entry) }),
+        defeated: monster.hp === 0,
+        visibleToPlayers: monsterVisible(g, monster, levelId),
+      }];
+    }
+    if (!monsterVisible(g, monster, levelId)) return [];
+    const { id, number, name, x, y, hp, conditions } = monster;
+    return [{ id, number, name, levelId, x, y, defeated: hp === 0, conditions: visibleConditions(conditions, false) }];
+  });
+}
 function integer(value:unknown,min:number,max:number,label:string){if(typeof value!=='number'||!Number.isInteger(value)||value<min||value>max)throw new Error(`${label}: zadej celé číslo od ${min} do ${max}.`);return value;}
 function title(value:unknown){const result=String(value??'').trim().slice(0,60);if(!result)throw new Error('Pojmenuj příšeru.');return result;}
 export function monsterAction(g:Game,actor:Member,b:Record<string,unknown>){if(actor.role!=='pj')throw new Error('Příšery spravuje pouze Pán jeskyně.');const requestId=b.requestId;if(typeof requestId!=='string'||! /^[a-zA-Z0-9-]{16,80}$/.test(requestId))throw new Error('Chybí identifikátor akce.');if(g.monsterOperations?.includes(requestId))return;const monsters=g.monsters??=[];const levelId=g.atlas?getLevel(g.atlas,b.levelId).id:'ground';const monster=monsters.find(m=>m.id===b.monsterId);

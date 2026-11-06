@@ -2,7 +2,8 @@
 import {useRef,useState} from 'react';
 import {Dices,Swords} from 'lucide-react';
 import {ABILITIES,abilityValues,type CharacterDetails} from '../lib/character';
-import {abilityBonus,signed,type ActorRef,type CombatStats,type MechanicsRoll} from '../lib/mechanics';
+import {abilityBonus,signed,type CombatStats} from '../lib/combat-rules';
+import type {ActorRef,MechanicsRoll} from '../lib/mechanics';
 export type RollSetup={actor?:ActorRef;ability?:string;kind?:string;attackId?:string;defenseId?:string};
 type Person=CharacterDetails & {id:string;name:string;role:string};
 type Creature={id:string;name:string;number:number;combat?:CombatStats;archived?:boolean};
