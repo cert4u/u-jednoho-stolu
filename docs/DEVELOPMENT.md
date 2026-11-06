@@ -96,6 +96,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | Cesta | Odpovědnost |
 | --- | --- |
 | [app/page.tsx](../app/page.tsx) | Propojení mapy, družiny, chatu a dialogů. |
+| [components/dungeon-map.tsx](../components/dungeon-map.tsx) | Editor mapy: režimy, lišta nástrojů, posun, přiblížení a dialogy. [Plátno SVG](../components/dungeon-map/canvas.tsx) vykresluje mapu a značky. [Obsluha vstupu](../components/dungeon-map/use-map-input.ts) zpracovává myš a klávesnici, sestavuje tahy a spravuje jejich opakování. |
 | [components/game-table/](../components/game-table) | Lobby, chat, deník, odměny, registr dialogů a klientská komunikace. `game-client.ts` volá API a `use-game-polling.ts` načítá stav každé dvě sekundy. |
 | [app/api/game/route.ts](../app/api/game/route.ts) | HTTP, ověření člena, vstup do kampaně a zápis s kontrolou revize. |
 | [app/api/game/actions.ts](../app/api/game/actions.ts) | Směrování mutací a kontrola rolí. Pravidla jednotlivých akcí jsou v odpovídajících modulech `lib/`. |

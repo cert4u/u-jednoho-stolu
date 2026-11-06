@@ -2,7 +2,17 @@
 
 ## Příští vydání
 
-Připravovaný kandidát `0.9.0-alpha.1` pro zkušební hraní. Formát záloh a databázové migrace se nemění.
+Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
+
+## 0.5.2 — 2026-11-06
+
+- Editor mapy odděluje vykreslení od obsluhy myši a klávesnice, včetně odesílání a opakování tahů.
+- Formulář a oba generátory jeskyní sdílejí validaci parametrů. Stejné semínko a nastavení dávají stejnou mapu jako dřív.
+- Validace záloh je rozdělena podle oblastí hry: mapa, postavy, souboj a příprava PJ. Formát záloh 1, konfigurace a SQL migrace zůstávají stejné.
+
+## 0.5.1 — 2026-11-06
+
+Formát záloh 1, konfigurace a SQL migrace zůstávají stejné.
 
 - Katalog příšer, předlohy jeskyní a dobrodružství jsou samostatná validovaná data. Dvě ukázkové výpravy lze založit přímo v lobby.
 - Generátor umí načíst předlohu parametrů. Výpočty hodů a zranění jsou oddělené od správy souboje.
