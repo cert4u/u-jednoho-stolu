@@ -1,4 +1,4 @@
-import {combatFields,type CombatStats} from './mechanics';
+import {combatFields,type CombatStats} from './combat-rules';
 export const ABILITIES = [
   {key:'strength',label:'Síla',short:'SIL'},
   {key:'dexterity',label:'Obratnost',short:'OBR'},

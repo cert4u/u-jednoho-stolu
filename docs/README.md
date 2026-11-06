@@ -16,6 +16,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | Autor generátoru | [Generátor V2: audit, model, invarianty a benchmark](GENERATOR_V2.md) |
 | Autor integrace | [Interní HTTP API a oprávnění](API.md) |
 | Přispěvatel | [Jak přispívat](../CONTRIBUTING.md) |
+| Autor dobrodružství a příšer | [Přidávání herního obsahu](OBSAH.md) |
 | Autor ilustrací | [Postavy a bestiář](ILUSTRACE.md) |
 | Správce vydání | [Příprava a ověření vydání](RELEASING.md) |
 
@@ -25,7 +26,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 
 - **Chci si zahrát:** potřebuji adresu běžící instalace a pozvánku nebo obnovovací klíč. Nepotřebuji Git ani vývojové nástroje.
 - **Chci mít vlastní instalaci:** začnu Dockerem. Herní data jsou ve volume, nastavení v `.env`, správa instalace na `/admin`.
-- **Chci vyvíjet:** mohu použít Node/SQLite nebo původní lokální emulaci Cloudflare. Jejich buildy, databáze a příkazy se liší.
+- **Chci vyvíjet:** začnu příkazem `npm run dev:node` podle [průvodce první změnou](DEVELOPMENT.md#první-změna-na-místním-stole). Pro původní Cloudflare variantu jsou v návodu samostatné příkazy.
 - **Chci hlásit chybu:** použiji smyšlený příklad a popíšu verzi, roli a postup. Klíče, tokeny a herní zálohy nepatří do veřejného issue.
 
 ## Co dokumentace rozlišuje

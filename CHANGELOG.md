@@ -1,5 +1,16 @@
 # Změny
 
+## Příští vydání
+
+Připravovaný kandidát `0.9.0-alpha.1` pro zkušební hraní. Formát záloh a databázové migrace se nemění.
+
+- Katalog příšer, předlohy jeskyní a dobrodružství jsou samostatná validovaná data. Dvě ukázkové výpravy lze založit přímo v lobby.
+- Generátor umí načíst předlohu parametrů. Výpočty hodů a zranění jsou oddělené od správy souboje.
+
+- Vývojový stůl přes `npm run dev:node` používá vlastní SQLite databázi a běží bez Dockeru. Herní API, klientské dialogy a komunikace mají oddělené moduly popsané v příručce pro přispěvatele.
+
+- Bestiář pro PJ má 30 ilustrovaných předloh. Nabízí filtr podle šesti prostředí a hledání podle názvu. Každá karta má větu **Jak ji hrát**, která se při přidání předlohy zkopíruje do soukromé poznámky příšery.
+
 ## 0.5.0 — 2026-11-06
 
 - **Ilustrovaný deník.** Pět povolání má mužskou i ženskou kresbu. Obrázek se mění při výběru povolání. Nabídka vždy ukáže celý seznam a dovoluje zadat i vlastní název.

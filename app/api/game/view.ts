@@ -1,0 +1,116 @@
+import { sessionRecapView } from '../../../lib/session-recap';
+import { generationState } from '../../../lib/generation';
+import { lifeView } from '../../../lib/life';
+import { lootViews, emptyCoins } from '../../../lib/loot';
+import { challengeViews } from '../../../lib/challenges';
+import { mapNoteAlertViews } from '../../../lib/map-note-alerts';
+import { mapNotesView } from '../../../lib/map-notes';
+import { journeyView } from '../../../lib/journey';
+import { visibleConditions } from '../../../lib/conditions';
+import { initiativeView } from '../../../lib/initiative';
+import { canReadMessage, pendingCombat } from '../../../lib/mechanics';
+import { monsterViews } from '../../../lib/monsters';
+import {
+  ensureAtlas,
+  getLevel,
+  explorationView,
+} from '../../../lib/exploration';
+import { dungeonFor, playerDungeon, cellKey } from '../../../lib/dungeon';
+import type { Game } from '../../../lib/game';
+
+export function gameView(
+  g: Game,
+  id: string,
+  revision = 0,
+  requested?: string,
+) {
+  const me = g.members.find((m) => m.id === id)!;
+  const pj = me.role === 'pj';
+  const pendingActions = pendingCombat(g, id);
+  if (g.atlas) ensureAtlas(g);
+  const exploration = explorationView(g, pj, requested);
+  const level = g.atlas ? getLevel(g.atlas, exploration?.levelId) : undefined;
+  const map = level?.map || dungeonFor(g),
+    visible = exploration?.playerMap || playerDungeon(map);
+  const seen = new Set(map.revealed);
+  const { mapHistory, generationRuns } = g;
+  // List the response fields here so new stored data stays private by default.
+  return {
+    title: g.title,
+    scene: g.scene,
+    experienceAwards: g.experienceAwards,
+    sessionRecap: sessionRecapView(g, pj),
+    ...(pj
+      ? { generation: generationState(g), generationRuns: generationRuns || [] }
+      : {}),
+    loot: lootViews(g, pj),
+    challenges: challengeViews(g, me),
+    noteAlerts: pj ? mapNoteAlertViews(g) : [],
+    mapNotes: mapNotesView(g, pj, level?.id || 'ground', visible),
+    journey: journeyView(g, pj),
+    initiative: initiativeView(g, pj),
+    revision,
+    pendingActions,
+    archivedMembers: pj
+      ? g.members
+          .filter((m) => m.archived)
+          .map((m) => ({ id: m.id, name: m.name }))
+      : [],
+    exploration,
+    monsters: monsterViews(g, pj, level?.id || 'ground'),
+    notes: pj ? g.notes : '',
+    dungeon: pj ? map : visible,
+    canUndoMap: pj && Boolean((level?.history || mapHistory)?.length),
+    cells: Object.fromEntries(
+      (pj ? map : visible).floors.map((k) => [k, 'floor']),
+    ),
+    fog: pj
+      ? Array.from({ length: 560 }, (_, i) =>
+          cellKey(i % 28, Math.floor(i / 28)),
+        ).filter((k) => !seen.has(k))
+      : [],
+    members: g.members
+      .filter(
+        (m) =>
+          !m.archived &&
+          (exploration ||
+            pj ||
+            seen.has(cellKey(m.x, m.y)) ||
+            m.id === id ||
+            m.role === 'pj'),
+      )
+      .map(
+        ({
+          token,
+          recoveryHash,
+          recoveryReplay,
+          conditions,
+          powers,
+          mana,
+          purse,
+          possessions,
+          equipmentRevision,
+          life,
+          ...m
+        }) => ({
+          ...m,
+          life: lifeView({ ...m, life }, pj || m.id === id),
+          ...(pj || m.id === id
+            ? {
+                equipmentRevision: equipmentRevision ?? 0,
+                purse: purse || emptyCoins(),
+                possessions: possessions || [],
+                powers: powers || [],
+                mana: mana || { current: 0, max: 0, revision: 0 },
+              }
+            : {}),
+          conditions: visibleConditions(conditions, pj),
+          ...(!pj && m.id !== id ? { stats: '', inventory: '' } : {}),
+        }),
+      ),
+    messages: g.messages.filter((m) => canReadMessage(m, id)),
+    me: id,
+  };
+}
+export type GameView = ReturnType<typeof gameView>;
+export type MemberView = GameView['members'][number];

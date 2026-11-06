@@ -2,7 +2,7 @@
 import {useRef,useState} from 'react';
 import {useDialogGuard} from './guarded-dialog';
 import {ABILITIES,abilityValues,type CharacterDetails} from '../lib/character';
-import {abilityBonus,signed} from '../lib/mechanics';
+import {abilityBonus,signed} from '../lib/combat-rules';
 import type {ChallengeView} from '../lib/challenges';
 type Person=CharacterDetails & {id:string;name:string;role:string};
 type Action=(values:Record<string,unknown>)=>Promise<unknown>;

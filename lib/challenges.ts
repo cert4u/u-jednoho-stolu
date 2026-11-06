@@ -1,5 +1,5 @@
 import {ABILITIES,abilityValues,type AbilityKey} from './character';
-import {abilityBonus,die,integer,signed} from './mechanics';
+import {abilityBonus,die,integer,signed} from './combat-rules';
 import {EditConflict} from './sheets';
 import type {Game,Member} from './game';
 export type ChallengeResult={die:number;base:number;total:number};

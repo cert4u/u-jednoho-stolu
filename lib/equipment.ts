@@ -1,6 +1,6 @@
 import type {Game,Member} from './game';
 import {CURRENCIES,emptyCoins,type Coins} from './loot';
-import {integer} from './mechanics';
+import {integer} from './combat-rules';
 import {EditConflict} from './sheets';
 export function equipmentAction(g:Game,me:Member,b:Record<string,unknown>){
  if(typeof b.requestId!=='string'||! /^[a-zA-Z0-9-]{16,80}$/.test(b.requestId))throw new Error('Chybí identifikátor změny výbavy.');

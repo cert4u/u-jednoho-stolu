@@ -2,17 +2,30 @@
 
 [Dokumentace](README.md) · [API](API.md) · [Přispívání](../CONTRIBUTING.md) · [Vydávání](RELEASING.md)
 
+## První změna na místním stole
+
+V čistém klonu potřebuješ Git, npm a Node **22.15.0 nebo novější**. Pro stejnou řadu jako v CI použij Node 22. Z kořene projektu spusť:
+
+```bash
+npm run install:ci
+npm run dev:node
+```
+
+Otevři `http://127.0.0.1:5174` a založ smyšlenou družinu. Při úpravě kódu se náhled obnovuje. SQLite databáze vznikne při prvním požadavku v ignorovaném adresáři `.stul-dev-data/`. Stůl poslouchá jen místně a spustíš ho bez Dockeru, účtu Cloudflare nebo souboru `.env`. Pro ověření `/admin` použij [sestavenou Node instalaci](#rychlý-start-node-bez-dockeru).
+
+Před první změnou zkus otevřít bestiář. Jeho předlohy najdeš v [katalogu](../content/bestiary.json), výběr a vyhledávání v [panelu](../components/bestiary-panel.tsx) a přidávání do kampaně v [herní logice příšer](../lib/monsters.ts). Po úpravě spusť `npm run verify`. U změny herního chování pokračuj [integračním ověřením](#ověření-a-ci).
+
 ## Dva podporované způsoby spuštění
 
 | | Node / SQLite | Lokální Cloudflare |
 | --- | --- | --- |
 | Použití | Vlastní server, Docker a lokální ověření stejné varianty. | Původní vývojová varianta přes Wrangler. |
 | Build | `npm run build:node` | `npm run build` |
-| Start | `node --env-file=.env server/start.mjs` | `npm run dev` nebo po buildu `npm start` |
-| Databáze | `.stul-data/game.sqlite`, případně `STUL_DATA_DIR`. V Dockeru `/data/game.sqlite`. | D1 emulovaná ve `.wrangler/state`. |
+| Start | `npm run dev:node` pro vývoj. Po buildu `node --env-file=.env server/start.mjs` pro provoz. | `npm run dev` nebo po buildu `npm start` |
+| Databáze | Vývoj `.stul-dev-data/game.sqlite`. Provoz `.stul-data/game.sqlite` nebo `STUL_DATA_DIR`. V Dockeru `/data/game.sqlite`. | D1 emulovaná ve `.wrangler/state`. |
 | Migrace | Při startu Node serveru. | `npm run db:init` po Cloudflare buildu. |
-| Port | 8080, případně proměnná `PORT`. | Vývoj 5173; sestavená lokální varianta přes `npm start` obvykle 8787. |
-| Správa `/admin` | Ano; aktualizace vyžaduje Docker updater. | Node administrace zde neběží. |
+| Port | Vývoj 5174. Provoz 8080 nebo proměnná `PORT`. | Vývoj 5173; sestavená lokální varianta přes `npm start` obvykle 8787. |
+| Správa `/admin` | Po spuštění `server/start.mjs`. Aktualizace vyžaduje Docker updater. | Node administrace zde neběží. |
 | Hlas | Volitelný LiveKit podle [návodu](VOICE.md), plně popsaný pro Node hosting. | Srovnatelný spravovaný hlasový deployment zde není připravený. |
 
 Oba buildy používají adresář `dist`. Nespouštěj je současně a před startem zvol správný build. `npm run db:init` vyžaduje konfiguraci vytvořenou Cloudflare buildem; pro Node se nepoužívá.
@@ -82,13 +95,17 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 
 | Cesta | Odpovědnost |
 | --- | --- |
-| `app/page.tsx` | Herní klient, přihlášení, dvousekundová synchronizace a propojení panelů. |
-| `app/api/game/route.ts` | Autentizace, oprávnění, akce a filtrovaný pohled pro příjemce. |
+| [app/page.tsx](../app/page.tsx) | Propojení mapy, družiny, chatu a dialogů. |
+| [components/game-table/](../components/game-table) | Lobby, chat, deník, odměny, registr dialogů a klientská komunikace. `game-client.ts` volá API a `use-game-polling.ts` načítá stav každé dvě sekundy. |
+| [app/api/game/route.ts](../app/api/game/route.ts) | HTTP, ověření člena, vstup do kampaně a zápis s kontrolou revize. |
+| [app/api/game/actions.ts](../app/api/game/actions.ts) | Směrování mutací a kontrola rolí. Pravidla jednotlivých akcí jsou v odpovídajících modulech `lib/`. |
+| [app/api/game/view.ts](../app/api/game/view.ts) | Výslovný výběr polí herního pohledu podle příjemce. Klient používá typ `GameView` z tohoto modulu. |
 | `app/api/voice/route.ts`, `lib/voice.ts` | Ověření členství a krátkodobá hlasová vstupenka pouze pro mikrofon. |
 | `lib/game.ts`, `db/schema.ts` | Vnitřní stav hry a tabulka místností. |
 | `lib/dungeon.ts`, `lib/exploration.ts` | Geometrie, patra, dveře, propojení schodů, dohled a paměť mapy. |
 | `lib/dungeon-generator.ts`, `lib/generation.ts` | Verzovaný deterministický náhled, serverové vložení a ochrana kapacity/souběhu. V2 jádro, validátor a sdílené typy jsou v samostatných `generator-*.ts` modulech; [audit a návrh](GENERATOR_V2.md). |
-| `lib/monsters.ts`, `lib/initiative.ts`, `lib/mechanics.ts` | Příšery, pořadí souboje, hody, návaznost útoku/obrany a zranění. |
+| [content/](../content) | Verzované předlohy příšer, jeskyní a dobrodružství. [Přidávání obsahu](OBSAH.md). |
+| `lib/monsters.ts`, `lib/initiative.ts`, `lib/mechanics.ts`, `lib/combat-rules.ts` | Příšery, pořadí souboje, hody, návaznost útoku/obrany a zranění. |
 | `lib/sheets.ts`, `lib/character.ts` | Deníky a ochrana změněných polí. |
 | `lib/powers.ts`, `lib/conditions.ts`, `lib/life.ts`, `lib/recovery.ts` | Kouzla/magenergie, stavy, vyřazení a obnova životů/magenergie. |
 | `lib/map-inspection.ts`, `lib/room-labels.ts`, `components/map-inspector.tsx` | Výběr celé místnosti/propojeného prostoru pro PJ, rozložení čísel mimo schody/vstupy a čtecí přehled. |
@@ -131,12 +148,10 @@ Do Gitu nepatří `.env`, `.stul-data`, `.stul-state`, `.wrangler/state`, datab�
 
 ## Ověření a CI
 
-Základní kontrola zdrojů a dokumentace:
+Rychlá kontrola zdrojů, dokumentace, datových předloh a geometrie:
 
 ```bash
-npm run check:docs
-npm run check
-npm test
+npm run verify
 ```
 
 Node hosting, databáze a API na vlastní dočasné instanci (port 18088 musí být volný):
@@ -159,7 +174,7 @@ npm run test:ci
 
 `test:ci` si spustí a ukončí vývojový server, ale používá místní D1 úložiště a přidané testovací místnosti v něm zůstanou. Proti již spuštěné oddělené místní instanci lze použít `npm run test:integration -- http://127.0.0.1:5173`. Testy nepouštěj proti rozehrané instalaci; vytvářejí i obnovují vlastní syntetické kampaně.
 
-Současných 27 integračních sad v `scripts/test-integration.mjs`:
+Současných 28 integračních sad v `scripts/test-integration.mjs`:
 
 | Sada `test-*.mjs` | Ověřuje |
 | --- | --- |
@@ -170,6 +185,7 @@ Současných 27 integračních sad v `scripts/test-integration.mjs`:
 | `loot`, `equipment` | Převzetí nálezů, měšec a výbavu bez zdvojování. |
 | `generator-core`, `generator-v2`, `generator`, `generation-v2-integration`, `access` | Deterministické mapy, vložení, propojení, vchody a východy. `access` zde znamená mapové vstupy. |
 | `room-parchments` | Skutečný vstup a průchod místností, schodiště, ruční zveřejnění, soukromí, opakování a zálohy. |
+| `adventures` | Veřejná upoutávka bez tajné přípravy, založení z předlohy, soukromí a úplná záloha. |
 | `session-recap` | Zápis ze sezení, oprávnění, soukromí mapy, opakování, konflikty a zálohy. |
 | `lighting` | Dohoření/undo, šedou paměť a příšery, skupinový průchod za tmy i se světlem (včetně mezikroků), nosiče v boji, nesčítání dosahů, průhlednost hran, přepsání PJ a zálohy. |
 | `basic-mechanics` | Zamčené/tajné dveře a paměť, individuální bojový pohyb a sdílený dohled, seskupení, soukromé atomické transfery, zálohy a souběh. |

@@ -32,6 +32,12 @@ Tlačítko **Ukázat na mapě** zvýrazní uložené políčko bez přesunu dru�
 
 Opustit stůl v prohlížeči odstraní místní přihlášení, ne kampaň. Ztracený přístup PJ potřebuje jeho obnovovací klíč nebo obnovu kampaně/instalace ze zálohy. Neexistuje společné výchozí heslo pro PJ.
 
+## Začátek z předlohy
+
+Při založení stolu může PJ vybrat **Předlohu dobrodružství**. Předloha připraví mapu, místnosti, poznámky a příšery, které může PJ dál upravovat. Družinu pak umístí u vchodu. První popis může PJ otevřít v poznámce vstupní místnosti a zobrazit tlačítkem **Ukázat situaci teď**.
+
+V samotném generátoru volba **Použít předlohu jeskyně** vyplní parametry mapy. Před vložením může PJ parametry přepsat a zkontrolovat náhled.
+
 ## Deník a soukromí
 
 V **Můj deník** zapisuj jméno, rasu, povolání, úroveň, pět vlastností a hotové bojové hodnoty ÚČ, OČ a útočnost. Změna povolání či výbavy je sama nepřepočítá. Úroveň se zkušenostmi automaticky nezvyšuje; zkušenosti přiděluje PJ.
@@ -107,7 +113,9 @@ PJ může použít **Ukázat situaci teď**. Obě možnosti zobrazí popis jedno
 
 Upozornění při přiblížení má výchozí dosah 2 pole, nastavení 1–6 nebo vypnutí. Funguje i přes stěny a sleduje průchod družiny kolem místa. Během pobytu v okolí se neopakuje. Je soukromou připomínkou PJ, nic automaticky neodhaluje ani nespouští hod či poškození. V části **Připravené setkání** otevřeš přímo rozpracovanou zkoušku, živou příšeru nebo kořist z daného prostoru. Pokud jsou v něm příšery, odtud také otevřeš přípravu souboje na příslušném patře. Po zavření panelu se připomínka vrátí, dokud ji nepotvrdíš.
 
-V **Příšery → Bestiář** může PJ přidat jednu ze dvanácti ilustrovaných předloh. Každé kliknutí na **Přidat** vytvoří samostatnou příšeru pro aktuální patro. V seznamu ji vyber, uprav návrh životů, bojových hodnot nebo popis a klikni na **Umístit do mapy**. Kresba je v detailu pro PJ. Vlastní příšeru založíš přes **Nová příšera**.
+V **Příšery → Bestiář** může PJ přidat jednu ze třiceti ilustrovaných předloh. Každé kliknutí na **Přidat** vytvoří samostatnou příšeru pro aktuální patro. V seznamu ji vyber, uprav návrh životů, bojových hodnot nebo popis a klikni na **Umístit do mapy**. Kresba je v detailu pro PJ. Vlastní příšeru založíš přes **Nová příšera**.
+
+V bestiáři můžeš filtrovat podle prostředí a zároveň hledat podle názvu. Jedna předloha se může hodit do více prostředí. Na každé kartě je věta **Jak ji hrát**. Po přidání se zkopíruje do **Tajných poznámek** dané příšery, kde ji PJ může upravit. O účinku jedu, kletby nebo podobné zvláštnosti rozhoduje PJ podle situace.
 
 Každá příšera má vlastní číslo, životy a bojové hodnoty. Ručně skrytá příšera zůstává skrytá i na viditelném místě. Hráči nedostanou její tajné statistiky a poznámky. Nula životů ji označí za poraženou; archivace a odebrání z mapy jsou samostatné operace.
 

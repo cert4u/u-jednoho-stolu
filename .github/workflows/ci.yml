@@ -29,6 +29,8 @@ jobs:
         run: npm run install:ci
       - name: Dokumentace
         run: npm run check:docs
+      - name: Herní obsah
+        run: npm run check:content
       - name: TypeScript
         run: npm run check
       - name: Geometrie mapy

@@ -360,3 +360,33 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
   background: #f7f0e4;
 }
 .bestiary-instance .bestiary-portrait { max-width: 180px; margin: 0 0 12px; }
+
+.bestiary-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr));
+  gap: 12px;
+}
+.bestiary-filters label { min-width: 0; }
+.bestiary-gm-hint {
+  background: var(--control);
+  border-radius: 4px;
+  padding: 7px 8px;
+}
+.bestiary-gm-hint strong { display: block; }
+
+.adventure-template-field select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.adventure-template-field small {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink);
+  line-height: 1.5;
+}

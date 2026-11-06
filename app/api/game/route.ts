@@ -1,66 +1,191 @@
-import {saveSessionRecap,sessionRecapView} from '../../../lib/session-recap';
-import {reconcileGenerationMetadata} from '../../../lib/generator-provenance';
-import {generationAction,generationState} from '../../../lib/generation';
-import {lifeAction,lifeView} from '../../../lib/life';
-import {equipmentAction} from '../../../lib/equipment';
-import {lootAction,lootViews,emptyCoins} from '../../../lib/loot';
-import {challengeAction,challengeViews} from '../../../lib/challenges';
-import {mapNoteAlertViews} from '../../../lib/map-note-alerts';
-import {mapNoteAction,mapNotesView} from '../../../lib/map-notes';
-import {journeyAction,journeyView} from '../../../lib/journey';
-import {recoveryAction} from '../../../lib/recovery';
-import {powerAction} from '../../../lib/powers';
-import {conditionAction,visibleConditions} from '../../../lib/conditions';
-import {initiativeAction,initiativeView,reconcileInitiative} from '../../../lib/initiative';
-import {makeBackup,readBackup} from '../../../lib/backup';
-import {issueRecovery,claimRecovery} from '../../../lib/access';
-import {updateCharacter,guardPatch,EditConflict} from '../../../lib/sheets';
-import {mechanicsAction,die,canReadMessage,pendingCombat} from '../../../lib/mechanics';
-import { monsterAction,monsterViews } from '../../../lib/monsters';
-import { ensureAtlas, getLevel, explorationAction, explorationView, refreshSight, remember } from '../../../lib/exploration';
-import { applyMap, dungeonFor, playerDungeon, cellKey } from '../../../lib/dungeon';
-import { awardExperience } from '../../../lib/experience';
-import { characterDetails } from '../../../lib/character';
+import { and, eq } from 'drizzle-orm';
 import { getDb } from '../../../db';
 import { rooms } from '../../../db/schema';
-import { and, eq } from 'drizzle-orm';
 import { initialGame, type Game } from '../../../lib/game';
-const fail=(message:string,status=400)=>Response.json({error:message},{status});
-const headers={'Cache-Control':'no-store'};
-function view(g:Game,id:string,revision=0,requested?:string){const me=g.members.find(m=>m.id===id)!;const pj=me.role==='pj';const pendingActions=pendingCombat(g,id);if(g.atlas)ensureAtlas(g);const exploration=explorationView(g,pj,requested);const level=g.atlas?getLevel(g.atlas,exploration?.levelId):undefined;const map=level?.map||dungeonFor(g),visible=exploration?.playerMap||playerDungeon(map);const seen=new Set(map.revealed);const {sessionRecap,atlas,dungeon,mapHistory,mapOperations,cells,fog,monsters,monsterCounter,monsterOperations,mechanicsOperations,combatActions,initiative,initiativeOperations,conditionOperations,powerOperations,recoveryOperations,journey,journeyUndo,journeyOperations,mapNotes,mapNoteOperations,mapNoteAlerts,challenges,challengeOperations,loot,lootOperations,equipmentOperations,lifeOperations,generationOperations,generationRuns,...rest}=g;return {...rest,sessionRecap:sessionRecapView(g,pj),...(pj?{generation:generationState(g),generationRuns:generationRuns||[]}:{}),loot:lootViews(g,pj),challenges:challengeViews(g,me),noteAlerts:pj?mapNoteAlertViews(g):[],mapNotes:mapNotesView(g,pj,level?.id||'ground',visible),journey:journeyView(g,pj),initiative:initiativeView(g,pj),revision,pendingActions,archivedMembers:pj?g.members.filter(m=>m.archived).map(m=>({id:m.id,name:m.name})):[],exploration,monsters:monsterViews(g,pj,level?.id||'ground'),notes:pj?g.notes:'',dungeon:pj?map:visible,canUndoMap:pj&&Boolean((level?.history||mapHistory)?.length),cells:Object.fromEntries((pj?map:visible).floors.map(k=>[k,'floor'])),fog:pj?Array.from({length:560},(_,i)=>cellKey(i%28,Math.floor(i/28))).filter(k=>!seen.has(k)):[],members:g.members.filter(m=>!m.archived&&(exploration||pj||seen.has(cellKey(m.x,m.y))||m.id===id||m.role==='pj')).map(({token,recoveryHash,recoveryReplay,conditions,powers,mana,purse,possessions,equipmentRevision,life,...m})=>({...m,life:lifeView({...m,life},pj||m.id===id),...(pj||m.id===id?{equipmentRevision:equipmentRevision??0,purse:purse||emptyCoins(),possessions:possessions||[],powers:powers||[],mana:mana||{current:0,max:0,revision:0}}:{}),conditions:visibleConditions(conditions,pj),...(!pj&&m.id!==id?{stats:'',inventory:''}:{})})),messages:g.messages.filter(m=>canReadMessage(m,id)),me:id};}
-export async function GET(req:Request){try{const u=new URL(req.url);const code=u.searchParams.get('room')||'';const row=await getDb().select().from(rooms).where(eq(rooms.id,code)).get();if(!row)return fail('Místnost neexistuje.',404);const g=JSON.parse(row.data) as Game;const me=g.members.find(m=>!m.archived&&m.token===req.headers.get('Authorization')?.replace('Bearer ',''));if(!me)return fail('Připoj se k místnosti.',401);if(u.searchParams.get('download')==='backup'){if(me.role!=='pj')return fail('Úplnou zálohu stahuje pouze PJ.',403);pendingCombat(g,me.id);return Response.json(makeBackup(g),{headers:{...headers,'Content-Disposition':'attachment; filename="kampan-zaloha.json"'}});}return Response.json(view(g,me.id,row.version,u.searchParams.get('level')||undefined),{headers});}catch{return fail('Spojení se stolem se nepodařilo. Zkus to znovu.',503);}}
-export async function POST(req:Request){try{const raw=await req.text();if(new TextEncoder().encode(raw).length>3_100_000)return fail('Požadavek je příliš velký.',413);let b:Record<string,unknown>;try{b=JSON.parse(raw);}catch{return fail('Neplatný požadavek.');}if(!b||typeof b!=='object'||Array.isArray(b))return fail('Neplatný požadavek.');const db=getDb();if(b.action==='create'||b.action==='restore'){const code=crypto.randomUUID().replaceAll('-','').slice(0,10).toUpperCase();let game:Game;try{game=b.action==='restore'?readBackup(b.backup):initialGame(String(b.name||'Pán jeskyně').slice(0,30),crypto.randomUUID());}catch(e){return fail(e instanceof Error?e.message:'Neplatná záloha.');}reconcileInitiative(game);if(game.atlas?.lighting?.enabled)refreshSight(game);const owner=game.members.find(m=>m.role==='pj')!;const recoveryCode=await issueRecovery(owner,code);await db.insert(rooms).values({id:code,data:JSON.stringify(game)});return Response.json({room:code,token:owner.token,recoveryCode,game:view(game,owner.id)});}
-for(let attempt=0;attempt<6;attempt++){const row=await db.select().from(rooms).where(eq(rooms.id,String(b.room||''))).get();if(!row)return fail('Tento kód místnosti neznáme.',404);const g=JSON.parse(row.data) as Game;let me=g.members.find(m=>!m.archived&&m.token===req.headers.get('Authorization')?.replace('Bearer ',''));let token:string|undefined;let recoveryCode:string|undefined;let generatedLevels:string[]|undefined;
-if(b.action==='recover'){try{const claim=await claimRecovery(g,row.id,b.recoveryCode,b.requestId);me=claim.member;recoveryCode=claim.recoveryCode;token=me.token;}catch(e){return fail(e instanceof Error?e.message:'Neplatný klíč.',401);}}
-if(b.action==='join'){if(g.members.length>=200)return fail('Místnost má příliš mnoho archivovaných postav. Založ další kampaň.');if(g.members.filter(m=>!m.archived).length>=12)return fail('Stůl už má 12 hráčů.');token=crypto.randomUUID();me={...initialGame(String(b.name||'Dobrodruh').slice(0,30),token).members[0],role:'player',color:['#698675','#7789a8','#b28c47','#a67887'][g.members.length%4],x:5+g.members.length,y:6};if(g.atlas?.location){me.x=g.atlas.location.x;me.y=g.atlas.location.y;}g.members.push(me);recoveryCode=await issueRecovery(me,row.id);}if(!me)return fail('Připoj se k místnosti.',401);me.seen=Date.now();const pj=me.role==='pj';
-switch(b.action){case 'recover':case 'join':break;case 'chat':case 'roll':{let text=String(b.text||'').trim().slice(0,2000);if(b.action==='roll'){const match=/^(\d{1,2})[kd](4|6|8|10|12|20|100)([+-]\d{1,3})?$/i.exec(text.replaceAll(' ',''));if(!match||+match[1]>20||+match[1]<1)return fail('Použij například 2k6+1 (nejvýše 20 kostek).');const sides=+match[2];const rolls=Array.from({length:+match[1]},()=>die(sides));text=`${text} → ${rolls.reduce((a,c)=>a+c,0)+Number(match[3]||0)} (${rolls.join(' + ')}${match[3]||''})`;}if(!text)return fail('Napiš zprávu.');const to=String(b.to||'all');if(to!=='all'&&!g.members.some(m=>m.id===to))return fail('Příjemce není u stolu.');g.messages.push({id:crypto.randomUUID(),from:me.id,name:me.name,text,to,time:Date.now(),roll:b.action==='roll'});g.messages=g.messages.slice(-500);break;}
-case 'mechanics':try{mechanicsAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Hod se nepodařil.');}break;
-case 'map':if(!pj)return fail('Mapu připravuje a odkrývá pouze Pán jeskyně.',403);try{if(g.atlas){const a=ensureAtlas(g),level=getLevel(a,b.levelId);const proxy={...g,dungeon:level.map,mapHistory:level.history};applyMap(proxy,b);if(a.battle?.levelId===level.id&&g.members.some(m=>m.role==='player'&&!m.archived&&!proxy.dungeon!.floors.includes(cellKey(m.x,m.y))))return fail('Nejdřív přemísti postavy z upravovaného políčka.');if(a.location?.levelId===level.id&&!proxy.dungeon!.floors.includes(cellKey(a.location.x,a.location.y)))return fail('Nejdřív přemísti družinu z upravovaného políčka.');level.map=proxy.dungeon!;level.history=proxy.mapHistory||[];g.mapOperations=proxy.mapOperations;if(b.tool==='reveal')remember(level,level.map.revealed);else if(b.tool==='hide'||b.tool==='undo')level.memory=playerDungeon({...level.memory,revealed:level.map.revealed});if(!a.location)remember(level,level.map.revealed);refreshSight(g);}else applyMap(g,b);}catch(e){return fail(e instanceof Error?e.message:'Tah mapy se nepodařil.');}break;
-case 'cell':return fail('Použij nový editor mapy.',pj?400:403);
-case 'explore':{if(me.role!=='pj'&&['enable','level-add','level-rename','settings','place','stairs-add','stairs-remove','battle-start','battle-end','lighting'].includes(String(b.op)))return fail('Tuto změnu může provést pouze PJ.',403);if(me.role!=='pj'&&['move','door','travel'].includes(String(b.op))&&g.atlas?.leaderId!==me.id)return fail('Družinu ovládá pouze vedoucí nebo PJ.',403);try{explorationAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Akce průzkumu se nepodařila.');}break;}
-case 'move':{if(g.atlas?.location)return fail('Použij společný pohyb družiny.',403);const member=g.members.find(m=>m.id===b.id);const x=Number(b.x),y=Number(b.y);if(!member||(!pj&&member.id!==me.id))return fail('Tuto postavu nelze posunout.',403);if(!Number.isInteger(x)||!Number.isInteger(y)||x<0||x>=28||y<0||y>=20)return fail('Mimo mapu.');member.x=x;member.y=y;}break;
-case 'character':{try{updateCharacter(me,b);}catch(e){return fail(e instanceof Error?e.message:'Neplatný deník.',e instanceof EditConflict?409:400);}break;}
-case 'access-key':{const target=g.members.find(m=>m.id===b.memberId&&!m.archived);if(!target||target.id!==me.id&&(!pj||target.role==='pj'))return fail('Tento přístup nemůžeš obnovit.',403);recoveryCode=await issueRecovery(target,row.id);break;}
-case 'member-archive':case 'member-restore':{if(!pj)return fail('Postavy spravuje pouze PJ.',403);const target=g.members.find(m=>m.id===b.memberId&&m.role==='player');if(!target)return fail('Postava neexistuje.');if(b.action==='member-restore'&&g.members.filter(m=>!m.archived).length>=12)return fail('U stolu už je 12 účastníků.');target.archived=b.action==='member-archive';target.token=crypto.randomUUID();target.recoveryHash=undefined;target.recoveryReplay=undefined;if(!target.archived)recoveryCode=await issueRecovery(target,row.id);break;}
-case 'experience':if(!pj)return fail('Zkušenosti může přidělovat pouze Pán jeskyně.',403);try{awardExperience(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Neplatná odměna.');}break;
-case 'generate':if(!pj)return fail('Jeskyni generuje pouze PJ.',403);try{generatedLevels=generationAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Jeskyni se nepodařilo vytvořit.',e instanceof EditConflict?409:400);}break;
-case 'life':if(!pj)return fail('O vyřazení rozhoduje pouze PJ.',403);try{lifeAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Stav se nepodařilo uložit.',e instanceof EditConflict?409:400);}break;
-case 'equipment':if(!pj&&b.op==='use-healing')return fail('Léčení předmětem potvrzuje pouze Pán jeskyně.',403);if(!pj&&b.memberId!==me.id)return fail('Upravovat můžeš jen vlastní výbavu.',403);try{equipmentAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Výbavu se nepodařilo změnit.',e instanceof EditConflict?409:400);}break;
-case 'loot':if(!pj&&['save','remove','close','reopen','split-coins'].includes(String(b.op)))return fail('Přípravu a společné dělení kořisti spravuje pouze PJ.',403);try{lootAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Kořist se nepodařilo upravit.',e instanceof EditConflict?409:400);}break;
-case 'challenge':if(!pj&&['create','resolve','cancel'].includes(String(b.op)))return fail('Výzvy a následky zkoušek spravuje pouze PJ.',403);try{challengeAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Zkoušku se nepodařilo provést.',e instanceof EditConflict?409:400);}break;
-case 'map-note':if(!pj)return fail('Poznámky na mapě spravuje pouze Pán jeskyně.',403);try{mapNoteAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Poznámku se nepodařilo uložit.',e instanceof EditConflict?409:400);}break;
-case 'journey':if(!pj)return fail('Čas a světla spravuje pouze Pán jeskyně.',403);try{journeyAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Akce průzkumu se nepodařila.',e instanceof EditConflict?409:400);}break;
-case 'recovery':if(!pj)return fail('Odpočinek a léčení potvrzuje pouze Pán jeskyně.',403);try{recoveryAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Obnovu se nepodařilo provést.',e instanceof EditConflict?409:400);}break;
-case 'power':if(me.role!=='pj'&&b.memberId!==me.id)return fail('Kouzla a magenergii spravuje jejich hráč nebo PJ.',403);try{powerAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Akce se nepodařila.',e instanceof EditConflict?409:400);}break;
-case 'condition':if(!pj)return fail('Stavy spravuje pouze Pán jeskyně.',403);try{conditionAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Stav se nepodařilo změnit.',e instanceof EditConflict?409:400);}break;
-case 'initiative':if(!pj)return fail('Souboj řídí pouze Pán jeskyně.',403);try{initiativeAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Souboj se nepodařilo změnit.',e instanceof EditConflict?409:400);}break;
-case 'monster':if(!pj)return fail('Příšery spravuje pouze Pán jeskyně.',403);try{monsterAction(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Příšeru se nepodařilo uložit.',e instanceof EditConflict?409:400);}break;
-case 'session-recap':
- if(!pj)return fail('Zápis ze sezení upravuje pouze PJ.',403);
- try{saveSessionRecap(g,b);}catch(error){return fail(error instanceof Error?error.message:'Zápis se nepodařilo uložit.',error instanceof EditConflict?409:400);}
- break;
-case 'notes':if(!pj)return fail('Poznámky jsou pouze pro PJ.',403);try{guardPatch(b,{notes:g.notes,scene:g.scene,title:g.title});if(b.notes!==undefined)g.notes=String(b.notes).slice(0,20000);if(b.scene!==undefined)g.scene=String(b.scene).slice(0,100);if(b.title!==undefined)g.title=String(b.title).slice(0,100);}catch(e){return fail(e instanceof Error?e.message:'Neplatná příprava.',409);}break;
-default:return fail('Neznámá akce.');}
-reconcileGenerationMetadata(g);reconcileInitiative(g);if(g.atlas?.battle||g.atlas?.lighting?.enabled)refreshSight(g);const updated=await db.update(rooms).set({data:JSON.stringify(g),version:row.version+1}).where(and(eq(rooms.id,row.id),eq(rooms.version,row.version))).returning({id:rooms.id});if(updated.length)return Response.json({game:view(g,me.id,row.version+1,generatedLevels?.[0]||(b.action==='explore'&&['travel','place'].includes(String(b.op))?undefined:typeof b.levelId==='string'?b.levelId:undefined)),...(generatedLevels?{generatedLevels}:{}),...(token?{token,room:row.id}:{}),...(recoveryCode?{recoveryCode}:{})},{headers});}
-return fail('Stůl je zaneprázdněný, zopakuj akci.',409);
-}catch{return fail('Akci se nepodařilo uložit. Zkontroluj spojení.',503);}}
+import { makeBackup, readBackup } from '../../../lib/backup';
+import { startAdventure } from '../../../lib/start-adventure';
+import { issueRecovery, claimRecovery } from '../../../lib/access';
+import { pendingCombat } from '../../../lib/mechanics';
+import { refreshSight } from '../../../lib/exploration';
+import { reconcileInitiative } from '../../../lib/initiative';
+import { reconcileGenerationMetadata } from '../../../lib/generator-provenance';
+import { applyGameAction } from './actions';
+import { gameView } from './view';
+import { fail, gameHeaders as headers } from './responses';
+
+function readToken(request: Request) {
+  return request.headers.get('Authorization')?.replace('Bearer ', '');
+}
+
+export async function GET(req: Request) {
+  try {
+    const u = new URL(req.url);
+    const code = u.searchParams.get('room') || '';
+    const row = await getDb()
+      .select()
+      .from(rooms)
+      .where(eq(rooms.id, code))
+      .get();
+    if (!row) return fail('Místnost neexistuje.', 404);
+    const g = JSON.parse(row.data) as Game;
+    const me = g.members.find((m) => !m.archived && m.token === readToken(req));
+    if (!me) return fail('Připoj se k místnosti.', 401);
+    if (u.searchParams.get('download') === 'backup') {
+      if (me.role !== 'pj') return fail('Úplnou zálohu stahuje pouze PJ.', 403);
+      pendingCombat(g, me.id);
+      return Response.json(makeBackup(g), {
+        headers: {
+          ...headers,
+          'Content-Disposition': 'attachment; filename="kampan-zaloha.json"',
+        },
+      });
+    }
+    return Response.json(
+      gameView(g, me.id, row.version, u.searchParams.get('level') || undefined),
+      { headers },
+    );
+  } catch {
+    return fail('Spojení se stolem se nepodařilo. Zkus to znovu.', 503);
+  }
+}
+export async function POST(req: Request) {
+  try {
+    const raw = await req.text();
+    if (new TextEncoder().encode(raw).length > 3_100_000)
+      return fail('Požadavek je příliš velký.', 413);
+    let b: Record<string, unknown>;
+    try {
+      b = JSON.parse(raw);
+    } catch {
+      return fail('Neplatný požadavek.');
+    }
+    if (!b || typeof b !== 'object' || Array.isArray(b))
+      return fail('Neplatný požadavek.');
+    const db = getDb();
+    if (b.action === 'create' || b.action === 'restore') {
+      const code = crypto
+        .randomUUID()
+        .replaceAll('-', '')
+        .slice(0, 10)
+        .toUpperCase();
+      let game: Game;
+      try {
+        game =
+          b.action === 'restore'
+            ? readBackup(b.backup)
+            : initialGame(
+                String(b.name || 'Pán jeskyně').slice(0, 30),
+                crypto.randomUUID(),
+              );
+        if (b.action === 'create' && b.adventureId !== undefined) {
+          const owner = game.members[0];
+          startAdventure(game, owner, b.adventureId);
+        }
+      } catch (e) {
+        return fail(e instanceof Error ? e.message : 'Neplatná záloha.');
+      }
+      reconcileInitiative(game);
+      if (game.atlas?.lighting?.enabled) refreshSight(game);
+      const owner = game.members.find((m) => m.role === 'pj')!;
+      const recoveryCode = await issueRecovery(owner, code);
+      await db.insert(rooms).values({ id: code, data: JSON.stringify(game) });
+      return Response.json({
+        room: code,
+        token: owner.token,
+        recoveryCode,
+        game: gameView(game, owner.id),
+      });
+    }
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const row = await db
+        .select()
+        .from(rooms)
+        .where(eq(rooms.id, String(b.room || '')))
+        .get();
+      if (!row) return fail('Tento kód místnosti neznáme.', 404);
+      const g = JSON.parse(row.data) as Game;
+      let me = g.members.find((m) => !m.archived && m.token === readToken(req));
+      let token: string | undefined;
+      let recoveryCode: string | undefined;
+      if (b.action === 'recover') {
+        try {
+          const claim = await claimRecovery(
+            g,
+            row.id,
+            b.recoveryCode,
+            b.requestId,
+          );
+          me = claim.member;
+          recoveryCode = claim.recoveryCode;
+          token = me.token;
+        } catch (e) {
+          return fail(e instanceof Error ? e.message : 'Neplatný klíč.', 401);
+        }
+      }
+      if (b.action === 'join') {
+        if (g.members.length >= 200)
+          return fail(
+            'Místnost má příliš mnoho archivovaných postav. Založ další kampaň.',
+          );
+        if (g.members.filter((m) => !m.archived).length >= 12)
+          return fail('Stůl už má 12 hráčů.');
+        token = crypto.randomUUID();
+        me = {
+          ...initialGame(String(b.name || 'Dobrodruh').slice(0, 30), token)
+            .members[0],
+          role: 'player',
+          color: ['#698675', '#7789a8', '#b28c47', '#a67887'][
+            g.members.length % 4
+          ],
+          x: 5 + g.members.length,
+          y: 6,
+        };
+        if (g.atlas?.location) {
+          me.x = g.atlas.location.x;
+          me.y = g.atlas.location.y;
+        }
+        g.members.push(me);
+        recoveryCode = await issueRecovery(me, row.id);
+      }
+      if (!me) return fail('Připoj se k místnosti.', 401);
+      me.seen = Date.now();
+      const result = await applyGameAction(g, me, row.id, b);
+      if (result instanceof Response) return result;
+      recoveryCode = result.recoveryCode ?? recoveryCode;
+      const { generatedLevels } = result;
+      reconcileGenerationMetadata(g);
+      reconcileInitiative(g);
+      if (g.atlas?.battle || g.atlas?.lighting?.enabled) refreshSight(g);
+      // A concurrent write invalidates this revision; retry with the latest room.
+      const updated = await db
+        .update(rooms)
+        .set({ data: JSON.stringify(g), version: row.version + 1 })
+        .where(and(eq(rooms.id, row.id), eq(rooms.version, row.version)))
+        .returning({ id: rooms.id });
+      if (updated.length)
+        return Response.json(
+          {
+            game: gameView(
+              g,
+              me.id,
+              row.version + 1,
+              generatedLevels?.[0] ||
+                (b.action === 'explore' &&
+                ['travel', 'place'].includes(String(b.op))
+                  ? undefined
+                  : typeof b.levelId === 'string'
+                    ? b.levelId
+                    : undefined),
+            ),
+            ...(generatedLevels ? { generatedLevels } : {}),
+            ...(token ? { token, room: row.id } : {}),
+            ...(recoveryCode ? { recoveryCode } : {}),
+          },
+          { headers },
+        );
+    }
+    return fail('Stůl je zaneprázdněný, zopakuj akci.', 409);
+  } catch {
+    return fail('Akci se nepodařilo uložit. Zkontroluj spojení.', 503);
+  }
+}

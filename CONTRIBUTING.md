@@ -10,10 +10,12 @@ Nejprve se podívej do existujících issues a [řešení problémů](docs/TROUB
 
 U větší funkce nejdřív otevři issue a domluv rozsah. Rozliš funkci, která usnadní hraní, od automatizace celých pravidel. Kamera, pravidlový bestiář nebo hlasové šeptání nejsou hotové schopnosti jen proto, že je podporuje některá použitá knihovna.
 
+Příšeru, předlohu jeskyně nebo krátké dobrodružství můžeš přidat jako data. Postup a ukázku najdeš v [návodu k hernímu obsahu](docs/OBSAH.md).
+
 ## Změna kódu
 
 1. Forkni repozitář a pracuj ve vlastní větvi; běžným přispěvatelům nepředpokládáme přímý zápis do `main`.
-2. Postupuj podle [DEVELOPMENT.md](docs/DEVELOPMENT.md). Vyber Node/SQLite nebo lokální Cloudflare variantu a nemíchej jejich buildy a databáze.
+2. Spusť místní stůl přes `npm run install:ci` a `npm run dev:node`. V [průvodci první změnou](docs/DEVELOPMENT.md#první-změna-na-místním-stole) najdeš požadavky, adresu náhledu i mapu kódu.
 3. Rozhraní a srozumitelné chybové zprávy zachovej česky. Dlouhé názvy a mobilní obrazovka musí být použitelné.
 4. Oprávnění a skrytá data kontroluj na serveru. Ověř majitele, PJ, jiného hráče, archivovanou postavu a případné veřejné/soukromé varianty. Rozhraní nesmí pouze CSS skrýt tajný údaj, který už server poslal.
 5. U akcí měnících zdroje nebo sdílený stav ošetři souběh, opakování žádosti a starý formulář. Klientské výpočty nejsou autoritativním stavem.
@@ -23,12 +25,10 @@ U větší funkce nejdřív otevři issue a domluv rozsah. Rozliš funkci, kter�
 ## Ověření před pull requestem
 
 ```bash
-npm run check:docs
-npm run check
-npm test
+npm run verify
 ```
 
-U změny chování doplň smysluplný regresní/integranční test. Pro Node spusť `npm run build:node` a `npm run test:hosting`; pro zásah do sdíleného runtime ověř i Cloudflare build a `test:ci` podle vývojového návodu. Pro změnu updateru patří `npm run test:updater` a skutečný Docker test v CI. U samotné dokumentace není nutné opakovat herní integrační sady, pokud jsi neměnil jejich postupy či kód; ověř příkazy a odkazy přiměřeně změně.
+U změny chování doplň smysluplný regresní nebo integrační test. Pro Node spusť `npm run build:node` a `npm run test:hosting`; pro zásah do sdíleného runtime ověř i Cloudflare build a `test:ci` podle vývojového návodu. Pro změnu updateru patří `npm run test:updater` a skutečný Docker test v CI. U samotné dokumentace není nutné opakovat herní integrační sady, pokud jsi neměnil jejich postupy či kód; ověř příkazy a odkazy přiměřeně změně.
 
 Do PR napiš problém, výsledné chování a přesně to, co jsi ověřil. U UI přidej anonymizovaný snímek a ověření hráčského/PJ pohledu i mobilu. Uveď, co jsi nemohl vyzkoušet, například Docker nebo veřejný TURN. Netvrď, že simulovaný test prokázal chování fyzických zařízení.
 

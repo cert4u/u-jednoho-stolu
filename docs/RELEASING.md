@@ -13,6 +13,12 @@ Tento postup je pro správce projektu. Repozitář má CI, ale nemá automatick�
 
 Pokud má provozovatel novější vývojový commit než zveřejněný release, automatická aktualizace není bezpečnou zkratkou k „nejnovějším funkcím“. Vždy zkontroluj nabízený release a jeho změny.
 
+## Alfa vydání
+
+Kandidát řady 0.9 se označuje jako `v0.9.0-alpha.1` a publikuje jako GitHub prerelease po kontrole přesného commitu. Pro rychlou zkoušku použij [místní vývojový stůl](DEVELOPMENT.md#první-změna-na-místním-stole), pro zkoušku provozu samostatný server a vlastní kopii databáze. Správa instalace dál nabízí stabilní vydání.
+
+Před publikací ověř katalogy, generování a založení dobrodružství s PJ i hráčem, export a obnovu existující kampaně a průchod CI. Při zkušebním hraní projdi také přechod mezi patry a odhalení připravené Situace. Poznatky z alfy zapisuj do issues s označením testované verze.
+
 ## Kontrolní postup před vydáním
 
 1. Vyber a zkontroluj finální commit, změny dokumentace a související issues. Projdi [limity](LIMITS.md) a odliš, co je implementované, pouze lokálně ověřené a stále plánované.

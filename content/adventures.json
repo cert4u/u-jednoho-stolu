@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "ztraceny-zvon",
+      "title": "Ztracený zvon",
+      "scene": "U vstupu do opuštěných štol",
+      "summary": "Krátká výprava do dvou pater starého dolu za zvonem, který se ozývá z podzemí.",
+      "gmNotes": "Důlní zvon rozhoupává voda. Vodník zná bezpečnou cestu ven a požádá družinu, aby zvon zavěsila nad hladinu.",
+      "dungeonPreset": "mine",
+      "rooms": [
+        {
+          "floor": 1,
+          "role": "entrance",
+          "title": "Zavalená vrátnice",
+          "playerText": "Za vrátnicí je slyšet kapání. Pod ním se ozve jeden hluboký úder, jako by někdo zazvonil pod vodou.",
+          "gmNotes": "V prachu vedou čerstvé mokré stopy směrem do dolu."
+        },
+        {
+          "floor": 2,
+          "role": "goal",
+          "title": "Zvon pod hladinou",
+          "playerText": "Z tmavé vody vyčnívá vršek bronzového zvonu. Vedle něj na kameni sedí muž v mokrém kabátci.",
+          "gmNotes": "Vodník chce dostat zvon nad hladinu. Může pomoci s uvázáním lana.",
+          "monsters": ["vodnik"]
+        }
+      ]
+    },
+    {
+      "id": "pod-koreny",
+      "title": "Co hlídají kořeny",
+      "scene": "Lesní průrva",
+      "summary": "Jedno patro přírodní jeskyně, prázdný zámek a klíč, který se pohybuje.",
+      "gmNotes": "Cílem je otevřít starou schránku mezi kořeny. Klíč zůstal ve slizu, který přitahují zbytky jídla.",
+      "dungeonPreset": "cave",
+      "rooms": [
+        {
+          "floor": 1,
+          "role": "entrance",
+          "title": "Průrva pod bukem",
+          "playerText": "Mezi kořeny se vine chladný průvan. Pod botami křupe staré listí.",
+          "gmNotes": "Průvan prozrazuje další otvor vedoucí na povrch."
+        },
+        {
+          "floor": 1,
+          "role": "goal",
+          "title": "Schránka v kořenech",
+          "playerText": "Mezi kořeny je zaklíněná dubová schránka. Na vlhké podlaze se něco leskne.",
+          "gmNotes": "Klíč je uvnitř slizu. Družina může zkusit klíč vylovit háčkem nebo sliz odlákat.",
+          "monsters": ["slime"]
+        }
+      ]
+    }
+  ]
+}

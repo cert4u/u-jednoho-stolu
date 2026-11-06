@@ -2,7 +2,7 @@
 
 [Dokumentace](README.md) · [Architektura](DEVELOPMENT.md)
 
-Toto je přehled aktuálního interního API pro přispěvatele, nikoli verzované veřejné integrační rozhraní se zaručenou stabilitou. Přesná povinná pole a validace jsou v [herní route](../app/api/game/route.ts) a odpovídajících modulech `lib/`; příklady pro jednotlivé operace jsou v integračních testech.
+Toto je přehled aktuálního interního API pro přispěvatele, nikoli verzované veřejné integrační rozhraní se zaručenou stabilitou. Vstupní bod je [herní route](../app/api/game/route.ts). Oprávnění a směrování najdeš v [akcích](../app/api/game/actions.ts), validaci hodnot v odpovídajících modulech `lib/` a tvar odpovědi v [herním pohledu](../app/api/game/view.ts). Příklady požadavků jsou v integračních testech.
 
 ## Přístupy a společné konvence
 
@@ -72,7 +72,10 @@ Inspekce **Prozkoumat** je klientské čtení již filtrovaného pohledu PJ. Nee
 Zdrojové příklady najdeš například v [testu mapy](../scripts/test-map.mjs), [výbavy](../scripts/test-equipment.mjs), [generátoru](../scripts/test-generator.mjs) a [obnovy](../scripts/test-repairs.mjs).
 
 
-Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiáře](../lib/bestiary.ts). Server podle něj doplní výchozí jméno, životy, popis a bojové hodnoty. Vazbu na ilustraci zachovává kopie i úplná záloha. Identifikátor předlohy se posílá pouze v pohledu PJ.
+Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiáře](../content/bestiary.json). Server podle něj doplní výchozí jméno, životy, popis, bojové hodnoty a soukromou poznámku pro PJ. Vazbu na ilustraci zachovává kopie i úplná záloha. Identifikátor předlohy se posílá pouze v pohledu PJ.
+
+
+`GET /api/adventures` vrací jen `id`, `title` a `summary` vestavěných dobrodružství. Volitelný `adventureId` při `create` vytvoří novou kampaň s mapou, přípravou místností a příšerami z předlohy. Při neplatném ID se kampaň neuloží. Bez `adventureId` vznikne vlastní kampaň s prázdnou mapou.
 
 ## Hlas
 

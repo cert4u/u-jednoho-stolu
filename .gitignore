@@ -60,3 +60,4 @@ obnovovaci-klic*.txt
 # Self-hosted runtime and update state
 /.stul-data/
 /.stul-state/
+/.stul-dev-data/

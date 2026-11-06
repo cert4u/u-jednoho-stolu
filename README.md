@@ -49,7 +49,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 ### Příprava Pána jeskyně
 
 - Zámky a tajné dveře nastavované PJ přes **Prozkoumat**; neodhalené dveře hráči vidí jako zeď.
-- Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací. PJ může vybírat z dvanácti ilustrovaných předloh v bestiáři.
+- Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací. PJ může vybírat ze třiceti ilustrovaných předloh v bestiáři s filtrem prostředí a náměty pro PJ.
 - Nástroj **(i) Prozkoumat** pro PJ: detail značky nebo souhrn obsahu místnosti včetně tajné přípravy a navázané kořisti/zkoušek.
 - Číslované místnosti s názvy přímo v mapě, přesouváním značek a seznamem pro rychlé hledání. Nově generovaná patra dostanou soukromá označení automaticky.
 - Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu a může z něj otevřít připravenou zkoušku, příšeru, souboj nebo kořist.
@@ -190,7 +190,9 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 | Provozovat vlastní herní stůl | [Vlastní hosting, HTTPS, zálohy a obnova](docs/SELF_HOSTING.md) |
 | Zapnout hlasový hovor | [LiveKit a hlas družiny](docs/VOICE.md) |
 | Podívat se na změny a další plány | [Historie verzí](CHANGELOG.md) a [plán práce](docs/ROADMAP.md) |
+| Spustit vývojový stůl | [Rychlý start bez Dockeru](docs/DEVELOPMENT.md#první-změna-na-místním-stole) |
 | Porozumět kódu | [Vývoj a architektura](docs/DEVELOPMENT.md) a [interní API](docs/API.md) |
+| Přidat předlohu příšery, jeskyně nebo dobrodružství | [Herní obsah](docs/OBSAH.md) |
 | Přidat ilustrace do projektu | [Styl, reference a prompty](docs/ILUSTRACE.md) |
 | Připravit nové vydání | [Postup pro správce vydání](docs/RELEASING.md) |
 | Přispět opravou nebo nápadem | [Pravidla přispívání](CONTRIBUTING.md) a [issues](https://github.com/cert4u/u-jednoho-stolu/issues) |
@@ -198,17 +200,15 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 ## Testování
 
 ```bash
-npm run check:docs
-npm run check
-npm test
+npm run verify
 ```
 
 Pro všechny integrační testy spusť nejprve místní server:
 
 ```bash
 npm run test:integration
-# Volitelně jiná testovací instance:
-npm run test:integration -- http://127.0.0.1:8787
+# Pro místní vývojový stůl na portu 5174
+npm run test:integration -- http://127.0.0.1:5174
 ```
 
 Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovací instanci; nepouštěj je proti své rozehrané produkční kampani. `npm run test:ci` spustí a po testech ukončí vlastní místní server. Předem vyžaduje sestavení a `npm run db:init`. GitHub Actions navíc ověřuje Node/SQLite variantu, přihlášení do administrace a skutečnou výměnu Docker kontejnerů včetně obnovy kampaně. Samostatné testy aktualizační logiky spustíš pomocí `npm run test:updater`; testy Node serveru a administrace pomocí `npm run build:node` a `npm run test:hosting`.

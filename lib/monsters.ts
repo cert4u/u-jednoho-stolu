@@ -1,6 +1,6 @@
 import {visibleConditions,type Condition} from './conditions';
 import {guardPatch,monsterSheet} from './sheets';
-import {combatFields,type CombatStats} from './mechanics';
+import {combatFields,type CombatStats} from './combat-rules';
 import type {Game,Member} from './game';
 import {dungeonFor,cellKey} from './dungeon';
 import {getLevel} from './exploration';
@@ -31,7 +31,7 @@ export function monsterAction(g:Game,actor:Member,b:Record<string,unknown>){if(a
    ...(templateId ? {templateId} : {}),
    combat, id:crypto.randomUUID(), number:nextNumber, name, levelId, x:null, y:null, hp:maxHp, maxHp,
    stats:source?.stats ?? String(b.stats ?? template?.description ?? '').slice(0, 2000),
-   notes:source?.notes ?? String(b.notes || '').slice(0, 4000),
+   notes:source?.notes ?? String(b.notes ?? template?.gmHint ?? '').slice(0, 4000),
    hidden:source?.hidden ?? b.hidden === true, archived:false,
   });
   break;

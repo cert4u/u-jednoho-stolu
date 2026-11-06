@@ -1,5 +1,5 @@
 import type {Game,Member} from './game';
-import {integer} from './mechanics';
+import {integer} from './combat-rules';
 import {EditConflict} from './sheets';
 export const CURRENCIES=[{key:'gold',label:'Zlaté'},{key:'silver',label:'Stříbrné'},{key:'copper',label:'Měděné'}] as const;
 export type Coins={gold:number;silver:number;copper:number};
