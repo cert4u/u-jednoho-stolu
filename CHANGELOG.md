@@ -4,10 +4,14 @@
 
 Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
 
-- Komunitní předlohy mají vlastní JSON soubory a kontrolu s názvem souboru a pole.
-- Dobrodružství umí připravit libovolnou místnost V2 podle ID a rozmístit příšery na volná políčka.
-- Bestiář načítá pouze přihlášený PJ. Schopnosti a bojové hodnoty deníku vidí jeho majitel a PJ.
-- Cloudflare integrační testy používají dočasnou D1 databázi.
+## 0.5.3 — 2026-11-06
+
+- **Soukromí u stolu.** Bestiář a rady k příšerám načítá z herního serveru pouze PJ. Schopnosti a bojové hodnoty deníku dostává jeho majitel a PJ. Klient po opuštění stolu ignoruje zpožděné odpovědi z původní relace.
+- **Příprava dobrodružství.** Autor může podle ID připravit libovolnou místnost V2. Příšery se rozmísťují na volnou podlahu uvnitř místnosti. Ty, pro které není místo, může PJ umístit ručně ze seznamu.
+- **Komunitní předlohy.** Každá příšera, předloha jeskyně a výprava má vlastní soubor JSON. Kontrola označí vadný soubor a pole. Postup ukazuje [návod pro autory](docs/OBSAH.md).
+- **Ověření.** Integrační testy Cloudflare pracují s dočasnou databází D1. CI kontroluje soukromí předloh v obou buildech.
+
+Aktualizace z 0.5.2 podporuje stávající kampaně a zálohy formátu 1. Vlastní instalaci aktualizuj podle [provozního návodu](docs/SELF_HOSTING.md#aktualizace-z-administrace).
 
 ## 0.5.2 — 2026-11-06
 

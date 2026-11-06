@@ -113,7 +113,7 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 ## Generátor jeskyně
 
-**Stabilní vydání 0.5.2** usnadňuje údržbu editoru mapy, generátoru jeskyní a záloh. Přehled změn je v [historii verzí](CHANGELOG.md#052--2026-11-06). Vydání lze nainstalovat z administrace podle [návodu pro vlastní hosting](docs/SELF_HOSTING.md).
+**Stabilní vydání 0.5.3** zpřísňuje soukromí deníků a bestiáře, zpřístupňuje přípravu dalších místností a usnadňuje přidávání komunitních předloh. Přehled změn je v [historii verzí](CHANGELOG.md#053--2026-11-06). Vydání lze nainstalovat z administrace podle [návodu pro vlastní hosting](docs/SELF_HOSTING.md).
 
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 
@@ -211,7 +211,7 @@ npm run test:integration
 npm run test:integration -- http://127.0.0.1:5174
 ```
 
-Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovací instanci; nepouštěj je proti své rozehrané produkční kampani. `npm run test:ci` spustí a po testech ukončí vlastní místní server. Předem vyžaduje sestavení a `npm run db:init`. GitHub Actions navíc ověřuje Node/SQLite variantu, přihlášení do administrace a skutečnou výměnu Docker kontejnerů včetně obnovy kampaně. Samostatné testy aktualizační logiky spustíš pomocí `npm run test:updater`; testy Node serveru a administrace pomocí `npm run build:node` a `npm run test:hosting`.
+Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovací instanci; nepouštěj je proti své rozehrané produkční kampani. `npm run test:ci` vyžaduje Cloudflare build. Samo aplikuje migrace do dočasné databáze D1 a po testech ukončí svůj server a odstraní testovací data. GitHub Actions navíc ověřuje Node/SQLite variantu, přihlášení do administrace a skutečnou výměnu Docker kontejnerů včetně obnovy kampaně. Samostatné testy aktualizační logiky spustíš pomocí `npm run test:updater`; testy Node serveru a administrace pomocí `npm run build:node` a `npm run test:hosting`.
 
 ## Současná omezení
 

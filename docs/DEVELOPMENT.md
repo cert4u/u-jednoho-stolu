@@ -171,6 +171,7 @@ Cloudflare sestavení a integrační běh (port 5173 musí být volný):
 
 ```bash
 npm run build
+npm run check:client-content
 npm run test:ci
 ```
 
