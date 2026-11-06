@@ -1,0 +1,27 @@
+{
+  "id": "ztraceny-zvon",
+  "title": "Ztracený zvon",
+  "scene": "U vstupu do opuštěných štol",
+  "summary": "Krátká výprava do dvou pater starého dolu za zvonem, který se ozývá z podzemí.",
+  "gmNotes": "Důlní zvon rozhoupává voda. Vodník zná bezpečnou cestu ven a požádá družinu, aby zvon zavěsila nad hladinu.",
+  "dungeonPreset": "mine",
+  "rooms": [
+    {
+      "floor": 1,
+      "role": "entrance",
+      "title": "Zavalená vrátnice",
+      "playerText": "Za vrátnicí je slyšet kapání. Pod ním se ozve jeden hluboký úder, jako by někdo zazvonil pod vodou.",
+      "gmNotes": "V prachu vedou čerstvé mokré stopy směrem do dolu."
+    },
+    {
+      "floor": 2,
+      "role": "goal",
+      "title": "Zvon pod hladinou",
+      "playerText": "Z tmavé vody vyčnívá vršek bronzového zvonu. Vedle něj na kameni sedí muž v mokrém kabátci.",
+      "gmNotes": "Vodník chce dostat zvon nad hladinu. Může pomoci s uvázáním lana.",
+      "monsters": [
+        "vodnik"
+      ]
+    }
+  ]
+}

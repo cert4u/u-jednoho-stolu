@@ -1,0 +1,18 @@
+{
+  "id": "cave",
+  "label": "Přírodní jeskyně",
+  "description": "Nepravidelné síně a úzká přírodní propojení.",
+  "options": {
+    "version": "v2",
+    "style": "cave",
+    "variant": 0,
+    "separateExit": true,
+    "name": "Pod kořeny lesa",
+    "levels": 1,
+    "rooms": 5,
+    "size": "medium",
+    "corridors": "winding",
+    "connections": 0,
+    "seed": "koreny-lesa"
+  }
+}

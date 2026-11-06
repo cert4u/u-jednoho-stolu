@@ -24,7 +24,14 @@ export function generationAction(g:Game,me:Member,b:Record<string,unknown>):stri
  const levels=draft.floors.map((floor,i)=>({id:ids[i],name:floor.name,map:floor.map,history:[],memory:emptyDungeon(),visible:[]}));
  if(state.reuseEmpty){atlas.levels=levels;g.dungeon=structuredClone(levels[0].map);g.mapHistory=[];}else atlas.levels.push(...levels);
  atlas.stairs.push(...draft.stairs.map(s=>({id:crypto.randomUUID(),a:{levelId:ids[s.from],x:s.a[0],y:s.a[1]},b:{levelId:ids[s.to],x:s.b[0],y:s.b[1]}})));
- g.mapNotes=[...(g.mapNotes||[]),...draft.floors.flatMap((floor,i)=>floor.rooms.map((room,index)=>({id:crypto.randomUUID(),levelId:ids[i],x:roomLabelPoint(room,floor.map)[0],y:roomLabelPoint(room,floor.map)[1],roomNumber:index+1,title:`Místnost ${index+1}`,text:'',secret:'',notify:false,radius:2,revision:0})))];
+ const notes = draft.floors.flatMap((floor, i) => floor.rooms.map((room, index) => {
+  const [x, y] = roomLabelPoint(room, floor.map);
+  return {
+   id: crypto.randomUUID(), levelId: ids[i], x, y, roomNumber: index + 1,
+   title: `Místnost ${index + 1}`, text: '', secret: '', notify: false, radius: 2, revision: 0,
+  };
+ }));
+ g.mapNotes = [...(g.mapNotes || []), ...notes];
  g.generationRuns=[...(g.generationRuns||[]),{id:b.requestId,options:draft.options,levelIds:ids}];
  g.generationOperations=[...(g.generationOperations||[]),{id:b.requestId,levelIds:ids}].slice(-64);
  return ids;

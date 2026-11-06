@@ -1,0 +1,16 @@
+{
+  "id": "skeleton",
+  "name": "Kostlivec",
+  "description": "Nemrtvý strážce s kopím a otlučeným štítem.",
+  "gmHint": "Po odlákaní od dveří se vrací na hlídku, jakmile družinu ztratí z dohledu.",
+  "environments": [
+    "crypts",
+    "castles"
+  ],
+  "maxHp": 8,
+  "combat": {
+    "attack": 4,
+    "defense": 4,
+    "damage": 0
+  }
+}

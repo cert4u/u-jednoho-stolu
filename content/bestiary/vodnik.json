@@ -1,0 +1,16 @@
+{
+  "id": "vodnik",
+  "name": "Vodník",
+  "description": "V mokrém kabátci vysedává u zatopeného průchodu.",
+  "gmHint": "Za převoz chce laskavost, třeba vrátit zvonek ukradený z jeho tůně.",
+  "environments": [
+    "waters",
+    "caves"
+  ],
+  "maxHp": 12,
+  "combat": {
+    "attack": 4,
+    "defense": 4,
+    "damage": 0
+  }
+}

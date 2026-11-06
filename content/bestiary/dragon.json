@@ -1,0 +1,16 @@
+{
+  "id": "dragon",
+  "name": "Drak",
+  "description": "Mladý drak se šedozelenými šupinami, složenými křídly a dlouhým ocasem.",
+  "gmHint": "Nejdřív se zeptej, co mu družina nabízí za průchod, a každému řekni trochu jinou cenu.",
+  "environments": [
+    "wilds",
+    "caves"
+  ],
+  "maxHp": 38,
+  "combat": {
+    "attack": 9,
+    "defense": 7,
+    "damage": 4
+  }
+}

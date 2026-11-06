@@ -1,0 +1,16 @@
+{
+  "id": "shadow",
+  "name": "Stín",
+  "description": "Temná lidská silueta, která při zemi splývá se šerem.",
+  "gmHint": "Když někdo zvedne světlo, nech stín ustoupit k nejbližšímu tmavému koutku.",
+  "environments": [
+    "crypts",
+    "castles"
+  ],
+  "maxHp": 11,
+  "combat": {
+    "attack": 4,
+    "defense": 6,
+    "damage": 1
+  }
+}

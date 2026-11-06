@@ -1,0 +1,41 @@
+{
+  "id": "pod-koreny",
+  "title": "Co hlídají kořeny",
+  "scene": "Lesní průrva",
+  "summary": "Jedno patro přírodní jeskyně, prázdný zámek a klíč, který se pohybuje.",
+  "gmNotes": "Cílem je otevřít starou schránku mezi kořeny. Klíč zůstal ve slizu, který přitahují zbytky jídla.",
+  "dungeonPreset": "cave",
+  "rooms": [
+    {
+      "floor": 1,
+      "role": "entrance",
+      "title": "Průrva pod bukem",
+      "playerText": "Mezi kořeny se vine chladný průvan. Pod botami křupe staré listí.",
+      "gmNotes": "Průvan prozrazuje další otvor vedoucí na povrch.",
+      "phase": "entrance-obstacle"
+    },
+    {
+      "floor": 1,
+      "roomId": "v2-l0-r1",
+      "phase": "complication",
+      "title": "Chodba plná skořápek",
+      "playerText": "Pod kořeny křupou prázdné ořechové skořápky. Ze stínu se ozve škrábání.",
+      "gmNotes": "Dvě krysy se stáhnou do pukliny, pokud je družina odláká trochou jídla.",
+      "monsters": [
+        "giant-rat",
+        "giant-rat"
+      ]
+    },
+    {
+      "floor": 1,
+      "role": "goal",
+      "title": "Schránka v kořenech",
+      "playerText": "Mezi kořeny je zaklíněná dubová schránka. Na vlhké podlaze se něco leskne.",
+      "gmNotes": "Klíč je uvnitř slizu. Družina může zkusit klíč vylovit háčkem nebo sliz odlákat.",
+      "monsters": [
+        "slime"
+      ],
+      "phase": "climax"
+    }
+  ]
+}

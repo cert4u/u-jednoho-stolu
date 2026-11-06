@@ -13,7 +13,7 @@ npm run dev:node
 
 Otevři `http://127.0.0.1:5174` a založ smyšlenou družinu. Při úpravě kódu se náhled obnovuje. SQLite databáze vznikne při prvním požadavku v ignorovaném adresáři `.stul-dev-data/`. Stůl poslouchá jen místně a spustíš ho bez Dockeru, účtu Cloudflare nebo souboru `.env`. Pro ověření `/admin` použij [sestavenou Node instalaci](#rychlý-start-node-bez-dockeru).
 
-Před první změnou zkus otevřít bestiář. Jeho předlohy najdeš v [katalogu](../content/bestiary.json), výběr a vyhledávání v [panelu](../components/bestiary-panel.tsx) a přidávání do kampaně v [herní logice příšer](../lib/monsters.ts). Po úpravě spusť `npm run verify`. U změny herního chování pokračuj [integračním ověřením](#ověření-a-ci).
+Před první změnou zkus otevřít bestiář. Jeho předlohy najdeš v [katalogu](../content/bestiary), výběr a vyhledávání v [panelu](../components/bestiary-panel.tsx) a přidávání do kampaně v [herní logice příšer](../lib/monsters.ts). Po úpravě spusť `npm run verify`. U změny herního chování pokračuj [integračním ověřením](#ověření-a-ci).
 
 ## Dva podporované způsoby spuštění
 
@@ -105,7 +105,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | `lib/game.ts`, `db/schema.ts` | Vnitřní stav hry a tabulka místností. |
 | `lib/dungeon.ts`, `lib/exploration.ts` | Geometrie, patra, dveře, propojení schodů, dohled a paměť mapy. |
 | `lib/dungeon-generator.ts`, `lib/generation.ts` | Verzovaný deterministický náhled, serverové vložení a ochrana kapacity/souběhu. V2 jádro, validátor a sdílené typy jsou v samostatných `generator-*.ts` modulech; [audit a návrh](GENERATOR_V2.md). |
-| [content/](../content) | Verzované předlohy příšer, jeskyní a dobrodružství. [Přidávání obsahu](OBSAH.md). |
+| [content/](../content) | Samostatné JSON soubory pro příšery, jeskyně a dobrodružství. Indexy vytváří `npm run content:sync`. Katalogy a testy čtou stejná Zod schémata. [Přidávání obsahu](OBSAH.md). |
 | `lib/monsters.ts`, `lib/initiative.ts`, `lib/mechanics.ts`, `lib/combat-rules.ts` | Příšery, pořadí souboje, hody, návaznost útoku/obrany a zranění. |
 | `lib/sheets.ts`, `lib/character.ts` | Deníky a ochrana změněných polí. |
 | `lib/powers.ts`, `lib/conditions.ts`, `lib/life.ts`, `lib/recovery.ts` | Kouzla/magenergie, stavy, vyřazení a obnova životů/magenergie. |
@@ -171,11 +171,10 @@ Cloudflare sestavení a integrační běh (port 5173 musí být volný):
 
 ```bash
 npm run build
-npm run db:init
 npm run test:ci
 ```
 
-`test:ci` si spustí a ukončí vývojový server, ale používá místní D1 úložiště a přidané testovací místnosti v něm zůstanou. Proti již spuštěné oddělené místní instanci lze použít `npm run test:integration -- http://127.0.0.1:5173`. Testy nepouštěj proti rozehrané instalaci; vytvářejí i obnovují vlastní syntetické kampaně.
+`test:ci` použije build pro migrace, založí dočasné D1 úložiště a spustí vlastní server na `127.0.0.1:18173`. Po dokončení server zastaví a testovací úložiště odstraní. Proti již spuštěné oddělené místní instanci lze použít `npm run test:integration -- http://127.0.0.1:5173`. Testy nepouštěj proti rozehrané instalaci; vytvářejí i obnovují vlastní syntetické kampaně.
 
 Současných 28 integračních sad v `scripts/test-integration.mjs`:
 

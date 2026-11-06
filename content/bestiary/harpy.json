@@ -1,0 +1,16 @@
+{
+  "id": "harpy",
+  "name": "Harpyje",
+  "description": "Pták s lidskou tváří a pronikavým hlasem.",
+  "gmHint": "Z výšky napodobí volání o pomoc a počká, až se někdo oddělí od skupiny.",
+  "environments": [
+    "wilds",
+    "castles"
+  ],
+  "maxHp": 13,
+  "combat": {
+    "attack": 5,
+    "defense": 4,
+    "damage": 1
+  }
+}

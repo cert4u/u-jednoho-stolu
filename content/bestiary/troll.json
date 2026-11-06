@@ -1,0 +1,16 @@
+{
+  "id": "troll",
+  "name": "Jeskynní troll",
+  "description": "Těžkopádný obr s hrubým kyjem.",
+  "gmHint": "Když družina nabídne jídlo, dá jí chvíli na vyjednávání o průchodu.",
+  "environments": [
+    "caves",
+    "wilds"
+  ],
+  "maxHp": 24,
+  "combat": {
+    "attack": 7,
+    "defense": 4,
+    "damage": 3
+  }
+}

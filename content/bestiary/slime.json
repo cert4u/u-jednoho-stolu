@@ -1,0 +1,16 @@
+{
+  "id": "slime",
+  "name": "Sliz",
+  "description": "Vypadá jako mokrá skvrna na podlaze a uvnitř se leskne klíč.",
+  "gmHint": "Nech družinu zkusit klíč vylovit háčkem nebo sliz odlákat kouskem jídla.",
+  "environments": [
+    "caves",
+    "waters"
+  ],
+  "maxHp": 8,
+  "combat": {
+    "attack": 3,
+    "defense": 1,
+    "damage": 1
+  }
+}

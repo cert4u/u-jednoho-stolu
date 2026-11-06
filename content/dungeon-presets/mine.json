@@ -1,0 +1,18 @@
+{
+  "id": "mine",
+  "label": "Opuštěný důl",
+  "description": "Protáhlé pracovní prostory a větvené štoly.",
+  "options": {
+    "version": "v2",
+    "style": "mine",
+    "variant": 0,
+    "separateExit": false,
+    "name": "Opuštěné štoly",
+    "levels": 2,
+    "rooms": 5,
+    "size": "small",
+    "corridors": "winding",
+    "connections": 1,
+    "seed": "stare-stoly"
+  }
+}

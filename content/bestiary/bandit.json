@@ -1,0 +1,17 @@
+{
+  "id": "bandit",
+  "portrait": "bandit-neutral",
+  "name": "Lupič",
+  "description": "Ozbrojený lupič vybírá mýtné zpoza padlého stromu.",
+  "gmHint": "Když mu družina vezme výhodu, radši smlouvá.",
+  "environments": [
+    "woods",
+    "castles"
+  ],
+  "maxHp": 10,
+  "combat": {
+    "attack": 5,
+    "defense": 3,
+    "damage": 1
+  }
+}

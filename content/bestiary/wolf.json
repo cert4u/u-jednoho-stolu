@@ -1,0 +1,16 @@
+{
+  "id": "wolf",
+  "name": "Vlk",
+  "description": "Ostražitý vlk s hustou šedou srstí.",
+  "gmHint": "Zkouší oddělit nejpomalejšího člena družiny.",
+  "environments": [
+    "woods",
+    "wilds"
+  ],
+  "maxHp": 8,
+  "combat": {
+    "attack": 4,
+    "defense": 3,
+    "damage": 0
+  }
+}

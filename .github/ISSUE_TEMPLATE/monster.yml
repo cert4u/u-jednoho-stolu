@@ -1,0 +1,16 @@
+name: Komunitní příšera
+description: Navrhni novou předlohu pro bestiář.
+title: "Příšera: "
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Název, prostředí a jak ji hrát
+      description: Stačí krátký popis. Hotový JSON můžeš poslat přímo jako PR.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Původ textu a ilustrace
+      description: Uveď autora, zdroj a licenci nebo svolení, pokud už máš materiály připravené.

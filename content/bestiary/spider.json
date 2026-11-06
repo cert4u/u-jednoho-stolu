@@ -1,0 +1,16 @@
+{
+  "id": "spider",
+  "name": "Obří pavouk",
+  "description": "Pavouk velikosti poníka s dlouhými chlupatými nohami.",
+  "gmHint": "Nejdřív nech z pavučiny spadnout něco, co v ní zůstalo po poslední oběti.",
+  "environments": [
+    "caves",
+    "woods"
+  ],
+  "maxHp": 11,
+  "combat": {
+    "attack": 5,
+    "defense": 3,
+    "damage": 1
+  }
+}

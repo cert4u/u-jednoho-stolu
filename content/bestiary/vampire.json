@@ -1,0 +1,16 @@
+{
+  "id": "vampire",
+  "name": "Upír",
+  "description": "Bledý protivník v obnošeném šlechtickém plášti.",
+  "gmHint": "Při prvním setkání nabídne pohostinnost a vyptává se, proč družina přišla.",
+  "environments": [
+    "crypts",
+    "castles"
+  ],
+  "maxHp": 25,
+  "combat": {
+    "attack": 7,
+    "defense": 6,
+    "damage": 3
+  }
+}

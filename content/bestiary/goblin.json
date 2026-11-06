@@ -1,0 +1,16 @@
+{
+  "id": "goblin",
+  "name": "Goblin",
+  "description": "Drobný protivník s prakem.",
+  "gmHint": "Po prvním výstřelu se stáhne do chodbičky, kam se vyšší postavy nevejdou.",
+  "environments": [
+    "caves",
+    "castles"
+  ],
+  "maxHp": 5,
+  "combat": {
+    "attack": 3,
+    "defense": 2,
+    "damage": 0
+  }
+}

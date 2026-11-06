@@ -1,0 +1,16 @@
+{
+  "id": "giant-rat",
+  "name": "Obří krysa",
+  "description": "Přerostlý hlodavec se silnými řezáky a holým ocasem.",
+  "gmHint": "Nejdřív uslyšíš škrábání u zásob, protože krysu sem přilákala vůně jídla.",
+  "environments": [
+    "caves",
+    "waters"
+  ],
+  "maxHp": 6,
+  "combat": {
+    "attack": 3,
+    "defense": 2,
+    "damage": 0
+  }
+}

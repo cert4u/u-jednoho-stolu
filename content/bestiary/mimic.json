@@ -1,0 +1,16 @@
+{
+  "id": "mimic",
+  "name": "Živá truhla",
+  "description": "Otlučená truhla s víkem, v jehož škvíře se skrývají zuby.",
+  "gmHint": "Nech družinu všimnout si, že je kolem truhly prach, ale na víku žádný.",
+  "environments": [
+    "castles",
+    "caves"
+  ],
+  "maxHp": 14,
+  "combat": {
+    "attack": 5,
+    "defense": 4,
+    "damage": 2
+  }
+}

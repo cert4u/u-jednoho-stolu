@@ -1,0 +1,17 @@
+{
+  "id": "giant-snake",
+  "name": "Obří had",
+  "description": "Mohutný škrtič s šedozelenými šupinami.",
+  "gmHint": "Nech ho čekat stočeného u průchodu a po výpadu zkusit obtočit nejbližší postavu.",
+  "environments": [
+    "caves",
+    "waters",
+    "woods"
+  ],
+  "maxHp": 13,
+  "combat": {
+    "attack": 5,
+    "defense": 3,
+    "damage": 2
+  }
+}

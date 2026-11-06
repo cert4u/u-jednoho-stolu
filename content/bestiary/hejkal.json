@@ -1,0 +1,15 @@
+{
+  "id": "hejkal",
+  "name": "Hejkal",
+  "description": "Lesní tvor s vousy z mechu a prsty jako větve.",
+  "gmHint": "Nejdřív se snaží družinu rozdělit napodobováním hlasů.",
+  "environments": [
+    "woods"
+  ],
+  "maxHp": 14,
+  "combat": {
+    "attack": 5,
+    "defense": 4,
+    "damage": 1
+  }
+}

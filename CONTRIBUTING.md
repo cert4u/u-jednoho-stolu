@@ -38,6 +38,14 @@ Piš konkrétně, s přesnými názvy tlačítek a funkčními relativními odka
 
 Drž diskusi věcnou a respektující. Sděl kontext a důvod návrhu, reaguj na připomínky a rozděl nesouvisející změny do samostatných PR.
 
-## Licence a obsah
+## Licence a původ obsahu
 
-Příspěvky se poskytují pod stejnou [licencí MIT](LICENSE) jako projekt. Zachovej licence a autorství převzatých součástí; viz [oznámení](THIRD_PARTY_NOTICES.md). Nevkládej texty cizích pravidel, ilustrace ani bestiáře bez odpovídajícího oprávnění. Testovací příklady musí být smyšlené a nesmějí obsahovat skutečné přístupy.
+Zdrojový kód se poskytuje pod [licencí MIT](LICENSE). U herních textů a ilustrací uveď v PR autora nebo pseudonym, původ, konkrétní licenci či svolení a případné úpravy. U generované ilustrace uveď způsob vzniku, použitý nástroj a původ referencí, pokud byly použity. U cizích materiálů dolož oprávnění k převzetí a zachovej požadované údaje o autorství. Součásti třetích stran evidujeme v [oznámení](THIRD_PARTY_NOTICES.md).
+
+Používej vlastní texty, původní ilustrace a obecné fantasy motivy. Komerční příručky a bestiáře necituj jako zdroj pro kopírování textů, kreseb nebo tabulek statistik. Před přijetím příspěvku se správcem dohodni, za jakých podmínek jej projekt může šířit. Výběr jednotné licence pro nové texty a ilustrace zůstává otevřený. [Návrh variant a postup](docs/COMMUNITY_AUDIT.md#licence-obsahu)
+
+## Štítky a vydání
+
+Pro třídění návrhů používej `bug`, `enhancement`, `content`, `illustration` a `documentation`. Úlohy pro první příspěvek označ `good first issue`, u otevřené poptávky po spolupráci použij `help wanted`. Štítek `security` patří k veřejně popsaným opravám, citlivé nálezy posílej podle [bezpečnostního postupu](SECURITY.md).
+
+Příspěvky míří do vývojové větve. Stabilní verzi vydává správce po ověření CI, kompatibility záloh a aktualizace. [Vývoj a CI](docs/DEVELOPMENT.md#ověření-a-ci) · [Aktualizace instalace](docs/SELF_HOSTING.md)

@@ -72,7 +72,9 @@ Inspekce **Prozkoumat** je klientské čtení již filtrovaného pohledu PJ. Nee
 Zdrojové příklady najdeš například v [testu mapy](../scripts/test-map.mjs), [výbavy](../scripts/test-equipment.mjs), [generátoru](../scripts/test-generator.mjs) a [obnovy](../scripts/test-repairs.mjs).
 
 
-Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiáře](../content/bestiary.json). Server podle něj doplní výchozí jméno, životy, popis, bojové hodnoty a soukromou poznámku pro PJ. Vazbu na ilustraci zachovává kopie i úplná záloha. Identifikátor předlohy se posílá pouze v pohledu PJ.
+PJ načte bestiář pomocí `GET /api/game?room=KÓD&catalog=bestiary` s herním tokenem. Server vrací katalog pouze aktivnímu PJ. Požadavek hráče dostane 403, požadavek bez platného tokenu 401. Údaje o instanci příšery včetně jména a životů se nadále čtou z kampaně. Ilustrace jsou veřejné.
+
+Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiáře](../content/bestiary). Server podle něj doplní výchozí jméno, životy, popis, bojové hodnoty a soukromou poznámku pro PJ. Vazbu na ilustraci zachovává kopie i úplná záloha. Identifikátor předlohy se posílá pouze v pohledu PJ.
 
 
 `GET /api/adventures` vrací jen `id`, `title` a `summary` vestavěných dobrodružství. Volitelný `adventureId` při `create` vytvoří novou kampaň s mapou, přípravou místností a příšerami z předlohy. Při neplatném ID se kampaň neuloží. Bez `adventureId` vznikne vlastní kampaň s prázdnou mapou.

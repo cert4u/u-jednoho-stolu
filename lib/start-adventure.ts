@@ -1,6 +1,7 @@
-import { adventureTemplates } from './adventure-templates';
+import { adventureTemplates, resolveAdventureRooms } from './adventure-templates';
 import { findDungeonPreset } from './dungeon-presets';
 import { generationAction, generationState } from './generation';
+import { roomFloorPoints } from './room-labels';
 import { monsterAction } from './monsters';
 import type { Game, Member } from './game';
 
@@ -20,29 +21,29 @@ export function startAdventure(game: Game, owner: Member, templateId: unknown) {
   game.title = template.title;
   game.scene = template.scene;
   game.notes = template.gmNotes;
-  for (const room of template.rooms) {
-    const levelId = levels[room.floor - 1];
-    const floor = game.atlas?.levels.find((level) => level.id === levelId);
-    const roomIndex = floor?.map.generation?.rooms.findIndex(
-      (candidate) => candidate.role === room.role,
-    );
-    const note =
-      roomIndex !== undefined && roomIndex >= 0
-        ? game.mapNotes?.find(
-            (note) =>
-              note.levelId === levelId && note.roomNumber === roomIndex + 1,
-          )
-        : undefined;
-    if (!note)
-      throw new Error(
-        `V předloze chybí cílová místnost na patře ${room.floor}.`,
-      );
+  const floors = levels.map(id => {
+    const level = game.atlas?.levels.find(candidate => candidate.id === id);
+    if (!level?.map.generation) throw new Error('V předloze chybí vygenerované patro.');
+    return { ...level, rooms: level.map.generation.rooms };
+  });
+  for (const { placement, room, roomNumber } of resolveAdventureRooms(template, floors)) {
+    const floor = floors[placement.floor - 1];
+    const levelId = floor.id;
+    const notes = (game.mapNotes ?? []).filter(note => note.levelId === levelId);
+    const note = notes.find(note => note.roomNumber === roomNumber);
+    if (!note) throw new Error(`V předloze chybí značka místnosti na patře ${placement.floor}.`);
 
-    note.title = room.title;
-    note.text = room.playerText;
-    note.secret = room.gmNotes;
-    note.parchmentOnEntry = Boolean(room.playerText);
-    for (const monsterId of room.monsters ?? []) {
+    const occupied = new Set(notes.map(({ x, y }) => `${x},${y}`));
+    for (const monster of game.monsters ?? []) {
+      if (monster.levelId === levelId && monster.x !== null && monster.y !== null)
+        occupied.add(`${monster.x},${monster.y}`);
+    }
+    const free = roomFloorPoints(room, floor.map).filter(point => !occupied.has(point.join(',')));
+    note.title = placement.title;
+    note.text = placement.playerText;
+    note.secret = placement.gmNotes;
+    note.parchmentOnEntry = Boolean(placement.playerText);
+    for (const monsterId of placement.monsters ?? []) {
       monsterAction(game, owner, {
         op: 'create',
         templateId: monsterId,
@@ -51,9 +52,9 @@ export function startAdventure(game: Game, owner: Member, templateId: unknown) {
       });
       const monster = game.monsters?.at(-1);
       if (!monster) throw new Error('Příšeru z předlohy se nepodařilo přidat.');
-      // The generated note anchor is on a free floor tile away from stairs.
-      monster.x = note.x;
-      monster.y = note.y;
+      // Overflow stays in the manager so PJ can place it manually.
+      const point = free.shift();
+      if (point) [monster.x, monster.y] = point;
     }
   }
 }

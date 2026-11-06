@@ -1,0 +1,17 @@
+{
+  "id": "ghoul",
+  "portrait": "ghoul-neutral",
+  "name": "Ghůl",
+  "description": "Vyhublý nemrtvý s dlouhými drápy číhá mezi hroby.",
+  "gmHint": "Jakmile ucítí zraněnou postavu, vyrazí po ní po čtyřech.",
+  "environments": [
+    "crypts",
+    "caves"
+  ],
+  "maxHp": 15,
+  "combat": {
+    "attack": 6,
+    "defense": 3,
+    "damage": 2
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "giant-scorpion",
+  "name": "Obří štír",
+  "description": "Těžká klepeta a ocas s jedovým bodcem chrání tvrdý krunýř.",
+  "gmHint": "Nech bodec zaškrábat o strop, než se štír stočí k první postavě.",
+  "environments": [
+    "caves",
+    "wilds"
+  ],
+  "maxHp": 14,
+  "combat": {
+    "attack": 5,
+    "defense": 5,
+    "damage": 2
+  }
+}

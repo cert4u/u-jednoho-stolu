@@ -1,0 +1,16 @@
+{
+  "id": "animated-armor",
+  "name": "Oživlá zbroj",
+  "description": "Zašlá plátová zbroj se sklopeným hledím.",
+  "gmHint": "Nech ji stát bez hnutí, dokud někdo nezkusí otevřít dveře, které střeží.",
+  "environments": [
+    "castles",
+    "crypts"
+  ],
+  "maxHp": 16,
+  "combat": {
+    "attack": 5,
+    "defense": 6,
+    "damage": 1
+  }
+}

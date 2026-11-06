@@ -1,0 +1,16 @@
+{
+  "id": "kobold",
+  "name": "Kobold",
+  "description": "Drobný obyvatel chodeb s klubkem provazu a kapsami plnými návnad.",
+  "gmHint": "Když prohrává, uteče k připravené pasti.",
+  "environments": [
+    "caves",
+    "castles"
+  ],
+  "maxHp": 5,
+  "combat": {
+    "attack": 3,
+    "defense": 2,
+    "damage": 0
+  }
+}

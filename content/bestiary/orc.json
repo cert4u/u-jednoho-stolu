@@ -1,0 +1,16 @@
+{
+  "id": "orc",
+  "name": "Skřet",
+  "description": "Ozbrojený skřet v obnošené kožené zbroji.",
+  "gmHint": "Nech ho hlídat úzký průchod a zaútočit, až první postava projde kolem.",
+  "environments": [
+    "castles",
+    "caves"
+  ],
+  "maxHp": 9,
+  "combat": {
+    "attack": 4,
+    "defense": 3,
+    "damage": 1
+  }
+}

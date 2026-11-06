@@ -1,26 +1,11 @@
 import { z } from 'zod';
-import catalog from '../content/bestiary.json' with { type: 'json' };
-import { contentCatalog, contentId } from './content-schema';
+import catalog from '../content/bestiary/index';
+import { parseCatalog, contentId } from './content-schema';
 
-export const bestiaryEnvironments = {
-  caves: 'Jeskyně a doly',
-  castles: 'Hrady a ruiny',
-  crypts: 'Hrobky a krypty',
-  woods: 'Lesy a cesty',
-  waters: 'Voda, bažiny a stoky',
-  wilds: 'Skály a pustiny',
-} as const;
+import { bestiaryEnvironments, type BestiaryEnvironment } from './bestiary-environments';
 
-export type BestiaryEnvironment = keyof typeof bestiaryEnvironments;
-const environmentIds = [
-  'caves',
-  'castles',
-  'crypts',
-  'woods',
-  'waters',
-  'wilds',
-] as const satisfies readonly BestiaryEnvironment[];
-const entrySchema = z
+const environmentIds = Object.keys(bestiaryEnvironments) as [BestiaryEnvironment, ...BestiaryEnvironment[]];
+export const bestiaryEntrySchema = z
   .object({
     id: contentId,
     name: z.string().trim().min(1).max(60),
@@ -43,9 +28,14 @@ const entrySchema = z
   .strict();
 
 export const bestiaryEntries =
-  contentCatalog(entrySchema).parse(catalog).entries;
+  parseCatalog(catalog, bestiaryEntrySchema);
+export type BestiaryEntry = (typeof bestiaryEntries)[number];
 const entriesById = new Map(bestiaryEntries.map((entry) => [entry.id, entry]));
 
 export function findBestiaryEntry(id: unknown) {
   return typeof id === 'string' ? entriesById.get(id) : undefined;
+}
+
+export function bestiaryPortrait(entry: BestiaryEntry) {
+  return entry.portrait ?? entry.id;
 }

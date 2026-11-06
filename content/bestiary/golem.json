@@ -1,0 +1,16 @@
+{
+  "id": "golem",
+  "name": "Golem",
+  "description": "Mohutný kamenný strážce se značkami vytesanými do kloubů.",
+  "gmHint": "Zaútočí jen na ty, kteří poruší zákaz svého pána.",
+  "environments": [
+    "castles",
+    "crypts"
+  ],
+  "maxHp": 28,
+  "combat": {
+    "attack": 7,
+    "defense": 6,
+    "damage": 3
+  }
+}

@@ -230,7 +230,7 @@ Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovac
 
 ## Licence a původ
 
-Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Převzaté součásti si zachovávají své původní licence a oznámení, viz [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Pro nové herní texty a ilustrace uveď původ a podmínky podle [pravidel přispívání](CONTRIBUTING.md#licence-a-původ-obsahu). Převzaté součásti si zachovávají původní licence a oznámení. [Oznámení třetích stran](THIRD_PARTY_NOTICES.md)
 
 Projekt vznikl jako neoficiální pomůcka inspirovaná původním českým hraním DrD. Nejde o produkt ani schválenou aplikaci nakladatelství ALTAR. Repozitář neobsahuje text pravidlových příruček, bestiář ani převzaté ilustrace. Licence k aplikaci neuděluje práva k cizím značkám nebo pravidlovým textům.
 

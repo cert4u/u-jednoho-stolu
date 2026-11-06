@@ -1,0 +1,15 @@
+{
+  "id": "mummy",
+  "name": "Mumie",
+  "description": "Strážce hrobky zavinutý ve starém plátně s bronzovým amuletem.",
+  "gmHint": "Probudí se, jakmile někdo poruší pohřební pečeť.",
+  "environments": [
+    "crypts"
+  ],
+  "maxHp": 19,
+  "combat": {
+    "attack": 6,
+    "defense": 5,
+    "damage": 2
+  }
+}

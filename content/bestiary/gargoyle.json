@@ -1,0 +1,16 @@
+{
+  "id": "gargoyle",
+  "name": "Chrlič",
+  "description": "Kamenný okřídlený tvor připomíná sochu nad vchodem.",
+  "gmHint": "Mění polohu, když se nikdo nedívá, a v prachu po něm zůstávají otisky.",
+  "environments": [
+    "castles",
+    "wilds"
+  ],
+  "maxHp": 16,
+  "combat": {
+    "attack": 5,
+    "defense": 6,
+    "damage": 1
+  }
+}

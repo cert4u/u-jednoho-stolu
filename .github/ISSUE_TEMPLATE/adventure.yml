@@ -1,0 +1,16 @@
+name: Komunitní dobrodružství
+description: Navrhni krátkou výpravu nebo tematickou sadu předloh.
+title: "Dobrodružství: "
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Upoutávka a jedna zajímavá situace
+      description: Uveď prostředí nebo předlohu jeskyně. Hotový JSON můžeš poslat přímo jako PR.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Původ textu a ilustrací
+      description: Uveď autora, zdroj a licenci nebo svolení, pokud už máš materiály připravené.

@@ -1,0 +1,16 @@
+{
+  "id": "zombie",
+  "name": "Zombie",
+  "description": "Vrávoravý nemrtvý v cárech oblečení.",
+  "gmHint": "Vytrvale sleduje poslední hluk, takže ho může družina odlákat zvukem.",
+  "environments": [
+    "crypts",
+    "castles"
+  ],
+  "maxHp": 12,
+  "combat": {
+    "attack": 4,
+    "defense": 2,
+    "damage": 1
+  }
+}

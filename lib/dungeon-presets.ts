@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import catalog from '../content/dungeon-presets.json' with { type: 'json' };
-import { contentCatalog, contentId } from './content-schema';
+import catalog from '../content/dungeon-presets/index';
+import { parseCatalog, contentId } from './content-schema';
 import { generatorOptionsSchema } from './generator-options';
 
 const presetSchema = z
@@ -14,9 +14,11 @@ const presetSchema = z
   })
   .strict();
 
-export const dungeonPresets =
-  contentCatalog(presetSchema).parse(catalog).entries;
-export const defaultDungeonPreset = dungeonPresets[0];
+const presets = parseCatalog(catalog, presetSchema);
+const castle = presets.find(preset => preset.id === 'castle');
+if (!castle) throw new Error('Chybí výchozí předloha jeskyně castle.');
+export const defaultDungeonPreset = castle;
+export const dungeonPresets = [castle, ...presets.filter(preset => preset !== castle)];
 
 export function findDungeonPreset(id: unknown) {
   return dungeonPresets.find((preset) => preset.id === id);

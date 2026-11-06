@@ -1,0 +1,18 @@
+{
+  "id": "castle",
+  "label": "Hradní podzemí",
+  "description": "Pravidelné komnaty oddělené zdmi a dveřmi.",
+  "options": {
+    "version": "v2",
+    "style": "castle",
+    "variant": 0,
+    "separateExit": false,
+    "name": "Zapomenuté podzemí",
+    "levels": 3,
+    "rooms": 6,
+    "size": "medium",
+    "corridors": "direct",
+    "connections": 1,
+    "seed": "prvni-vyprava"
+  }
+}

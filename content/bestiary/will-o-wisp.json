@@ -1,0 +1,16 @@
+{
+  "id": "will-o-wisp",
+  "name": "Bludička",
+  "description": "Chvějivé světélko vznášející se těsně nad zemí.",
+  "gmHint": "Vede postavy do nebezpečí a při pokusu o přímý útok se rozplyne.",
+  "environments": [
+    "waters",
+    "woods"
+  ],
+  "maxHp": 5,
+  "combat": {
+    "attack": 0,
+    "defense": 5,
+    "damage": 0
+  }
+}

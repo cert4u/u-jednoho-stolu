@@ -1,0 +1,17 @@
+{
+  "id": "ghost",
+  "portrait": "ghost-neutral",
+  "name": "Duch",
+  "description": "V potrhaném rubáši bloudí kolem místa své smrti.",
+  "gmHint": "Jakmile někdo vysloví jeho jméno, duch na okamžik ztichne a naslouchá.",
+  "environments": [
+    "crypts",
+    "castles"
+  ],
+  "maxHp": 12,
+  "combat": {
+    "attack": 4,
+    "defense": 5,
+    "damage": 1
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "basilisk",
+  "name": "Bazilišek",
+  "description": "Nízký ještěr s kostěným hřebenem a nebezpečným pohledem.",
+  "gmHint": "Rozmísti před jeho skrýší zkamenělé drobné živočichy, aby družina mohla včas odvrátit zrak.",
+  "environments": [
+    "wilds",
+    "caves"
+  ],
+  "maxHp": 18,
+  "combat": {
+    "attack": 6,
+    "defense": 5,
+    "damage": 2
+  }
+}

@@ -15,6 +15,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | Vývojář | [Runtime, architektura, data a testy](DEVELOPMENT.md) |
 | Autor generátoru | [Generátor V2: audit, model, invarianty a benchmark](GENERATOR_V2.md) |
 | Autor integrace | [Interní HTTP API a oprávnění](API.md) |
+| Správce projektu | [Audit komunitní připravenosti](COMMUNITY_AUDIT.md) |
 | Přispěvatel | [Jak přispívat](../CONTRIBUTING.md) |
 | Autor dobrodružství a příšer | [Přidávání herního obsahu](OBSAH.md) |
 | Autor ilustrací | [Postavy a bestiář](ILUSTRACE.md) |

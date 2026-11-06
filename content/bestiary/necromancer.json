@@ -1,0 +1,16 @@
+{
+  "id": "necromancer",
+  "name": "Nekromant",
+  "description": "Učenec v zašlém rouchu, který nosí zavřenou knihu obřadů.",
+  "gmHint": "Nech jeho nemrtvé zdržovat družinu, dokud nekromant nedokončí obřad.",
+  "environments": [
+    "castles",
+    "crypts"
+  ],
+  "maxHp": 15,
+  "combat": {
+    "attack": 5,
+    "defense": 4,
+    "damage": 1
+  }
+}

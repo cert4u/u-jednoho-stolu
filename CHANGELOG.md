@@ -4,6 +4,11 @@
 
 Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
 
+- Komunitní předlohy mají vlastní JSON soubory a kontrolu s názvem souboru a pole.
+- Dobrodružství umí připravit libovolnou místnost V2 podle ID a rozmístit příšery na volná políčka.
+- Bestiář načítá pouze přihlášený PJ. Schopnosti a bojové hodnoty deníku vidí jeho majitel a PJ.
+- Cloudflare integrační testy používají dočasnou D1 databázi.
+
 ## 0.5.2 — 2026-11-06
 
 - Editor mapy odděluje vykreslení od obsluhy myši a klávesnice, včetně odesílání a opakování tahů.

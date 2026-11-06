@@ -1,0 +1,16 @@
+{
+  "id": "werewolf",
+  "name": "Vlkodlak",
+  "description": "Vysoký tvor s vlčí hlavou a zbytky lidského oblečení.",
+  "gmHint": "Ukaž nejdřív lidskou stopu, která se u kraje lesa mění ve vlčí.",
+  "environments": [
+    "woods",
+    "castles"
+  ],
+  "maxHp": 21,
+  "combat": {
+    "attack": 7,
+    "defense": 5,
+    "damage": 2
+  }
+}
