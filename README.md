@@ -49,7 +49,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 ### Příprava Pána jeskyně
 
 - Zámky a tajné dveře nastavované PJ přes **Prozkoumat**; neodhalené dveře hráči vidí jako zeď.
-- Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací.
+- Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací. PJ může vybírat z dvanácti ilustrovaných předloh v bestiáři.
 - Nástroj **(i) Prozkoumat** pro PJ: detail značky nebo souhrn obsahu místnosti včetně tajné přípravy a navázané kořisti/zkoušek.
 - Číslované místnosti s názvy přímo v mapě, přesouváním značek a seznamem pro rychlé hledání. Nově generovaná patra dostanou soukromá označení automaticky.
 - Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu a může z něj otevřít připravenou zkoušku, příšeru, souboj nebo kořist.
@@ -60,7 +60,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 
 ### Postavy, kostky a souboj
 
-- Deníky s pěti vlastnostmi, bojovými hodnotami, úrovní a zkušenostmi přidělovanými PJ.
+- Deníky s pěti vlastnostmi, bojovými hodnotami, úrovní a zkušenostmi přidělovanými PJ. Pět povolání má mužskou i ženskou ilustraci.
 - Výbava a měšec: položky, spotřeba kusů, příjmy, platby, převzetí kořisti a přímé předávání předmětů/mincí mezi hráči.
 - Léčení předmětem s náhledem životů. PJ potvrdí obnovu a spotřebu jednoho kusu společně.
 - Vlastní kouzla a schopnosti, magenergie a její odečítání při použití. Účinky vyhodnocuje PJ.
@@ -113,7 +113,7 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 ## Generátor jeskyně
 
-**Vydání 0.4.0** přidává Situace nad mapou, připravená setkání, kroniku družiny a bojové pomůcky. Správce může vydání vybrat v administraci. Podrobnosti a postup aktualizace jsou v [poznámkách k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.4.0).
+**Vydání 0.5.0** přidává ilustrované deníky postav a bestiář s dvanácti předlohami pro PJ. Změny a kompatibilitu popisuje [historie verzí](CHANGELOG.md#050--2026-11-06). Stabilní vydání lze nainstalovat z administrace podle [návodu pro vlastní hosting](docs/SELF_HOSTING.md).
 
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 
@@ -191,6 +191,7 @@ Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro výv
 | Zapnout hlasový hovor | [LiveKit a hlas družiny](docs/VOICE.md) |
 | Podívat se na změny a další plány | [Historie verzí](CHANGELOG.md) a [plán práce](docs/ROADMAP.md) |
 | Porozumět kódu | [Vývoj a architektura](docs/DEVELOPMENT.md) a [interní API](docs/API.md) |
+| Přidat ilustrace do projektu | [Styl, reference a prompty](docs/ILUSTRACE.md) |
 | Připravit nové vydání | [Postup pro správce vydání](docs/RELEASING.md) |
 | Přispět opravou nebo nápadem | [Pravidla přispívání](CONTRIBUTING.md) a [issues](https://github.com/cert4u/u-jednoho-stolu/issues) |
 

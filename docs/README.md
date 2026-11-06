@@ -16,6 +16,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | Autor generátoru | [Generátor V2: audit, model, invarianty a benchmark](GENERATOR_V2.md) |
 | Autor integrace | [Interní HTTP API a oprávnění](API.md) |
 | Přispěvatel | [Jak přispívat](../CONTRIBUTING.md) |
+| Autor ilustrací | [Postavy a bestiář](ILUSTRACE.md) |
 | Správce vydání | [Příprava a ověření vydání](RELEASING.md) |
 
 [Omezení současné verze](LIMITS.md) · [Plán projektu](ROADMAP.md) · [Bezpečnostní hlášení](../SECURITY.md) · [Licence](../LICENSE) · [Převzaté součásti](../THIRD_PARTY_NOTICES.md)

@@ -304,3 +304,59 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 @media (max-width:850px) {
   .mobile-journals:has(>button:nth-child(5)) > button { flex-basis: calc(33.333% - 8px); }
 }
+
+.character-sheet-illustrated { display: grid; gap: 24px; }
+.character-sheet-fields { min-width: 0; }
+.character-sheet-artwork { display: flex; justify-content: center; margin: 0; }
+.character-sheet-artwork img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(64dvh, 510px);
+  object-fit: contain;
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+}
+@media (min-width:900px) {
+  .character-modal:has(.character-sheet-illustrated) { width: 1060px; }
+  .character-sheet-illustrated { grid-template-columns: minmax(0, 1fr) minmax(220px, 32%); align-items: start; }
+  .character-sheet-artwork { position: sticky; top: 0; }
+}
+
+.identity-fields .profession-field { min-width: 0; }
+.identity-fields .profession-field label { grid-column: auto; max-width: none; }
+.profession-field select { min-width: 0; font-size: 12px; }
+.profession-field input:not([type="hidden"]) { margin-top: 5px; }
+
+.open-bestiary { margin-top: 8px; }
+.open-bestiary[aria-pressed="true"] { border-color: var(--ink); }
+.bestiary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+}
+.bestiary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.bestiary-card h4, .bestiary-card p { margin: 0; }
+.bestiary-card p, .bestiary-card small, .bestiary-status { font-size: 12px; line-height: 1.5; }
+.bestiary-card small { margin-top: auto; }
+.bestiary-card button { align-self: flex-start; }
+.bestiary-portrait {
+  display: block;
+  width: 100%;
+  height: 138px;
+  object-fit: contain;
+  border-radius: 5px;
+  background: #f7f0e4;
+}
+.bestiary-instance .bestiary-portrait { max-width: 180px; margin: 0 0 12px; }

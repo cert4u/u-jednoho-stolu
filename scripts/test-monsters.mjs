@@ -23,3 +23,25 @@ let clone=await monster(pj,'clone',{monsterId:m.id});const twin=clone.game.monst
 await explore(pj,'level-add',{name:'Sklep'});const basement=(await get(pj)).exploration.levels.find(l=>l.name==='Sklep').id;await draw(pj,'room',{levelId:basement,from:[1,1],to:[4,4]});await monster(pj,'move',{monsterId:m.id,levelId:basement,x:2,y:2});assert(!(await get(pj)).monsters.some(item=>item.id===m.id));assert((await get(pj,basement)).monsters.some(item=>item.id===m.id));assert.equal((await get(a,basement)).monsters.length,0);
 await Promise.all([monster(pj,'create',{name:'Vlk',maxHp:5}),monster(pj,'create',{name:'Kostlivec',maxHp:6})]);const all=(await get(pj)).monsters;assert.equal(new Set(all.map(item=>item.number)).size,all.length);
 console.log('PASS: vytváření/kopie, číslování a souběh, umístění a přesun mezi patry, životy a opakování, archiv/obnova, oprávnění, skryté statistiky a příšery mimo dohled, ruční skrytí a překážky.');
+
+const templateRequest=crypto.randomUUID();
+assert.equal((await monster(a,'create',{templateId:'wolf'},templateRequest)).status,403);
+assert.equal((await monster(pj,'create',{templateId:'constructor'})).status,400);
+const fromBestiary=await monster(pj,'create',{templateId:'wolf'},templateRequest);
+assert.equal(fromBestiary.status,200);
+const wolf=fromBestiary.game.monsters.find(item=>item.templateId==='wolf');
+assert.deepEqual([wolf.name,wolf.hp,wolf.x,wolf.combat],['Vlk',8,null,{attack:4,defense:3,damage:0}]);
+await monster(pj,'create',{templateId:'wolf'},templateRequest);
+assert.equal((await get(pj)).monsters.filter(item=>item.templateId==='wolf').length,1);
+assert.equal((await monster(pj,'move',{monsterId:wolf.id,x:3,y:3})).status,200);
+const visibleWolf=(await get(a)).monsters.find(item=>item.id===wolf.id);
+assert(visibleWolf);
+assert(!('templateId' in visibleWolf));
+const clonedWolf=await monster(pj,'clone',{monsterId:wolf.id});
+assert.equal(clonedWolf.game.monsters.filter(item=>item.templateId==='wolf').length,2);
+const backupResponse=await fetch(base+'/api/game?room='+pj.room+'&download=backup',{headers:{Authorization:'Bearer '+pj.token}});
+assert.equal(backupResponse.status,200);
+const restored=await post(null,'restore',{backup:await backupResponse.json()});
+assert.equal(restored.status,200);
+assert.equal(restored.game.monsters.filter(item=>item.templateId==='wolf').length,2);
+console.log('PASS: výchozí hodnoty bestiáře, oprávnění, opakování žádosti, soukromí předlohy, kopie a obnova zálohy.');

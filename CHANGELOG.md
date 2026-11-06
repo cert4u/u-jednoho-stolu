@@ -1,5 +1,13 @@
 # Změny
 
+## 0.5.0 — 2026-11-06
+
+- **Ilustrovaný deník.** Pět povolání má mužskou i ženskou kresbu. Obrázek se mění při výběru povolání. Nabídka vždy ukáže celý seznam a dovoluje zadat i vlastní název.
+- **Bestiář pro PJ.** Dvanáct ilustrovaných předloh od skřeta po vodníka. Přidáním vznikne samostatná příšera pro aktuální patro s upravitelnými životy, bojovými hodnotami a popisem. Obrázek zůstává u kopie i po obnově ze zálohy.
+- **Jednotný vzhled ilustrací.** Dokumentace obsahuje referenční kresby a prompty pro přípravu dalších postav a příšer.
+
+SQL migrace, konfigurace a formát záloh 1 zůstávají stejné. Starší kampaně a zálohy fungují i bez údajů o předlohách bestiáře. Při obnově zálohy z 0.5.0 ve starší verzi se údaje o předlohách zahodí.
+
 ## 0.4.0 — 2026-11-05
 
 - **Situace nad mapou.** PJ připraví popis, který se při prvním vstupu družiny rozvine nad mapou, nebo ho ukáže ručně. Více situací se zobrazí postupně a přečtené texty zůstanou v chatu.

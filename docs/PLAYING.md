@@ -36,6 +36,8 @@ Opustit stůl v prohlížeči odstraní místní přihlášení, ne kampaň. Ztr
 
 V **Můj deník** zapisuj jméno, rasu, povolání, úroveň, pět vlastností a hotové bojové hodnoty ÚČ, OČ a útočnost. Změna povolání či výbavy je sama nepřepočítá. Úroveň se zkušenostmi automaticky nezvyšuje; zkušenosti přiděluje PJ.
 
+Nabídka **Povolání** vždy zobrazí celý seznam. Válečník, hraničář, alchymista, kouzelník a zloděj mají mužskou i ženskou ilustraci, která se zobrazí při výběru. Pro vlastní název zvol **Vlastní povolání…**.
+
 Výbava, měšec, vlastní kouzla, magenergie a soukromé poznámky jsou dostupné majiteli a PJ. Ostatní hráči nedostávají jejich obsah. Životy a veřejné stavy jsou společnou informací. PJ spravuje obnovu a další herní akce; základní formulář **Můj deník** upravuje vlastní postavu i v roli PJ.
 
 Rozepsaný formulář chrání neuložené změny. Pokud mezitím někdo změní tentýž údaj, aplikace změnu odmítne jako konflikt. Poznamenej si rozepsaný text a načti aktuální stav; neopakuj starý požadavek naslepo.
@@ -105,7 +107,9 @@ PJ může použít **Ukázat situaci teď**. Obě možnosti zobrazí popis jedno
 
 Upozornění při přiblížení má výchozí dosah 2 pole, nastavení 1–6 nebo vypnutí. Funguje i přes stěny a sleduje průchod družiny kolem místa. Během pobytu v okolí se neopakuje. Je soukromou připomínkou PJ, nic automaticky neodhaluje ani nespouští hod či poškození. V části **Připravené setkání** otevřeš přímo rozpracovanou zkoušku, živou příšeru nebo kořist z daného prostoru. Pokud jsou v něm příšery, odtud také otevřeš přípravu souboje na příslušném patře. Po zavření panelu se připomínka vrátí, dokud ji nepotvrdíš.
 
-Příšeru PJ vytvoří v **Příšery** a umístí na podlahu. Má vlastní číslo, životy a bojové hodnoty. Ručně skrytá příšera zůstává skrytá i na viditelném místě. Hráči nedostanou její tajné statistiky a poznámky. Nula životů ji označí za poraženou; archivace a odebrání z mapy jsou samostatné operace.
+V **Příšery → Bestiář** může PJ přidat jednu ze dvanácti ilustrovaných předloh. Každé kliknutí na **Přidat** vytvoří samostatnou příšeru pro aktuální patro. V seznamu ji vyber, uprav návrh životů, bojových hodnot nebo popis a klikni na **Umístit do mapy**. Kresba je v detailu pro PJ. Vlastní příšeru založíš přes **Nová příšera**.
+
+Každá příšera má vlastní číslo, životy a bojové hodnoty. Ručně skrytá příšera zůstává skrytá i na viditelném místě. Hráči nedostanou její tajné statistiky a poznámky. Nula životů ji označí za poraženou; archivace a odebrání z mapy jsou samostatné operace.
 
 Past lze popsat poznámkou a připravit z ní zkoušku. PJ vybere postavu a vlastnost, nastaví opravu a nebezpečnost, její zveřejnění a soukromou či společnou výzvu. Hod provede hráč nebo PJ, následky a případnou změnu životů potvrdí PJ samostatně.
 

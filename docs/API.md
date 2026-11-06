@@ -41,7 +41,7 @@ Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty s
 | `map` | Jen PJ; `tool`, geometrie tahu a `requestId`, případně patro. |
 | `explore` | Oprávnění podle operace, viz níže. |
 | `move` | Historický přesun jednotlivého člena: majitel/PJ. Při umístěném společném žetonu je odmítnut; použij `explore`. |
-| `monster` | PJ: vytvoření, kopie, údaje, poloha, životy a archivace příšer. |
+| `monster` | PJ: ruční vytvoření nebo přidání z bestiáře, kopie, údaje, poloha, životy a archivace příšer. |
 | `mechanics` | Vlastní hody hráče, PJ i za ostatní; obrana podle cíle a viditelnosti akce, potvrzení/rušení jen PJ. |
 | `initiative`, `condition` | Jen PJ: soubojové pořadí a stavy. |
 | `power` | Majitel/PJ: vlastní kouzla, magenergie a použití. |
@@ -70,6 +70,9 @@ Inspekce **Prozkoumat** je klientské čtení již filtrovaného pohledu PJ. Nee
 - `generate.expectedState` je serverový stamp aktuálního seznamu pater a možnosti využít prázdné patro, ne libovolný klientský JSON.
 
 Zdrojové příklady najdeš například v [testu mapy](../scripts/test-map.mjs), [výbavy](../scripts/test-equipment.mjs), [generátoru](../scripts/test-generator.mjs) a [obnovy](../scripts/test-repairs.mjs).
+
+
+Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiáře](../lib/bestiary.ts). Server podle něj doplní výchozí jméno, životy, popis a bojové hodnoty. Vazbu na ilustraci zachovává kopie i úplná záloha. Identifikátor předlohy se posílá pouze v pohledu PJ.
 
 ## Hlas
 
