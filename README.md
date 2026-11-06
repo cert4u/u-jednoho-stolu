@@ -113,8 +113,6 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 ## Generátor jeskyně
 
-**Stabilní vydání 0.5.3** zpřísňuje soukromí deníků a bestiáře, zpřístupňuje přípravu dalších místností a usnadňuje přidávání komunitních předloh. Přehled změn je v [historii verzí](CHANGELOG.md#053--2026-11-06). Vydání lze nainstalovat z administrace podle [návodu pro vlastní hosting](docs/SELF_HOSTING.md).
-
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 
 1. Nastav název, styl, počet pater a místností, velikost a složitost. Pokročilá část obsahuje verzi algoritmu, seed, chodby a dodatečná propojení.
@@ -127,6 +125,8 @@ Celkem lze mít 8 pater po 28 × 20 polích. Na patro se vejde 2–12 místnost�
 V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každém patře může být jedna značka každého druhu; dalším kliknutím ji přesuneš, gumou odstraníš. Tlačítko **Umístit družinu u vchodu** zahájí průzkum od vchodu zobrazeného patra. Samotné vložení značky družinu nepřesouvá. Východ je orientační značka, přechod do venkovní mapy zatím neprovádí. Hráči značky uvidí až po odkrytí; navštívená místa zůstávají v paměti mapy.
 
 ## Vlastní server s Dockerem
+
+**Stabilní vydání 0.6.0** přidává správu záloh a kontrolu databáze a služeb při aktualizaci. Při přechodu z 0.5.3 nejdřív aktualizuj updater a konfiguraci Compose. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-053-na-060) · [Historie verzí](CHANGELOG.md#060--2026-11-06)
 
 Pro vlastní server je od verze **0.2.0** připravený Docker Compose. Aplikace běží na Node.js 22 a ukládá data do SQLite v trvalém Docker volume. Cloudflare účet není potřeba.
 

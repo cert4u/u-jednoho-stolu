@@ -62,4 +62,11 @@ jobs:
           ./deploy/stul.sh config --quiet
           STUL_LIVEKIT_API_KEY=test-voice-key STUL_LIVEKIT_API_SECRET=test-voice-secret-with-at-least-32-characters docker compose -f compose.yaml -f compose.voice.yaml config --quiet
       - name: Test real Docker replacement and recovery
-        run: sudo "$(command -v node)" scripts/test-docker.mjs
+        run: |
+          legacy_source=$(mktemp -d)
+          trap 'rm -rf "$legacy_source"' EXIT
+          legacy_sha=65382686749237b930bf0cb918761198e6ad6b2c
+          git fetch --no-tags --depth=1 origin refs/tags/v0.5.3
+          test "$(git rev-parse 'FETCH_HEAD^{commit}')" = "$legacy_sha"
+          git archive "$legacy_sha" | tar -x -C "$legacy_source"
+          sudo "$(command -v node)" scripts/test-docker.mjs "$legacy_source"

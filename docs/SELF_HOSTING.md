@@ -100,6 +100,15 @@ Stejným příkazem použiješ změnu kanálu nebo retence z `.env`. Spouštěj 
 
 Aktualizace v administraci vyměňuje aplikační kontejner. Checkout, Compose, updater a případný LiveKit spravuješ samostatně. Změny aplikačních proměnných nebo připojení volume prováděj plánovaně přes Compose s aktivním image z `.stul-state/runtime.env`.
 
+#### Přechod z 0.5.3 na 0.6.0
+
+1. Dokonči případnou operaci v administraci a zazálohuj databázi, `.env` a `.stul-state`.
+2. V checkoutu instalace stáhni tag `v0.6.0` a přepni se na něj. Zachovej místní nastavení a případné vlastní úpravy Compose.
+3. Spusť `./deploy/stul.sh up -d --build --no-deps updater`. Použije se konfigurace hostingu 1 a výchozí kanál Stable. U instalace s vlastním Compose overlay zachovej také parametry pro jeho načtení.
+4. V dosavadní administraci otevři **Zkontrolovat vydání** a potvrď aktualizaci na 0.6.0. Po výměně se znovu přihlas a ověř verzi i přístup do stávající kampaně. V nové administraci se zobrazí protokol updateru 1 a verze konfigurace hostingu 1.
+
+Provozní SQLite formát i export kampaně verze 1 lze použít dál. **Vrátit předchozí verzi** obnoví také snapshot z doby před výměnou. Updater po návratu zůstane na nově sestavené službě.
+
 ## Data a zálohy
 
 - Docker volume `stul_data`: `game.sqlite`, WAL a `backups/*.sqlite`.

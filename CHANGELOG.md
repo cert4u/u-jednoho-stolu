@@ -4,8 +4,13 @@
 
 Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
 
-- Správa instalace zobrazuje služby, volné místo a snapshoty. Zálohu lze vytvořit, stáhnout nebo po potvrzení obnovit.
-- Updater ověřuje verzi, commit a kompatibilitu infrastruktury. Po výměně kontroluje databázi a rozhraní před uvolněním údržby. Výchozí kanál Stable nabízí vyšší stabilní vydání.
+## 0.6.0 — 2026-11-06
+
+- **Správa instalace.** Přehled ukazuje služby, velikost databáze, volné místo a snapshoty. Správce může vytvořit a stáhnout ruční zálohu nebo po potvrzení obnovit databázi. Automatická retence je volitelná.
+- **Kanály aktualizací.** Stable je výchozí. Stable a Preview nabízejí vyšší verze. Development vyžaduje potvrzení konkrétního commitu. U vydání jsou vidět poznámky, deklarované požadavky a dostupný výsledek CI.
+- **Ověření před návratem do hry.** Updater ověřuje kompatibilitu před výměnou a pak kontroluje databázi, herní API a správu instalace. Pokud selže kontrola nové verze, obnoví původní kontejner a databázi.
+
+Při přechodu z 0.5.3 nejdřív [aktualizuj samotný updater a Compose](docs/SELF_HOSTING.md#přechod-z-053-na-060). Stávající kampaně a zálohy formátu 1 lze používat i po přechodu.
 
 ## 0.5.3 — 2026-11-06
 
