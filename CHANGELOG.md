@@ -1,9 +1,5 @@
 # Změny
 
-## Příští vydání
-
-Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
-
 ## 0.5.3 — 2026-11-06
 
 - **Soukromí u stolu.** Bestiář a rady k příšerám načítá z herního serveru pouze PJ. Schopnosti a bojové hodnoty deníku dostává jeho majitel a PJ. Klient po opuštění stolu ignoruje zpožděné odpovědi z původní relace.
