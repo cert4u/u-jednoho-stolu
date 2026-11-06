@@ -11,6 +11,7 @@ const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   "00000000-0000-4000-8000-000000000000";
 
 const nodeRuntime=process.env.STUL_RUNTIME==='node';
+const testD1State = process.env.STUL_TEST_D1_STATE;
 const { d1, r2 } = hostingConfig;
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
@@ -52,6 +53,7 @@ export default defineConfig(async ({ command }) => {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }
         : {}),
+      ...(testD1State ? { host: "127.0.0.1", strictPort: true } : {}),
       ...(isCodexSeatbeltSandbox
         ? { watch: { useFsEvents: false, usePolling: true } }
         : {}),
@@ -63,6 +65,7 @@ export default defineConfig(async ({ command }) => {
       cloudflare!({
         viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
         inspectorPort: false,
+        ...(testD1State ? { persistState: { path: testD1State } } : {}),
         config: {
           ...localBindingConfig,
           ...(command === "serve"

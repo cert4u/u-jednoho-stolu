@@ -37,12 +37,12 @@ jobs:
         run: npm test
       - name: Sestavení
         run: npm run build
-      - name: Místní databáze
-        run: npm run db:init
+      - name: Soukromí v klientském buildu
+        run: npm run check:client-content
       - name: Integrační testy
         run: npm run test:ci
       - name: Node hosting a správa instalace
-        run: npm run build:node && npm run test:hosting
+        run: npm run build:node && npm run check:client-content && npm run test:hosting
 
   docker:
     name: Docker hosting and upgrade
