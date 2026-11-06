@@ -1,8 +1,8 @@
 # Změny
 
-## Příští vydání
+## 0.5.1 — 2026-11-06
 
-Připravovaný kandidát `0.9.0-alpha.1` pro zkušební hraní. Formát záloh a databázové migrace se nemění.
+Formát záloh 1, konfigurace a SQL migrace zůstávají stejné.
 
 - Katalog příšer, předlohy jeskyní a dobrodružství jsou samostatná validovaná data. Dvě ukázkové výpravy lze založit přímo v lobby.
 - Generátor umí načíst předlohu parametrů. Výpočty hodů a zranění jsou oddělené od správy souboje.

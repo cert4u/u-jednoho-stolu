@@ -113,7 +113,7 @@ Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veře
 
 ## Generátor jeskyně
 
-**Vydání 0.5.0** přidává ilustrované deníky postav a bestiář s dvanácti předlohami pro PJ. Změny a kompatibilitu popisuje [historie verzí](CHANGELOG.md#050--2026-11-06). Stabilní vydání lze nainstalovat z administrace podle [návodu pro vlastní hosting](docs/SELF_HOSTING.md).
+**Vydání 0.5.1** rozšiřuje bestiář na třicet ilustrovaných předloh a přidává předlohy jeskyní a dobrodružství. Změny a kompatibilitu popisuje [historie verzí](CHANGELOG.md#051--2026-11-06). Stabilní vydání lze nainstalovat z administrace podle [návodu pro vlastní hosting](docs/SELF_HOSTING.md).
 
 PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
 
