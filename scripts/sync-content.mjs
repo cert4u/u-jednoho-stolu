@@ -6,6 +6,7 @@ const check = process.argv.includes('--check');
 for (const category of categories) {
   const dir = new URL(`../content/${category}/`, import.meta.url);
   const files = (await readdir(dir)).filter(name => name.endsWith('.json')).sort();
+  if (files.length === 0) throw new Error(`content/${category}: přidej alespoň jednu předlohu JSON.`);
   const entries = [];
   for (const file of files) {
     const path = `content/${category}/${file}`;

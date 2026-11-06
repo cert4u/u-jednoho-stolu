@@ -112,3 +112,37 @@ assert.equal((await get(pj, { catalog: 'bestiary' })).find(entry => entry.id ===
 assert.equal(typeof (await get(player, { catalog: 'bestiary' }, 403)).error, 'string');
 assert.equal(typeof (await get({ ...pj, token: 'wrong-token' }, { catalog: 'bestiary' }, 401)).error, 'string');
 console.log('PASS: všechna dobrodružství, propojení pater, obsah místností, rozmístění příšer, odhalení situace, soukromí a obnova.');
+
+// This small entrance has fewer free cells than the encounter has monsters.
+const { initialGame } = await import('../lib/game.ts');
+const { startAdventure } = await import('../lib/start-adventure.ts');
+const overflow = {
+  id: 'test-overflow',
+  title: 'Test malé místnosti',
+  scene: 'U vstupu',
+  summary: 'Syntetické setkání pro test.',
+  gmNotes: '',
+  dungeonPreset: 'mine',
+  rooms: [{
+    floor: 1, role: 'entrance', title: 'Malá místnost', playerText: '', gmNotes: '',
+    monsters: Array(8).fill('giant-rat'),
+  }],
+};
+adventureTemplates.push(overflow);
+try {
+  const positions = () => {
+    const game = initialGame('Testovací PJ', crypto.randomUUID());
+    startAdventure(game, game.members[0], overflow.id);
+    return game.monsters.map(({ x, y }) => [x, y]);
+  };
+  const first = positions();
+  assert.equal(first.length, 8);
+  const placed = first.filter(([x]) => x !== null);
+  assert(placed.length > 0 && placed.length < first.length);
+  assert.equal(new Set(placed.map(point => point.join(','))).size, placed.length);
+  assert.deepEqual(first.slice(placed.length), Array.from({ length: 8 - placed.length }, () => [null, null]));
+  assert.deepEqual(positions(), first);
+} finally {
+  adventureTemplates.pop();
+}
+console.log('PASS: deterministické rozmístění i při nedostatku místa. Přebytek zůstává bez pozice.');

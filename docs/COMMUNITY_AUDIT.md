@@ -21,6 +21,13 @@ Výchozí stav je commit `d024b7c` hlavní větve ověřený na GitHubu. Výchoz
 - **Synchronizace.** [Polling](../components/game-table/use-game-polling.ts) běží po dvou sekundách a požadavky jedné smyčky se nepřekrývají. Běžný dotaz vždy načte a deserializuje stav a sestaví pohled znovu, i když se revize nezměnila. Při dvanácti otevřených kartách to v klidu znamená zhruba šest čtení za sekundu. Lokální D1 sada při běžných požadavcích ukázala odezvy v řádu jednotek až desítek milisekund. To je pozorování ze syntetických kampaní, nikoli kapacitní test. Další měření má smysl na dlouhé skutečné kampani. Pokud bude dominantní přenos, první kandidát je podmíněný GET podle člena, revize a zobrazeného patra.
 - **Testy.** API sady kontrolují oprávnění, obnovu, souběh a průzkum. Pro budoucí Playwright sadu má největší přínos dvojice izolovaných prohlížečových kontextů PJ a hráče, kreslení myší a klávesnicí, obnova spojení a jeden úzký viewport. Vstupní podmínkou je samostatná lokální SQLite databáze a čekání na stav rozhraní nebo odpověď API bez pevných časovačů.
 
+## Výsledek ověření
+
+- Čistý klon prošel instalací, nastartoval vývojový server a vytvořil vlastní SQLite databázi. V prohlížeči prošlo založení výpravy Co hlídají kořeny, kontrola dvou samostatných značek krys a načtení, vyhledání i přidání kobolda z bestiáře.
+- Prošly `npm run verify`, Cloudflare a Node build, kontrola klientských souborů v obou buildech, D1 integrační sada, `npm run test:hosting` a testy updateru. Matice V2 prověřila 2 160 nastavení a 6 318 pater včetně kontrolních otisků V1/V2. Cílený test potvrdil opakovatelné rozmístění i přebytek bez pozice.
+- Porovnání se stabilní verzí 0.5.2 ověřilo přesnou shodu všech předloh příšer a jeskyní podle ID. Nový čteč načetl zálohu ze stabilní verze a starý čteč načetl zálohu nově založeného dobrodružství. V obou směrech se shodla mapa s propojeními, poznámky, příšery a původ generování.
+- Reálnou výměnu kontejnerů ověřuje úloha CI pro Docker. Na místním stroji nebyl příkaz `docker` dostupný.
+
 ## Licence obsahu
 
 MIT pokrývá zdrojový kód. Při posuzování nového obsahu eviduj texty a ilustrace zvlášť a u převzatých materiálů zachovej doložené podmínky. Před sjednocením politiky musí správce ověřit původ a oprávnění ke každé položce, které se rozhodnutí týká.

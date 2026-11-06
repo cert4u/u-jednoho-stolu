@@ -19,7 +19,9 @@ for (const authorized of [a, pj]) {
   assert.equal(sheet.abilities.strength, 21);
   assert.equal(sheet.combat.attack, 8);
 }
+assert.equal((await post(pj, 'explore', { op: 'enable', requestId: crypto.randomUUID() })).status, 200);
 const otherSheet = aSheet(await get(b));
+assert(otherSheet, 'Hráč vidí veřejnou část postavy');
 for (const key of ['abilities', 'combat', 'token', 'recoveryHash', 'recoveryReplay'])
   assert(!Object.hasOwn(otherSheet, key), `Cizí pohled obsahuje ${key}`);
 let r=await run(a,{kind:'ability',actor:ar,ability:'strength',modifier:2,difficulty:1});assert.equal(r.status,200);let m=r.game.messages.at(-1);assert.equal(m.mechanics.base,5);assert.equal(m.mechanics.total,m.mechanics.dice[0]+7);assert(m.text.includes('úspěch'));

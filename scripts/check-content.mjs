@@ -74,11 +74,15 @@ if (process.argv.includes('--client')) {
   for (const file of files) {
     const code = await readFile(new URL(file, root), 'utf8');
     for (const [source, secret] of secrets) {
-      // Bundlers may emit non-ASCII text literally or with Unicode escapes.
+      // Match complete string literals, including escaped Czech characters.
       const literal = JSON.stringify(secret).slice(1, -1);
-      const escaped = literal.replace(/[^\x00-\x7F]/g, char =>
+      const unicode = literal.replace(/[^\x00-\x7F]/g, char =>
         '\\u' + char.charCodeAt(0).toString(16).padStart(4, '0'));
-      assert(!code.includes(literal) && !code.includes(escaped),
+      const spellings = [literal, unicode].flatMap(value => [
+        `"${value}"`,
+        `'${value.replaceAll('\\"', '"').replaceAll("'", "\\'")}'`,
+      ]);
+      assert(!spellings.some(value => code.includes(value)),
         `dist/client/${file}: obsahuje text pro PJ z content/${source}.json.`);
     }
   }
