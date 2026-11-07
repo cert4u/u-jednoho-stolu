@@ -199,4 +199,12 @@ Pro čistě hlasový hovor přidej LiveKit podle [návodu Hlas družiny](VOICE.m
 
 ## Místní knihovna katalogů
 
-Vývojové změny po 1.1.0 přidávají migrace `0001_catalog_library.sql` a `0002_catalog_updated_at.sql`, místní SQLite katalogy a persistentní `catalog-assets` pod `STUL_DATA_DIR`. Zachovej celý datový volume. Úplná serverová záloha ZIP zahrnuje databázi i obrázky; samotný SQLite export obrázky knihovny nezahrnuje. [Postup správy a obnovy](CATALOG_LIBRARY.md#uložení-a-zálohy). Cloudflare zatím používá vestavěné katalogy, nikoli dynamickou administraci knihovny.
+Verze 1.2.0 přidává migrace `0001_catalog_library.sql` a `0002_catalog_updated_at.sql`, místní SQLite katalogy a persistentní `catalog-assets` pod `STUL_DATA_DIR`. Zachovej celý datový volume. Úplná serverová záloha ZIP zahrnuje databázi i obrázky; samotný SQLite export obrázky knihovny nezahrnuje. [Postup správy a obnovy](CATALOG_LIBRARY.md#uložení-a-zálohy). Cloudflare zatím používá vestavěné katalogy, nikoli dynamickou administraci knihovny.
+
+## Přechod z 1.1.0 na 1.2.0
+
+Před aktualizací uschovej konzistentní databázový snapshot a potřebnou konfiguraci podle návodu výše. Verze 1.2.0 při startu automaticky aplikuje nové migrace `0001_catalog_library.sql` a `0002_catalog_updated_at.sql`; již aplikované migrace se nemění. Po restartu ověř existující kampaň i sekci **Katalogy** v `/admin`.
+
+Není potřeba nová proměnná prostředí, změna Compose ani přestavba updateru. Zachovej celý datový volume: obrázky nových katalogů leží v `STUL_DATA_DIR/catalog-assets`, nikoli v image aplikace. Nové snapshoty mají obrázkový soubor vedle SQLite; pro přenos celé instalace stahuj **Úplná záloha ZIP**. Samotný SQLite download neobsahuje soubory knihovny.
+
+Návrat na starší image vrací i databázi do snapshotu před aktualizací; novější katalogy a kampaně se tak z tohoto pohledu vrátí v čase. Před návratem zachovej i aktuální kompletní data. Novou katalogovou zálohu kampaně obnovuj aplikací 1.2.0 nebo novější. Cloudflare nadále podporuje vestavěné katalogy a přenesené podklady kampaně, nikoli dynamickou administraci knihovny.

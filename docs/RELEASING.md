@@ -19,6 +19,8 @@ První vydání této řady je `v1.0.0`. Obsahuje kreslené mapy, sjednocený ge
 
 Verze `v1.1.0` přidává ruční stafáž, komunitní katalog, náhodný návrh podlahových značek a organické plochy. Přechod z 1.0.0 nevyžaduje novou infrastrukturu; zálohy formátu 1 rozšiřují volitelná pole mapy.
 
+Verze `v1.2.0` přidává dynamickou knihovnu katalogů na Node/Docker, potvrzené ZIP/GitHub instalace a přenosné podklady kampaní. Při přechodu proběhnou dvě SQL migrace a v datovém volume přibude adresář obrázků; [postup](SELF_HOSTING.md#přechod-z-110-na-120).
+
 Před každým vydáním ověř katalogy, generování a založení dobrodružství s PJ i hráčem, export a obnovu existující kampaně a průchod CI přesného commitu. Při zkušebním hraní projdi přechod mezi patry a odhalení připravené Situace. Poznatky zapisuj do issues s označením testované verze. Pokud další vývoj potřebuje předběžné vydání, použij nový prerelease tag; kanál Stable jej nenabídne.
 
 ## Kontrolní postup před vydáním
@@ -30,7 +32,7 @@ Před každým vydáním ověř katalogy, generování a založení dobrodružst
 5. Ověř čistou instalaci i existující testovací kampaň po upgradu, přihlášení hráče/PJ, zálohu JSON, konzistentní SQLite snapshot a návrat předchozí verze. U UI zkontroluj oba role pohledy a mobil. U hlasu proveď zkoušku se skutečnými mikrofony a sítěmi.
 6. Zkontroluj licence nových závislostí a oznámení. Do archivu/repozitáře nepatří testovací přístupy ani skutečné kampaně.
 
-Před prvním vydáním dynamické knihovny projdi [integrační audit katalogů](CATALOG_AUDIT.md). Vedle úspěšné Node sady musí na přesném vydávaném commitu projít také Docker CI; lokální prostředí auditu Docker nemělo. Ověř první instalaci demonstračního katalogu přes skutečný veřejný GitHub zdroj po jeho samostatném schváleném zveřejnění. Dosavadní síťové testy používají řízené odpovědi. Při určení nové verze slaď také `minAppVersion` veřejně vydávaných katalogů s prvním vydáním podporujícím knihovnu.
+Před prvním vydáním dynamické knihovny projdi [integrační audit katalogů](CATALOG_AUDIT.md). Vedle úspěšné Node sady musí na přesném vydávaném commitu projít také Docker CI; lokální prostředí auditu Docker nemělo. Ověř první instalaci demonstračního katalogu přes skutečný veřejný GitHub zdroj po jeho samostatném schváleném zveřejnění. Automatické síťové testy používají řízené odpovědi. Skutečné zveřejnění a instalační zkoušku zaznamenej samostatně v release notes; nepřepisuj tím historické výsledky lokálního auditu. Při určení nové verze slaď také `minAppVersion` veřejně vydávaných katalogů s prvním vydáním podporujícím knihovnu.
 
 ## Publikace
 

@@ -6,6 +6,8 @@ import os from 'node:os';
 import path from 'node:path';
 import {UpdateManager} from '../deploy/updater/manager.mjs';
 import {docker} from '../deploy/updater/docker.mjs';
+import {demoFiles} from './catalog-demo.mjs';
+import {writeZip} from '../server/catalog-zip.mjs';
 const dir=mkdtempSync(path.join(os.tmpdir(),'stul-docker-')),dataDir=path.join(dir,'data'),stateDir=path.join(dir,'state');
 const {mkdirSync}=await import('node:fs');mkdirSync(dataDir);chmodSync(dataDir,0o777);
 const legacySource=process.argv[2];
@@ -47,6 +49,11 @@ try{
  const loginAgain=await fetch(origin+'/admin/api/login',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({password})});
  assert.equal(loginAgain.status,200);
  const adminHeaders={Cookie:loginAgain.headers.get('set-cookie'),Origin:origin,'Content-Type':'application/json'};
+ const catalogPreview=await fetch(origin+'/admin/api/catalogs/preview',{method:'POST',headers:{...adminHeaders,'Content-Type':'application/zip'},body:writeZip(await demoFiles())});assert.equal(catalogPreview.status,200);
+ const catalogInstall=await fetch(origin+'/admin/api/catalogs/install',{method:'POST',headers:adminHeaders,body:JSON.stringify({token:(await catalogPreview.json()).token})});assert.equal(catalogInstall.status,200);
+ const catalogStoryResponse=await fetch(origin+'/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',name:'Docker PJ dolu',adventureId:'opusteny-trpaslici-dul:third-bell'})});assert.equal(catalogStoryResponse.status,200);
+ const catalogStory=await catalogStoryResponse.json();assert.equal(catalogStory.game.monsters.length,3);assert(catalogStory.game.monsters.every(m=>m.portrait.startsWith('data:image/webp;base64,')));
+ const catalogDetails=await (await fetch(origin+'/admin/api/catalogs/view?id=opusteny-trpaslici-dul',{headers:adminHeaders})).json();
  const manualResponse=await fetch(origin+'/admin/api/backups',{method:'POST',headers:adminHeaders,body:'{}'});
  assert.equal(manualResponse.status,201);
  const {name:manual}=await manualResponse.json();
@@ -59,7 +66,11 @@ try{
  assert.equal((await call('/healthz')).revision,newSha);
  assert.equal((await fetch(`${origin}/api/game?room=${game.room}`,{headers:auth})).status,200);
  assert.equal((await fetch(`${origin}/api/game?room=${later.room}`,{headers:{Authorization:`Bearer ${later.token}`}})).status,404);
+ const restoredStoryResponse=await fetch(`${origin}/api/game?room=${catalogStory.room}`,{headers:{Authorization:`Bearer ${catalogStory.token}`}});assert.equal(restoredStoryResponse.status,200);
+ assert.deepEqual((await restoredStoryResponse.json()).monsters,catalogStory.game.monsters,'Catalog campaign and portraits survive real container replacement and snapshot restore.');
+ for(const asset of catalogDetails.bundle.assets)assert.equal((await fetch(`${origin}/catalog-assets/${asset.digest}.webp`)).status,200,'Persistent catalog file survives container replacement.');
  console.log('PASS: real Docker build, updater image/daemon, replacement, persistent campaign, SQLite rollback, failed-image recovery and manual snapshot restore.');
+ console.log('PASS: standalone catalog installation, five-phase adventure and persistent artwork after real Docker snapshot restore.');
 }finally{
  spawnSync('docker',['logs','--tail','25','stul-updater-smoke'],{stdio:'inherit'});
  if(manager?.state.job)console.log(manager.state.job.phase,manager.state.job.logs.join('\n'));

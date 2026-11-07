@@ -6,7 +6,7 @@
 
 Node implementace prošla níže uvedenými integračními scénáři včetně skutečné obnovy do nové instalace. Prokazatelná chyba úplnosti serverových záloh byla reprodukována a opravena. Nebyla nalezena další chyba, která by v testovaných scénářích měnila rozehranou kampaň při aktualizaci nebo odebrání katalogu. To není důkaz absence všech chyb.
 
-**Podmíněná připravenost k prvnímu veřejnému vydání:** lokální Node a Cloudflare kontroly prošly, ale bezpodmínečné schválení release tento audit nedává. Před publikací musí na přesném vydávaném commitu projít Docker CI a skutečný upgrade kontejneru. Lokální prostředí nemá příkaz `docker`; tento krok zde nebyl proveden. Skutečný veřejný GitHub zdroj demonstračního dolu nebyl publikován ani stažen. Jeho přenos se testuje řízenými odpověďmi a společným importérem.
+**Výsledek lokálního auditu před vydáním byl podmíněný:** Node a Cloudflare kontroly prošly; zbývalo Docker CI na přesném vydávaném commitu a skutečná GitHub instalace dema. Lokální prostředí nemá příkaz `docker`. Tato zpráva zachovává původní rozsah lokálních testů; následné ověření při publikaci aplikace 1.2.0 uvádějí [poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.2.0) a připojené výsledky CI. Demo se distribuuje také datovým tagem `catalog-dwarf-mine-v1.0.0`.
 
 ## Rozsah kontroly implementace
 
@@ -90,4 +90,4 @@ V tomto měření je dodatečná práce patrná hlavně při načítání knihov
 
 Nebyl proveden skutečný Docker build/výměna kontejneru ani živá GitHub instalace nového dema. Není otestované maximum 16 plných katalogů, 128 MB příloh, souběžná zátěž mnoha družin, škodlivý lokální správce filesystemu ani dlouhodobý provoz. Audit nenahrazuje penetrační test ani úplný bezpečnostní audit dekodéru obrázků. V tomto kroku neproběhl nový ruční vizuální průchod všemi dialogy a zařízeními. Automatické testy ověřují datové definice a oprávnění, nikoli pixelovou podobu každého obrázku v prohlížeči.
 
-Dynamická knihovna na Cloudflare zůstává nepodporovaná; vestavěný obsah a podklady přenesené v kampani mají deklarovanou podporu. Obnova plné instalace zůstává ruční při zastavené službě. Před skutečným vydáním proveď zbývající kroky z úvodu a [kontrolního postupu](RELEASING.md#kontrolní-postup-před-vydáním). Nic z tohoto auditu nebylo automaticky publikováno.
+Dynamická knihovna na Cloudflare zůstává nepodporovaná; vestavěný obsah a podklady přenesené v kampani mají deklarovanou podporu. Obnova plné instalace zůstává ruční při zastavené službě. Před skutečným vydáním proveď zbývající kroky z úvodu a [kontrolního postupu](RELEASING.md#kontrolní-postup-před-vydáním). V rámci původního lokálního auditu se nic nepublikovalo; následné zveřejnění vydání je samostatný schválený krok.

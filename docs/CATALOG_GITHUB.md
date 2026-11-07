@@ -21,6 +21,10 @@ Přehled zobrazuje zdroj, datum poslední změny obsahu a poslední úspěšné 
 
 V detailu jsou potvrzované **body návratu**. Návrat ověřuje současné závislosti, zachovává připnuté podklady kampaní a nevyžaduje GitHub. Odebrání či zakázání katalogu také vyžaduje potvrzení. Závislý katalog nebo neúplné podklady kampaně mohou akci zablokovat.
 
+## Demonstrační důl
+
+Pro samostatný katalog **Opuštěný trpasličí důl 1.0.0** zadej repozitář `https://github.com/cert4u/u-jednoho-stolu` a revizi `catalog-dwarf-mine-v1.0.0`. Datový tag obsahuje pouze balíček s manifestem v kořeni. Větev `main` tohoto repozitáře je aplikace a jako katalog se neinstaluje. Katalog vyžaduje aplikaci 1.2.0 nebo novější.
+
 ## Jeden importér a lokální úložiště
 
 `server/catalog-github.mjs` zajišťuje pouze distribuci: přeložení revize, omezené stažení a předání bajtů do `prepareCatalogImport`. Veškerá kontrola ZIP, manifestu, obrázků, schémat a odkazů je společná s místním importem v `catalog-pack.mjs`, `catalog-zip.mjs` a `lib/catalogs`. Potvrzení, historie i návrat používají stávající `catalog-store.mjs`.

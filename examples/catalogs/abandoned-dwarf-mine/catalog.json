@@ -6,7 +6,7 @@
   "author": "Autoři projektu U jednoho stolu",
   "license": "MIT",
   "description": "Původní krátká výprava za hlasem zapomenutého čerpadla. Samostatný demonstrační katalog bez obsahových závislostí.",
-  "minAppVersion": "1.1.0",
+  "minAppVersion": "1.2.0",
   "dependencies": [],
   "fileLicenses": {}
 }

@@ -12,12 +12,12 @@ Katalog nevyžaduje jiné obsahové katalogy. Používá existující renderer a
 
 ## Instalace
 
-Vyžaduje Node/Docker verzi aplikace s dynamickou knihovnou katalogů. Funkce vzniká po vydání aplikace 1.1.0; samotné původní vydání 1.1.0 ji ještě neobsahuje. `minAppVersion` je technické minimum současného schématu, nikoli tvrzení o dostupnosti funkce ve starém release.
+Vyžaduje aplikaci **U jednoho stolu 1.2.0 nebo novější** na Node/Docker. Původní vydání aplikace 1.1.0 dynamickou knihovnu neobsahuje.
 
 V administraci importuj ZIP tohoto adresáře a potvrď souhrn. V lobby vyber dobrodružství nebo použij jeho předlohy v bestiáři, generátoru a paletě. Instalovaný katalog funguje bez GitHubu. Originál je pouze pro čtení; vlastní varianty vytvářej kopírováním do svého katalogu.
 
 ## Samostatný GitHub repozitář
 
-Vlož **obsah tohoto adresáře** do kořene vlastního veřejného repozitáře: `catalog.json`, kategorie JSON, `images`, README a LICENSE. Není potřeba přenášet zdrojový kód aplikace ani spouštět build. Uživatelé zadají URL repozitáře v administraci a instalaci potvrdí. Tento příklad se nikam automaticky nepublikuje.
+Vlož **obsah tohoto adresáře** do kořene vlastního veřejného repozitáře: `catalog.json`, kategorie JSON, `images`, README a LICENSE. Není potřeba přenášet zdrojový kód aplikace ani spouštět build. Uživatelé zadají URL repozitáře v administraci a instalaci potvrdí. Oficiální datový tag `catalog-dwarf-mine-v1.0.0` v repozitáři aplikace obsahuje pouze tento katalog. V administraci zvol **Přidat katalog z GitHubu**, adresu `https://github.com/cert4u/u-jednoho-stolu` a revizi `catalog-dwarf-mine-v1.0.0`. Nezadávej `main`: ta obsahuje zdrojový kód aplikace, nikoli samostatný katalog. Stejný obsah je přiložen jako ZIP k vydání aplikace 1.2.0.
 
 Při další verzi zachovej ID katalogu a existujících položek, zvyš `version` v manifestu a ověř všechny odkazy. Nainstalované kampaně zachovávají své použité podklady; nové kampaně mohou použít novou verzi. Licence všech souborů je MIT, autorství uvádí manifest a LICENSE.

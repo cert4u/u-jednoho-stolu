@@ -2,7 +2,7 @@
 
 [Správa instalace](CATALOG_LIBRARY.md) · [Autor katalogu](CATALOG_AUTHOR.md) · [Vývoj](DEVELOPMENT.md) · [GitHub distribuce](CATALOG_GITHUB.md) · [Integrační audit](CATALOG_AUDIT.md)
 
-Tento přehled popisuje implementaci ve vývojové větvi po vydání 1.1.0. Nejde o oznámení již vydané verze.
+Tento přehled popisuje katalogový systém aplikace 1.2.0. Výsledky předchozího integračního auditu a ověření vydání jsou oddělené, aby bylo zřejmé, které kontroly proběhly lokálně a které na CI.
 
 ## Architektura a kompatibilita
 

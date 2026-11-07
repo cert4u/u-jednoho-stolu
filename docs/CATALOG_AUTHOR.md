@@ -38,9 +38,9 @@ Kategorie mohou být prázdné nebo chybět. ZIP může mít jeden společný na
   "author": "Autor katalogu",
   "license": "CC-BY-4.0",
   "description": "Původní příprava pro opuštěné doly.",
-  "minAppVersion": "1.1.0",
+  "minAppVersion": "1.2.0",
   "dependencies": [
-    { "id": "builtin", "minVersion": "1.1.0" }
+    { "id": "builtin", "minVersion": "1.2.0" }
   ],
   "fileLicenses": {
     "images/cave-scout.webp": "CC-BY-4.0",

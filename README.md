@@ -10,7 +10,7 @@
 [![Docker · vlastní hosting](https://img.shields.io/badge/Docker-vlastn%C3%AD%20hosting-2496ED?logo=docker&logoColor=white)](docs/SELF_HOSTING.md)
 [![LiveKit · hlas družiny](https://img.shields.io/badge/LiveKit-hlas%20dru%C5%BEiny-f59e0b)](docs/VOICE.md)
 
-**Verze 1.1.0** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.1.0)
+**Verze 1.2.0** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.2.0)
 
 **Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
 
@@ -24,7 +24,7 @@ Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu�
 
 *Ukázka testovací družiny: PJ vidí celou připravenou mapu, hráči pouze objevená místa. Vpravo je hlasový hovor se zvýrazněným mluvčím.*
 
-Na vývojové větvi je připravená **místní a komunitní knihovna pro Node/Docker**: vlastní katalogy v administraci, přenos ZIP, potvrzená instalace a aktualizace z veřejného GitHubu a přenosné podklady kampaní. [Návod pro správce](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) · [GitHub distribuce](docs/CATALOG_GITHUB.md) · [Integrační audit a demo](docs/CATALOG_AUDIT.md). Jde o změny po vydání 1.1.0; samotný odkaz na poslední release výše tuto funkci neobsahuje.
+**Verze 1.2.0 přidává místní a komunitní knihovnu pro Node/Docker**: vlastní katalogy v administraci, přenos ZIP, potvrzená instalace a aktualizace z veřejného GitHubu a přenosné podklady kampaní. [Návod pro správce](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) · [GitHub distribuce](docs/CATALOG_GITHUB.md) · [Integrační audit a demo](docs/CATALOG_AUDIT.md). Katalogy po instalaci fungují offline; GitHub je pouze volitelný distribuční kanál. [Přechod z 1.1.0](docs/SELF_HOSTING.md#přechod-z-110-na-120).
 
 ## Pro koho je projekt určený
 

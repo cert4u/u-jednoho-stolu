@@ -1,12 +1,14 @@
 # Změny
 
-## Příští vydání
+## 1.2.0 — 2026-11-07
 
 - **Integrační audit katalogů.** Samostatně publikovatelný původní důl (3 příšery, 5 značek, 2 plochy, předloha a dobrodružství s pěti fázemi), opakovatelné měření API, test provozu bez externí sítě a skutečná obnova serverového ZIP do nové instalace. Oprava: tvorba i export úplné zálohy odmítají chybějící nebo poškozené podklady katalogů a historie. Herní mechaniky a generátor V2 se nemění. [Výsledky](docs/CATALOG_AUDIT.md).
 
 - **Dokončení GitHub distribuce katalogů.** Kontrola shodného obsahu bez zbytečné instalace, konkrétní seznam změn a nových závislostí, současný i dostupný commit/otisk, datum změny obsahu oddělené od síťové kontroly (`0002_catalog_updated_at.sql`), české chyby přerušeného stahování a přísnější povolené cesty. Rozšířené řízené síťové a migrační testy. [Návod](docs/CATALOG_GITHUB.md).
 
 - **Decentralizovaná knihovna katalogů.** Node/Docker: vlastní katalogy ve stávající administraci, offline komunitní kopie, bezpečný ZIP, potvrzené GitHub instalace a aktualizace s historií, neměnné jmenné prostory a přenosné podklady kampaní. Bestiář, předlohy dobrodružství/jeskyní a stafáž používají společný resolver. Serverová ZIP záloha zahrnuje také obrázky. Nová migrace `0001_catalog_library.sql`; Cloudflare zachovává vestavěné katalogy a přenosné podklady, dynamická knihovna zde není podporovaná. [Správa](docs/CATALOG_LIBRARY.md) · [Tvorba katalogu](docs/CATALOG_AUTHOR.md).
+
+Přechod z 1.1.0 automaticky aplikuje dvě nové SQL migrace. Zachovej celý datový volume včetně `catalog-assets`. Nové proměnné, změna Compose ani aktualizace updateru nejsou pro tuto verzi potřeba. Úplná serverová záloha zahrnuje SQLite i obrázky; starý přímý SQLite export zůstává databázový. [Postup aktualizace](docs/SELF_HOSTING.md#přechod-z-110-na-120).
 
 ## 1.1.0 — 2026-11-07
 
