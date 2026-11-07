@@ -20,6 +20,7 @@ import {
   SituationOverlay,
   useRoomSituations,
 } from '../components/room-situation';
+import CharacterAvatar from '../components/character-avatar';
 import DungeonMap from '../components/dungeon-map';
 import {
   Swords,
@@ -31,7 +32,6 @@ import {
   Check,
   PenTool,
   X,
-  Shield,
   Flame,
   Star,
   Skull,
@@ -576,9 +576,7 @@ export default function Home() {
                   if (m.id === me.id) setModal('character');
                 }}
               >
-                <span className="member-avatar" style={{ background: m.color }}>
-                  {m.role === 'pj' ? <Shield size={19} /> : m.name.slice(0, 1)}
-                </span>
+                <CharacterAvatar member={m} />
                 <span className="member-info">
                   <strong>
                     {voicePresence[m.id] && (

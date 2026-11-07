@@ -4,6 +4,8 @@
 
 Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
 
+- Družina na hlavní obrazovce zobrazuje miniatury povolání ze stejných ilustrací jako deník.
+
 ## 0.6.0 — 2026-11-06
 
 - **Správa instalace.** Přehled ukazuje služby, velikost databáze, volné místo a snapshoty. Správce může vytvořit a stáhnout ruční zálohu nebo po potvrzení obnovit databázi. Automatická retence je volitelná.

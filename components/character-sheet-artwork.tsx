@@ -3,29 +3,7 @@
 import {useState, type ReactNode} from 'react';
 
 
-const illustrations = new Map([
-  ['Válečník', {file:'warrior-light.webp', description:'v kroužkové zbroji se štítem'}],
-  ['Válečnice', {file:'warrior-woman-light.webp', description:'v kroužkové zbroji se štítem'}],
-  ['Hraničář', {file:'ranger.webp', description:'v zeleném plášti s lukem'}],
-  ['Hraničářka', {file:'ranger-woman.webp', description:'v zeleném plášti s lukem'}],
-  ['Alchymista', {file:'alchemist.webp', description:'s brašnou a lahvičkami'}],
-  ['Alchymistka', {file:'alchemist-woman.webp', description:'s brašnou a lahvičkami'}],
-  ['Kouzelník', {file:'wizard.webp', description:'v dlouhé róbě s holí'}],
-  ['Kouzelnice', {file:'wizard-woman.webp', description:'v dlouhé róbě s holí'}],
-  ['Zloděj', {file:'thief.webp', description:'v tmavém plášti s dýkou'}],
-  ['Zlodějka', {file:'thief-woman.webp', description:'v tmavém plášti s dýkou'}],
-]);
-
-const illustratedProfessions = [...illustrations.keys()];
-
-function normalizeProfession(value: string) {
-  return value.trim().toLocaleLowerCase('cs').normalize('NFC');
-}
-
-function illustratedTitle(value: string) {
-  const key = normalizeProfession(value);
-  return illustratedProfessions.find(name => normalizeProfession(name) === key);
-}
+import { illustratedProfessions, illustratedTitle, professionArtwork } from '../lib/character-artwork';
 
 const customProfession = '__custom';
 
@@ -70,15 +48,14 @@ export default function CharacterSheetArtwork({initialProfession, children}: {
   children: (updateProfession: (value: string) => void) => ReactNode;
 }) {
   const [profession, setProfession] = useState(initialProfession);
-  const title = illustratedTitle(profession);
-  const artwork = title ? illustrations.get(title) : undefined;
+  const artwork = professionArtwork(profession);
 
   return (
     <div className={artwork ? 'character-sheet-illustrated' : undefined}>
       {children(setProfession)}
       {artwork && (
         <figure className="character-sheet-artwork">
-          <img src={`/characters/${artwork.file}`} alt={`${title} ${artwork.description}`} width={720} height={1080}/>
+          <img src={`/characters/${artwork.file}`} alt={`${artwork.title} ${artwork.description}`} width={720} height={1080}/>
         </figure>
       )}
     </div>

@@ -390,3 +390,24 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
   color: var(--ink);
   line-height: 1.5;
 }
+
+/* Portraits share the journal illustrations and keep the character's map color. */
+.member-avatar.character-avatar {
+  position: relative;
+  width: 42px;
+  height: 48px;
+  border: 1px solid var(--portrait-color);
+  background: #f7f0e3;
+  overflow: hidden;
+  box-shadow: 0 1px 3px #5a442316;
+}
+.character-avatar img {
+  position: absolute;
+  width: 185%;
+  max-width: none;
+  height: auto;
+  left: 50%;
+  top: -1px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
