@@ -1,3 +1,4 @@
+import { storyOutlineView } from '../../../lib/story-outline';
 import { sessionRecapView } from '../../../lib/session-recap';
 import { generationState } from '../../../lib/generation';
 import { lifeView } from '../../../lib/life';
@@ -39,6 +40,7 @@ export function gameView(
     title: g.title,
     scene: g.scene,
     experienceAwards: g.experienceAwards,
+    ...(pj ? { storyOutline: storyOutlineView(g, me) } : {}),
     sessionRecap: sessionRecapView(g, pj),
     ...(pj
       ? { generation: generationState(g), generationRuns: generationRuns || [] }

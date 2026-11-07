@@ -73,6 +73,10 @@ Na každém patře vznikne šest kandidátů se samostatnými deterministickými
 
 Tři tlačítka variant zachovávají seed a mění index varianty; návrhy se počítají jednotlivě. Nemáme formální párovou metriku minimální odlišnosti těchto tří variant. Větší sada seedů a variant se liší skutečným půdorysem i topologií, ale neslibujeme unikátní mapu pro každý možný seed. Počet kandidátů, PRNG, routing a váhy jsou součástí verze algoritmu; změna výstupu vyžaduje nové verzování nebo vědomé řešení kompatibility.
 
+## Vzhled náhledu
+
+Náhled i herní plátno používají společné renderery pro klasický a ručně kreslený vzhled. Volba **Kresba** sdílí místní preferenci prohlížeče; nepřepočítává kandidáty ani nemění variantu nebo patro. Čísla a hlavní trasa zůstávají pomůckou PJ, cílová místnost má výrazný okrový kroužek. V1 používá univerzální rukopis, platná V2 metadata rukopis příslušného prostředí. [Podrobnosti a srovnání](MAP_APPEARANCE.md).
+
 ## Označení a inspekce místností
 
 Nové vložení V1/V2 vytváří v `Game.mapNotes` pro každou místnost soukromou značku s číslem a názvem. `roomLabelPoint` vybírá podlahu místnosti mimo schody/vstupy; stejná poloha čísla se používá v náhledu. Nejde o automatické generování herního obsahu a značky se započítávají do limitu 200 poznámek. Staré mapy se nedoplňují migrací. Poznámka má vlastní stabilní ID; její číslo ani přesunutí nemění ID logické místnosti generátoru.

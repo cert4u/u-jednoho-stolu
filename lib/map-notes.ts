@@ -1,3 +1,4 @@
+import {pruneStoryLinks} from './story-outline';
 import type {Game,Member} from './game';
 import {cellKey,dungeonFor,type Dungeon} from './dungeon';
 import {getLevel} from './exploration';
@@ -53,7 +54,7 @@ export function mapNoteAction(g:Game,actor:Member,b:Record<string,unknown>){
    if(notes.some(n=>n.id!==note.id&&n.levelId===note.levelId&&n.x===b.toX&&n.y===b.toY))throw new Error('Na cílovém políčku už je jiné místo.');
    note.x=b.toX;note.y=b.toY;note.revision++;
   }else if(b.op==='unpublish'){delete note.published;note.revision++;}
-  else if(b.op==='remove')g.mapNotes=notes.filter(n=>n.id!==note.id);
+  else if(b.op==='remove'){g.mapNotes=notes.filter(n=>n.id!==note.id);pruneStoryLinks(g);}
   else throw new Error('Neznámá akce poznámky.');
  }
  if(g.mapNoteAlerts)g.mapNoteAlerts=g.mapNoteAlerts.filter(alert=>g.mapNotes?.some(n=>n.id===alert.noteId&&n.notify!==false));

@@ -1,5 +1,6 @@
+import { useId, useMemo } from 'react';
 import type { RefObject } from 'react';
-import { cellKey, edgeCells, wallEdges, type Dungeon } from '../../lib/dungeon';
+import { cellKey, wallEdges, type Dungeon } from '../../lib/dungeon';
 import type { ExplorationView, Location } from '../../lib/exploration';
 import type { MonsterView } from '../../lib/monsters';
 import type { MapNoteView, NoteAnchor } from '../../lib/map-notes';
@@ -11,10 +12,14 @@ import {
   SIZE,
   PAD,
   PAPER_MARGIN,
-  edgeVertices,
   type Tool,
   type Marker,
 } from './model';
+import { StairSymbol } from './renderers/symbols';
+import { ClassicSurface, ClassicWall } from './renderers/classic';
+import { HandDrawnSurface } from './renderers/hand-drawn';
+import { buildInkDrawing } from './drawing/geometry';
+import type { MapAppearance } from './use-map-appearance';
 import type { useMapInput } from './use-map-input';
 
 type CanvasInput = Pick<
@@ -39,6 +44,7 @@ type CanvasInput = Pick<
 };
 
 type CanvasProps = {
+  appearance: MapAppearance;
   input: CanvasInput;
   map: {
     shown: Dungeon;
@@ -60,69 +66,9 @@ type CanvasProps = {
   selectedMonster: string;
 };
 
-function Wall({
-  edge,
-  kind,
-  opacity = 1,
-  ghost = false,
-  open = false,
-}: {
-  edge: string;
-  open?: boolean;
-  kind: 'wall' | 'door';
-  opacity?: number;
-  ghost?: boolean;
-}) {
-  const [a, b] = edgeVertices(edge);
-  const x = PAD + a[0] * SIZE,
-    y = PAD + a[1] * SIZE,
-    horizontal = a[1] === b[1];
-  return (
-    <g
-      opacity={opacity}
-      data-map-edge={ghost ? undefined : edge}
-      data-edge-kind={kind}
-      pointerEvents="none"
-    >
-      <line
-        x1={x}
-        y1={y}
-        x2={PAD + b[0] * SIZE}
-        y2={PAD + b[1] * SIZE}
-        stroke={ghost ? '#87956e' : '#565648'}
-        strokeWidth={ghost ? 2 : 2.6}
-        strokeLinecap="square"
-      />
-      {kind === 'door' && (
-        <g transform={`translate(${x},${y}) rotate(${horizontal ? 0 : 90})`}>
-          <rect x="6" y="-4" width="24" height="8" fill="#faf7e9" />
-          <rect
-            transform={open ? 'rotate(55 7 -3)' : undefined}
-            x="7"
-            y="-3"
-            width="22"
-            height="6"
-            fill="#f0ead4"
-            stroke="#67634e"
-            strokeWidth="1.5"
-          />
-          <line
-            transform={open ? 'rotate(55 7 -3)' : undefined}
-            x1="10"
-            x2="26"
-            y1="0"
-            y2="0"
-            stroke="#9f987c"
-            strokeWidth=".7"
-          />
-        </g>
-      )}
-    </g>
-  );
-}
-
 export default function MapCanvas({
   input,
+  appearance,
   map,
   busy,
   exploration,
@@ -154,6 +100,22 @@ export default function MapCanvas({
     keyAction,
     svg,
   } = input;
+  const uniqueId = useId().replace(/:/g, '');
+  const drawingKey = JSON.stringify([
+    [...shown.floors].sort(),
+    Object.entries(shown.edges).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0),
+    shown.generation ?? null,
+    shown.access ?? null, shown.stairMarks ?? null,
+    [...revealed].sort(), [...lit].sort(), visible, Boolean(exploration?.enabled),
+  ]);
+  const drawing = useMemo(
+    () => appearance === 'hand-drawn'
+      ? buildInkDrawing(shown, revealed, lit, visible, Boolean(exploration?.enabled))
+      : undefined,
+    // A canonical content key keeps polling clones and pointer updates out of this calculation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [appearance, drawingKey],
+  );
   const ghostEdges =
     stroke && tool === 'wall'
       ? stroke.points.slice(1).flatMap((p, i) => wallEdges(stroke.points[i], p))
@@ -171,7 +133,7 @@ export default function MapCanvas({
   return (
     <svg
       ref={svg}
-      className="graph-paper"
+      className={`graph-paper ${appearance}`}
       width={WIDTH * zoom}
       height={HEIGHT * zoom}
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -196,24 +158,6 @@ export default function MapCanvas({
               : 'crosshair',
       }}
     >
-      <defs>
-        <pattern
-          id="squared-paper"
-          width={SIZE}
-          height={SIZE}
-          patternUnits="userSpaceOnUse"
-          x={PAD}
-          y={PAD}
-        >
-          <path
-            d={`M ${SIZE} 0 L 0 0 0 ${SIZE}`}
-            fill="none"
-            stroke="#99aebc"
-            strokeOpacity=".32"
-            strokeWidth=".8"
-          />
-        </pattern>
-      </defs>
       <rect width={WIDTH} height={HEIGHT} fill="transparent" />
       <rect
         x={PAD}
@@ -245,45 +189,19 @@ export default function MapCanvas({
           {y + 1}
         </text>
       ))}
-      {shown.floors.map((k) => {
-        const [x, y] = k.split(',').map(Number);
-        return (
-          <rect
-            key={k}
-            data-map-floor={k}
-            x={PAD + x * SIZE + 1}
-            y={PAD + y * SIZE + 1}
-            width={SIZE - 2}
-            height={SIZE - 2}
-            fill={revealed.has(k) ? '#ded3ae' : '#bcc1ad'}
-            opacity={
-              exploration?.enabled && visible && !lit.has(k)
-                ? 0.06
-                : revealed.has(k)
-                  ? 0.2
-                  : 0.13
-            }
-            pointerEvents="none"
-          />
-        );
-      })}
-      {Object.entries(shown.edges).map(([key, kind]) => (
-        <Wall
-          key={key}
-          edge={key}
-          kind={kind}
-          open={shown.openDoors?.includes(key)}
-          opacity={
-            exploration?.enabled &&
-            visible &&
-            !edgeCells(key).some((k) => lit.has(k))
-              ? 0.3
-              : visible || edgeCells(key).some((k) => revealed.has(k))
-                ? 1
-                : 0.25
-          }
+      {drawing ? (
+        <HandDrawnSurface
+          drawing={drawing}
+          id={uniqueId}
+          shown={shown}
+          revealed={revealed}
+          lit={lit}
+          visible={visible}
+          exploring={Boolean(exploration?.enabled)}
         />
-      ))}
+      ) : (
+        <ClassicSurface shown={shown} revealed={revealed} lit={lit} visible={visible} exploring={Boolean(exploration?.enabled)} />
+      )}
       {area && (
         <rect
           x={PAD + area.x * SIZE}
@@ -299,7 +217,7 @@ export default function MapCanvas({
         />
       )}
       {ghostEdges.map((k) => (
-        <Wall key={'ghost' + k} edge={k} kind="wall" ghost />
+        <ClassicWall key={'ghost' + k} edge={k} kind="wall" ghost />
       ))}
       {stroke &&
         (tool === 'floor' || tool === 'subtract') &&
@@ -403,15 +321,7 @@ export default function MapCanvas({
                     ? 'dolů'
                     : 'oběma směry'}
               </title>
-              <path
-                d="M1 25H7V19H13V13H19V7H25"
-                fill="none"
-                stroke="#877a56"
-                strokeWidth="1.8"
-              />
-              <text x="22" y="24" fontSize="15" fill="#877a56">
-                {direction === 'up' ? '↑' : direction === 'down' ? '↓' : '↕'}
-              </text>
+              <StairSymbol direction={direction} appearance={appearance} />
             </g>
           );
         })}
@@ -648,18 +558,18 @@ export default function MapCanvas({
               {number ? (
                 <>
                   <circle
-                    r="13"
+                    r={appearance === 'hand-drawn' ? 14 : 13}
                     fill="#faf6e7"
-                    stroke="#77705d"
+                    stroke={appearance === 'hand-drawn' ? '#493e2e' : '#77705d'}
                     strokeWidth="1.2"
                     strokeDasharray={!n.shared ? '3 2' : undefined}
                   />
                   <text
                     y="4"
                     textAnchor="middle"
-                    fontSize="12"
+                    fontSize={appearance === 'hand-drawn' ? 16 : 12}
                     fontFamily="Georgia,serif"
-                    fill="#555140"
+                    fill={appearance === 'hand-drawn' ? '#352e25' : '#555140'}
                     pointerEvents="none"
                   >
                     {number}

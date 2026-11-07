@@ -1,3 +1,4 @@
+import { saveStoryOutline } from '../../../lib/story-outline';
 import { saveSessionRecap } from '../../../lib/session-recap';
 import { generationAction } from '../../../lib/generation';
 import { lifeAction } from '../../../lib/life';
@@ -364,6 +365,11 @@ export async function applyGameAction(
           e instanceof EditConflict ? 409 : 400,
         );
       }
+      break;
+    case 'story-outline':
+      if (!pj) return fail('Příběhová osnova je pouze pro PJ.', 403);
+      try { saveStoryOutline(g, me, b); }
+      catch (error) { return fail(error instanceof Error ? error.message : 'Osnovu se nepodařilo uložit.', error instanceof EditConflict ? 409 : 400); }
       break;
     case 'session-recap':
       if (!pj) return fail('Zápis ze sezení upravuje pouze PJ.', 403);

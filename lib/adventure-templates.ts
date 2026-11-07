@@ -1,3 +1,4 @@
+import { storyPhaseSchema } from './story-phases';
 import { z } from 'zod';
 import catalog from '../content/adventures/index';
 import { parseCatalog, contentId } from './content-schema';
@@ -10,7 +11,7 @@ const roomSchema = z
     floor: z.number().int().min(1).max(8),
     role: z.enum(['entrance', 'goal']).optional(),
     roomId: contentId.optional(),
-    phase: z.enum(['entrance-obstacle', 'challenge', 'complication', 'climax', 'resolution']).optional(),
+    phase: storyPhaseSchema.optional(),
     title: z.string().trim().min(1).max(60),
     playerText: z.string().trim().max(2000),
     gmNotes: z.string().trim().max(3000),

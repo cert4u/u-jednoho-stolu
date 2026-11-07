@@ -59,7 +59,7 @@ export default function Lobby({
     <main className="lobby">
       <div className="lobby-nav">
         <span className="brand">
-          <Swords /> U jednoho stolu<span className="badge">MVP</span>
+          <Swords /> U jednoho stolu
         </span>
         <span>Malá aplikace. Velká dobrodružství.</span>
       </div>

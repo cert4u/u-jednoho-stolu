@@ -8,12 +8,14 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | --- | --- |
 | Zájemce o projekt | [Představení a první hra](../README.md) |
 | Hráč a Pán jeskyně | [Herní příručka](PLAYING.md) |
+| Příprava příběhu | [Příběhová osnova a komunitní ukázka](STORY_OUTLINE.md) |
 | Návrh dalších mechanik | [Audit herního základu a priority](MECHANICS.md) |
 | Správce serveru | [Docker, konfigurace, zálohy a aktualizace](SELF_HOSTING.md) |
 | Správce hlasového hovoru | [LiveKit: lokální a veřejné nasazení](VOICE.md) |
 | Uživatel, kterému něco nefunguje | [Řešení problémů](TROUBLESHOOTING.md) |
 | Vývojář | [Runtime, architektura, data a testy](DEVELOPMENT.md) |
 | Autor generátoru | [Generátor V2: audit, model, invarianty a benchmark](GENERATOR_V2.md) |
+| Autor vzhledu mapy | [Renderery, deterministická kresba a srovnání](MAP_APPEARANCE.md) |
 | Autor integrace | [Interní HTTP API a oprávnění](API.md) |
 | Správce projektu | [Audit komunitní připravenosti](COMMUNITY_AUDIT.md) |
 | Přispěvatel | [Jak přispívat](../CONTRIBUTING.md) |

@@ -1,6 +1,8 @@
 'use client';
 import { useRef, useState } from 'react';
-import { roomLabelPoint } from '../lib/room-labels';
+import GeneratorPreviewMap from './generator-preview-map';
+import { useMapAppearance } from './dungeon-map/use-map-appearance';
+import MapAppearanceControl from './dungeon-map/renderers/appearance-control';
 import { generateDungeon } from '../lib/dungeon-generator';
 import {
   defaultDungeonPreset,
@@ -11,7 +13,6 @@ import { generatorLimits, maxGeneratorRooms } from '../lib/generator-options';
 import type {
   GeneratedDungeon,
   GeneratorOptions,
-  RoomRole,
 } from '../lib/generator-types';
 import type { GenerationState } from '../lib/generation';
 const styleLabels = {
@@ -24,164 +25,6 @@ const styleDescriptions = {
   mine: 'Protáhlé pracovní prostory a větvené štoly.',
   cave: 'Nepravidelné síně a úzká přírodní propojení.',
 } as const;
-const roles: Record<RoomRole, string> = {
-  entrance: 'vstupní místnost',
-  room: 'místnost',
-  junction: 'křižovatka',
-  'dead-end': 'slepá odbočka',
-  chamber: 'významná komnata',
-  goal: 'cílová místnost',
-};
-function PreviewMap({
-  draft,
-  level,
-}: {
-  draft: GeneratedDungeon;
-  level: number;
-}) {
-  const floor = draft.floors[level];
-  return (
-    <svg
-      className="generator-map"
-      viewBox="0 0 280 200"
-      role="img"
-      aria-label={`Náhled: ${floor.name}, ${floor.rooms.length} místností`}
-    >
-      <defs>
-        <pattern
-          id="generator-grid"
-          width="10"
-          height="10"
-          patternUnits="userSpaceOnUse"
-        >
-          <path d="M10 0H0V10" fill="none" stroke="#a6b2a5" strokeWidth=".3" />
-        </pattern>
-      </defs>
-      <rect width="280" height="200" fill="#faf5e5" />
-      <rect width="280" height="200" fill="url(#generator-grid)" />
-      {floor.map.floors.map((key) => {
-        const [x, y] = key.split(',').map(Number);
-        return (
-          <rect
-            key={key}
-            x={x * 10}
-            y={y * 10}
-            width="10"
-            height="10"
-            fill="#eee7cf"
-          />
-        );
-      })}
-      {floor.rooms.map((room, i) => {
-        const label = roomLabelPoint(room, floor.map);
-        return (
-          <g key={room.id || i}>
-            <title>{`Místnost ${i + 1}${room.role ? ' · ' + roles[room.role] : ''}`}</title>
-            {room.cells ? (
-              room.cells.map((key) => {
-                const [x, y] = key.split(',').map(Number);
-                return (
-                  <rect
-                    key={key}
-                    x={x * 10}
-                    y={y * 10}
-                    width="10"
-                    height="10"
-                    fill={room.mainPath ? '#90a279' : '#c5b77d'}
-                    opacity=".16"
-                  />
-                );
-              })
-            ) : (
-              <rect
-                x={room.x * 10}
-                y={room.y * 10}
-                width={room.width * 10}
-                height={room.height * 10}
-                fill="#c5b77d"
-                opacity=".12"
-              />
-            )}
-            <text
-              x={label[0] * 10 + 5}
-              y={label[1] * 10 + 6.5}
-              textAnchor="middle"
-              fontSize="5"
-              fill={room.mainPath ? '#3e6343' : '#776b4b'}
-            >
-              {i + 1}
-            </text>
-            {room.role === 'goal' && (
-              <circle
-                cx={label[0] * 10 + 5}
-                cy={label[1] * 10 + 5}
-                r="4"
-                fill="none"
-                stroke="#9b7140"
-                strokeWidth=".6"
-              />
-            )}
-          </g>
-        );
-      })}
-      {Object.entries(floor.map.edges).map(([edge, type]) => {
-        const [axis, x, y] = edge.split(':'),
-          a = Number(x) * 10,
-          b = Number(y) * 10;
-        return (
-          <g key={edge}>
-            <title>{type === 'door' ? 'Dveře' : 'Zeď'}</title>
-            <path
-              d={axis === 'h' ? `M${a} ${b}h10` : `M${a} ${b}v10`}
-              stroke={type === 'door' ? '#a57338' : '#585544'}
-              strokeWidth={type === 'door' ? '1.7' : '.8'}
-              strokeDasharray={type === 'door' ? '2 1' : undefined}
-            />
-          </g>
-        );
-      })}
-      {Object.entries(floor.map.stairMarks || {}).map(([key, direction]) => {
-        const [x, y] = key.split(',').map(Number);
-        return (
-          <text
-            key={key}
-            x={x * 10 + 5}
-            y={y * 10 + 7}
-            fontSize="8"
-            textAnchor="middle"
-            fill="#52704d"
-          >
-            {direction === 'up' ? '↑' : direction === 'down' ? '↓' : '↕'}
-          </text>
-        );
-      })}
-      {Object.entries(floor.map.access || {}).map(
-        ([kind, p]) =>
-          p && (
-            <g key={kind}>
-              <circle
-                cx={p[0] * 10 + 5}
-                cy={p[1] * 10 + 5}
-                r="4"
-                fill="#faf5e5"
-                stroke={kind === 'entrance' ? '#52704d' : '#a56e3e'}
-                strokeWidth=".8"
-              />
-              <text
-                x={p[0] * 10 + 5}
-                y={p[1] * 10 + 7}
-                textAnchor="middle"
-                fontSize="5"
-                fill="#52704d"
-              >
-                {kind === 'entrance' ? 'V' : 'E'}
-              </text>
-            </g>
-          ),
-      )}
-    </svg>
-  );
-}
 export default function GeneratorPanel({
   state,
   busy,
@@ -191,6 +34,7 @@ export default function GeneratorPanel({
   busy: boolean;
   onApply: (values: Record<string, unknown>) => Promise<unknown>;
 }) {
+  const [appearance, setAppearance] = useMapAppearance();
   const [options, setOptions] = useState<GeneratorOptions>(() => ({
     ...defaultDungeonPreset.options,
     levels: Math.min(defaultDungeonPreset.options.levels, state.available || 1),
@@ -526,24 +370,27 @@ export default function GeneratorPanel({
               ))}
             </div>
           )}
-          <label>
-            Prohlédnout patro
-            <select
-              value={level}
-              disabled={locked}
-              onChange={(e) => setLevel(Number(e.target.value))}
-            >
-              {draft.floors.map((floor, i) => (
-                <option value={i} key={i}>
-                  {floor.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <PreviewMap draft={draft} level={level} />
+          <div className="generator-preview-controls">
+            <label>
+              Prohlédnout patro
+              <select
+                value={level}
+                disabled={locked}
+                onChange={(e) => setLevel(Number(e.target.value))}
+              >
+                {draft.floors.map((floor, i) => (
+                  <option value={i} key={i}>
+                    {floor.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <MapAppearanceControl appearance={appearance} onChange={setAppearance} label="Vzhled náhledu" />
+          </div>
+          <GeneratorPreviewMap floor={draft.floors[level]} appearance={appearance} />
           {metadata && (
             <p className="generator-topology">
-              Zvolený cíl je označen kroužkem. Hlavní trasa:{' '}
+              Cílová místnost má výrazný okrový kroužek. Hlavní trasa:{' '}
               {metadata.metrics.mainPathLength} místností · slepé odbočky:{' '}
               {deadEnds} · alternativní propojení: {metadata.metrics.loops}.
               Zelená čísla označují hlavní trasu.
@@ -552,8 +399,8 @@ export default function GeneratorPanel({
           <p className="sheet-hint">
             Pater: {draft.floors.length} · místností na patro:{' '}
             {draft.options.rooms} · schodišť mezi patry: {draft.stairs.length}.
-            Šipky označují schody, V vchod a E samostatný východ. Okrové
-            čárkované hrany jsou dveře. Čísla a trasa slouží jen přípravě PJ.
+            Schody mají šipku směru, V označuje vchod a E samostatný východ.
+            Obdélníkové značky v hranách jsou dveře. Čísla a trasa slouží jen přípravě PJ.
           </p>
           <p className="generator-placement">
             {state.reuseEmpty

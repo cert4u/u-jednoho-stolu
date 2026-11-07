@@ -236,7 +236,7 @@ export default function Home() {
     else action();
   }
   function openNoteAlert(
-    alert: MapNoteAlertView,
+    alert: Pick<MapNoteAlertView, 'noteId' | 'levelId' | 'levelName'> & {id?: string},
     opened: () => void,
     target?: EncounterTarget,
   ) {
@@ -820,6 +820,10 @@ export default function Home() {
           openLife={openLife}
           openLoot={openLoot}
           openChallenges={openChallenges}
+          openStoryPlace={id => {
+            const place = game.storyOutline?.places.find(item => item.id === id);
+            if (place) openNoteAlert({ noteId: id, levelId: place.levelId, levelName: place.levelName }, () => {});
+          }}
           locateRecap={locateRecap}
           placeMonster={placeMonster}
           openRoll={openRoll}

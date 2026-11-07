@@ -42,7 +42,7 @@ Pomocí `npm run content:rooms -- cave` vypiš ID a role místností pro předlo
 }
 ```
 
-Volitelné `phase` slouží autorovi jako značka pro vstupní překážku (`entrance-obstacle`), výzvu (`challenge`), komplikaci (`complication`), vyvrcholení (`climax`) nebo rozuzlení (`resolution`). Fáze mohou chybět či se opakovat. Aplikace podle nich neřídí průběh příběhu.
+Volitelné `phase` slouží autorovi jako značka pro vstupní překážku (`entrance-obstacle`), výzvu (`challenge`), komplikaci (`complication`), vyvrcholení (`climax`) nebo rozuzlení (`resolution`). Fáze mohou chybět či se opakovat. Při založení hry se z nich sestaví soukromá [Příběhová osnova](STORY_OUTLINE.md), propojená se všemi odpovídajícími poznámkami. Aplikace podle nich neřídí průběh příběhu. Úplný příklad s osmi místnostmi je [Dům vypůjčeného světla](../content/adventures/dum-svetla.json).
 
 Příšery obsazují volná podlahová políčka v půdorysu místnosti. Schody, vchod, východ a značky poznámek zůstanou volné. Pokud místo dojde, přebytečné příšery najde PJ v seznamu a může je rozmístit ručně.
 

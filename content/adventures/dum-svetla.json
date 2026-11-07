@@ -1,0 +1,50 @@
+{
+  "id": "dum-svetla",
+  "title": "Dům vypůjčeného světla",
+  "scene": "Schody pod zhaslou obecní lucernou",
+  "summary": "Osm komnat pod starou lucernou skrývá dohodu, díky které vesnice přežila krutou zimu. Světlo lze vrátit i bez jediného boje.",
+  "gmNotes": "Lucerna si na zimní měsíce půjčovala drobné vzpomínky obyvatel. Správkyně Irena teď odmítá smlouvu prodloužit, dokud se vesnice sama nerozhodne, zda jí taková cena stojí za to. Nikdo tu není povinný protivník. Pořadí fází je pomůcka PJ; stopy lze přenášet a dohoda může vzniknout kdekoli. Družina může vrátit vzpomínky, najít jiný zdroj světla nebo veřejně vyjednat novou smlouvu.",
+  "dungeonPreset": "lucerna",
+  "rooms": [
+    {
+      "floor": 1, "roomId": "v2-l0-r0", "phase": "entrance-obstacle", "title": "Vrátnice bez plamene",
+      "playerText": "Mříž vrhá stín, přestože za ní nic nesvítí. Z měděné trubky zazní: Koho hledáte a co pro něj nesete?",
+      "gmNotes": "Vrátný automat přijme pravdivý důvod návštěvy, světlo obyčejné svíčky nebo pomoc s ulomenou klikou. Lze také mříž vypáčit; hluk pouze přivolá Irenu k rozhovoru. Na stole leží pozvánka pro zástupce vesnice."
+    },
+    {
+      "floor": 1, "roomId": "v2-l0-r1", "phase": "challenge", "title": "Rozdělené zrcadlo",
+      "playerText": "Tři kovová zrcadla odrážejí světlo, které nevidíte. Na podlaze jsou otisky po posouvání podstavců.",
+      "gmNotes": "Srovnání zrcadel ukáže cestu k zásobníku. Pomůže pokus s lucernou, uhlová kresba na stěně nebo rada ze sousední dílny. Žádný chybný pokus cestu nezablokuje."
+    },
+    {
+      "floor": 1, "roomId": "v2-l0-r2", "phase": "challenge", "title": "Dílna ochotných rukou",
+      "playerText": "Na ponku leží rozebraný světlovod. Vedle šálku vychladlého čaje je nedokončený dopis obyvatelům vesnice.",
+      "gmNotes": "Dopis vysvětluje zrcadla. Oprava světlovodu přivede trochu denního světla a nabízí řešení bez dalšího půjčování vzpomínek. Nářadí lze nahradit výbavou družiny; potřebný čas určí PJ."
+    },
+    {
+      "floor": 1, "roomId": "v2-l0-r3", "phase": "complication", "title": "Sklenice s cizím létem",
+      "playerText": "V lahvičkách místo tekutiny září obrazy: pole před žněmi, dětská houpačka, tvář člověka u okna.",
+      "gmNotes": "Jsou to zapůjčené vzpomínky, ne duše. Uvolněním každé se vzpomínka vrátí majiteli a lucerna o trochu zeslábne. Prázdná lahvička může odnést vzkaz; rozbití nezpůsobí zranění ani ztrátu vzpomínky."
+    },
+    {
+      "floor": 1, "roomId": "v2-l0-r4", "phase": "complication", "title": "Kniha dobrovolných darů",
+      "playerText": "Staré podpisy střídají mnohem novější křížky. Poslední stránka je prázdná a uprostřed ní leží klíč.",
+      "gmNotes": "První dary byly dobrovolné, později obecní rada přestala vysvětlovat cenu. Klíč otevírá zásobník, ale není jedinou cestou k dohodě. Irena se nechce rozhodnout za obyvatele ani za družinu."
+    },
+    {
+      "floor": 1, "roomId": "v2-l0-r5", "phase": "climax", "title": "Správkyně poslední jiskry",
+      "playerText": "Žena v zaprášené zástěře drží mezi dlaněmi drobný plamen. Můžu jej zapálit znovu, říká, ale tentokrát chci slyšet, kdo tu cenu zaplatí.",
+      "gmNotes": "Irena nabídne rozhovor, ne ultimátum. Družina může vrátit vzpomínky a opravit světlovod, vyjednat dočasné dobrovolné dary nebo přinést jiný zdroj světla. Útok ji přiměje chránit lahvičky a ustoupit; nepromění ji v povinného bosse."
+    },
+    {
+      "floor": 1, "roomId": "v2-l0-r6", "phase": "resolution", "title": "Okno nad návsí",
+      "playerText": "Za úzkým oknem je slyšet vesnici. Někdo venku začal zpívat písničku, jejíž poslední sloku si léta nepamatoval.",
+      "gmNotes": "Popiš důsledek rozhodnutí družiny: vracející se vzpomínky, slabší světlo nebo první denní paprsek. Obyvatelé mohou poděkovat prací, zásobami či opravou výbavy. Odměnu určí PJ podle dohody."
+    },
+    {
+      "floor": 1, "roomId": "v2-l0-r7", "phase": "resolution", "title": "Zásilka z druhého břehu",
+      "playerText": "Mezi prázdnými obaly čeká balíček bez adresáta. Uvnitř je stejná skleněná lahvička, tentokrát s obrazem neznámého přístavu.",
+      "gmNotes": "Lahvičku poslala jiná správkyně se žádostí o pomoc. Družina si může vybrat, zda další dům navštíví, vzkaz předá nebo zůstane ve vesnici. Nová výprava není podmínkou uzavření tohoto příběhu."
+    }
+  ]
+}

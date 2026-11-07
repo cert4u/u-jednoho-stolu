@@ -3,6 +3,9 @@ import { validateGeneratedFloor } from '../generator-validation';
 import type { BackupCampaign } from './campaign-schema';
 
 export function validateCampaign(campaign: BackupCampaign) {
+  const noteIds = new Set((campaign.mapNotes ?? []).map(note => note.id));
+  if (Object.values(campaign.storyOutline?.phases ?? {}).some(beat => beat.noteIds.some(id => !noteIds.has(id))))
+    throw new Error('Příběhová osnova odkazuje na neexistující místo.');
   const memberIds = new Set(campaign.members.map((member) => member.id));
   validateJourney(campaign);
   validateParty(campaign, memberIds);

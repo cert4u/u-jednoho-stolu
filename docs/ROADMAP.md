@@ -6,6 +6,8 @@ Zaškrtnuté položky jsou implementované v hlavní větvi `main`, ne nutně so
 
 Pořadí je návrh a může se změnit podle skutečného hraní. Hlavní zásada: jednoduchost ovládání a spolehlivost mají přednost před počtem pravidel.
 
+- [x] Klasický a kreslený vzhled mapy, společné renderery herní plochy a generátoru.
+- [x] Soukromá příběhová osnova PJ s vazbami na mapové poznámky a komunitními fázemi.
 - [ ] Krátké testovací dobrodružství s celou partou a opravy podle jeho průběhu.
 - [x] Jednoduchá iniciativa, číslo kola a aktuální účastník souboje; nezávisle na pochodovém pořadí.
 - [x] Číslované a pojmenované místnosti, přesouvání značek, automatické označení nových generovaných pater a seznam míst.

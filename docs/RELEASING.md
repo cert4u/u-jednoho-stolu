@@ -13,11 +13,11 @@ Tento postup je pro správce projektu. Repozitář má CI, ale nemá automatick�
 
 Pokud má provozovatel novější vývojový commit než zveřejněný release, automatická aktualizace není bezpečnou zkratkou k „nejnovějším funkcím“. Vždy zkontroluj nabízený release a jeho změny.
 
-## Alfa vydání
+## Stabilní řada 1.0
 
-Kandidát řady 0.9 se označuje jako `v0.9.0-alpha.1` a publikuje jako GitHub prerelease po kontrole přesného commitu. Pro rychlou zkoušku použij [místní vývojový stůl](DEVELOPMENT.md#první-změna-na-místním-stole), pro zkoušku provozu samostatný server a vlastní kopii databáze. Správa instalace dál nabízí stabilní vydání.
+První vydání této řady je `v1.0.0`. Obsahuje kreslené mapy, sjednocený generátor a soukromou příběhovou osnovu. Původně plánovaný kandidát `0.9.0-alpha.1` nebyl publikovaný; výsledkem je stabilní 1.0.0. Další opravy mají nové patch číslo, rozšíření nové minor číslo. Již publikovaný tag se nemění.
 
-Před publikací ověř katalogy, generování a založení dobrodružství s PJ i hráčem, export a obnovu existující kampaně a průchod CI. Při zkušebním hraní projdi také přechod mezi patry a odhalení připravené Situace. Poznatky z alfy zapisuj do issues s označením testované verze.
+Před každým vydáním ověř katalogy, generování a založení dobrodružství s PJ i hráčem, export a obnovu existující kampaně a průchod CI přesného commitu. Při zkušebním hraní projdi přechod mezi patry a odhalení připravené Situace. Poznatky zapisuj do issues s označením testované verze. Pokud další vývoj potřebuje předběžné vydání, použij nový prerelease tag; kanál Stable jej nenabídne.
 
 ## Kontrolní postup před vydáním
 

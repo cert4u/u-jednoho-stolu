@@ -2,9 +2,17 @@
 
 ## Příští vydání
 
-Vývojová větev `main` používá označení `0.9.0-alpha.1`. Pro běžné hraní použij poslední stabilní vydání.
+## 1.0.0 — 2026-11-07
+
+První stabilní vydání řady 1.0 pro vlastní herní družinu.
 
 - Družina na hlavní obrazovce zobrazuje miniatury povolání ze stejných ilustrací jako deník.
+- Mapa nabízí místní přepínač **Klasický / Ručně kreslený**: inkoustové kontury, vnější šrafy a jemný pergamen. Platná metadata V2 rozlišují hrad, důl a jeskyni v pohledu PJ. Náhled generátoru používá stejné renderery a propojený přepínač vzhledu. Geometrie, generátor i herní ovládání zůstávají stejné. [Popis a srovnání vzhledů](docs/MAP_APPEARANCE.md).
+
+- Horní ovládání mapy tvoří společný pergamenový panel s oddělenými skupinami nástrojů a přehledným nastavením pohledu.
+- **Příběhová osnova.** Pět nepovinných karet pro PJ, vazby na místa napříč patry, označení odehrání, soukromé ukládání s revizemi a úplnou zálohou. Předlohy využívají stávající `phase`; Dům vypůjčeného světla přidává původní osmimístnostní ukázku. [Návod](docs/STORY_OUTLINE.md).
+
+Přechod z 0.6.0 nevyžaduje nové proměnné, SQL migraci ani výměnu updateru. Úplné zálohy zůstávají ve formátu 1. [Postup aktualizace](docs/SELF_HOSTING.md#přechod-z-060-na-100).
 
 ## 0.6.0 — 2026-11-06
 

@@ -1,3 +1,4 @@
+import { storyOutlineSchema } from '../story-phases';
 import { z } from 'zod';
 import { generationRunsSchema } from '../generator-schema';
 import { member, monster } from './actors-schema';
@@ -17,6 +18,7 @@ export const backupSchema = z.object({
   version: z.literal(1),
   exportedAt: z.string(),
   game: z.object({
+    storyOutline: storyOutlineSchema.optional(),
     sessionRecap: sessionRecap.optional(),
     generationRuns: generationRunsSchema.optional(),
     generationOperations: z

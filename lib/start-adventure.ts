@@ -1,3 +1,4 @@
+import { emptyStoryBeat } from './story-phases';
 import { adventureTemplates, resolveAdventureRooms } from './adventure-templates';
 import { findDungeonPreset } from './dungeon-presets';
 import { generationAction, generationState } from './generation';
@@ -39,6 +40,13 @@ export function startAdventure(game: Game, owner: Member, templateId: unknown) {
         occupied.add(`${monster.x},${monster.y}`);
     }
     const free = roomFloorPoints(room, floor.map).filter(point => !occupied.has(point.join(',')));
+    if (placement.phase) {
+      game.storyOutline ??= { revision: 0, phases: {} };
+      const beat = game.storyOutline.phases[placement.phase] ??= emptyStoryBeat();
+      if (!beat.title) beat.title = placement.title;
+      // The full original preparation stays on each note, including repeated phases.
+      beat.noteIds.push(note.id);
+    }
     note.title = placement.title;
     note.text = placement.playerText;
     note.secret = placement.gmNotes;

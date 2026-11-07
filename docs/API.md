@@ -47,6 +47,7 @@ Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty s
 | `power` | Majitel/PJ: vlastní kouzla, magenergie a použití. |
 | `recovery`, `journey`, `life` | Jen PJ: obnova životů/magenergie, čas/světlo a vyřazení. |
 | `map-note` | Jen PJ: pracovní a zveřejněný popis místa, volitelné `roomNumber` (1–999, unikátní na patře; `null` odstraní označení). Operace `move` přesune značku na `toX`/`toY` ve stejném patře, vyžaduje původní kotvu, `noteId` a `expectedRevision`. Přesun zachová ID a vazby na kořist/zkoušky. |
+| `story-outline` | Jen PJ: `requestId`, `expectedRevision` (poprvé `null`) a `phases`. Dodané fáze nahradí svou přípravu; ostatní zůstanou. Odkazy jsou unikátní existující `noteIds`. Souběh vrací 409. [Datový model a projekce](STORY_OUTLINE.md#data-soukromí-a-rozšiřování). |
 | `challenge` | Příprava/následky/rušení PJ; hod cílový hráč nebo PJ. |
 | `loot` | Příprava/uzavření/dělení PJ; převzetí hráč pro sebe nebo PJ pro hráče. |
 | `equipment` | Majitel/PJ: položky a měšec konkrétního člena. |

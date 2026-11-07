@@ -11,6 +11,7 @@ import LifePanel from '../life-panel';
 import EquipmentPanel from '../equipment-panel';
 import LootPanel from '../loot-panel';
 import ChallengesPanel from '../challenges-panel';
+import StoryOutlinePanel from '../story-outline-panel';
 import SessionRecapPanel from '../session-recap-panel';
 import MapNoteEditor, { MapNoteReader } from '../map-note-panel';
 import JourneyPanel from '../journey-panel';
@@ -28,6 +29,7 @@ import ExperienceForm from './experience-form';
 import type { GameAction, Session, ChatTab } from './types';
 
 const panelDetails = {
+  'story-outline': { label: 'Příběhová osnova' },
   generator: { label: 'Generátor jeskyně', className: 'generator-modal' },
   life: { label: 'Vyřazení postav' },
   equipment: { label: 'Výbava a měšec', className: 'loot-modal' },
@@ -87,6 +89,7 @@ type Props = {
   openLife: (id?: string) => void;
   openLoot: (id?: string, noteId?: string) => void;
   openChallenges: (id?: string, noteId?: string) => void;
+  openStoryPlace: (id: string) => void;
   locateRecap: (location: Location) => void;
   placeMonster: (id: string) => void;
   openRoll: (setup: RollSetup) => void;
@@ -113,6 +116,7 @@ export default function TableDialog({
   openLife,
   openLoot,
   openChallenges,
+  openStoryPlace,
   locateRecap,
   placeMonster,
   openRoll,
@@ -262,6 +266,10 @@ export default function TableDialog({
             }
           />
         );
+      case 'story-outline':
+        if (!pj || !game.storyOutline) break;
+        return <StoryOutlinePanel outline={game.storyOutline} busy={busy}
+          onSave={values => submitAndClose('story-outline', values)} onOpenPlace={openStoryPlace} />;
       case 'session-recap':
         return (
           <SessionRecapPanel
@@ -418,6 +426,7 @@ export default function TableDialog({
             >
               Generátor jeskyně
             </button>
+            <button className="secondary" onClick={() => openPanel('story-outline')}>Příběhová osnova</button>
             <SafeForm
               busy={busy}
               onSave={(patch) => submitAndClose('notes', patch)}

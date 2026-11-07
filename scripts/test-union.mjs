@@ -16,3 +16,5 @@ const freeGame={dungeon:emptyDungeon(),cells:{},fog:[]};applyMap(freeGame,{tool:
 let marked=editDungeon(emptyDungeon(),{tool:'room',from:[1,1],to:[4,4]});for(const [tool,expected] of [['stairsUp','up'],['stairsDown','down'],['stairsBoth','both']]){marked=editDungeon(marked,{tool,points:[[2,2]]});assert.equal(marked.stairMarks['2,2'],expected);}const hiddenStairs=(await import('../lib/dungeon.ts')).playerDungeon(marked);assert(!hiddenStairs.stairMarks['2,2']);marked=editDungeon(marked,{tool:'erase',cells:[[2,2]]});assert.equal(marked.stairMarks['2,2'],undefined);marked=editDungeon(marked,{tool:'stairsUp',points:[[3,3]]});marked=editDungeon(marked,{tool:'subtract',points:[[3,3]]});assert.equal(marked.stairMarks['3,3'],undefined);assert.throws(()=>editDungeon(marked,{tool:'stairsDown',points:[[20,19]]}));console.log('PASS: tři směry kreslených schodů, skrytí před hráči, mazání gumou a odebráním podlahy, kontrola podkladu.');
 
 await import('./test-map-inspection.mjs');
+await import('./test-map-drawing.mjs');
+await import('./test-generator-preview.mjs');

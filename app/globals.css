@@ -411,3 +411,50 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
   transform: translateX(-50%);
   pointer-events: none;
 }
+
+.map-appearance { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:400; color:var(--control-ink); }
+.map-appearance select { width:auto; max-width:155px; min-height:30px; padding:4px 6px; font-size:11px; color:var(--control-ink); background:var(--paper); border:1px solid var(--control-border); border-radius:4px; }
+.paper-editor[data-map-style="hand-drawn"] .paper-world {
+  background-color:#f6efdd;
+  background-image:linear-gradient(#887a5e13 1px,transparent 1px),linear-gradient(90deg,#887a5e13 1px,transparent 1px);
+}
+.paper-editor[data-map-style="hand-drawn"] .paper-ruler { fill:#98876a; }
+.paper-editor[data-map-style="hand-drawn"] .map-room-name { fill:#64543e; }
+@media(max-width:620px) { .map-appearance>span { display:none; } .map-appearance select { max-width:135px; } }
+
+.generator-preview-controls{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:12px 0}
+.generator-preview-controls>label:not(.map-appearance){flex:1;min-width:180px;font-size:12px}
+.generator-preview-controls .map-appearance{flex:none;align-items:center;padding-bottom:4px}
+.generator-preview-controls .map-appearance select{display:inline-block;width:auto;margin:0}
+
+.story-phase{border:1px solid var(--line);border-radius:6px;padding:12px;margin:12px 0;background:#fbf8ee}
+.story-phase>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-size:15px;color:var(--control-ink)}
+.story-phase>summary:before{content:'▸';font-size:12px}.story-phase[open]>summary:before{content:'▾'}
+.story-phase>summary>span{flex:1}.story-phase>summary small{max-width:45%;font-size:11px;text-align:right;overflow-wrap:anywhere}
+.story-phase>.sheet-hint{margin:12px 0}.story-phase fieldset{border:0;margin:0;padding:0;min-width:0}
+.story-check{display:flex;align-items:flex-start;gap:8px;font-size:12px;margin:10px 0}.story-check input{width:16px;height:16px;flex:none;margin:1px 0}
+.story-link-picker{margin:14px 0;font-size:12px}.story-link-picker>summary{cursor:pointer}
+.story-place-options{max-height:220px;overflow:auto;overscroll-behavior:contain;padding:4px}
+.story-place-links .secondary{font-size:12px;text-align:left;overflow-wrap:anywhere;margin:6px 0}
+
+.story-check input{accent-color:var(--action)}
+
+/* One parchment console: mode and view above, drawing tools across the map. */
+.paper-overlay>.paper-controls{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 10px;background:#fcfaf0f5;border:1px solid #d9d1bc;border-radius:7px;box-shadow:0 3px 12px #6354360a;pointer-events:auto}
+.paper-overlay .paper-controls>.generator-open{grid-column:1;grid-row:1;order:initial;margin:0;box-shadow:none;min-height:32px}
+.paper-overlay .paper-controls>.paper-modes,.paper-overlay .paper-controls>.paper-player-label{grid-column:2;grid-row:1;order:initial;box-shadow:none}
+.paper-overlay .paper-controls>.player-view{grid-column:4;grid-row:1;order:initial;margin:0;box-shadow:none;min-height:32px}
+.paper-overlay .paper-controls>.paper-utility{grid-column:3;grid-row:1;justify-content:flex-end;gap:5px;margin:0;min-width:0}
+.paper-overlay .paper-controls>.paper-toolbar{grid-column:1/-1;grid-row:2;order:initial;display:block;min-width:0;margin:0;padding:7px 0 0;border:0;border-top:1px solid #e3dccb;border-radius:0;background:none;box-shadow:none}
+.paper-overlay .paper-tools{gap:3px;align-items:stretch;justify-content:flex-start}
+.paper-overlay .paper-tools button{min-width:43px;max-width:64px;min-height:46px;padding:6px 8px;gap:5px;justify-content:flex-start}
+.paper-overlay .paper-tools button span{font-size:9px;line-height:1.25;max-width:58px}
+.paper-overlay .paper-tools button[data-tool=room],.paper-overlay .paper-tools button[data-tool=stairsUp],.paper-overlay .paper-tools button[data-tool=entrance],.paper-overlay .paper-tools button[data-tool=subtract]{margin-left:6px;border-left:1px solid #e1dac7;border-top-left-radius:0;border-bottom-left-radius:0}
+.paper-overlay .paper-utility>.map-appearance{padding-right:8px;margin-right:3px;border-right:1px solid #e1dac7}
+.paper-overlay .paper-utility>button[aria-label="Oddálit mapu"]{margin-left:4px;border-left:1px solid #e1dac7;width:30px}
+.paper-overlay>.exploration-controls,.paper-overlay>.exploration-enable{align-self:stretch;width:100%;background:#fbf9eeda;box-shadow:none}
+.paper-overlay>.exploration-controls .exploration-top{padding:6px 10px;gap:10px}
+.paper-overlay .exploration-top>span{flex:1;min-width:160px}
+.paper-overlay .exploration-top>button{min-height:30px;padding:5px 9px}
+@container (max-width:1000px){.paper-overlay .paper-controls>.paper-utility{grid-column:1/-1;grid-row:3;padding-top:5px;border-top:1px solid #e3dccb}.paper-overlay .paper-tools button{min-width:36px;max-width:55px;padding:5px 6px}.paper-overlay .paper-tools button[data-tool]{margin-left:0}.paper-overlay .paper-controls>.player-view{font-size:9px}}
+@media(max-width:620px){.paper-overlay>.paper-controls{grid-template-columns:auto 1fr auto;gap:6px;padding:7px}.paper-overlay .paper-controls>.player-view{grid-column:3}.paper-overlay .paper-controls>.paper-modes{grid-column:2}.paper-overlay .paper-tools button{min-width:34px;padding:5px}.paper-overlay .paper-utility{flex-wrap:wrap}.paper-overlay .exploration-top>span{min-width:120px;font-size:9px}.paper-overlay .paper-utility>.map-appearance{margin-right:0;padding-right:4px}.paper-overlay .paper-controls>.paper-player-label{grid-column:1/3}}

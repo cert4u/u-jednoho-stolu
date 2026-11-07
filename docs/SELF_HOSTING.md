@@ -100,6 +100,12 @@ Stejným příkazem použiješ změnu kanálu nebo retence z `.env`. Spouštěj 
 
 Aktualizace v administraci vyměňuje aplikační kontejner. Checkout, Compose, updater a případný LiveKit spravuješ samostatně. Změny aplikačních proměnných nebo připojení volume prováděj plánovaně přes Compose s aktivním image z `.stul-state/runtime.env`.
 
+#### Přechod z 0.6.0 na 1.0.0
+
+V administraci zkontroluj vydání a zvol stabilní 1.0.0. Nastavení prostředí, protokol updateru a konfigurace hostingu se nemění, nové SQL migrace nejsou potřeba. Před výměnou vznikne snapshot databáze; po ní ověř přihlášení PJ i hráče, herní mapu a export úplné zálohy. LiveKit ani místní checkout se automaticky neaktualizují. Úplná JSON záloha zůstává ve formátu 1 a nově zahrnuje příběhovou osnovu, pokud ji používáš.
+
+Návrat přes updater obnovuje také databázi do doby před upgradem. Novější změny zůstanou v samostatném snapshotu; při návratu ke starší aplikaci nepředpokládej, že zachová nově přidanou osnovu. Z instalace 0.5.3 nejprve proveď níže uvedenou aktualizaci updateru a Compose, potom pokračuj na 1.0.0.
+
 #### Přechod z 0.5.3 na 0.6.0
 
 1. Dokonči případnou operaci v administraci a zazálohuj databázi, `.env` a `.stul-state`.

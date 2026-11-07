@@ -70,6 +70,12 @@ V **Příprava mapy** PJ kreslí na podlahu/příslušné hrany:
 
 Potvrzená patra se přidají ke stávajícím. Jen skutečně prázdné výchozí patro lze využít znovu. Generátor vytvoří propojenou podlahu, obvodové zdi, schodiště mezi novými patry a vchod na jejich přízemí, volitelně samostatný východ. V2 přidává otevíratelné dveře; jejich zámky a utajení může PJ následně nastavit přes **Prozkoumat**; nepřidává příšery, pasti ani kořist a neodhalí mapu. Družinu nepřesouvá. Přípravu lze ručně upravit; propojení ke starší mapě nastavuje PJ. V2 ukládá původ generování a soukromý graf. Změna podlahy, hran nebo značek označí graf za neaktuální; otevření dveří nebo odkrytí mapy jej nezneplatní. Zpět obnovuje mapové snapshoty včetně metadat, pokud stále odpovídá navazující propojení schodů.
 
+### Vzhled mapy
+
+V liště mapy vyber **Kresba → Klasický / Ručně kreslený**. Klasický je výchozí. Kreslený vzhled přidá jemný pergamen, inkoustové zdi a šrafy na neprůchozí straně. Přepnutí zachová vybraný nástroj, rozpracovaný tah, přiblížení i polohu mapy. Stejnou volbu nabízí i náhled generátoru, včetně společných symbolů dveří a schodů. Oba přepínače jsou propojené; změna nepřegeneruje návrh. Volba platí jen pro tento prohlížeč; není součástí kampaně ani zálohy.
+
+PJ u nezměněné mapy V2 uvidí rukopis hradu, dolu nebo jeskyně. Staré a ruční mapy používají univerzální kresbu. Hráčský pohled ji používá také: soukromá metadata V2 se hráčům neposílají. Odhalování, šedá paměť a osvětlení fungují v obou vzhledech stejně. [Ukázky a technický popis](MAP_APPEARANCE.md).
+
 ### Zámky a tajné dveře
 
 V režimu **Prozkoumat (i)** klikni těsně na hranu dveří. PJ může zapnout **Zamčené**, **Tajné dveře** a u tajných dveří **Odhalené družině**, potom uloží nastavení. Zamčení či utajení dveře zavře. Hráči dostávají neodhalené tajné dveře jako zeď, včetně paměti mapy; jejich skrytá nastavení se neposílají. Zkoušku hledání, vypáčení nebo odemykání zadá PJ zvlášť a úspěch potvrdí odhalením/odemčením. Katalog klíčů ani automatické provázání se zkouškou není součástí této verze. Dveře lze poté otevřít běžným nástrojem vedoucího/PJ.
@@ -92,6 +98,12 @@ Patra PJ připravuje nezávisle na poloze družiny. Pro funkční schodiště pr
 - **Ctrl + kolečko**, tlačítka plus/minus: změna měřítka.
 - **Přizpůsobit mapu oknu**, případně **Najít družinu**: návrat do užitečného pohledu.
 - Po zaměření mapy **šipky** volí políčko, **Enter** potvrzuje; místnost/oblast se potvrzuje dvěma body. **Escape** zruší rozpracovanou volbu. Ruční stěna pracuje s průsečíky mřížky.
+
+## Příběhová osnova
+
+V **Zápisník PJ → Příběhová osnova** najdeš pět nepovinných karet: vstup a překážka, výzva, komplikace, vyvrcholení a rozuzlení. Vyplň nadpis, soukromou poznámku a přes **Přiřadit místa** připoj poznámky z libovolných pater. Stejné místo může patřit více fázím. **Otevřít přípravu** vede na aktuální poznámku místa. **Odehráno** je ruční značka; nic hráčům neodemyká ani nepředepisuje pořadí.
+
+Osnova se ukládá s kampaní a úplnou zálohou, hráči ji nedostávají. Předlohy s `phase` ji připraví automaticky; výprava **Dům vypůjčeného světla** ukazuje všech pět fází v osmi místnostech. Přesun a přečíslování poznámky zachovají vazby; smazání odebere jen odkazy a ponechá text. [Podrobný postup a omezení](STORY_OUTLINE.md).
 
 ## Poznámky, příšery a pasti
 

@@ -12,17 +12,18 @@ const legacySource=process.argv[2];
 const oldSha=legacySource?'65382686749237b930bf0cb918761198e6ad6b2c':'a'.repeat(40),newSha='b'.repeat(40),badSha='c'.repeat(40),origin='http://127.0.0.1:18089',password='test-admin-password-long-enough',token='test-updater-token-long-enough-123456';
 function cli(args,input){const result=spawnSync('docker',args,{encoding:'utf8',...(input?{input}:{}),stdio:input?['pipe','inherit','inherit']:'inherit'});assert.equal(result.status,0,`docker ${args[0]} failed`);}
 async function call(endpoint,data){const r=await fetch(origin+endpoint,{method:data?'POST':'GET',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(data?{body:JSON.stringify(data)}:{}),signal:AbortSignal.timeout(18000)});if(!r.ok)throw new Error('App '+r.status);return r.json();}
+const releaseVersion=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;
 let manager;
 try{
  cli(['build','-t','stul-app:local','--build-arg','STUL_VERSION=0.5.3','--build-arg',`STUL_REVISION=${oldSha}`,legacySource||'.']);
- cli(['build','-t',`stul-app:${newSha}`,'--build-arg','STUL_VERSION=0.6.0','--build-arg',`STUL_REVISION=${newSha}`,'.']);
+ cli(['build','-t',`stul-app:${newSha}`,'--build-arg',`STUL_VERSION=${releaseVersion}`,'--build-arg',`STUL_REVISION=${newSha}`,'.']);
  cli(['build','-t',`stul-app:${badSha}`,'-'],`FROM stul-app:${newSha}\nCMD ["node", "-e", "process.exit(1)"]\n`);
  cli(['build','-f','deploy/updater/Dockerfile','-t','stul-updater:test','.']);
  // Exercise the updater image and its native Docker CLI (not just manager mocks).
  cli(['run','--rm','-v','/var/run/docker.sock:/var/run/docker.sock','--entrypoint','sh','stul-updater:test','-c','node --version && docker version --format "{{.Server.Version}}"']);
  cli(['network','create','stul-smoke']);
  cli(['run','-d','--network','stul-smoke','--network-alias','app','--name','stul-app','--restart','unless-stopped','--init','-p','127.0.0.1:18089:8080','-v',`${dataDir}:/data`,'-e','STUL_UPDATER_URL=http://updater:8090','-e',`PUBLIC_ORIGIN=${origin}`,'-e',`STUL_ADMIN_PASSWORD=${password}`,'-e',`STUL_UPDATER_TOKEN=${token}`,'stul-app:local']);
- let target=newSha;manager=new UpdateManager({dataDir,stateDir,hostingConfig:1,appFetch:call,release:async()=>({tag:'v0.6.0',sha:target,url:'https://github.com/cert4u/u-jednoho-stolu/releases/tag/v0.6.0'}),build:async sha=>'stul-app:'+sha});
+ let target=newSha;manager=new UpdateManager({dataDir,stateDir,hostingConfig:1,appFetch:call,release:async()=>({tag:`v${releaseVersion}`,sha:target,url:`https://github.com/cert4u/u-jednoho-stolu/releases/tag/v${releaseVersion}`}),build:async sha=>'stul-app:'+sha});
  chownSync(stateDir,1001,1001); // runtime.env must remain readable to the host operator.
  await manager.healthy(oldSha);
  cli(['run','-d','--network','stul-smoke','--network-alias','updater','--name','stul-updater-smoke','-v','/var/run/docker.sock:/var/run/docker.sock','-v',`${dataDir}:/data`,'-v',`${stateDir}:/state`,'-e',`STUL_UPDATER_TOKEN=${token}`,'-e','STUL_HOSTING_CONFIG=1','stul-updater:test']);

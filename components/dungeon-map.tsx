@@ -40,7 +40,9 @@ import {
   type Dungeon,
   type Point,
 } from '../lib/dungeon';
+import { useMapAppearance } from './dungeon-map/use-map-appearance';
 import MapCanvas from './dungeon-map/canvas';
+import MapAppearanceControl from './dungeon-map/renderers/appearance-control';
 import { useMapInput } from './dungeon-map/use-map-input';
 import {
   W,
@@ -230,6 +232,7 @@ export default function DungeonMap({
   notes,
   onOpenNote,
 }: Props) {
+  const [appearance, setAppearance] = useMapAppearance();
   const [inspection, setInspection] = useState<{
     point: Point;
     edge?: string;
@@ -516,7 +519,7 @@ export default function DungeonMap({
     setShowRooms(false);
   }
   return (
-    <div className="paper-editor">
+    <div className="paper-editor" data-map-style={appearance}>
       <TableAtmosphere />
       <div className="paper-overlay" ref={overlay}>
         <div className="paper-controls">
@@ -568,70 +571,8 @@ export default function DungeonMap({
               <MapIcon size={15} /> Vaše společná mapa
             </span>
           )}
-          <div className="paper-toolbar">
-            <div className="paper-tools">
-              {TOOLBOX.filter((t) =>
-                !pj
-                  ? [
-                      'hand',
-                      'move',
-                      ...(exploration?.enabled && canLead ? ['openDoor'] : []),
-                    ].includes(t.id)
-                  : mode === 'prepare'
-                    ? [
-                        'inspect',
-                        'entrance',
-                        'exit',
-                        'note',
-                        'hand',
-                        'monster',
-                        'wall',
-                        'room',
-                        'floor',
-                        'door',
-                        'stairsUp',
-                        'stairsDown',
-                        'stairsBoth',
-                        'subtract',
-                        'erase',
-                        'move',
-                      ].includes(t.id)
-                    : [
-                        'inspect',
-                        'note',
-                        'hand',
-                        'monster',
-                        'reveal',
-                        'hide',
-                        'move',
-                        ...(exploration ? ['place', 'openDoor'] : []),
-                      ].includes(t.id),
-              ).map(({ id, icon: Icon, name, hint }) => (
-                <button
-                  key={id}
-                  title={hint}
-                  aria-label={name}
-                  aria-pressed={effectiveTool === id && !preview}
-                  className={effectiveTool === id && !preview ? 'active' : ''}
-                  disabled={preview || busy || !!stroke || !!retry}
-                  onClick={() => {
-                    switchTool(id);
-                    if (id === 'monster' && !selectedCreature)
-                      onInspectMonster();
-                  }}
-                >
-                  <Icon size={17} />
-                  <span>
-                    {id === 'move' &&
-                    exploration?.enabled &&
-                    !exploration.battle
-                      ? 'Družina'
-                      : name}
-                  </span>
-                </button>
-              ))}
-            </div>
             <div className="paper-utility">
+              <MapAppearanceControl appearance={appearance} onChange={setAppearance} />
               <button
                 aria-label="Seznam místností"
                 aria-expanded={showRooms}
@@ -682,6 +623,74 @@ export default function DungeonMap({
                 <Maximize2 size={14} />
               </button>
             </div>
+          <div className="paper-toolbar">
+            <div className="paper-tools">
+              {TOOLBOX.filter((t) =>
+                !pj
+                  ? [
+                      'hand',
+                      'move',
+                      ...(exploration?.enabled && canLead ? ['openDoor'] : []),
+                    ].includes(t.id)
+                  : mode === 'prepare'
+                    ? [
+                        'inspect',
+                        'entrance',
+                        'exit',
+                        'note',
+                        'hand',
+                        'monster',
+                        'wall',
+                        'room',
+                        'floor',
+                        'door',
+                        'stairsUp',
+                        'stairsDown',
+                        'stairsBoth',
+                        'subtract',
+                        'erase',
+                        'move',
+                      ].includes(t.id)
+                    : [
+                        'inspect',
+                        'note',
+                        'hand',
+                        'monster',
+                        'reveal',
+                        'hide',
+                        'move',
+                        ...(exploration ? ['place', 'openDoor'] : []),
+                      ].includes(t.id),
+              ).sort((a, b) => {
+                const order = ['inspect', 'hand', 'move', 'note', 'monster', 'room', 'floor', 'wall', 'door', 'stairsUp', 'stairsDown', 'stairsBoth', 'entrance', 'exit', 'subtract', 'erase', 'place', 'openDoor', 'reveal', 'hide'];
+                return order.indexOf(a.id) - order.indexOf(b.id);
+              }).map(({ id, icon: Icon, name, hint }) => (
+                <button
+                  key={id}
+                  data-tool={id}
+                  title={hint}
+                  aria-label={name}
+                  aria-pressed={effectiveTool === id && !preview}
+                  className={effectiveTool === id && !preview ? 'active' : ''}
+                  disabled={preview || busy || !!stroke || !!retry}
+                  onClick={() => {
+                    switchTool(id);
+                    if (id === 'monster' && !selectedCreature)
+                      onInspectMonster();
+                  }}
+                >
+                  <Icon size={17} />
+                  <span>
+                    {id === 'move' &&
+                    exploration?.enabled &&
+                    !exploration.battle
+                      ? 'Družina'
+                      : name}
+                  </span>
+                </button>
+              ))}
+            </div>
+
           </div>
         </div>
         <>
@@ -780,6 +789,7 @@ export default function DungeonMap({
             onPointerCancel={cancel}
           >
             <MapCanvas
+              appearance={appearance}
               map={{ shown, revealed, lit, party, recapCell, visible }}
               input={{
                 zoom,

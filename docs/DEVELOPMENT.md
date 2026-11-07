@@ -110,6 +110,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | `lib/sheets.ts`, `lib/character.ts` | Deníky a ochrana změněných polí. |
 | `lib/powers.ts`, `lib/conditions.ts`, `lib/life.ts`, `lib/recovery.ts` | Kouzla/magenergie, stavy, vyřazení a obnova životů/magenergie. |
 | `lib/map-inspection.ts`, `lib/room-labels.ts`, `components/map-inspector.tsx` | Výběr celé místnosti/propojeného prostoru pro PJ, rozložení čísel mimo schody/vstupy a čtecí přehled. |
+| `lib/story-phases.ts`, `lib/story-outline.ts`, `components/story-outline-panel.tsx` | Společné fáze předloh, soukromá osnova s revizí a stabilními vazbami na poznámky; [model a regrese](STORY_OUTLINE.md). |
 | `lib/map-notes.ts`, `lib/map-note-alerts.ts`, `lib/challenges.ts` | Příprava míst, upozornění při přiblížení a zkoušky. |
 | `lib/lighting.ts`, `components/light-sight-settings.tsx` | Průnik osvětlení a přímého výhledu, dohled bez světla a volba automatiky. Nosiče a přepočet paměti napojuje `lib/exploration.ts`. |
 | `lib/loot.ts`, `lib/equipment.ts`, `lib/journey.ts` | Kořist, výbava/měšec a čas/světlo. |
@@ -195,6 +196,8 @@ Současných 28 integračních sad v `scripts/test-integration.mjs`:
 | `voice`, `repairs` | Hlasová oprávnění a regresní případy souběhu, přístupů a úplných záloh. |
 
 Samostatné `npm test` ověřuje spojování půdorysů (`test-union.mjs`) a vymezení prostoru inspekce (`test-map-inspection.mjs`): dveře i otevřené, příčky, diagonální oddělení, platné V2 místnosti a přechod na současnou geometrii po ruční změně. Testy `map-notes` kontrolují také čísla, přesouvání, oddělené publikované verze a zálohy; testy generátoru ověřují polohy čísel mimo schody/vstupy. `test:updater` používá simulovaný Docker engine; skutečné kontejnery a obnovu ověřuje CI pomocí `scripts/test-docker.mjs` na Linuxu s Dockerem. Volitelný [mediální test LiveKitu](VOICE.md#ověření-skutečného-přenosu-zvuku) přenese syntetický zvuk bez mikrofonu.
+
+Kreslenou prezentaci mapy ověřuje také `test-map-drawing.mjs` v rámci `npm test`: determinismus, geometrická nezávislost, orientace šraf, tajné dveře, mlha, paměť bez světla a návrat k univerzálnímu stylu. [Architektura rendererů a vizuální srovnání](MAP_APPEARANCE.md) popisují rozdělení plátna a dekorací.
 
 U změn UI doplň vizuální ověření PJ i hráčského pohledu, mobilního rozložení, dlouhých textů a klávesnice. U hlasu navíc reálný mikrofon, zamítnuté oprávnění, odpojení a veřejnou síť. Automatické testy přenosu nejsou zkouškou každé domácí sítě.
 

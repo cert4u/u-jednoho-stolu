@@ -1,0 +1,10 @@
+{
+  "id": "lucerna",
+  "label": "Dům světla · osm místností",
+  "description": "Jedno patro pro příběhovou přípravu s osmi menšími komnatami.",
+  "options": {
+    "version": "v2", "style": "castle", "variant": 0, "separateExit": true,
+    "name": "Dům vypůjčeného světla", "levels": 1, "rooms": 8, "size": "small",
+    "corridors": "direct", "connections": 1, "seed": "dluh-posledni-lucerny"
+  }
+}

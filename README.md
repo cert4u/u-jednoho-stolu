@@ -10,6 +10,8 @@
 [![Docker · vlastní hosting](https://img.shields.io/badge/Docker-vlastn%C3%AD%20hosting-2496ED?logo=docker&logoColor=white)](docs/SELF_HOSTING.md)
 [![LiveKit · hlas družiny](https://img.shields.io/badge/LiveKit-hlas%20dru%C5%BEiny-f59e0b)](docs/VOICE.md)
 
+**Verze 1.0.0** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.0.0)
+
 **Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
 
 Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu“ přenáší atmosféru večerního hraní do prohlížeče: PJ připraví jeskyni, družina ji společně prozkoumává a příběh vzniká při hře. Mapa, deníky, hody i hlasový hovor jsou po ruce.
@@ -45,8 +47,11 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 - Generátor V2 se styly hradního podzemí, dolu a přírodní jeskyně, logickým grafem místností, plánovanými průchody a automatickými dveřmi. Tři opakovatelné varianty, náhled a ruční úpravy; původní V1 je zachovaný pro staré seedy.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
 - Posouvání papíru tažením, přibližování a přizpůsobení pohledu oknu.
+- [Klasický a ručně kreslený vzhled](docs/MAP_APPEARANCE.md) se stejným ovládáním: pergamen, inkoustové kontury a šrafy podle skutečných zdí. Volba se ukládá jen v prohlížeči.
 
 ### Příprava Pána jeskyně
+
+- [Příběhová osnova](docs/STORY_OUTLINE.md): pět nepovinných fází s poznámkami PJ, vazbami na místa napříč patry a ručním označením odehrání. Podporuje vlastní mapy i komunitní předlohy.
 
 - Zámky a tajné dveře nastavované PJ přes **Prozkoumat**; neodhalené dveře hráči vidí jako zeď.
 - Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací. PJ může vybírat ze třiceti ilustrovaných předloh v bestiáři s filtrem prostředí a náměty pro PJ.
