@@ -1,3 +1,4 @@
+import { sceneryListSchema } from '../scenery';
 import { z } from 'zod';
 import { generationMetadataSchema } from '../generator-schema';
 import { id, int, text } from './fields';
@@ -19,6 +20,7 @@ const edge = z
 const accessPoint = z.tuple([int(0, 27), int(0, 19)]);
 export const dungeon = z
   .object({
+    scenery: sceneryListSchema.optional(),
     doorSettings: z
       .record(
         edge,

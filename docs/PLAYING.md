@@ -76,6 +76,10 @@ V liště mapy vyber **Kresba → Klasický / Ručně kreslený**. Klasický je 
 
 PJ u nezměněné mapy V2 uvidí rukopis hradu, dolu nebo jeskyně. Staré a ruční mapy používají univerzální kresbu. Hráčský pohled ji používá také: soukromá metadata V2 se hráčům neposílají. Odhalování, šedá paměť a osvětlení fungují v obou vzhledech stejně. [Ukázky a technický popis](MAP_APPEARANCE.md).
 
+### Stafáž
+
+PJ nástrojem **Stafáž** vybere jeden z dvanácti tušových symbolů, velikost a otočení a klikne do mapy. Filtr nabídne prvky pro hrad, důl či jeskyni. Kliknutí na existující symbol otevře úpravy a tajnou poznámku. Přesun, odstranění a běžné Zpět jsou podporované. Prvky jsou pouze dekorativní, pohyb neblokují; skryté prvky a poznámky se hráčům neposílají. Vnější dekoraci odhalí přilehlá známá podlaha, změny mimo dohled zůstávají v původní šedé paměti. [Návod a limity](SCENERY.md).
+
 ### Zámky a tajné dveře
 
 V režimu **Prozkoumat (i)** klikni těsně na hranu dveří. PJ může zapnout **Zamčené**, **Tajné dveře** a u tajných dveří **Odhalené družině**, potom uloží nastavení. Zamčení či utajení dveře zavře. Hráči dostávají neodhalené tajné dveře jako zeď, včetně paměti mapy; jejich skrytá nastavení se neposílají. Zkoušku hledání, vypáčení nebo odemykání zadá PJ zvlášť a úspěch potvrdí odhalením/odemčením. Katalog klíčů ani automatické provázání se zkouškou není součástí této verze. Dveře lze poté otevřít běžným nástrojem vedoucího/PJ.

@@ -1,6 +1,7 @@
 import {withExpected} from './test-client.mjs';
 import assert from 'node:assert/strict';
-import {dungeonFor,playerDungeon} from '../lib/dungeon.ts';
+await import('./generator-test-import.mjs');
+const {dungeonFor,playerDungeon}=await import('../lib/dungeon.ts');
 const base=process.argv[2]||'http://127.0.0.1:5173';
 async function post(s,action,data={}){data=await withExpected(base,s,action,data);const r=await fetch(base+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(s?{Authorization:'Bearer '+s.token}:{})},body:JSON.stringify({action,room:s?.room,...data})});return {status:r.status,...await r.json()};}
 async function get(s){const r=await fetch(base+'/api/game?room='+s.room,{headers:{Authorization:'Bearer '+s.token}});return r.json();}

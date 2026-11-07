@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- **Stafáž mapy.** Dvanáct původních tušových symbolů pro ruční umisťování uvnitř i vně půdorysu, filtrování podle prostředí, velikost, otočení, přesun, soukromá poznámka a skrytí. Změny respektují dohled a hráčskou paměť; funguje Zpět i úplná záloha. [Návod](docs/SCENERY.md).
+
 ## 1.0.0 — 2026-11-07
 
 První stabilní vydání řady 1.0 pro vlastní herní družinu.

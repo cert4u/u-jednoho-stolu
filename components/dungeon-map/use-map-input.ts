@@ -44,6 +44,8 @@ type MapInput = {
     values: Record<string, unknown>,
   ) => Promise<boolean | undefined>;
   onOpenNote: (anchor: NoteAnchor, publicView: boolean) => void;
+  onCancelScenery: () => void;
+  onScenery: (point: Point, id?: string) => void;
   onInspectMonster: (id?: string) => void;
   effectiveTool: Tool;
   canDraw: boolean;
@@ -106,6 +108,8 @@ export function useMapInput({
   onAction,
   onOpenNote,
   onInspectMonster,
+  onScenery,
+  onCancelScenery,
   effectiveTool,
   canDraw,
   canLead,
@@ -200,6 +204,11 @@ export function useMapInput({
       return;
     }
     if (busy || lock.current || retry || preview) return;
+    if (effectiveTool === 'scenery' && pj) {
+      e.preventDefault();
+      onScenery(p.cell, (e.target as Element).closest('[data-scenery]')?.getAttribute('data-scenery') ?? undefined);
+      return;
+    }
     if (effectiveTool === 'inspect' && pj) {
       e.preventDefault();
       const target = e.target as Element,
@@ -431,6 +440,7 @@ export function useMapInput({
   }
   function keyAction(e: ReactKeyboardEvent<SVGSVGElement>) {
     if (e.key === 'Escape') {
+      onCancelScenery();
       cancel();
       return;
     }
@@ -451,7 +461,9 @@ export function useMapInput({
     if (effectiveTool === 'hand') return;
     if (e.key !== 'Enter' || busy || preview || lock.current || retry) return;
     e.preventDefault();
-    if (effectiveTool === 'inspect' && pj) {
+    if (effectiveTool === 'scenery' && pj) {
+      onScenery(keyboard, map.scenery?.find(item => item.x === keyboard[0] && item.y === keyboard[1])?.id);
+    } else if (effectiveTool === 'inspect' && pj) {
       setInspection({ point: keyboard });
     } else if (effectiveTool === 'note') {
       if (map.floors.includes(cellKey(...keyboard)))

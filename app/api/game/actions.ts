@@ -114,7 +114,7 @@ export async function applyGameAction(
           refreshSight(g);
         } else applyMap(g, b);
       } catch (e) {
-        return fail(e instanceof Error ? e.message : 'Tah mapy se nepodařil.');
+        return fail(e instanceof Error ? e.message : 'Tah mapy se nepodařil.', e instanceof EditConflict ? 409 : 400);
       }
       break;
     case 'cell':

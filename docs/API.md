@@ -55,6 +55,10 @@ Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty s
 
 `cell` je odmítnutý starý způsob kreslení, nikoli alternativní zapisovací API.
 
+### Stafáž mapy
+
+Jen PJ: `map` s `tool: "scenery"`, `op: "save"` a poli `kind`, `x`, `y`, `rotation` (0/90/180/270), `size` (`small`/`medium`/`large`), volitelně `note` a `hidden`. Vložení má `expectedRevision: null`, úprava existující `sceneryId` a jeho `expectedRevision`. `op: "remove"` vyžaduje stejné ID a revizi. `requestId` a Zpět používají běžnou mapovou historii. Konflikt vrací 409, neplatný vstup 400, hráč 403. [Projekce, paměť a datový model](SCENERY.md#data-a-vývoj).
+
 ### Operace průzkumu a mapy
 
 `explore.op`: `enable`, `level-add`, `level-rename`, `settings`, `place`, `stairs-add`, `stairs-remove` jsou jen pro PJ. `move`, `door`, `travel` ovládá PJ nebo určený vedoucí. `order` mohou měnit aktivní hráči/PJ; musí obsahovat úplné pochodové pořadí bez duplicit.

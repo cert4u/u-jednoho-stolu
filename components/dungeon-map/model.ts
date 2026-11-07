@@ -35,7 +35,8 @@ export type Tool =
   | 'stairsBoth'
   | 'monster'
   | 'note'
-  | 'inspect';
+  | 'inspect'
+  | 'scenery';
 export type Stroke = {
   pointer: number;
   start: Point;

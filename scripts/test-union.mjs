@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import {emptyDungeon,editDungeon,applyMap} from '../lib/dungeon.ts';
+await import('./generator-test-import.mjs');
+const {emptyDungeon,editDungeon,applyMap}=await import('../lib/dungeon.ts');
 let d=emptyDungeon();const edit=c=>d=editDungeon(d,c);
 edit({tool:'room',from:[2,2],to:[5,5]});edit({tool:'door',edges:['v:6:3']});edit({tool:'door',edges:['h:3:2']});edit({tool:'wall',points:[[3,3],[3,5]]});edit({tool:'reveal',from:[0,0],to:[27,19]});
 const before=structuredClone(d);edit({tool:'room',from:[4,3],to:[8,6]});assert.equal(d.edges['v:6:3'],undefined);assert.equal(d.edges['v:4:3'],undefined);assert.equal(d.edges['v:3:3'],'wall');assert.equal(d.edges['h:3:2'],'door');assert(!d.revealed.includes('8,6'));assert(d.revealed.includes('4,3'));
@@ -18,3 +19,4 @@ let marked=editDungeon(emptyDungeon(),{tool:'room',from:[1,1],to:[4,4]});for(con
 await import('./test-map-inspection.mjs');
 await import('./test-map-drawing.mjs');
 await import('./test-generator-preview.mjs');
+await import('./test-scenery-core.mjs');

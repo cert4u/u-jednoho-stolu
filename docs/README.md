@@ -8,6 +8,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | --- | --- |
 | Zájemce o projekt | [Představení a první hra](../README.md) |
 | Hráč a Pán jeskyně | [Herní příručka](PLAYING.md) |
+| Výzdoba mapy | [Stafáž: paleta, úpravy a viditelnost](SCENERY.md) |
 | Příprava příběhu | [Příběhová osnova a komunitní ukázka](STORY_OUTLINE.md) |
 | Návrh dalších mechanik | [Audit herního základu a priority](MECHANICS.md) |
 | Správce serveru | [Docker, konfigurace, zálohy a aktualizace](SELF_HOSTING.md) |

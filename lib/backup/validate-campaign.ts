@@ -106,10 +106,11 @@ function validateMapReferences(
     ...(g.mapHistory || []),
     ...(g.atlas?.levels.flatMap((l) => [l.map, ...l.history]) || []),
   ];
+  if (maps.some(map => (map.scenery?.length ?? 0) > 200)) throw new Error('Na patře může být nejvýše 200 prvků stafáže.');
   for (const map of maps)
     if (map.generation?.status === 'valid')
       validateGeneratedFloor(map, map.generation);
-  if (g.atlas?.levels.some((l) => l.memory.generation || l.memory.doorSettings))
+  if (g.atlas?.levels.some((l) => l.memory.generation || l.memory.doorSettings || l.memory.scenery?.some(item => item.hidden !== undefined || item.note !== undefined || item.revision !== undefined)))
     throw new Error('Paměť hráčské mapy nesmí obsahovat tajná metadata.');
   if (
     g.generationRuns?.some((run) =>

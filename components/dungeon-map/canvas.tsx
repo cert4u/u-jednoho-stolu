@@ -1,3 +1,4 @@
+import SceneryLayer from '../scenery/layer';
 import { useId, useMemo } from 'react';
 import type { RefObject } from 'react';
 import { cellKey, wallEdges, type Dungeon } from '../../lib/dungeon';
@@ -202,6 +203,7 @@ export default function MapCanvas({
       ) : (
         <ClassicSurface shown={shown} revealed={revealed} lit={lit} visible={visible} exploring={Boolean(exploration?.enabled)} />
       )}
+      <SceneryLayer map={shown} lit={lit} revealed={revealed} visible={visible} exploring={Boolean(exploration?.enabled)} editable={pj && !preview && effectiveTool === 'scenery'} />
       {area && (
         <rect
           x={PAD + area.x * SIZE}

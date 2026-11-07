@@ -1,4 +1,7 @@
 'use client';
+import SceneryPalette, {type SceneryBrush} from './scenery/palette';
+import SceneryEditor from './scenery/editor';
+import type {Scenery} from '../lib/scenery';
 import type { MapNoteView, NoteAnchor } from '../lib/map-notes';
 import { createPortal } from 'react-dom';
 import GuardedDialog from './guarded-dialog';
@@ -33,6 +36,7 @@ import {
   LogIn,
   LogOut,
   Info,
+  Package,
 } from 'lucide-react';
 import {
   cellKey,
@@ -85,6 +89,7 @@ type Props = {
   ) => Promise<boolean | undefined>;
 };
 const TOOLBOX = [
+  {id:'scenery',icon:Package,name:'Stafáž',hint:'Vyber prvek a klikni do mapy. Existující stafáž lze upravit, přesunout nebo skrýt.'},
   {
     id: 'inspect',
     icon: Info,
@@ -249,6 +254,21 @@ export default function DungeonMap({
     viewport = useRef<HTMLDivElement>(null),
     svg = useRef<SVGSVGElement>(null),
     pendingCenter = useRef(false);
+  const [sceneryBrush,setSceneryBrush] = useState<SceneryBrush>({kind:'crate',rotation:0,size:'medium',hidden:false});
+  const [sceneryEdit,setSceneryEdit] = useState<{item:Scenery;levelId:string}>();
+  const [movingScenery,setMovingScenery] = useState<{item:Scenery;levelId:string}>();
+  function sceneryClick(point:Point,id?:string) {
+    const levelId=exploration?.levelId || 'ground';
+    if(movingScenery) {
+      if(movingScenery.levelId !== levelId){setMovingScenery(undefined);return;}
+      void sendMap({tool:'scenery',op:'save',...movingScenery.item,sceneryId:movingScenery.item.id,
+        expectedRevision:movingScenery.item.revision ?? 0,x:point[0],y:point[1]});
+      setMovingScenery(undefined);
+    } else if(id) {
+      const item=map.scenery?.find(item=>item.id===id);
+      if(item)setSceneryEdit({item:structuredClone(item),levelId});
+    } else void sendMap({tool:'scenery',op:'save',...sceneryBrush,note:'',expectedRevision:null,x:point[0],y:point[1]});
+  }
   const visible = preview || !pj;
   const shown = visible ? exploration?.playerMap || playerDungeon(map) : map;
   const revealed = new Set(map.revealed);
@@ -279,7 +299,7 @@ export default function DungeonMap({
     retry,
     clearRetry,
     retryMap,
-    switchTool,
+    switchTool: inputSwitchTool,
     sendMap,
     sendExplore,
     beginPaper,
@@ -302,6 +322,8 @@ export default function DungeonMap({
     onAction,
     onOpenNote,
     onInspectMonster,
+    onScenery: sceneryClick,
+    onCancelScenery: () => setMovingScenery(undefined),
     effectiveTool,
     canDraw,
     canLead,
@@ -313,6 +335,10 @@ export default function DungeonMap({
     setTool,
     setInspection,
   });
+  function switchTool(next: Tool) {
+    if(next !== 'scenery') setMovingScenery(undefined);
+    inputSwitchTool(next);
+  }
   useEffect(() => {
     if (!recapCell) return;
     const frame = requestAnimationFrame(() => {
@@ -635,6 +661,7 @@ export default function DungeonMap({
                   : mode === 'prepare'
                     ? [
                         'inspect',
+                        'scenery',
                         'entrance',
                         'exit',
                         'note',
@@ -653,6 +680,7 @@ export default function DungeonMap({
                       ].includes(t.id)
                     : [
                         'inspect',
+                        'scenery',
                         'note',
                         'hand',
                         'monster',
@@ -662,7 +690,7 @@ export default function DungeonMap({
                         ...(exploration ? ['place', 'openDoor'] : []),
                       ].includes(t.id),
               ).sort((a, b) => {
-                const order = ['inspect', 'hand', 'move', 'note', 'monster', 'room', 'floor', 'wall', 'door', 'stairsUp', 'stairsDown', 'stairsBoth', 'entrance', 'exit', 'subtract', 'erase', 'place', 'openDoor', 'reveal', 'hide'];
+                const order = ['inspect', 'hand', 'move', 'note', 'monster', 'scenery', 'room', 'floor', 'wall', 'door', 'stairsUp', 'stairsDown', 'stairsBoth', 'entrance', 'exit', 'subtract', 'erase', 'place', 'openDoor', 'reveal', 'hide'];
                 return order.indexOf(a.id) - order.indexOf(b.id);
               }).map(({ id, icon: Icon, name, hint }) => (
                 <button
@@ -742,6 +770,8 @@ export default function DungeonMap({
           picked={keyboard}
           entrance={map.access?.entrance}
         />
+        {pj && !preview && effectiveTool === 'scenery' && <SceneryPalette brush={sceneryBrush} onChange={setSceneryBrush}
+          moving={Boolean(movingScenery && movingScenery.levelId === (exploration?.levelId || 'ground'))} onCancelMove={()=>setMovingScenery(undefined)} />}
         {pj && preview && (
           <div className="preview-notice">
             <Eye size={14} /> Takto mapu vidí hráči. Pro úpravy se vrať do
@@ -871,6 +901,14 @@ export default function DungeonMap({
           </GuardedDialog>,
           document.body,
         )}
+      {pj && !visible && sceneryEdit && sceneryEdit.levelId === (exploration?.levelId || 'ground') && createPortal(
+        <GuardedDialog label="Stafáž mapy" className="modal scenery-modal" onClose={()=>setSceneryEdit(undefined)}>
+          <SceneryEditor key={sceneryEdit.item.id} item={sceneryEdit.item}
+            current={map.scenery?.find(item=>item.id===sceneryEdit.item.id)} busy={busy}
+            onSave={async values=>{const ok=await onAction('map',{...values,tool:'scenery',op:'save',levelId:sceneryEdit.levelId});if(ok)setSceneryEdit(undefined);return ok;}}
+            onRemove={async values=>{const ok=await onAction('map',{...values,tool:'scenery',op:'remove',levelId:sceneryEdit.levelId});if(ok)setSceneryEdit(undefined);return ok;}}
+            onMove={()=>{setMovingScenery(sceneryEdit);setSceneryEdit(undefined);switchTool('scenery');}} />
+        </GuardedDialog>,document.body)}
       {retry && (
         <div className="map-retry" role="alert">
           <span>Tah není potvrzený. Zkus jej znovu odeslat.</span>
