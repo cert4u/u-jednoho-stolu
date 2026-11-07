@@ -1,0 +1,16 @@
+{
+  "id": "lamp-moth",
+  "name": "Kahancový můrák",
+  "description": "Bledý šestinohý tvor nosí na zádech průsvitný váček s teplým světlem.",
+  "gmHint": "Brání snůšku u kahanu; kapka oleje položená stranou jej odláká od družiny.",
+  "environments": [
+    "caves"
+  ],
+  "portrait": "lamp-moth",
+  "maxHp": 5,
+  "combat": {
+    "attack": 2,
+    "defense": 2,
+    "damage": -1
+  }
+}

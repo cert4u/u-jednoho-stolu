@@ -1,0 +1,10 @@
+{
+  "id": "survey-stake",
+  "name": "Měřičský kolík",
+  "category": "object",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M16 4V29M8 6L24 6L20 12H8ZM13 29H19"
+}

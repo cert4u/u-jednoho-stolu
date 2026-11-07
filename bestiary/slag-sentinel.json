@@ -1,0 +1,16 @@
+{
+  "id": "slag-sentinel",
+  "name": "Strážce strusky",
+  "description": "Hromádka ztuhlé strusky drží tvar horníka. Její prsty cinkají o kamennou hruď.",
+  "gmHint": "Hlídá průchod k čerpadlu; uklidní jej vrácení jmenovky ztraceného předáka.",
+  "environments": [
+    "caves"
+  ],
+  "portrait": "slag-sentinel",
+  "maxHp": 14,
+  "combat": {
+    "attack": 4,
+    "defense": 5,
+    "damage": 1
+  }
+}

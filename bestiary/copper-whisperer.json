@@ -1,0 +1,16 @@
+{
+  "id": "copper-whisperer",
+  "name": "Měděný šeptač",
+  "description": "Tenký kovový tvor obepíná potrubí a mluví ozvěnou posledních slov návštěvníků.",
+  "gmHint": "Napodobuje hlas, ale na novou otázku odpoví jen útržkem staré směny; hluk jej zažene.",
+  "environments": [
+    "caves"
+  ],
+  "portrait": "copper-whisperer",
+  "maxHp": 7,
+  "combat": {
+    "attack": 2,
+    "defense": 3,
+    "damage": 0
+  }
+}

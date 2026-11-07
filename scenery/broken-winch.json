@@ -1,0 +1,10 @@
+{
+  "id": "broken-winch",
+  "name": "Prasklý naviják",
+  "category": "object",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M5 25V8H27V25M3 25H29M8 13H24M12 9V19H20V9M16 19V27M13 27H19"
+}
