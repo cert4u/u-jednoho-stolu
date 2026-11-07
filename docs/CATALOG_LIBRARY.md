@@ -4,11 +4,11 @@
 
 Knihovna je součástí konkrétní instalace **Node/Docker**. Vlastní a již instalované komunitní katalogy fungují offline. GitHub je pouze volitelný distribuční kanál: aplikace při hraní nic nestahuje a nepotřebuje centrální účet.
 
-![Ověřený přehled knihovny ve stávající administraci](images/catalog-library.jpg)
+![Ověřený detail katalogu se seznamem položek, náhledem a stránkováním](images/catalog-editor.png)
 
 ## Správa instalace
 
-Otevři `/admin`, přihlas se heslem správce instalace a přejdi do **Katalogy**. Herní přístup PJ ani hráče zde nestačí. Přehled ukazuje název, neměnné ID, typ, verzi, autora, počty položek, stav a dostupné akce.
+Otevři `/admin`, přihlas se heslem správce instalace a přejdi do **Katalogy**. Herní přístup PJ ani hráče zde nestačí. Přehled ukazuje název, neměnné ID, typ, verzi, autora, počty položek, stav a dostupné akce. Otevřený katalog má vlevo seznam položek a vpravo popis a náhled; podrobné údaje jsou v rozbalovací části **Strukturovaná data JSON**. Seznam je stránkovaný po osmi položkách, bez vnitřního scrollbaru; šipky pod seznamem zpřístupní další položky. Vlastní kopii, duplikaci nebo odstranění najdeš u vybrané položky.
 
 - **Výchozí:** soubory distribuované s aplikací. Bez databázového importu při startu, pouze pro čtení. Aktualizují se s aplikací.
 - **Vlastní:** obsah správce v místní SQLite. Lze měnit metadata, přidávat a upravovat položky, kopírovat, exportovat a vracet uloženou verzi.
@@ -17,18 +17,18 @@ Otevři `/admin`, přihlas se heslem správce instalace a přejdi do **Katalogy*
 ### Vytvoření a editace
 
 1. **Vytvořit katalog:** zadej název, ID, autora a licenci. Nový katalog má verzi `1.0.0` a odkaz na distribuovaný obsah. Zobrazovaný název lze měnit v metadatech, ID zůstává stejné.
-2. V přehledu otevři **Prohlédnout**, vyber typ obsahu a **Nová položka**, nebo **Nový plošný materiál**.
+2. V přehledu otevři **Otevřít katalog**, vyber typ obsahu a **Nová položka**, nebo **Nový materiál**.
 3. Editor používá existující schémata. JSON se kontroluje průběžně a server ověřuje i odkazy. U stafáže a příšery ukazuje náhled. ID existující položky neměň: **Duplikovat** založí nové ID, **Vlastní kopie** umí přenos mezi katalogy.
 4. Obrázky přidávej jako statický WebP. Do pole `portrait` patří ID obrázku bez přípony. Vložené přílohy zůstávají v persistentním adresáři instalace.
-5. **Uložit** kontroluje aktuální revizi katalogu. Pokud někdo mezitím uložil jinou úpravu, načti aktuální katalog; zastaralá změna jej nepřepíše.
+5. **Uložit změny** kontroluje aktuální revizi katalogu. Pokud někdo mezitím uložil jinou úpravu, načti aktuální katalog; zastaralá změna jej nepřepíše.
 
 Pole jednotlivých kategorií popisuje [návod k obsahu](OBSAH.md) a [stafáž](SCENERY.md). Plošné materiály jsou záznamy `scenery` s profilem `surface`, ne pátá databázová kategorie. Smazání položky, která je použitá v kampani nebo potřebná pro jinou předlohu, je blokované. Kopie přebírají údaje o licenci a autorství zdroje; kopírování samo neuděluje nové distribuční oprávnění.
 
 ### ZIP a GitHub
 
-**Importovat ZIP** nejdříve zobrazí jméno, licenci, verzi, SHA-256, počty položek a závislosti. Teprve **Potvrdit instalaci** uloží celý katalog. Chyba nevytvoří napůl instalovanou knihovnu. Importovaný originál je komunitní a pouze pro čtení.
+**Importovat ZIP** otevře výběr souboru. Po jeho zvolení nejdříve zobrazí jméno, licenci, verzi, SHA-256, počty položek a závislosti. Teprve **Potvrdit instalaci** uloží celý katalog. Chyba nevytvoří napůl instalovanou knihovnu. Importovaný originál je komunitní a pouze pro čtení.
 
-**Přidat katalog z GitHubu** přijímá pouze veřejný `https://github.com/autor/repozitar`. Volitelně lze zadat tag nebo revizi; výchozí je `HEAD`. Server jej přeloží na konkrétní commit a stáhne archiv této neměnné revize. Nepracuje s živou větví během hry. Zdroj, commit, otisk a datum instalace zůstávají u katalogu.
+**Přidat katalog z GitHubu** otevře formulář přímo v administraci pro adresu a revizi; zrušení nic neinstaluje. Přijímá pouze veřejný `https://github.com/autor/repozitar`. Volitelně lze zadat tag nebo revizi; výchozí je `HEAD`. Server jej přeloží na konkrétní commit a stáhne archiv této neměnné revize. Nepracuje s živou větví během hry. Zdroj, commit, otisk a datum instalace zůstávají u katalogu.
 
 U katalogu s GitHub zdrojem použij **Zkontrolovat aktualizace**. Souhrn porovná současnou a novou verzi a počet přidaných, změněných a odebraných položek. Stejné číslo verze s jiným obsahem má jiný otisk a vyžaduje nové potvrzení. Starší verze se neinstaluje jako aktualizace; slouží k tomu bod návratu. Chyba sítě nebo validace nemění platnou knihovnu. Aplikace sama aktualizace neinstaluje.
 

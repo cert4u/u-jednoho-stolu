@@ -1,5 +1,11 @@
 # Změny
 
+## Příští vydání
+
+- **Administrace v zabudovaných prohlížečích.** Vstupy a bezpečnostní potvrzení používají dialog uvnitř stránky; přidání GitHub katalogu ani obrázku už nezávisí na nepodporovaném `prompt()`. Obnova zálohy dál vyžaduje přesný název.
+- **Přehlednější katalogy.** Navigace administrace, širší pracovní plocha, dvoupanelový detail, čitelné popisy a náhledy, rozbalovací JSON a akce u vybrané položky. Import ZIP má zarovnané tlačítko a seznam se stránkuje po osmi položkách bez vnitřního scrollbaru.
+- **Rozdělení katalogového servisu.** Veřejné rozhraní zůstává v `catalog-store.mjs`; SQLite, validace, použití v kampaních, editor, importy a životní cyklus mají samostatné moduly.
+
 ## 1.2.0 — 2026-11-07
 
 - **Integrační audit katalogů.** Samostatně publikovatelný původní důl (3 příšery, 5 značek, 2 plochy, předloha a dobrodružství s pěti fázemi), opakovatelné měření API, test provozu bez externí sítě a skutečná obnova serverového ZIP do nové instalace. Oprava: tvorba i export úplné zálohy odmítají chybějící nebo poškozené podklady katalogů a historie. Herní mechaniky a generátor V2 se nemění. [Výsledky](docs/CATALOG_AUDIT.md).
