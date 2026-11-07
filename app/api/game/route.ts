@@ -1,3 +1,6 @@
+import {prepareActionCatalog,portraitForCatalog,resolvedScenery} from '../../../lib/catalogs/game-content';
+import {loadCatalogs} from '../../../lib/catalogs/runtime';
+import {validateCampaignImages} from '../../../lib/catalogs/image-snapshot';
 import { and, eq } from 'drizzle-orm';
 import { getDb } from '../../../db';
 import { rooms } from '../../../db/schema';
@@ -33,7 +36,13 @@ export async function GET(req: Request) {
     if (!me) return fail('Připoj se k místnosti.', 401);
     if (u.searchParams.get('catalog') === 'bestiary') {
       if (me.role !== 'pj') return fail('Bestiář je dostupný pouze PJ.', 403);
-      return Response.json(bestiaryEntries, { headers });
+      const library=await loadCatalogs(g.contentLibrary);
+      return Response.json(library.list('bestiary').map(e=>({...e.data,portrait:portraitForCatalog(library,e.ref,g.contentLibrary),catalogSource:{id:e.catalogId,name:library.source(e.ref)?.bundle.manifest.name??e.catalogId,version:e.version,digest:e.digest}})),{headers});
+    }
+    if(u.searchParams.get('catalog')==='preparation'){
+      if(me.role!=='pj')return fail('Přípravu katalogů používá pouze PJ.',403);
+      const library=await loadCatalogs(g.contentLibrary);
+      return Response.json({scenery:resolvedScenery(library),presets:library.list('dungeon-presets').map(e=>e.data)},{headers});
     }
     if (u.searchParams.get('download') === 'backup') {
       if (me.role !== 'pj') return fail('Úplnou zálohu stahuje pouze PJ.', 403);
@@ -82,9 +91,11 @@ export async function POST(req: Request) {
                 String(b.name || 'Pán jeskyně').slice(0, 30),
                 crypto.randomUUID(),
               );
+        if(b.action==='restore')await validateCampaignImages(game.contentLibrary);
         if (b.action === 'create' && b.adventureId !== undefined) {
           const owner = game.members[0];
-          startAdventure(game, owner, b.adventureId);
+          const library=await prepareActionCatalog(game,owner,b);
+          startAdventure(game, owner, b.adventureId,library);
         }
       } catch (e) {
         return fail(e instanceof Error ? e.message : 'Neplatná záloha.');
@@ -154,7 +165,9 @@ export async function POST(req: Request) {
       }
       if (!me) return fail('Připoj se k místnosti.', 401);
       me.seen = Date.now();
-      const result = await applyGameAction(g, me, row.id, b);
+      let library;
+      try{library=await prepareActionCatalog(g,me,b);}catch(e){return fail(e instanceof Error?e.message:'Katalog není dostupný.');}
+      const result = await applyGameAction(g, me, row.id, b,library);
       if (result instanceof Response) return result;
       recoveryCode = result.recoveryCode ?? recoveryCode;
       const { generatedLevels } = result;

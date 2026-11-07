@@ -1,3 +1,4 @@
+import {useCatalog} from '../catalog-provider';
 import {surfaceTextureMarks} from '../../lib/surface-texture';
 import { useId, useMemo } from 'react';
 import type { Dungeon } from '../../lib/dungeon';
@@ -9,9 +10,10 @@ import { PAD,SIZE } from '../dungeon-map/model';
 export default function OrganicSurfaces({map,lit,revealed,visible,exploring}:{
   map:Dungeon;lit:ReadonlySet<string>;revealed:ReadonlySet<string>;visible:boolean;exploring:boolean;
 }){
+  const {scenery}=useCatalog();
   const id=useId().replaceAll(':','');
   const regions=useMemo(()=>surfaceRegions(map).map(region=>{
-    const profile=findSceneryEntry(region.kind)?.surface??{color:'#938571',roughness:.5,texture:'strokes'};
+    const profile=findSceneryEntry(region.kind,scenery)?.surface??{color:'#938571',roughness:.5,texture:'strokes'};
     const floor=new Set(map.floors),own=new Set(region.cells.map(p=>p.join(',')));
     const occupied=new Set((map.surfaces??[]).map(p=>`${p.x},${p.y}`));
     const support=new Map(region.cells.map(p=>[p.join(','),p]));
@@ -20,7 +22,7 @@ export default function OrganicSurfaces({map,lit,revealed,visible,exploring}:{
       if(floor.has(k)&&!map.edges[edge]&&(!occupied.has(k)||own.has(k)))support.set(k,[nx,ny]);
     }
     return {...region,support:[...support.values()],profile,marks:surfaceTextureMarks([...support.values()],region.kind,profile.texture),path:organicSurfacePath(region,profile.roughness)};
-  }),[map.surfaces,map.floors,map.edges]);
+  }),[map.surfaces,map.floors,map.edges,scenery]);
   return <g data-map-layer="surfaces" pointerEvents="none" transform={`translate(${PAD} ${PAD}) scale(${SIZE})`}>
     {regions.map((region,i)=>{
       const uid=`surface-${id}-${i}`;
@@ -28,7 +30,7 @@ export default function OrganicSurfaces({map,lit,revealed,visible,exploring}:{
         const k=`${x},${y}`;return (visible? !exploring||lit.has(k):revealed.has(k))===bright;
       })}));
       return <g key={uid} data-surface-kind={region.kind}>
-        <title>{findSceneryEntry(region.kind)?.name??`Neznámá plocha (${region.kind})`}</title>
+        <title>{findSceneryEntry(region.kind,scenery)?.name??`Neznámá plocha (${region.kind})`}</title>
         <defs>
           <clipPath id={uid}><path d={region.path} clipRule="evenodd"/></clipPath>
           {passes.map(pass=><clipPath key={String(pass.bright)} id={`${uid}-${pass.bright}`}>

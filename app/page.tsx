@@ -1,4 +1,5 @@
 'use client';
+import {CatalogProvider} from '../components/catalog-provider';
 import { type VoicePresence } from '../components/voice-panel';
 import { LifeBadge, LifeSummary } from '../components/life-panel';
 import { useState, useEffect, useRef } from 'react';
@@ -478,7 +479,7 @@ export default function Home() {
       </div>
     );
   return (
-    <main className="app">
+    <CatalogProvider session={session} pj={me.role==='pj'} visuals={game.contentVisuals}><main className="app">
       <header className="topbar">
         <a className="brand" href="#">
           <Swords /> U jednoho stolu
@@ -833,7 +834,7 @@ export default function Home() {
           leave={leave}
         />
       )}
-    </main>
+    </main></CatalogProvider>
   );
 }
 

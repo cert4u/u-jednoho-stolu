@@ -45,8 +45,8 @@ export function writeZip(files,limits=zipLimits){
  for(const [name,value]of [...files.entries()].sort(([a],[b])=>a.localeCompare(b,'en'))){
   safeZipPath(name);const bytes=Buffer.from(value),encoded=Buffer.from(name),crc=crc32(bytes);
   total+=bytes.length;if(bytes.length>limits.file||total>limits.total)throw new Error('Příliš velký obsah ZIP.');
-  const header=Buffer.alloc(30);header.writeUInt32LE(0x04034b50);header.writeUInt16LE(20,4);header.writeUInt16LE(0x800,6);header.writeUInt32LE(crc,14);header.writeUInt32LE(bytes.length,18);header.writeUInt32LE(bytes.length,22);header.writeUInt16LE(encoded.length,26);
-  const record=Buffer.alloc(46);record.writeUInt32LE(0x02014b50);record.writeUInt16LE(0x314,4);record.writeUInt16LE(20,6);record.writeUInt16LE(0x800,8);record.writeUInt32LE(crc,16);record.writeUInt32LE(bytes.length,20);record.writeUInt32LE(bytes.length,24);record.writeUInt16LE(encoded.length,28);record.writeUInt32LE((0o100600<<16)>>>0,38);record.writeUInt32LE(offset,42);
+  const header=Buffer.alloc(30);header.writeUInt32LE(0x04034b50);header.writeUInt16LE(20,4);header.writeUInt16LE(0x800,6);header.writeUInt16LE(0x21,12);header.writeUInt32LE(crc,14);header.writeUInt32LE(bytes.length,18);header.writeUInt32LE(bytes.length,22);header.writeUInt16LE(encoded.length,26);
+  const record=Buffer.alloc(46);record.writeUInt32LE(0x02014b50);record.writeUInt16LE(0x314,4);record.writeUInt16LE(20,6);record.writeUInt16LE(0x800,8);record.writeUInt16LE(0x21,14);record.writeUInt32LE(crc,16);record.writeUInt32LE(bytes.length,20);record.writeUInt32LE(bytes.length,24);record.writeUInt16LE(encoded.length,28);record.writeUInt32LE((0o100600<<16)>>>0,38);record.writeUInt32LE(offset,42);
   local.push(header,encoded,bytes);central.push(record,encoded);offset+=header.length+encoded.length+bytes.length;
  }
  const directory=Buffer.concat(central),end=Buffer.alloc(22);end.writeUInt32LE(0x06054b50);end.writeUInt16LE(files.size,8);end.writeUInt16LE(files.size,10);end.writeUInt32LE(directory.length,12);end.writeUInt32LE(offset,16);

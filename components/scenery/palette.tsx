@@ -1,4 +1,5 @@
 'use client';
+import {useCatalog} from '../catalog-provider';
 import { useState } from 'react';
 import { sceneryCatalog, type Scenery } from '../../lib/scenery';
 import {sceneryChoices,type SceneryCategory,type SceneryEnvironment} from '../../lib/scenery-catalog';
@@ -10,21 +11,23 @@ export default function SceneryPalette({brush,onChange,moving,onCancelMove,fill,
   brush:SceneryBrush;onChange:(next:SceneryBrush)=>void;moving:boolean;onCancelMove:()=>void;fill:SceneryFillControlsProps;
   surfaceOp:'add'|'remove';onSurfaceOp:(op:'add'|'remove')=>void;
 }){
+  const {scenery:sceneryCatalog,refresh,error}=useCatalog();
   const [environment,setEnvironment]=useState<SceneryEnvironment>('all');
   const [category,setCategory]=useState<Category>('object');
   const choose=(nextCategory:Category,nextEnvironment=environment)=>{
     setCategory(nextCategory);setEnvironment(nextEnvironment);
-    const entry=sceneryChoices(nextCategory,nextEnvironment)[0];
+    const entry=sceneryChoices(nextCategory,nextEnvironment,sceneryCatalog)[0];
     if(entry)onChange({...brush,kind:entry.id});
   };
   const area=Boolean(sceneryCatalog.find(item=>item.id===brush.kind)?.surface);
   return <section className="scenery-palette" aria-label="Stafáž mapy">
+    <button type="button" onClick={()=>void refresh()}>Obnovit katalogy</button>{error&&<p role="status">{error}</p>}
     <div className="scenery-palette-heading"><strong>Stafáž</strong><label>Prostředí<select value={environment} onChange={event=>choose(category,event.target.value as typeof environment)}>
       <option value="all">Všechna</option><option value="castle">Hrad</option><option value="mine">Důl</option><option value="cave">Jeskyně</option>
     </select></label></div>
     <div className="scenery-categories" role="group" aria-label="Druh stafáže">{(['object','floor','area'] as const).map(value=><button key={value} type="button" aria-pressed={category===value} onClick={()=>choose(value)}>{({object:'Předměty',floor:'Podlahové značky',area:'Plochy'})[value]}</button>)}</div>
     <div className="scenery-choices" role="group" aria-label="Prvky stafáže">
-      {sceneryChoices(category,environment).map(item=><button type="button" key={item.id} aria-pressed={brush.kind===item.id} aria-label={item.name} title={item.name} onClick={()=>onChange({...brush,kind:item.id})}>
+      {sceneryChoices(category,environment,sceneryCatalog).map(item=><button type="button" key={item.id} aria-pressed={brush.kind===item.id} aria-label={item.name} title={`${item.name} · ${item.id}`} onClick={()=>onChange({...brush,kind:item.id})}>
         <svg viewBox="0 0 32 32" aria-hidden="true"><SceneryGlyph kind={item.id}/></svg><span>{item.name}</span>
       </button>)}
     </div>

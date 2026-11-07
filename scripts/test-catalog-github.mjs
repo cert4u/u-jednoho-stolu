@@ -6,7 +6,7 @@ const dir=mkdtempSync(path.join(tmpdir(),'stul-catalog-github-'));process.env.ST
 const {downloadGithubCatalog,prepareGithubCatalog,githubRepository,recommendedCatalogs}=await import('../server/catalog-github.mjs');
 const store=await import('../server/catalog-store.mjs'),core=await import('../dist/catalog-core.mjs');
 const {packCatalog}=await import('../server/catalog-pack.mjs');
-const bundle=(version,hp)=>({manifest:{schemaVersion:1,id:'public-mine',name:'Veřejné doly',author:'Autor',license:'CC0-1.0',version,minAppVersion:'1.1.0',dependencies:[],description:'',fileLicenses:{}},entries:{...core.emptyEntries(),bestiary:[{...core.builtinCatalog.bundle.entries.bestiary[0],id:'rat',portrait:undefined,maxHp:hp}]},assets:[]});
+const bundle=(version,hp)=>({manifest:{schemaVersion:1,id:'public-mine',name:'Veřejné doly',author:'Autor',license:'CC0-1.0',version,minAppVersion:'1.1.0',dependencies:[],description:'',fileLicenses:{}},documents:{LICENSE:'Original catalog license text.', 'README.md':'Catalog description.'},entries:{...core.emptyEntries(),bestiary:[{...core.builtinCatalog.bundle.entries.bestiary[0],id:'rat',portrait:undefined,maxHp:hp}]},assets:[]});
 const archive=async b=>packCatalog(b,()=>{throw Error('No image');});
 let calls=[];
 const transport=(zip,sha='a'.repeat(40))=>async(url,options)=>{
@@ -40,6 +40,16 @@ try{
  await store.rollbackCatalog('public-mine',updated.revision,updated.history[0].id);assert.equal((await store.viewCatalog('public-mine')).bundle.entries.bestiary[0].maxHp,12);
  const sameVersion=await prepareGithubCatalog({repository:'https://github.com/author/mine',updateId:'public-mine'},transport(await archive(bundle('1.0.0',22)),'d'.repeat(40)));
  assert.notEqual(sameVersion.digest,old.digest,'Version labels alone must not identify bytes.');await store.discardImport(sameVersion.token);
+ const oldState=await store.viewCatalog('public-mine'),removeRat=bundle('2.0.0',20);removeRat.entries.bestiary=[];
+ const pending=await prepareGithubCatalog({repository:'https://github.com/author/mine',updateId:'public-mine'},transport(await archive(removeRat),'e'.repeat(40)));
+ await store.createCatalog({schemaVersion:1,id:'dependent',name:'Závislý',author:'Autor',license:'CC0',version:'1.0.0',minAppVersion:'1.1.0',dependencies:[{id:'builtin',minVersion:'1.1.0'},{id:'public-mine',minVersion:'1.0.0'}]});
+ const dependent=await store.viewCatalog('dependent');
+ await store.editEntry({id:'dependent',expectedRevision:dependent.revision,type:'adventures',entry:{id:'tale',title:'Příběh',scene:'Scéna',summary:'Anotace',gmNotes:'',dungeonPreset:'builtin:castle',rooms:[{floor:1,role:'entrance',title:'Vchod',playerText:'',gmNotes:'',monsters:['public-mine:rat']}]}});
+ await assert.rejects(store.installPrepared(pending.token),/Neexistující odkaz/);
+ assert.equal((await store.viewCatalog('public-mine')).digest,oldState.digest,'Dependency changes after preview must roll back installation.');
+ await store.discardImport(pending.token);
+ assert.equal((await store.viewCatalog('public-mine')).bundle.documents.LICENSE,'Original catalog license text.');
+ const ownCredits=await store.viewCatalog('own');assert(ownCredits.bundle.manifest.fileLicenses['bestiary/local-rat.json']);assert(ownCredits.bundle.manifest.attributions['bestiary/local-rat.json']);
  const list=await recommendedCatalogs(async()=>new Response(JSON.stringify({encoding:'base64',content:Buffer.from(JSON.stringify([{id:'mine',name:'Doly',author:'Autor',repository:'https://github.com/author/mine'}])).toString('base64')})));
  assert.equal(list.length,1);
  console.log('PASS: mocked immutable GitHub install/update, URL/redirect/size guards, outages, rollback, source hashes and protection of local and campaign copies; no live GitHub requests.');

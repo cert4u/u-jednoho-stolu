@@ -1,3 +1,4 @@
+import {campaignVisuals} from '../../../lib/catalogs/game-content';
 import { storyOutlineView } from '../../../lib/story-outline';
 import { sessionRecapView } from '../../../lib/session-recap';
 import { generationState } from '../../../lib/generation';
@@ -37,6 +38,7 @@ export function gameView(
   const { mapHistory, generationRuns } = g;
   // List the response fields here so new stored data stays private by default.
   return {
+    contentVisuals:campaignVisuals(g,pj?map:visible),
     title: g.title,
     scene: g.scene,
     experienceAwards: g.experienceAwards,

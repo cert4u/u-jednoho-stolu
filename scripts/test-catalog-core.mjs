@@ -26,5 +26,7 @@ assert.equal(restored.get('bestiary','saga:rat').data.maxHp,saga.entries.bestiar
 saga.entries.bestiary[0].maxHp=999;
 const updated=new CatalogResolver([installed(saga)],pinned);
 assert.notEqual(updated.get('bestiary','saga:rat').data.maxHp,999,'A catalog update must not mutate a pinned campaign template.');
+assert.throws(()=>validateCatalog({...make('doly'),manifest:{...bundle.manifest,schemaVersion:99}}),/schemaVersion/);
+assert.throws(()=>validateCatalog({...make('doly'),manifest:{...bundle.manifest,dependencies:[{id:'missing',minVersion:'1.0.0'}]}}),/Chybí závislost/);
 assert.match(await sha256('catalog'),/^[a-f0-9]{64}$/);
 console.log('PASS: catalog namespaces, builtin compatibility, versions/dependencies, duplicate rejection, adventure links and immutable portable campaign snapshots.');

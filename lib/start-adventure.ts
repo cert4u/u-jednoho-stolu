@@ -1,3 +1,4 @@
+import type {CatalogResolver} from './catalogs/resolver';
 import { emptyStoryBeat } from './story-phases';
 import { adventureTemplates, resolveAdventureRooms } from './adventure-templates';
 import { findDungeonPreset } from './dungeon-presets';
@@ -7,10 +8,10 @@ import { monsterAction } from './monsters';
 import type { Game, Member } from './game';
 
 /** Copy a template into a new campaign before the first database write. */
-export function startAdventure(game: Game, owner: Member, templateId: unknown) {
-  const template = adventureTemplates.find((entry) => entry.id === templateId);
+export function startAdventure(game: Game, owner: Member, templateId:unknown,library?:CatalogResolver) {
+  const template=library?library.get('adventures',templateId)?.data:adventureTemplates.find(entry=>entry.id===templateId);
   if (!template) throw new Error('Předloha dobrodružství neexistuje.');
-  const preset = findDungeonPreset(template.dungeonPreset);
+  const preset=library?library.get('dungeon-presets',template.dungeonPreset)?.data:findDungeonPreset(template.dungeonPreset);
   if (!preset) throw new Error('Předloha jeskyně neexistuje.');
 
   const levels = generationAction(game, owner, {
@@ -57,7 +58,7 @@ export function startAdventure(game: Game, owner: Member, templateId: unknown) {
         templateId: monsterId,
         levelId,
         requestId: crypto.randomUUID(),
-      });
+      },library);
       const monster = game.monsters?.at(-1);
       if (!monster) throw new Error('Příšeru z předlohy se nepodařilo přidat.');
       // Overflow stays in the manager so PJ can place it manually.

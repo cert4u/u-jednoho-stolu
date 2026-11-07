@@ -29,7 +29,7 @@ export const bestiaryEntrySchema = z
 
 export const bestiaryEntries =
   parseCatalog(catalog, bestiaryEntrySchema);
-export type BestiaryEntry = (typeof bestiaryEntries)[number];
+export type BestiaryEntry=(typeof bestiaryEntries)[number]&{catalogSource?:{id:string;name?:string;version:string;digest:string}};
 const entriesById = new Map(bestiaryEntries.map((entry) => [entry.id, entry]));
 
 export function findBestiaryEntry(id: unknown) {

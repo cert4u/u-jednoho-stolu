@@ -4,7 +4,7 @@ import * as library from './catalog-store.mjs';
 import {catalogFiles} from './catalog-files.mjs';
 import {zipLimits} from './catalog-zip.mjs';
 async function bytes(req,max){let size=0;const parts=[];for await(const part of req){size+=part.length;if(size>max)throw new Error('Příliš velký soubor.');parts.push(part);}return Buffer.concat(parts);}
-function errorText(error){return error.issues?error.issues.map(i=>`${i.path.join('.')}: ${i.message}`).join('\n'):error.message;}
+function errorText(error){return error.issues?error.issues.map(i=>`${i.path.join('.')}: ${i.code==='invalid_enum_value'?'povolené hodnoty: '+i.options.join(', '):i.code==='too_small'?'minimum je '+i.minimum:i.code==='too_big'?'maximum je '+i.maximum:i.code==='unrecognized_keys'?'neznámá pole: '+i.keys.join(', '):i.message}`).join('\n'):error.message;}
 export async function catalogApi(req,res,url){
  const action=url.pathname.slice('/admin/api/catalogs'.length).replace(/^\//,'');
  try{
@@ -37,7 +37,7 @@ export async function catalogApi(req,res,url){
    json(res,200,result);return;
   }
   json(res,405,{error:'Nepodporovaná operace.'});
- }catch(error){json(res,/změnil|neexistuje|závisejí|zachovej|Potvrď/.test(error.message)?409:400,{error:errorText(error)});}
+ }catch(error){json(res,/změnil|neexistuje|závisejí|zachovej|Potvrď/i.test(error.message)?409:400,{error:errorText(error)});}
 }
 export async function catalogAsset(req,res,pathname){
  const match=pathname.match(/^\/catalog-assets\/([a-f0-9]{64})\.webp$/);if(!match||req.method!=='GET'){json(res,404,{error:'Obrázek neexistuje.'});return;}

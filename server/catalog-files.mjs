@@ -1,10 +1,10 @@
 import {createHash} from 'node:crypto';
-import {readFile,mkdir,writeFile,rename,lstat} from 'node:fs/promises';
+import {readFile,mkdir,writeFile,rename,lstat,open,readdir} from 'node:fs/promises';
 import path from 'node:path';
 import {dataDirectory} from './database.mjs';
 const digestPattern=/^[a-f0-9]{64}$/;
 export function assetPath(digest){if(!digestPattern.test(digest))throw new Error('Neplatný otisk obrázku.');return path.join(dataDirectory(),'catalog-assets',digest+'.webp');}
-async function regularFile(file){const stat=await lstat(file);if(!stat.isFile()||stat.isSymbolicLink())throw new Error('Příloha není obyčejný soubor.');return readFile(file);}
+async function regularFile(file){const stat=await lstat(file);if(!stat.isFile()||stat.isSymbolicLink()||stat.size>1_500_000)throw new Error('Příloha není obyčejný soubor.');return readFile(file);}
 export const catalogFiles={
  async read(digest){const bytes=await regularFile(assetPath(digest));if(createHash('sha256').update(bytes).digest('hex')!==digest)throw new Error('Příloha neodpovídá svému otisku.');return bytes;},
  async builtin(portrait){
@@ -16,5 +16,6 @@ export const catalogFiles={
 export async function saveAsset(digest,bytes){
  const file=assetPath(digest);await mkdir(path.dirname(file),{recursive:true,mode:0o700});
  try{const old=await regularFile(file);if(!old.equals(Buffer.from(bytes)))throw new Error('Kolize nebo poškození obrázku.');return;}catch(error){if(error.code!=='ENOENT')throw error;}
- const temp=file+'.'+crypto.randomUUID()+'.tmp';await writeFile(temp,bytes,{mode:0o600,flag:'wx',flush:true});await rename(temp,file);
+ const present=await readdir(path.dirname(file),{withFileTypes:true});let used=0;for(const entry of present){if(entry.isFile())used+=(await lstat(path.join(path.dirname(file),entry.name))).size;}if(present.length>=4096||used+bytes.length>128_000_000)throw new Error('Persistentní přílohy překračují limit knihovny.');
+ const temp=file+'.'+crypto.randomUUID()+'.tmp';await writeFile(temp,bytes,{mode:0o600,flag:'wx',flush:true});await rename(temp,file);const directory=await open(path.dirname(file),'r');try{await directory.sync();}finally{await directory.close();}
 }

@@ -1,4 +1,5 @@
 'use client';
+import {useCatalog} from './catalog-provider';
 import { useRef, useState } from 'react';
 import GeneratorPreviewMap from './generator-preview-map';
 import { useMapAppearance } from './dungeon-map/use-map-appearance';
@@ -6,8 +7,6 @@ import MapAppearanceControl from './dungeon-map/renderers/appearance-control';
 import { generateDungeon } from '../lib/dungeon-generator';
 import {
   defaultDungeonPreset,
-  dungeonPresets,
-  findDungeonPreset,
 } from '../lib/dungeon-presets';
 import { generatorLimits, maxGeneratorRooms } from '../lib/generator-options';
 import type {
@@ -34,6 +33,9 @@ export default function GeneratorPanel({
   busy: boolean;
   onApply: (values: Record<string, unknown>) => Promise<unknown>;
 }) {
+  const {presets:dungeonPresets}=useCatalog();
+  const findDungeonPreset=(id:string)=>dungeonPresets.find(p=>p.id===id);
+  const [catalogPresetId,setCatalogPresetId]=useState('castle');
   const [appearance, setAppearance] = useMapAppearance();
   const [options, setOptions] = useState<GeneratorOptions>(() => ({
     ...defaultDungeonPreset.options,
@@ -130,6 +132,7 @@ export default function GeneratorPanel({
               onChange={(event) => {
                 const preset = findDungeonPreset(event.target.value);
                 if (preset) {
+                  setCatalogPresetId(preset.id);
                   setOptions({
                     ...preset.options,
                     levels: Math.min(preset.options.levels, state.available),
@@ -141,7 +144,7 @@ export default function GeneratorPanel({
               <option value="">Vyber předlohu pro vyplnění nastavení</option>
               {dungeonPresets.map((preset) => (
                 <option key={preset.id} value={preset.id}>
-                  {preset.label} · {preset.options.name}
+                  {preset.label} · {preset.options.name}{preset.id.includes(':')?' ['+preset.id.split(':')[0]+']':''}
                 </option>
               ))}
             </select>
@@ -433,7 +436,7 @@ export default function GeneratorPanel({
                 signature = JSON.stringify(values);
               if (pending.current?.signature !== signature)
                 pending.current = { signature, id: crypto.randomUUID() };
-              void onApply({ ...values, requestId: pending.current.id });
+              void onApply({catalogPresetId, ...values, requestId: pending.current.id });
             }}
           >
             Vložit tato patra do dobrodružství

@@ -10,12 +10,13 @@ export const sceneryEntrySchema = z.object({
 }).strict().refine(entry=>!entry.surface || entry.category==='floor'&&!entry.automatic, 'Plocha musí mít kategorii floor a automatic false.').refine(entry=>!entry.automatic || entry.category==='floor', 'Automaticky lze rozmísťovat jen podlahové detaily.');
 export const sceneryCatalog = parseCatalog(catalog,sceneryEntrySchema).map(entry=>({...entry,kind:entry.id}));
 export const sceneryKinds = sceneryCatalog.map(entry=>entry.id);
+export type SceneryDefinition=typeof sceneryCatalog[number];
 const byId = new Map(sceneryCatalog.map(entry=>[entry.id,entry]));
-export const findSceneryEntry = (id: string) => byId.get(id);
+export const findSceneryEntry = (id:string,entries?:readonly SceneryDefinition[]) => entries?entries.find(e=>e.id===id):byId.get(id);
 
 export type SceneryCategory='object'|'floor'|'area';
 export type SceneryEnvironment='all'|'castle'|'mine'|'cave';
-export function sceneryChoices(category:SceneryCategory,environment:SceneryEnvironment){
-  return sceneryCatalog.filter(entry=>(category==='area'?Boolean(entry.surface):entry.category===category&&!entry.surface)
+export function sceneryChoices(category:SceneryCategory,environment:SceneryEnvironment,entries:readonly SceneryDefinition[]=sceneryCatalog){
+  return entries.filter(entry=>(category==='area'?Boolean(entry.surface):entry.category===category&&!entry.surface)
     &&(environment==='all'||entry.environments.includes(environment)));
 }

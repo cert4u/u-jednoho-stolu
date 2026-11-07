@@ -12,9 +12,9 @@ function searchableName(value: string) {
 }
 
 export function BestiaryPortrait({portrait, name}: {portrait?: string; name: string}) {
-  if (!portrait) return null;
+  if (!portrait) return <span className="sheet-hint">Bez dostupné ilustrace</span>;
   return (
-    <img className="bestiary-portrait" src={`/monsters/${portrait}.webp`}
+    <img className="bestiary-portrait" src={portrait.startsWith('data:image/webp;base64,')||/^\/catalog-assets\/[a-f0-9]{64}\.webp$/.test(portrait)?portrait:`/monsters/${portrait}.webp`}
       alt={`Ilustrace: ${name}`} width={400} height={480} loading="lazy"/>
   );
 }
@@ -84,8 +84,8 @@ export default function BestiaryPanel({busy, onAdd, session}: {
       <ul className="bestiary-grid">
         {visibleEntries.map(entry => (
           <li key={entry.id} className="bestiary-card">
-            <BestiaryPortrait portrait={entry.portrait ?? entry.id} name={entry.name}/>
-            <h4>{entry.name}</h4>
+            <BestiaryPortrait portrait={entry.portrait} name={entry.name}/>
+            <h4>{entry.name}</h4>{entry.catalogSource&&entry.catalogSource.id!=='builtin'&&<small>{entry.catalogSource.name??entry.catalogSource.id} · {entry.catalogSource.version}</small>}
             <p>{entry.description}</p>
             <p className="bestiary-gm-hint"><strong>Jak ji hrát</strong> {entry.gmHint}</p>
             <small>{entry.maxHp} ž. · ÚČ {entry.combat.attack} · OČ {entry.combat.defense} · útočnost {entry.combat.damage}</small>

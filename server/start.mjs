@@ -107,7 +107,7 @@ const server=createServer(async(req,res)=>{try{
    json(res,201,{name:createSnapshot(true)});return;
   }
   if(pathname==='/admin/api/backup'&&req.method==='GET'){
-   if(!await downloadSnapshot(url.searchParams.get('name'),res))json(res,404,{error:'Záloha neexistuje.'});
+   if(!await downloadSnapshot(url.searchParams.get('name'),res,url.searchParams.get('bundle')==='1'))json(res,404,{error:'Záloha neexistuje.'});
    return;
   }
   const command=pathname.slice('/admin/api/'.length);

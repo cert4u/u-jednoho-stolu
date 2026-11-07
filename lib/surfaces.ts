@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { contentReference } from './content-schema';
-import { findSceneryEntry } from './scenery-catalog';
+import { findSceneryEntry,type SceneryDefinition } from './scenery-catalog';
 import type { Dungeon, Point } from './dungeon';
 
 export const surfaceCellSchema = z.object({
@@ -27,11 +27,11 @@ export function rememberSurfaces(memory:Dungeon,source:Dungeon,visible:ReadonlyS
   return [...publicSurfaces(memory.surfaces).filter(p=>!visible.has(key(p))),...observedSurfaces(source,visible)];
 }
 /** One transaction per brush stroke. Different materials replace only painted cells. */
-export function paintSurface(map:Dungeon,raw:Record<string,unknown>){
+export function paintSurface(map:Dungeon,raw:Record<string,unknown>,entries?:readonly SceneryDefinition[]){
   const parsed=strokeSchema.safeParse(raw);
   if(!parsed.success)throw new Error('Vyber platný materiál a tah uvnitř mapy (nejvýše 2048 bodů).');
   const {kind,op,hidden,points}=parsed.data;
-  if(op==='add'&&!findSceneryEntry(kind)?.surface)throw new Error('Tento materiál plochy v místním katalogu neexistuje.');
+  if(op==='add'&&!findSceneryEntry(kind,entries)?.surface)throw new Error('Tento materiál plochy v místním katalogu neexistuje.');
   const cells=new Map((map.surfaces??[]).map(p=>[key(p),p])),floor=new Set(map.floors);
   let touched=false;
   const paint=(x:number,y:number)=>{

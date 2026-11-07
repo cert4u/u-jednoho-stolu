@@ -6,6 +6,7 @@ import {spawnSync} from 'node:child_process';
 const dir=mkdtempSync(path.join(tmpdir(),'stul-catalog-store-'));process.env.STUL_DATA_DIR=dir;
 const store=await import('../server/catalog-store.mjs'),core=await import('../dist/catalog-core.mjs');
 const ordered=b=>({...b,entries:Object.fromEntries(Object.entries(b.entries).map(([k,v])=>[k,[...v].sort((a,b)=>a.id.localeCompare(b.id))]))});
+const {writeZip}=await import('../server/catalog-zip.mjs');
 const {unpackCatalog}=await import('../server/catalog-pack.mjs');
 try{
  const manifest={schemaVersion:1,id:'mine',name:'Doly',version:'1.0.0',author:'Test',license:'CC0-1.0',minAppVersion:'1.1.0'};
@@ -40,5 +41,12 @@ try{
  const before=structuredClone(other.bundle);
  await store.editManifest('other',other.revision,{...other.bundle.manifest,name:'Nový název'});other=await store.viewCatalog('other');assert.equal(other.bundle.manifest.id,'other');
  await store.rollbackCatalog('other',other.revision,other.history[0].id);assert.deepEqual((await store.viewCatalog('other')).bundle,before);
+ const countBefore=(await store.listCatalogs()).length;
+ for(const files of [
+  new Map([['catalog.json',Buffer.from('{bad')]]),
+  new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import',schemaVersion:99}))]]),
+  new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import'}))],['bestiary/broken.json',Buffer.from('{bad')]]),
+  new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import'}))],['script.js',Buffer.from('throw new Error()')]]),
+ ]){await assert.rejects(store.prepareCatalogImport(writeZip(files)));assert.equal((await store.listCatalogs()).length,countBefore);}
  console.log('PASS: local catalog CRUD, immediate validation, collisions/CAS, copy/duplicate/delete, immutable community origins, image persistence, export/import meaning, restart and history rollback.');
 }finally{rmSync(dir,{recursive:true,force:true});}

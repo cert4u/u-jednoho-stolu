@@ -6,7 +6,7 @@ export function bundleDigest(bundle){return hashBytes(JSON.stringify(stable({...
 export async function unpackCatalog(bytes,core,installed=[]){
  const files=readZip(bytes),manifests=[...files.keys()].filter(p=>p==='catalog.json'||p.endsWith('/catalog.json'));
  if(manifests.length!==1)throw new Error('Archiv musí obsahovat právě jeden catalog.json.');
- const prefix=manifests[0].slice(0,-'catalog.json'.length),entries=core.emptyEntries(),assets=[],images=new Map();let manifest;
+ const prefix=manifests[0].slice(0,-'catalog.json'.length),entries=core.emptyEntries(),documents={},assets=[],images=new Map();let manifest;
  for(const [full,data]of files){
   if(!full.startsWith(prefix))throw new Error('Všechny soubory musí patřit do kořene katalogu.');
   const name=full.slice(prefix.length);
@@ -14,7 +14,7 @@ export async function unpackCatalog(bytes,core,installed=[]){
    if(data.length>64_000)throw new Error('Manifest je příliš velký.');
    manifest=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(data));continue;
   }
-  if(['README.md','LICENSE','LICENSE.txt','.gitignore'].includes(name)){if(data.length>64_000)throw new Error('Dokument je příliš velký.');continue;}
+  if(['README.md','LICENSE','LICENSE.txt','.gitignore'].includes(name)){if(data.length>64_000)throw new Error('Dokument je příliš velký.');documents[name]=new TextDecoder('utf-8',{fatal:true}).decode(data);continue;}
   const json=name.match(/^(bestiary|dungeon-presets|adventures|scenery)\/([a-z][a-z0-9-]{0,49})\.json$/);
   if(json){
    if(data.length>256_000)throw new Error('JSON položka je příliš velká.');
@@ -25,11 +25,12 @@ export async function unpackCatalog(bytes,core,installed=[]){
   }
   throw new Error(`Nepovolený soubor ${name}.`);
  }
- const bundle=core.validateCatalog({manifest,entries,assets},installed);
+ const bundle=core.validateCatalog({manifest,entries,documents,assets},installed);
  return {bundle,images,digest:bundleDigest(bundle)};
 }
 export async function packCatalog(bundle,readImage){
  const files=new Map([['catalog.json',Buffer.from(JSON.stringify(bundle.manifest,null,2)+'\n')]]);
+ for(const [name,text]of Object.entries(bundle.documents??{}))files.set(name,Buffer.from(text));
  for(const [type,entries]of Object.entries(bundle.entries))for(const entry of entries)files.set(`${type}/${entry.id}.json`,Buffer.from(JSON.stringify(entry,null,2)+'\n'));
  for(const asset of bundle.assets){const bytes=await readImage(asset.digest);if(bytes.length!==asset.bytes||hashBytes(bytes)!==asset.digest)throw new Error('Příloha je poškozená.');files.set(asset.path,bytes);}
  return writeZip(files);

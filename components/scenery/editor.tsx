@@ -1,4 +1,5 @@
 'use client';
+import {useCatalog} from '../catalog-provider';
 import { useRef, useState } from 'react';
 import { sceneryName, type Scenery } from '../../lib/scenery';
 export default function SceneryEditor({ item, current, busy, onSave, onRemove, onMove }: {
@@ -6,12 +7,13 @@ export default function SceneryEditor({ item, current, busy, onSave, onRemove, o
   onSave: (values: Record<string,unknown>) => Promise<unknown>;
   onRemove: (values: Record<string,unknown>) => Promise<unknown>; onMove: () => void;
 }) {
+  const {scenery}=useCatalog();
   const [values,setValues] = useState(() => ({ rotation:item.rotation,size:item.size,note:item.note ?? '',hidden:Boolean(item.hidden) }));
   const pending = useRef<{ signature:string; id:string } | null>(null);
   const dirty = JSON.stringify(values) !== JSON.stringify({ rotation:item.rotation,size:item.size,note:item.note ?? '',hidden:Boolean(item.hidden) });
   const stale = !current || (current.revision ?? 0) !== (item.revision ?? 0);
   const base = { sceneryId:item.id, expectedRevision:item.revision ?? 0 };
-  return <><h2>{sceneryName(item.kind)}</h2><p className="sheet-hint">Políčko {item.x+1}, {item.y+1} · Pouze vizuální prvek, neblokuje pohyb.</p>
+  return <><h2>{sceneryName(item.kind,scenery)}</h2><p className="sheet-hint">Políčko {item.x+1}, {item.y+1} · Pouze vizuální prvek, neblokuje pohyb.</p>
     {stale && <p role="status" className="map-note-conflict">Prvek se mezitím změnil nebo zmizel. Rozepsané údaje zůstávají; otevři jej znovu.</p>}
     <form data-dirty={dirty} onSubmit={event => {
       event.preventDefault(); if (busy || stale) return;

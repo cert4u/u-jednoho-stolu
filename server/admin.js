@@ -105,8 +105,8 @@ async function readBackups() {
     const actions = document.createElement('div');
     actions.className = 'backup-actions';
     const download = document.createElement('a');
-    download.href = '/admin/api/backup?' + new URLSearchParams({ name: snapshot.name });
-    download.textContent = 'Stáhnout';
+    download.href = '/admin/api/backup?' + new URLSearchParams({ name: snapshot.name,bundle:'1' });
+    download.textContent = 'Úplná záloha ZIP';
     const restore = document.createElement('button');
     restore.className = 'secondary';
     restore.textContent = 'Obnovit databázi';

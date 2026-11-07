@@ -1,3 +1,5 @@
+import type {CatalogResolver} from '../../../lib/catalogs/resolver';
+import {resolvedScenery} from '../../../lib/catalogs/game-content';
 import {sceneryFillBlocked} from '../../../lib/scenery-fill';
 import { saveStoryOutline } from '../../../lib/story-outline';
 import { saveSessionRecap } from '../../../lib/session-recap';
@@ -33,6 +35,7 @@ export async function applyGameAction(
   me: Member,
   roomId: string,
   b: Record<string, unknown>,
+  library?:CatalogResolver,
 ) {
   const pj = me.role === 'pj';
   let recoveryCode: string | undefined;
@@ -86,7 +89,7 @@ export async function applyGameAction(
           const a = ensureAtlas(g),
             level = getLevel(a, b.levelId);
           const proxy = { ...g, dungeon: level.map, mapHistory: level.history };
-          applyMap(proxy, b.tool === 'scenery-fill' ? {...b,fillBlocked:sceneryFillBlocked(g,level.id)} : b);
+          applyMap(proxy, b.tool === 'scenery-fill' ? {...b,fillBlocked:sceneryFillBlocked(g,level.id)} : b,resolvedScenery(library));
           if (
             a.battle?.levelId === level.id &&
             g.members.some(
@@ -113,7 +116,7 @@ export async function applyGameAction(
             });
           if (!a.location) remember(level, level.map.revealed);
           refreshSight(g);
-        } else applyMap(g, b.tool === 'scenery-fill' ? {...b,fillBlocked:sceneryFillBlocked(g,'ground')} : b);
+        } else applyMap(g, b.tool === 'scenery-fill' ? {...b,fillBlocked:sceneryFillBlocked(g,'ground')} : b,resolvedScenery(library));
       } catch (e) {
         return fail(e instanceof Error ? e.message : 'Tah mapy se nepodařil.', e instanceof EditConflict ? 409 : 400);
       }
@@ -359,7 +362,7 @@ export async function applyGameAction(
     case 'monster':
       if (!pj) return fail('Příšery spravuje pouze Pán jeskyně.', 403);
       try {
-        monsterAction(g, me, b);
+        monsterAction(g, me, b,library);
       } catch (e) {
         return fail(
           e instanceof Error ? e.message : 'Příšeru se nepodařilo uložit.',

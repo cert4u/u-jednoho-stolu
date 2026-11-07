@@ -1,3 +1,4 @@
+import {CatalogResolver} from './catalogs/resolver';
 import {visibleConditions,type Condition} from './conditions';
 import {guardPatch,monsterSheet} from './sheets';
 import {combatFields,type CombatStats} from './combat-rules';
@@ -12,10 +13,12 @@ export function monsterViews(g: Game, pj: boolean, levelId: string): MonsterView
   return (g.monsters ?? []).flatMap<MonsterView>(monster => {
     if (monster.levelId !== levelId) return [];
     if (pj) {
-      const entry = findBestiaryEntry(monster.templateId);
+      const entry=g.contentLibrary?new CatalogResolver([],g.contentLibrary).get('bestiary',monster.templateId)?.data:findBestiaryEntry(monster.templateId);
+      const image=g.contentLibrary?.portraits[monster.templateId??''];
+      const embedded=image?g.contentLibrary?.images[image]:undefined;
       return [{
         ...monster,
-        ...(entry && { portrait: bestiaryPortrait(entry) }),
+        ...(entry && {portrait:embedded?`data:image/webp;base64,${embedded.data}`:(!monster.templateId?.includes(':')?bestiaryPortrait(entry):entry.portrait?.startsWith('builtin:')?entry.portrait.slice(8):undefined)}),
         defeated: monster.hp === 0,
         visibleToPlayers: monsterVisible(g, monster, levelId),
       }];
@@ -27,14 +30,14 @@ export function monsterViews(g: Game, pj: boolean, levelId: string): MonsterView
 }
 function integer(value:unknown,min:number,max:number,label:string){if(typeof value!=='number'||!Number.isInteger(value)||value<min||value>max)throw new Error(`${label}: zadej celé číslo od ${min} do ${max}.`);return value;}
 function title(value:unknown){const result=String(value??'').trim().slice(0,60);if(!result)throw new Error('Pojmenuj příšeru.');return result;}
-export function monsterAction(g:Game,actor:Member,b:Record<string,unknown>){if(actor.role!=='pj')throw new Error('Příšery spravuje pouze Pán jeskyně.');const requestId=b.requestId;if(typeof requestId!=='string'||! /^[a-zA-Z0-9-]{16,80}$/.test(requestId))throw new Error('Chybí identifikátor akce.');if(g.monsterOperations?.includes(requestId))return;const monsters=g.monsters??=[];const levelId=g.atlas?getLevel(g.atlas,b.levelId).id:'ground';const monster=monsters.find(m=>m.id===b.monsterId);
+export function monsterAction(g:Game,actor:Member,b:Record<string,unknown>,library?:CatalogResolver){if(actor.role!=='pj')throw new Error('Příšery spravuje pouze Pán jeskyně.');const requestId=b.requestId;if(typeof requestId!=='string'||! /^[a-zA-Z0-9-]{16,80}$/.test(requestId))throw new Error('Chybí identifikátor akce.');if(g.monsterOperations?.includes(requestId))return;const monsters=g.monsters??=[];const levelId=g.atlas?getLevel(g.atlas,b.levelId).id:'ground';const monster=monsters.find(m=>m.id===b.monsterId);
  switch(b.op){
  case 'create':
  case 'clone': {
   if (monsters.length >= 200) throw new Error('Místnost podporuje nejvýše 200 příšer včetně odstraněných.');
   const source = b.op === 'clone' ? monster : undefined;
   if (b.op === 'clone' && !source) throw new Error('Příšera neexistuje.');
-  const template = b.op === 'create' && b.templateId !== undefined ? findBestiaryEntry(b.templateId) : undefined;
+  const template = b.op === 'create' && b.templateId !== undefined ? (library?library.get('bestiary',b.templateId)?.data:findBestiaryEntry(b.templateId)) : undefined;
   if (b.op === 'create' && b.templateId !== undefined && !template) throw new Error('Příšera v bestiáři neexistuje.');
 
   const name = source?.name ?? title(b.name ?? template?.name);

@@ -23,7 +23,7 @@ function persist(db,c,previous){
  db.prepare('INSERT INTO catalogs(id,kind,enabled,revision,digest,payload,source,installed_at,checked_at) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET enabled=excluded.enabled,revision=excluded.revision,digest=excluded.digest,payload=excluded.payload,source=excluded.source,checked_at=excluded.checked_at').run(c.bundle.manifest.id,c.kind,Number(c.enabled),(previous?.revision??0)+1,c.digest,JSON.stringify(c.bundle),c.source?JSON.stringify(c.source):null,c.installedAt??now(),c.checkedAt??null);
 }
 function checkRevision(previous,expected){if((previous?.revision??null)!==expected)throw new Error('Katalog se mezitím změnil. Připrav nový návrh.');}
-function assetQuota(db,assets){const used=db.prepare('SELECT coalesce(sum(bytes),0) n FROM catalog_assets').get().n;const fresh=assets.filter(a=>!db.prepare('SELECT digest FROM catalog_assets WHERE digest=?').get(a.digest));if(used+fresh.reduce((n,a)=>n+a.bytes,0)>128_000_000)throw new Error('Přílohy knihovny překračují limit 128 MB.');for(const a of fresh)db.prepare('INSERT OR IGNORE INTO catalog_assets VALUES(?,?,?)').run(a.digest,a.bytes,a.mime);}
+function assetQuota(db,assets){if(db.prepare('SELECT count(*) n FROM catalog_assets').get().n+assets.filter(a=>!db.prepare('SELECT digest FROM catalog_assets WHERE digest=?').get(a.digest)).length>4096)throw new Error('Knihovna podporuje nejvýše 4096 neměnných příloh.');const used=db.prepare('SELECT coalesce(sum(bytes),0) n FROM catalog_assets').get().n;const fresh=assets.filter(a=>!db.prepare('SELECT digest FROM catalog_assets WHERE digest=?').get(a.digest));if(used+fresh.reduce((n,a)=>n+a.bytes,0)>128_000_000)throw new Error('Přílohy knihovny překračují limit 128 MB.');for(const a of fresh)db.prepare('INSERT OR IGNORE INTO catalog_assets VALUES(?,?,?)').run(a.digest,a.bytes,a.mime);}
 export function catalogUsage(id){
  const usages=[];
  for(const row of openDatabase().prepare('SELECT id,data FROM rooms').all()){
@@ -58,7 +58,7 @@ export async function editEntry({id,expectedRevision,type,entry,originalId,remov
   if(remove){
    if(!originalId)throw new Error('Vyber položku k odstranění.');
    for(const row of openDatabase().prepare('SELECT data FROM rooms').all())if(JSON.parse(row.data).contentLibrary?.entries.some(p=>p.catalogId===id&&p.type===type&&p.data.id===originalId))throw new Error('Položku používá kampaň. Zachovej ji v katalogu nebo vytvoř novou variantu.');
-   entries.splice(index,1);return;
+   entries.splice(index,1);delete next.bundle.manifest.fileLicenses[`${type}/${originalId}.json`];if(next.bundle.manifest.attributions)delete next.bundle.manifest.attributions[`${type}/${originalId}.json`];return;
   }
   const value=api.entrySchemas[type].parse(entry);
   if(originalId&&value.id!==originalId)throw new Error('ID existující položky neměň; použij Duplikovat.');
@@ -84,6 +84,10 @@ export async function copyEntry({sourceId,targetId,type,itemId,newId,expectedRev
     if(asset){entry.portrait=newId;const path=`images/${newId}.webp`;if(next.bundle.assets.some(a=>a.path===path))throw new Error('Pro kopii zvol jiné ID obrázku.');next.bundle.assets.push({...asset,path});}
    }
   }
+  const originalPath=`${type}/${itemId}.json`,copiedPath=`${type}/${newId}.json`;
+  next.bundle.manifest.fileLicenses[copiedPath]=source.bundle.manifest.fileLicenses[originalPath]??source.bundle.manifest.license;
+  next.bundle.manifest.attributions??={};next.bundle.manifest.attributions[copiedPath]=source.bundle.manifest.attributions?.[originalPath]??{author:source.bundle.manifest.author,source:`${sourceId}@${source.bundle.manifest.version}`};
+  if(type==='bestiary'&&entry.portrait===newId){const copiedImage=`images/${newId}.webp`,originalImage=`images/${original.portrait??itemId}.webp`;next.bundle.manifest.fileLicenses[copiedImage]=source.bundle.manifest.fileLicenses[originalImage]??source.bundle.manifest.license;next.bundle.manifest.attributions[copiedImage]=source.bundle.manifest.attributions?.[originalImage]??{author:source.bundle.manifest.author,source:`${sourceId}@${source.bundle.manifest.version}`};}
   next.bundle.entries[type].push(entry);
  });
 }
@@ -118,6 +122,7 @@ export async function installPrepared(token){
  for(const [digest,bytes]of prepared.images)await saveAsset(digest,bytes);
  const result=transaction(db=>{
   const all=rows(db),id=prepared.bundle.manifest.id,previous=all.find(c=>c.bundle.manifest.id===id);checkRevision(previous,prepared.previousRevision);
+  if(previous&&catalogUsage(id).some(u=>!u.preserved))throw new Error('Kampaň nemá zachované podklady; aktualizace je blokována.');
   if(previous?.kind==='local')throw new Error('Vlastní katalog nelze přepsat importem.');if(!previous&&all.length>=16)throw new Error('Knihovna podporuje nejvýše 16 místních katalogů.');
   const next={bundle:prepared.bundle,digest:prepared.digest,source:prepared.source,kind:'community',enabled:previous?.enabled??true,installedAt:previous?.installedAt??now(),checkedAt:now()};
   validateLibrary(api,[...all.filter(c=>c!==previous),next]);assetQuota(db,next.bundle.assets);persist(db,next,previous);return {ok:true,id};

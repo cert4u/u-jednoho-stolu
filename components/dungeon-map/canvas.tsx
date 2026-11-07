@@ -1,3 +1,4 @@
+import {useCatalog} from '../catalog-provider';
 import OrganicSurfaces from '../scenery/surfaces';
 import {paintSurface,type SurfaceBrush} from '../../lib/surfaces';
 import SceneryPreview from '../scenery/preview';
@@ -109,6 +110,7 @@ export default function MapCanvas({
     keyAction,
     svg,
   } = input;
+  const {scenery:catalogScenery}=useCatalog();
   const uniqueId = useId().replace(/:/g, '');
   const drawingKey = JSON.stringify([
     [...shown.floors].sort(),
@@ -214,7 +216,7 @@ export default function MapCanvas({
       <OrganicSurfaces map={(()=>{
         if(!stroke?.surface)return shown;
         const draft={...shown,surfaces:shown.surfaces};
-        try{paintSurface(draft,{...stroke.surface,points:stroke.points});return draft;}catch{return shown;}
+        try{paintSurface(draft,{...stroke.surface,points:stroke.points},catalogScenery);return draft;}catch{return shown;}
       })()} lit={lit} revealed={revealed} visible={visible} exploring={Boolean(exploration?.enabled)}/>
       <SceneryLayer map={shown} lit={lit} revealed={revealed} visible={visible} exploring={Boolean(exploration?.enabled)} editable={pj && !preview && effectiveTool === 'scenery' && !surfaceBrush} />
       {pj && !preview && <SceneryPreview items={sceneryPreview} />}

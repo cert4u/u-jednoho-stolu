@@ -190,7 +190,7 @@ export class UpdateManager {
       .map(entry => entry.name).sort((a, b) => Number(b.split('-')[0]) - Number(a.split('-')[0]));
     const protectedNames = new Set([safetySnapshot, this.state.previous?.snapshot, ...automatic.slice(0, this.keep)]);
     for (const name of automatic) {
-      if (!protectedNames.has(name)) unlinkSync(path.join(dir, name));
+      if (!protectedNames.has(name)) {unlinkSync(path.join(dir,name));if(existsSync(path.join(dir,name+'.assets.zip')))unlinkSync(path.join(dir,name+'.assets.zip'));}
     }
   }
 

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { Dungeon } from './dungeon';
 import type { Game } from './game';
-import { sceneryCatalog } from './scenery-catalog';
+import { sceneryCatalog,type SceneryDefinition } from './scenery-catalog';
 import type { Scenery } from './scenery';
 import { EditConflict } from './sheets';
 
@@ -27,18 +27,18 @@ export function sceneryFillBlocked(game:Game,requested?:unknown):string[]{
     for(const member of game.members)if(member.role==='player'&&!member.archived)result.add(key(member.x,member.y));
   return [...result].sort(sort);
 }
-export function sceneryFillStamp(map:Dungeon,blocked:readonly string[]):string{
+export function sceneryFillStamp(map:Dungeon,blocked:readonly string[],entries:readonly SceneryDefinition[]=sceneryCatalog):string{
   return JSON.stringify({surfaces:map.surfaces,floors:[...map.floors].sort(sort),edges:Object.entries(map.edges).sort(([a],[b])=>sort(a,b)),
     stairs:map.stairMarks,access:map.access,generation:map.generation?[map.generation.status,map.generation.style]:null,
     scenery:(map.scenery??[]).map(({id,x,y,kind,rotation,size,revision})=>({id,x,y,kind,rotation,size,revision})).sort((a,b)=>sort(a.id,b.id)),blocked:[...blocked].sort(sort),
-    catalog:sceneryCatalog.filter(entry=>entry.automatic).map(({id,environments})=>[id,environments])});
+    catalog:entries.filter(entry=>entry.automatic).map(({id,environments})=>[id,environments])});
 }
-export function proposeScenery(map:Dungeon,blocked:readonly string[],raw:unknown):ScenerySuggestion[]{
+export function proposeScenery(map:Dungeon,blocked:readonly string[],raw:unknown,entries:readonly SceneryDefinition[]=sceneryCatalog):ScenerySuggestion[]{
   const parsed=sceneryFillOptionsSchema.safeParse(raw);
   if(!parsed.success)throw new Error('Zvol prostředí, hustotu a semínko návrhu do 80 znaků.');
   const options=parsed.data;
   const environment=options.environment==='auto'?(map.generation?.status==='valid'?map.generation.style:undefined):options.environment;
-  const kinds=sceneryCatalog.filter(entry=>entry.category==='floor'&&entry.automatic&&(!environment||entry.environments.includes(environment))).map(entry=>entry.id).sort(sort);
+  const kinds=entries.filter(entry=>entry.category==='floor'&&entry.automatic&&(!environment||entry.environments.includes(environment))).map(entry=>entry.id).sort(sort);
   if(!kinds.length)return [];
   const floors=new Set(map.floors),occupied=new Set([...blocked,...(map.surfaces??[]).map(item=>key(item.x,item.y)),...(map.scenery??[]).map(item=>key(item.x,item.y)),...Object.keys(map.stairMarks??{}),...Object.values(map.access??{}).filter(p=>p).map(p=>p!.join(','))]);
   for(const [edge,kind]of Object.entries(map.edges))if(kind==='door'){
@@ -62,12 +62,12 @@ export function proposeScenery(map:Dungeon,blocked:readonly string[],raw:unknown
   }
   return result;
 }
-export function applySceneryFill(map:Dungeon,input:Record<string,unknown>){
+export function applySceneryFill(map:Dungeon,input:Record<string,unknown>,entries:readonly SceneryDefinition[]=sceneryCatalog){
   // The HTTP dispatcher replaces this context using current server-owned actors/notes.
   const blocked=Array.isArray(input.fillBlocked)?input.fillBlocked as string[]:[];
-  if(input.expectedStamp!==sceneryFillStamp(map,blocked))throw new EditConflict('Mapa nebo obsazení se změnily. Připrav nový návrh stafáže.');
+  if(input.expectedStamp!==sceneryFillStamp(map,blocked,entries))throw new EditConflict('Mapa nebo obsazení se změnily. Připrav nový návrh stafáže.');
   const options=sceneryFillOptionsSchema.parse(input.options);
-  const proposed=proposeScenery(map,blocked,options);
+  const proposed=proposeScenery(map,blocked,options,entries);
   if(!proposed.length)throw new Error('Pro další střídmé podlahové detaily není vhodné volné místo.');
   map.scenery=[...(map.scenery??[]),...proposed.map(item=>({...item,id:crypto.randomUUID(),revision:crypto.randomUUID(),hidden:options.hidden,note:''}))];
 }
