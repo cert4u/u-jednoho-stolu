@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 export const contentId = z.string().regex(/^[a-z][a-z0-9-]{0,49}$/);
 
+export const contentReference = z.string().regex(/^[a-z][a-z0-9-]{0,49}(?::[a-z][a-z0-9-]{0,49})?$/);
+
 export function parseCatalog<T extends z.ZodType<{ id: string }>>(
   sources: readonly { path: string; data: unknown }[],
   schema: T,

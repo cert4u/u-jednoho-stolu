@@ -3,7 +3,7 @@ import catalog from '../content/dungeon-presets/index';
 import { parseCatalog, contentId } from './content-schema';
 import { generatorOptionsSchema } from './generator-options';
 
-const presetSchema = z
+export const presetSchema = z
   .object({
     id: contentId,
     label: z.string().trim().min(1).max(60),

@@ -1,7 +1,7 @@
 import { storyPhaseSchema } from './story-phases';
 import { z } from 'zod';
 import catalog from '../content/adventures/index';
-import { parseCatalog, contentId } from './content-schema';
+import { parseCatalog, contentId, contentReference } from './content-schema';
 import { findDungeonPreset } from './dungeon-presets';
 import type { GeneratedRoom } from './generator-types';
 import { findBestiaryEntry } from './bestiary';
@@ -15,24 +15,25 @@ const roomSchema = z
     title: z.string().trim().min(1).max(60),
     playerText: z.string().trim().max(2000),
     gmNotes: z.string().trim().max(3000),
-    monsters: z.array(contentId).max(8).optional(),
+    monsters: z.array(contentReference).max(8).optional(),
   })
   .strict()
   .refine(room => Boolean(room.roomId) !== Boolean(room.role),
     'Vyber právě jedno pole: roomId nebo role.');
 
-export const adventureSchema = z
+export const adventureDataSchema = z
   .object({
     id: contentId,
     title: z.string().trim().min(1).max(100),
     scene: z.string().trim().min(1).max(100),
     summary: z.string().trim().min(1).max(500),
     gmNotes: z.string().trim().max(20000),
-    dungeonPreset: contentId,
+    dungeonPreset: contentReference,
     rooms: z.array(roomSchema).min(1).max(16),
   })
-  .strict()
-  .superRefine((entry, ctx) => {
+  .strict();
+
+export const adventureSchema = adventureDataSchema.superRefine((entry, ctx) => {
     const preset = findDungeonPreset(entry.dungeonPreset);
     if (!preset)
       ctx.addIssue({

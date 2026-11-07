@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { contentId } from './content-schema';
+import { contentReference } from './content-schema';
 import { findSceneryEntry } from './scenery-catalog';
 import type { Dungeon, Point } from './dungeon';
 
 export const surfaceCellSchema = z.object({
-  kind: contentId, x: z.number().int().min(0).max(27), y: z.number().int().min(0).max(19),
+  kind: contentReference, x: z.number().int().min(0).max(27), y: z.number().int().min(0).max(19),
   hidden: z.boolean().optional(),
 }).strict();
 export type SurfaceCell = z.infer<typeof surfaceCellSchema>;
@@ -12,7 +12,7 @@ export type SurfaceBrush = {kind:string;op:'add'|'remove';hidden:boolean};
 export const surfaceListSchema = z.array(surfaceCellSchema).max(560)
   .refine(items=>new Set(items.map(p=>`${p.x},${p.y}`)).size===items.length);
 const strokeSchema=z.object({
-  kind:contentId,op:z.enum(['add','remove']),hidden:z.boolean().default(false),
+  kind:contentReference,op:z.enum(['add','remove']),hidden:z.boolean().default(false),
   points:z.array(z.tuple([z.number().int().min(0).max(27),z.number().int().min(0).max(19)])).min(1).max(2048),
 });
 const key=(p:{x:number;y:number})=>`${p.x},${p.y}`;

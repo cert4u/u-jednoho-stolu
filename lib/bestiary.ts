@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import catalog from '../content/bestiary/index';
-import { parseCatalog, contentId } from './content-schema';
+import { parseCatalog, contentId, contentReference } from './content-schema';
 
 import { bestiaryEnvironments, type BestiaryEnvironment } from './bestiary-environments';
 
@@ -15,7 +15,7 @@ export const bestiaryEntrySchema = z
       .array(z.enum(environmentIds))
       .min(1)
       .refine((ids) => new Set(ids).size === ids.length),
-    portrait: contentId.optional(),
+    portrait: contentReference.optional(),
     maxHp: z.number().int().min(1).max(9999),
     combat: z
       .object({

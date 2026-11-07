@@ -48,3 +48,17 @@ for (const category of categories) {
       throw new Error(`content/${category}/index.ts: seznam souborů není aktuální. Spusť npm run content:sync.`);
   }
 }
+
+// Fingerprint the distributed definitions and portraits, without a database import.
+const {createHash}=await import('node:crypto');
+const builtinHash=createHash('sha256');
+for(const category of categories)for(const file of (await readdir(new URL(`../content/${category}/`,import.meta.url))).filter(n=>n.endsWith('.json')).sort()){
+  builtinHash.update(category+'/'+file+'\0');builtinHash.update(await readFile(new URL(`../content/${category}/${file}`,import.meta.url)));
+}
+for(const file of (await readdir(new URL('../public/monsters/',import.meta.url))).filter(n=>n.endsWith('.webp')).sort()){
+  builtinHash.update('monsters/'+file+'\0');builtinHash.update(await readFile(new URL('../public/monsters/'+file,import.meta.url)));
+}
+const fingerprint=new URL('../content/builtin-digest.ts',import.meta.url);
+const fingerprintSource=`// Vygenerováno příkazem npm run content:sync.\nexport default '${builtinHash.digest('hex')}';\n`;
+if(check){if(await readFile(fingerprint,'utf8').catch(()=> '')!==fingerprintSource)throw new Error('content/builtin-digest.ts: spusť npm run content:sync.');}
+else await writeFile(fingerprint,fingerprintSource);

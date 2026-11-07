@@ -1,5 +1,5 @@
 import { findSceneryEntry } from './scenery-catalog';
-import { contentId } from './content-schema';
+import { contentReference } from './content-schema';
 import { z } from 'zod';
 import type { Dungeon } from './dungeon';
 import { EditConflict } from './sheets';
@@ -7,7 +7,7 @@ import { EditConflict } from './sheets';
 export type SceneryKind = string;
 export { sceneryCatalog, sceneryKinds } from './scenery-catalog';
 export const scenerySchema = z.object({
-  id: z.string().uuid(), kind: contentId,
+  id: z.string().uuid(), kind: contentReference,
   x: z.number().int().min(0).max(27), y: z.number().int().min(0).max(19),
   rotation: z.union([z.literal(0),z.literal(90),z.literal(180),z.literal(270)]),
   size: z.enum(['small','medium','large']),

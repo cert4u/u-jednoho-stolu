@@ -1,3 +1,4 @@
+import {contentReference} from '../content-schema';
 import { z } from 'zod';
 import { id, int, text } from './fields';
 
@@ -100,10 +101,7 @@ export const member = z
   .refine((m) => m.hp <= m.maxHp);
 export const monster = z
   .object({
-    templateId: z
-      .string()
-      .regex(/^[a-z][a-z0-9-]{0,49}$/)
-      .optional(),
+    templateId: contentReference.optional(),
     conditions: conditions.optional(),
     id,
     number: int(1, 1000000),
