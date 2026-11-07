@@ -1,0 +1,11 @@
+{
+  "id": "shards",
+  "name": "Střepy",
+  "category": "floor",
+  "environments": [
+    "castle",
+    "mine"
+  ],
+  "automatic": true,
+  "path": "M4 10L11 7L9 17ZM16 5L21 11L14 13ZM19 19L28 17L25 26ZM6 23L12 21L11 28ZM15 25L17 23"
+}

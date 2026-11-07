@@ -1,0 +1,11 @@
+{
+  "id": "boulder",
+  "name": "Balvan",
+  "category": "object",
+  "environments": [
+    "mine",
+    "cave"
+  ],
+  "automatic": false,
+  "path": "M4 16L9 6L21 4L28 13L26 24L17 29L6 25ZM9 6L14 12L23 10M14 12L11 22L6 25M11 22L20 25L26 24M20 25L23 18"
+}

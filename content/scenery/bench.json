@@ -1,0 +1,10 @@
+{
+  "id": "bench",
+  "name": "Lavice",
+  "category": "object",
+  "environments": [
+    "castle"
+  ],
+  "automatic": false,
+  "path": "M5 12L27 11L27 20L5 21ZM9 12V20M23 12V20M8 21L7 26M24 20L25 25"
+}

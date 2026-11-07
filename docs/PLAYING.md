@@ -78,7 +78,7 @@ PJ u nezměněné mapy V2 uvidí rukopis hradu, dolu nebo jeskyně. Staré a ru�
 
 ### Stafáž
 
-PJ nástrojem **Stafáž** vybere jeden z dvanácti tušových symbolů, velikost a otočení a klikne do mapy. Filtr nabídne prvky pro hrad, důl či jeskyni. Kliknutí na existující symbol otevře úpravy a tajnou poznámku. Přesun, odstranění a běžné Zpět jsou podporované. Prvky jsou pouze dekorativní, pohyb neblokují; skryté prvky a poznámky se hráčům neposílají. Vnější dekoraci odhalí přilehlá známá podlaha, změny mimo dohled zůstávají v původní šedé paměti. [Návod a limity](SCENERY.md).
+PJ nástrojem **Stafáž** vybere jeden z 18 tušových symbolů předmětů a podlahy, velikost a otočení a klikne do mapy. Filtr nabídne prvky pro hrad, důl či jeskyni. Kliknutí na existující symbol otevře úpravy a tajnou poznámku. Přesun, odstranění a běžné Zpět jsou podporované. Prvky jsou pouze dekorativní, pohyb neblokují; skryté prvky a poznámky se hráčům neposílají. Vnější dekoraci odhalí přilehlá známá podlaha, změny mimo dohled zůstávají v původní šedé paměti. **Doplnit podlahu střídmě** připraví podlahové detaily podle prostředí, hustoty a semínka: nejdřív soukromý náhled, pak vložení celé sady s jedním Zpět. Zachová ruční stafáž a vynechá dveře, schody a obsazené značky. [Návod a komunitní katalog](SCENERY.md).
 
 ### Zámky a tajné dveře
 

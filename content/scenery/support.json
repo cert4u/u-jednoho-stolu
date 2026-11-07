@@ -1,0 +1,10 @@
+{
+  "id": "support",
+  "name": "Dřevěná podpěra",
+  "category": "object",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M4 3L9 3L10 28L5 28ZM24 3L28 4L27 28L23 28ZM5 4L27 5L27 9L5 8M9 13L15 8M23 13L18 9M6 17L8 18M24 20L26 19"
+}

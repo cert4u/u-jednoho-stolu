@@ -1,4 +1,5 @@
 'use client';
+import {proposeScenery,sceneryFillStamp,type SceneryFillOptions,type ScenerySuggestion} from '../lib/scenery-fill';
 import SceneryPalette, {type SceneryBrush} from './scenery/palette';
 import SceneryEditor from './scenery/editor';
 import type {Scenery} from '../lib/scenery';
@@ -257,6 +258,12 @@ export default function DungeonMap({
   const [sceneryBrush,setSceneryBrush] = useState<SceneryBrush>({kind:'crate',rotation:0,size:'medium',hidden:false});
   const [sceneryEdit,setSceneryEdit] = useState<{item:Scenery;levelId:string}>();
   const [movingScenery,setMovingScenery] = useState<{item:Scenery;levelId:string}>();
+  const [floorProposal,setFloorProposal]=useState<{levelId:string;stamp:string;options:SceneryFillOptions;items:ScenerySuggestion[];requestId:string}>();
+  const fillBlocked=[...new Set([...(exploration?.stairs??[]).map(item=>`${item.x},${item.y}`),...notes.map(item=>`${item.x},${item.y}`),...monsters.filter(item=>!item.archived&&item.x!==null&&item.y!==null).map(item=>`${item.x},${item.y}`),
+    ...members.filter(item=>item.role==='player'&&(!exploration?.location||exploration.location.levelId===exploration.levelId)).map(item=>`${item.x},${item.y}`),
+    ...(exploration?.location?.levelId===exploration?.levelId&&exploration?.location?[`${exploration.location.x},${exploration.location.y}`]:[])])];
+  const fillStamp=sceneryFillStamp(map,fillBlocked);
+  const proposalStale=Boolean(floorProposal&&(floorProposal.levelId!==(exploration?.levelId||'ground')||floorProposal.stamp!==fillStamp));
   function sceneryClick(point:Point,id?:string) {
     const levelId=exploration?.levelId || 'ground';
     if(movingScenery) {
@@ -771,7 +778,13 @@ export default function DungeonMap({
           entrance={map.access?.entrance}
         />
         {pj && !preview && effectiveTool === 'scenery' && <SceneryPalette brush={sceneryBrush} onChange={setSceneryBrush}
-          moving={Boolean(movingScenery && movingScenery.levelId === (exploration?.levelId || 'ground'))} onCancelMove={()=>setMovingScenery(undefined)} />}
+          moving={Boolean(movingScenery && movingScenery.levelId === (exploration?.levelId || 'ground'))} onCancelMove={()=>setMovingScenery(undefined)}
+          fill={{busy:busy||Boolean(movingScenery),hidden:Boolean(sceneryBrush.hidden),
+            proposal:floorProposal?{options:floorProposal.options,count:floorProposal.items.length,stale:proposalStale}:undefined,
+            onDiscard:()=>setFloorProposal(undefined),
+            onPreview:options=>setFloorProposal({levelId:exploration?.levelId||'ground',stamp:fillStamp,options,items:proposeScenery(map,fillBlocked,options),requestId:crypto.randomUUID()}),
+            onApply:async()=>{if(!floorProposal||proposalStale)return;const ok=await onAction('map',{tool:'scenery-fill',levelId:floorProposal.levelId,options:floorProposal.options,expectedStamp:floorProposal.stamp,requestId:floorProposal.requestId});if(ok)setFloorProposal(undefined);return ok;},
+          }} />}
         {pj && preview && (
           <div className="preview-notice">
             <Eye size={14} /> Takto mapu vidí hráči. Pro úpravy se vrať do
@@ -820,6 +833,7 @@ export default function DungeonMap({
           >
             <MapCanvas
               appearance={appearance}
+              sceneryPreview={!proposalStale && tool==='scenery' ? floorProposal?.items : undefined}
               map={{ shown, revealed, lit, party, recapCell, visible }}
               input={{
                 zoom,

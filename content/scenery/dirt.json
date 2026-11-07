@@ -1,0 +1,12 @@
+{
+  "id": "dirt",
+  "name": "Hlína",
+  "category": "floor",
+  "environments": [
+    "castle",
+    "mine",
+    "cave"
+  ],
+  "automatic": true,
+  "path": "M4 11L8 10M12 6L15 7M20 11L25 9M9 18L12 17M18 21L22 22M5 25L8 24M25 26L28 25M17 15h1M4 17h1M21 5h1"
+}

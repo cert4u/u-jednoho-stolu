@@ -48,4 +48,4 @@ const [x,y]=draft.floors[0].split(',').map(Number), decorated=put(draft,x,y);
 for(const field of ['floors','edges','generation','access','stairMarks'])assert.deepEqual(decorated[field],draft[field]);
 const occupied=initialGame('PJ','token');occupied.dungeon=put(emptyDungeon(),1,1);
 assert.equal(generationState(occupied).reuseEmpty,false);
-console.log('PASS: 12 scenery kinds, public projection, outside adjacency, remembered hidden changes, stale edits, bounds, undo/replay, generator geometry and occupied-floor protection.');
+console.log('PASS: community scenery kinds, public projection, outside adjacency, remembered hidden changes, stale edits, bounds, undo/replay, generator geometry and occupied-floor protection.');

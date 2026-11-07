@@ -1,3 +1,5 @@
+import SceneryPreview from '../scenery/preview';
+import type {ScenerySuggestion} from '../../lib/scenery-fill';
 import SceneryLayer from '../scenery/layer';
 import { useId, useMemo } from 'react';
 import type { RefObject } from 'react';
@@ -65,6 +67,7 @@ type CanvasProps = {
   preview: boolean;
   selected: string;
   selectedMonster: string;
+  sceneryPreview?: ScenerySuggestion[];
 };
 
 export default function MapCanvas({
@@ -81,6 +84,7 @@ export default function MapCanvas({
   preview,
   selected,
   selectedMonster,
+  sceneryPreview=[],
 }: CanvasProps) {
   const { shown, revealed, lit, party, recapCell, visible } = map;
   const {
@@ -204,6 +208,7 @@ export default function MapCanvas({
         <ClassicSurface shown={shown} revealed={revealed} lit={lit} visible={visible} exploring={Boolean(exploration?.enabled)} />
       )}
       <SceneryLayer map={shown} lit={lit} revealed={revealed} visible={visible} exploring={Boolean(exploration?.enabled)} editable={pj && !preview && effectiveTool === 'scenery'} />
+      {pj && !preview && <SceneryPreview items={sceneryPreview} />}
       {area && (
         <rect
           x={PAD + area.x * SIZE}

@@ -1,0 +1,11 @@
+{
+  "id": "puddle",
+  "name": "Louže",
+  "category": "floor",
+  "environments": [
+    "mine",
+    "cave"
+  ],
+  "automatic": true,
+  "path": "M7 12Q2 7 11 6Q18 1 23 9Q31 12 27 20Q29 27 18 26Q9 31 5 23Q0 19 7 12ZM10 16Q15 12 22 15M9 21Q17 18 23 21"
+}

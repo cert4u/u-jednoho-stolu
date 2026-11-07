@@ -1,0 +1,10 @@
+{
+  "id": "cart",
+  "name": "Důlní vozík",
+  "category": "object",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M5 7L25 6L28 23L7 25ZM8 10L22 9L24 20L10 21ZM6 26L10 29M23 25L27 28M7 3L9 6M22 2L23 6M2 28L30 25"
+}

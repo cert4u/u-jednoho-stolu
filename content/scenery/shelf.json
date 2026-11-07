@@ -1,0 +1,10 @@
+{
+  "id": "shelf",
+  "name": "Police",
+  "category": "object",
+  "environments": [
+    "castle"
+  ],
+  "automatic": false,
+  "path": "M6 4L25 5L26 28L5 27ZM6 11H25M5 19H25M10 5V10M14 5V10M19 6V11M9 13L11 18M14 13V18M18 13V18M21 21L22 27M9 22V26"
+}

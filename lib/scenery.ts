@@ -1,25 +1,13 @@
+import { findSceneryEntry } from './scenery-catalog';
+import { contentId } from './content-schema';
 import { z } from 'zod';
 import type { Dungeon } from './dungeon';
 import { EditConflict } from './sheets';
 
-export const sceneryKinds = ['crate', 'barrel', 'table', 'bench', 'shelf', 'pillar', 'rubble', 'boulder', 'mushrooms', 'roots', 'cart', 'support'] as const;
-export type SceneryKind = typeof sceneryKinds[number];
-export const sceneryCatalog: { kind: SceneryKind; name: string; environments: string[] }[] = [
-  { kind: 'crate', name: 'Bedna', environments: ['castle','mine'] },
-  { kind: 'barrel', name: 'Sud', environments: ['castle','mine'] },
-  { kind: 'table', name: 'Stůl', environments: ['castle'] },
-  { kind: 'bench', name: 'Lavice', environments: ['castle'] },
-  { kind: 'shelf', name: 'Police', environments: ['castle'] },
-  { kind: 'pillar', name: 'Sloup', environments: ['castle'] },
-  { kind: 'rubble', name: 'Suť', environments: ['castle','mine','cave'] },
-  { kind: 'boulder', name: 'Balvan', environments: ['mine','cave'] },
-  { kind: 'mushrooms', name: 'Houby', environments: ['cave'] },
-  { kind: 'roots', name: 'Kořeny', environments: ['castle','cave'] },
-  { kind: 'cart', name: 'Důlní vozík', environments: ['mine'] },
-  { kind: 'support', name: 'Dřevěná podpěra', environments: ['mine'] },
-];
+export type SceneryKind = string;
+export { sceneryCatalog, sceneryKinds } from './scenery-catalog';
 export const scenerySchema = z.object({
-  id: z.string().uuid(), kind: z.enum(sceneryKinds),
+  id: z.string().uuid(), kind: contentId,
   x: z.number().int().min(0).max(27), y: z.number().int().min(0).max(19),
   rotation: z.union([z.literal(0),z.literal(90),z.literal(180),z.literal(270)]),
   size: z.enum(['small','medium','large']),
@@ -28,7 +16,7 @@ export const scenerySchema = z.object({
 }).strict();
 export type Scenery = z.infer<typeof scenerySchema>;
 export const sceneryListSchema = z.array(scenerySchema).max(560).refine(items => new Set(items.map(item => item.id)).size === items.length && new Set(items.map(item => `${item.x},${item.y}`)).size === items.length);
-export const sceneryName = (kind: SceneryKind) => sceneryCatalog.find(item => item.kind === kind)!.name;
+export const sceneryName = (kind: SceneryKind) => findSceneryEntry(kind)?.name ?? `Neznámý prvek (${kind})`;
 const cell = (x: number, y: number) => `${x},${y}`;
 
 /** Outside marks belong to adjacent known floor, never to distant hidden terrain. */
@@ -68,6 +56,7 @@ export function editScenery(map: Dungeon, input: Record<string,unknown>) {
     revision: crypto.randomUUID(),
   });
   if (!result.success) throw new Error('Vyber platný prvek, políčko, otočení a velikost; poznámka smí mít nejvýše 1000 znaků.');
+  if (!findSceneryEntry(result.data.kind) && result.data.kind !== previous?.kind) throw new Error('Tento prvek v místním katalogu neexistuje.');
   if (!previous && items.length >= 200) throw new Error('Na patře může být nejvýše 200 prvků stafáže.');
   if (items.some(item => item.id !== previous?.id && item.x === result.data.x && item.y === result.data.y))
     throw new Error('Na tomto políčku už stafáž je. Vyber ji pro úpravu.');

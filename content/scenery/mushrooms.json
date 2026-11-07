@@ -1,0 +1,10 @@
+{
+  "id": "mushrooms",
+  "name": "Houby",
+  "category": "object",
+  "environments": [
+    "cave"
+  ],
+  "automatic": false,
+  "path": "M3 16Q7 4 14 16ZM8 16L7 25L11 26L11 16M16 11Q22 0 29 12ZM21 12L20 22L24 23L24 12M17 24Q22 16 28 25ZM22 25V30M6 13H7M22 8H23"
+}

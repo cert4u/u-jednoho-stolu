@@ -1,0 +1,13 @@
+import { z } from 'zod';
+import catalog from '../content/scenery/index';
+import { contentId, parseCatalog } from './content-schema';
+export const sceneryEntrySchema = z.object({
+  id: contentId, name: z.string().trim().min(1).max(40), category: z.enum(['object','floor']),
+  environments: z.array(z.enum(['castle','mine','cave'])).min(1).max(3).refine(items=>new Set(items).size===items.length),
+  automatic: z.boolean().default(false),
+  path: z.string().min(3).max(6000).regex(/^[Mm][MmLlHhVvCcSsQqTtAaZz0-9.,+\-\s]*$/),
+}).strict().refine(entry=>!entry.automatic || entry.category==='floor', 'Automaticky lze rozmísťovat jen podlahové detaily.');
+export const sceneryCatalog = parseCatalog(catalog,sceneryEntrySchema).map(entry=>({...entry,kind:entry.id}));
+export const sceneryKinds = sceneryCatalog.map(entry=>entry.id);
+const byId = new Map(sceneryCatalog.map(entry=>[entry.id,entry]));
+export const findSceneryEntry = (id: string) => byId.get(id);

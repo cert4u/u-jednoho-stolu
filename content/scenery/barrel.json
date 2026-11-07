@@ -1,0 +1,11 @@
+{
+  "id": "barrel",
+  "name": "Sud",
+  "category": "object",
+  "environments": [
+    "castle",
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M9 5Q16 2 23 5Q29 16 23 27Q16 30 9 27Q3 16 9 5ZM8 9Q16 12 24 9M7 22Q16 25 25 22M12 5Q8 16 12 28M20 5Q24 16 20 28M9 5Q16 8 23 5"
+}

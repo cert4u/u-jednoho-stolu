@@ -43,7 +43,7 @@ U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. P
 ### Čtverečkovaná mapa a průzkum
 
 - Kreslení místností, chodeb, příček, dveří a schodišť. Překrývající se místnosti se spojí a obvod se přizpůsobí.
-- [Stafáž mapy](docs/SCENERY.md): dvanáct tušových symbolů vybavení, kamení a přírodních detailů, ruční umístění, otočení a soukromá příprava PJ.
+- [Stafáž mapy](docs/SCENERY.md): 18 tušových symbolů předmětů a podlahy, ruční i střídmé náhodné rozmístění s náhledem, soukromá příprava PJ a rozšiřitelný komunitní katalog.
 - Až osm propojených pater, značky vchodu a východu a zahájení dobrodružství u vchodu.
 - Generátor V2 se styly hradního podzemí, dolu a přírodní jeskyně, logickým grafem místností, plánovanými průchody a automatickými dveřmi. Tři opakovatelné varianty, náhled a ruční úpravy; původní V1 je zachovaný pro staré seedy.
 - Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.

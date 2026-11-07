@@ -1,0 +1,11 @@
+{
+  "id": "roots",
+  "name": "Kořeny",
+  "category": "object",
+  "environments": [
+    "castle",
+    "cave"
+  ],
+  "automatic": false,
+  "path": "M6 2L11 10L9 16L16 22L18 30M11 10L18 8L25 13M18 8L21 2M16 22L23 19L29 23M9 16L3 20M23 19L24 15M11 10L14 16L14 20"
+}

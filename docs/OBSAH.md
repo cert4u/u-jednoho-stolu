@@ -20,6 +20,7 @@ Související příšery, předlohu jeskyně a dobrodružství můžeš přidat 
 | --- | --- | --- |
 | Příšera | [kobold.json](../content/bestiary/kobold.json) | `gmHint`, prostředí, životy a bojové hodnoty. `portrait` obsahuje název WebP bez přípony a výchozí název je ID příšery. |
 | Předloha jeskyně | [cave.json](../content/dungeon-presets/cave.json) | Parametry V2 včetně semínka. Kontrola z nich vygeneruje a ověří mapu. |
+| Stafáž | [moss.json](../content/scenery/moss.json) | Kategorie, prostředí, souhlas s automatickým rozmístěním a bezpečná SVG cesta; [návod pro autory](SCENERY.md#komunitní-katalog). |
 | Dobrodružství | [pod-koreny.json](../content/adventures/pod-koreny.json) | Existující předloha jeskyně, platné a jedinečné cílové místnosti, známé příšery. |
 
 Prostředí příšer definuje [seznam prostředí](../lib/bestiary-environments.ts). Větu `gmHint` server vydá PJ a při přidání ji zkopíruje do tajných poznámek příšery. Ilustrace jsou veřejné soubory.

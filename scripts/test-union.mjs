@@ -20,3 +20,5 @@ await import('./test-map-inspection.mjs');
 await import('./test-map-drawing.mjs');
 await import('./test-generator-preview.mjs');
 await import('./test-scenery-core.mjs');
+
+await import('./test-scenery-fill.mjs');

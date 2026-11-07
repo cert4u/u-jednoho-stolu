@@ -473,3 +473,6 @@ html,body,.app *,.overlay *,.lobby *{scrollbar-width:none}
 .paper-overlay .scenery-choices button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;width:100%;max-width:none}
 .paper-overlay .scenery-choices svg{flex:none;margin:0}
 .paper-overlay .scenery-choices span{width:100%;max-width:none;text-align:center;overflow-wrap:normal}
+.scenery-palette{max-height:min(65dvh,620px);overflow:auto;overscroll-behavior:contain}
+.scenery-categories{display:flex;gap:5px;margin:10px 0 4px;font-size:11px}.scenery-categories button{padding:6px 9px;border:1px solid var(--line);border-radius:4px}.scenery-categories button[aria-pressed=true]{background:#eee1c7;border-color:#b8a17b}
+.scenery-fill{border-top:1px solid var(--line);margin-top:12px;padding-top:10px;font-size:11px}.scenery-fill summary{cursor:pointer}.scenery-fill label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:9px 0}.scenery-fill input{width:155px;padding:5px 7px;border:1px solid var(--line);border-radius:4px;font-size:11px}.scenery-fill-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.scenery-fill-actions button{padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:#f4ead7;font-size:11px}

@@ -1,0 +1,12 @@
+{
+  "id": "cracks",
+  "name": "Praskliny",
+  "category": "floor",
+  "environments": [
+    "castle",
+    "mine",
+    "cave"
+  ],
+  "automatic": true,
+  "path": "M3 6L13 10L16 17L27 21M13 10L18 4M16 17L9 25M27 21L25 28"
+}

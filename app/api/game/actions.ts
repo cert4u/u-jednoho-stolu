@@ -1,3 +1,4 @@
+import {sceneryFillBlocked} from '../../../lib/scenery-fill';
 import { saveStoryOutline } from '../../../lib/story-outline';
 import { saveSessionRecap } from '../../../lib/session-recap';
 import { generationAction } from '../../../lib/generation';
@@ -85,7 +86,7 @@ export async function applyGameAction(
           const a = ensureAtlas(g),
             level = getLevel(a, b.levelId);
           const proxy = { ...g, dungeon: level.map, mapHistory: level.history };
-          applyMap(proxy, b);
+          applyMap(proxy, b.tool === 'scenery-fill' ? {...b,fillBlocked:sceneryFillBlocked(g,level.id)} : b);
           if (
             a.battle?.levelId === level.id &&
             g.members.some(
@@ -112,7 +113,7 @@ export async function applyGameAction(
             });
           if (!a.location) remember(level, level.map.revealed);
           refreshSight(g);
-        } else applyMap(g, b);
+        } else applyMap(g, b.tool === 'scenery-fill' ? {...b,fillBlocked:sceneryFillBlocked(g,'ground')} : b);
       } catch (e) {
         return fail(e instanceof Error ? e.message : 'Tah mapy se nepodařil.', e instanceof EditConflict ? 409 : 400);
       }

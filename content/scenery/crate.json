@@ -1,0 +1,11 @@
+{
+  "id": "crate",
+  "name": "Bedna",
+  "category": "object",
+  "environments": [
+    "castle",
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M5 7L25 6L26 25L6 26ZM6 7L25 25M25 7L6 25M8 8L23 23"
+}

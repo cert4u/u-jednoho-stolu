@@ -10,7 +10,7 @@ Nejprve se podívej do existujících issues a [řešení problémů](docs/TROUB
 
 U větší funkce nejdřív otevři issue a domluv rozsah. Rozliš funkci, která usnadní hraní, od automatizace celých pravidel. Kamera, pravidlový bestiář nebo hlasové šeptání nejsou hotové schopnosti jen proto, že je podporuje některá použitá knihovna.
 
-Příšeru, předlohu jeskyně nebo krátké dobrodružství můžeš přidat jako data. Postup a ukázku najdeš v [návodu k hernímu obsahu](docs/OBSAH.md).
+Příšeru, předlohu jeskyně, krátké dobrodružství i prvek stafáže můžeš přidat jako data. Pro stafáž stačí vlastní JSON s jednoduchou tušovou kresbou a prostředím; [postup a příklad](docs/SCENERY.md#komunitní-katalog) zahrnuje i výslovné povolení automatického rozmístění. Postup a ukázku najdeš v [návodu k hernímu obsahu](docs/OBSAH.md).
 
 ## Změna kódu
 

@@ -1,0 +1,10 @@
+{
+  "id": "pillar",
+  "name": "Sloup",
+  "category": "object",
+  "environments": [
+    "castle"
+  ],
+  "automatic": false,
+  "path": "M8 6L23 5L27 10L26 24L21 28L7 26L4 21L5 10ZM9 10Q17 5 23 11Q29 20 20 24Q9 28 8 18Q7 13 9 10M11 11L10 21M23 11V21"
+}

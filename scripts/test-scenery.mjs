@@ -69,3 +69,41 @@ await post(pj,'map',{...add,sceneryId:item.id,expectedRevision:changedB.revision
 const added=(await post(pj,'explore',{op:'level-add',name:'Bez stafáže'})).game.exploration.levels.at(-1).id;
 assert(!(await get(pj,'&level='+added)).dungeon.scenery);
 console.log('PASS: scenery permissions, hidden/remembered/outside projection, replay/CAS races, sizes/rotation/move/remove/undo, floor isolation and compatible private backups.');
+// The server recomputes a batch; actor context and supplied placements are untrusted.
+await import('./generator-test-import.mjs');
+const {sceneryFillBlocked,sceneryFillStamp,proposeScenery}=await import('../lib/scenery-fill.ts');
+const fillPj=await post(null,'create',{name:'PJ podlahy'});
+const fillPlayer=await post(null,'join',{room:fillPj.room,name:'Chodec'});
+await post(fillPj,'map',{tool:'room',from:[1,1],to:[16,14]});
+await post(fillPj,'map',{tool:'stairsDown',points:[[5,5]]});
+await post(fillPj,'map',{tool:'door',edges:['v:1:6']});
+await post(fillPj,'explore',{op:'settings',radius:4,leaderId:fillPlayer.game.members.find(item=>item.role==='player').id});
+const lower=(await post(fillPj,'explore',{op:'level-add',name:'Dolní'})).game.exploration.levels.at(-1).id;
+await post(fillPj,'map',{tool:'room',levelId:lower,from:[1,1],to:[4,4]});
+await post(fillPj,'explore',{op:'stairs-add',levelId:'ground',destinationLevelId:lower,x:3,y:3,destinationX:2,destinationY:2});
+const beforeFill=await get(fillPj,'&download=backup');
+const full=beforeFill.game,fillMap=full.atlas.levels[0].map,fillLevel=full.atlas.levels[0].id;
+const options={seed:'batch-server',environment:'castle',density:'rich',hidden:true};
+const blocked=sceneryFillBlocked(full,fillLevel),expected=proposeScenery(fillMap,blocked,options);
+assert(expected.length>0);
+const fill={tool:'scenery-fill',levelId:fillLevel,options,expectedStamp:sceneryFillStamp(fillMap,blocked),requestId:crypto.randomUUID(),fillBlocked:[],items:[{kind:'crate',x:5,y:5}]};
+await post(fillPlayer,'map',fill,403);
+const filled=(await post(fillPj,'map',fill)).game.dungeon;
+assert.equal(filled.scenery.length,expected.length);
+assert.deepEqual(filled.scenery.map(({kind,x,y,size,rotation})=>({kind,x,y,size,rotation})),expected);
+assert(filled.scenery.every(item=>item.hidden));
+assert.equal((await post(fillPj,'map',fill)).game.dungeon.scenery.length,expected.length);
+await post(fillPj,'map',{...fill,requestId:crypto.randomUUID()},409);
+await post(fillPj,'map',{tool:'reveal',from:[0,0],to:[27,19]});
+assert.equal((await get(fillPlayer)).dungeon.scenery.length,0);
+await post(fillPj,'map',{tool:'undo'}); // reveal
+await post(fillPj,'map',{tool:'undo'}); // entire scenery batch
+assert.deepEqual((await get(fillPj,'&download=backup')).game.atlas.levels[0].map,fillMap);
+await post(fillPj,'map',{tool:'room',from:[17,2],to:[18,5]});
+await post(fillPj,'map',{...fill,requestId:crypto.randomUUID()},409);
+// A backup can retain content IDs whose community catalog is unavailable locally.
+const missing=structuredClone(beforeFill);
+missing.game.atlas.levels[0].map.scenery=[{id:crypto.randomUUID(),kind:'community-rug',x:3,y:3,size:'small',rotation:0}];
+const restoredMissing=await post(null,'restore',{backup:missing});
+assert.equal((await get(restoredMissing,'&download=backup')).game.atlas.levels[0].map.scenery[0].kind,'community-rug');
+console.log('PASS: batch scenery server recomputation, permissions, replay, stale conflicts, hidden projection, atomic undo and missing community definition backup.');

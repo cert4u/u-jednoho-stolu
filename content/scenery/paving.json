@@ -1,0 +1,10 @@
+{
+  "id": "paving",
+  "name": "Dlažba",
+  "category": "floor",
+  "environments": [
+    "castle"
+  ],
+  "automatic": true,
+  "path": "M3 6L15 5L15 16L4 16ZM18 5L28 6L28 16L18 15ZM4 19L12 19L13 28L3 27ZM16 19L27 20L28 28L16 27M7 9L11 8M20 23L24 24"
+}

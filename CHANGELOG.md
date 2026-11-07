@@ -2,6 +2,7 @@
 
 ## Příští vydání
 
+- **Podlahová stafáž a komunitní katalog.** Šest podlahových detailů, oddělení předmětů a podlahy, deterministický náhled podle prostředí a semínka, hromadné vložení se Zpět a ochranou proti změně mapy. Každý z 18 prvků má vlastní validovaný JSON; komunita přidává kresby i souhlas s automatickým rozmístěním bez úprav komponent. [Návod pro autory](docs/SCENERY.md#komunitní-katalog).
 - **Stafáž mapy.** Dvanáct původních tušových symbolů pro ruční umisťování uvnitř i vně půdorysu, filtrování podle prostředí, velikost, otočení, přesun, soukromá poznámka a skrytí. Změny respektují dohled a hráčskou paměť; funguje Zpět i úplná záloha. [Návod](docs/SCENERY.md).
 
 ## 1.0.0 — 2026-11-07

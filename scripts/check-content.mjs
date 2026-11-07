@@ -3,6 +3,7 @@ import { open, readFile, readdir } from 'node:fs/promises';
 import { generateDungeon } from './generator-test-import.mjs';
 
 const { bestiaryEntries, bestiaryPortrait, bestiaryEntrySchema } = await import('../lib/bestiary.ts');
+const { sceneryCatalog, sceneryEntrySchema } = await import('../lib/scenery-catalog.ts');
 const { dungeonPresets } = await import('../lib/dungeon-presets.ts');
 const { adventureTemplates, resolveAdventureRooms, adventureSchema } = await import('../lib/adventure-templates.ts');
 
@@ -50,6 +51,15 @@ assert.throws(() => parseCatalog([source({ ...entry, gmHint: undefined })], best
   /testovaci-prisera\.json: chybí povinné pole gmHint/);
 assert.throws(() => parseCatalog([source(entry), source(entry)], bestiaryEntrySchema), /duplicitní ID/);
 await assert.rejects(checkPortrait({ ...entry, portrait: 'neexistujici-testovaci-ilustrace' }), /chybí ilustrace/);
+const scenery = sceneryCatalog[0];
+const {kind: _kind, ...definition} = scenery;
+assert(parseCatalog([source(definition,'scenery')],sceneryEntrySchema).length === 1);
+for (const invalid of [
+  {...definition,path:'M0 0<script>alert(1)</script>'},
+  {...definition,path:'https://example.test/image.svg'},
+  {...definition,category:'object',automatic:true},
+  {...definition,environments:['unknown']},
+]) assert.throws(()=>parseCatalog([source(invalid,'scenery')],sceneryEntrySchema),/content\/scenery\//);
 const adventure = adventureTemplates[0];
 assert.throws(() => parseCatalog([source({ ...adventure, dungeonPreset: 'neexistuje' }, 'adventures')], adventureSchema),
   /dungeonPreset: Neznámá předloha jeskyně/);
@@ -60,7 +70,7 @@ const badRoom = { ...adventure, rooms: [{ ...adventure.rooms[0], role: undefined
 assert.throws(() => resolveAdventureRooms(badRoom, drafts.get(adventure.dungeonPreset).floors),
   /rooms\.0: patro 1 neobsahuje/);
 
-console.log(`PASS: ${bestiaryEntries.length} příšer s ilustrací, ${dungeonPresets.length} funkční předlohy jeskyní a ${adventureTemplates.length} dobrodružství.`);
+console.log(`PASS: ${bestiaryEntries.length} příšer s ilustrací, ${dungeonPresets.length} funkční předlohy jeskyní a ${adventureTemplates.length} dobrodružství a ${sceneryCatalog.length} prvků stafáže.`);
 
 if (process.argv.includes('--client')) {
   const root = new URL('../dist/client/', import.meta.url);

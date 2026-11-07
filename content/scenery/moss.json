@@ -1,0 +1,11 @@
+{
+  "id": "moss",
+  "name": "Mech",
+  "category": "floor",
+  "environments": [
+    "castle",
+    "cave"
+  ],
+  "automatic": true,
+  "path": "M5 22L4 17L8 19L7 11L12 16L13 6L17 13L22 8L21 17L28 15L25 22L28 25M9 23L12 20M16 24L18 18M22 24L24 21"
+}

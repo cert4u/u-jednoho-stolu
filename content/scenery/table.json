@@ -1,0 +1,10 @@
+{
+  "id": "table",
+  "name": "Stůl",
+  "category": "object",
+  "environments": [
+    "castle"
+  ],
+  "automatic": false,
+  "path": "M4 7L27 6L28 23L5 24ZM8 10L24 9M8 19L24 18M7 24L7 28M25 23V27M7 6V3M24 6V3"
+}

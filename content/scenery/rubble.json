@@ -1,0 +1,12 @@
+{
+  "id": "rubble",
+  "name": "Suť",
+  "category": "object",
+  "environments": [
+    "castle",
+    "mine",
+    "cave"
+  ],
+  "automatic": false,
+  "path": "M3 20L7 14L12 20L9 24ZM13 10L17 6L21 12L15 14ZM17 23L22 17L28 22L25 27ZM5 8L9 6L10 10ZM11 27L14 25M27 12L29 14M2 27L4 28"
+}

@@ -1,6 +1,6 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 
-const categories = ['bestiary', 'dungeon-presets', 'adventures'];
+const categories = ['bestiary', 'dungeon-presets', 'adventures', 'scenery'];
 const check = process.argv.includes('--check');
 
 for (const category of categories) {

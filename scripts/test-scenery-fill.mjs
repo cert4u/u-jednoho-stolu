@@ -1,0 +1,55 @@
+import assert from 'node:assert/strict';
+await import('./generator-test-import.mjs');
+const {emptyDungeon,editDungeon,applyMap}=await import('../lib/dungeon.ts');
+const {proposeScenery,sceneryFillStamp,sceneryFillBlocked}=await import('../lib/scenery-fill.ts');
+const {sceneryCatalog,sceneryEntrySchema}=await import('../lib/scenery-catalog.ts');
+const {scenerySchema,sceneryName}=await import('../lib/scenery.ts');
+const {initialGame}=await import('../lib/game.ts');
+const options={seed:'podlaha-test',environment:'cave',density:'rich',hidden:true};
+let map=editDungeon(emptyDungeon(),{tool:'room',from:[2,2],to:[16,12]});
+map=editDungeon(map,{tool:'door',edges:['v:2:6']});
+map.stairMarks={'5,5':'down'};map.access={entrance:[7,7],exit:[8,8]};
+map=editDungeon(map,{tool:'scenery',op:'save',kind:'crate',x:4,y:4,size:'large',rotation:0,expectedRevision:null});
+const blocked=['6,6','9,9'];
+const proposal=proposeScenery(map,blocked,options);
+assert(proposal.length>0&&proposal.length<=30);
+assert.deepEqual(proposal,proposeScenery(map,blocked,options));
+assert.deepEqual(proposal,proposeScenery({...map,floors:[...map.floors].reverse(),edges:Object.fromEntries(Object.entries(map.edges).reverse())},[...blocked].reverse(),options));
+assert.notDeepEqual(proposal,proposeScenery(map,blocked,{...options,seed:'different'}));
+for(const item of proposal){
+  const cell=`${item.x},${item.y}`;
+  assert(map.floors.includes(cell));assert(![...blocked,'5,5','7,7','8,8','4,4','2,6'].includes(cell));
+  const entry=sceneryCatalog.find(entry=>entry.id===item.kind);
+  assert(entry.category==='floor'&&entry.automatic&&entry.environments.includes('cave'));
+  assert(proposal.every(other=>other===item||Math.max(Math.abs(other.x-item.x),Math.abs(other.y-item.y))>=2));
+}
+const corridor=editDungeon(emptyDungeon(),{tool:'floor',points:[[1,1],[12,1]]});
+assert.equal(proposeScenery(corridor,[],options).length,0);
+assert.equal(proposeScenery(map,map.floors,options).length,0);
+assert.equal(proposeScenery({...map,scenery:Array(200).fill(map.scenery[0])},[],options).length,0);
+assert.throws(()=>proposeScenery(map,[],{...options,seed:' '}));
+const game=initialGame('PJ','token');game.dungeon=map;
+const command={tool:'scenery-fill',options,expectedStamp:sceneryFillStamp(map,blocked),fillBlocked:blocked,requestId:crypto.randomUUID()};
+applyMap(game,command);applyMap(game,command);
+assert.equal(game.dungeon.scenery.length,proposal.length+1);
+assert(game.dungeon.scenery.slice(1).every(item=>item.hidden&&item.revision));
+for(const field of ['floors','edges','access','stairMarks','generation'])assert.deepEqual(game.dungeon[field],map[field]);
+assert.throws(()=>editDungeon(game.dungeon,command),/Mapa nebo obsazení/);
+assert.throws(()=>editDungeon(map,{...command,fillBlocked:[...blocked,'10,10']}),/Mapa nebo obsazení/);
+applyMap(game,{tool:'undo',requestId:crypto.randomUUID()});assert.deepEqual(game.dungeon,map);
+// Missing community definitions survive storage, projection and edits without data loss.
+const unknown={...map.scenery[0],kind:'community-rug'};
+assert(scenerySchema.safeParse(unknown).success);assert.match(sceneryName(unknown.kind),/Neznámý prvek/);
+const imported={...map,scenery:[unknown]};
+assert.equal(editDungeon(imported,{tool:'scenery',op:'save',...unknown,x:10,sceneryId:unknown.id,expectedRevision:unknown.revision}).scenery[0].kind,unknown.kind);
+assert.throws(()=>editDungeon(map,{tool:'scenery',op:'save',...unknown,x:10,expectedRevision:null}),/katalogu/);
+// Community opt-in has the same validation as bundled floor details.
+assert(sceneryEntrySchema.safeParse({id:'community-rug',name:'Koberec',category:'floor',environments:['castle'],automatic:true,path:'M2 2 L30 30'}).success);
+assert(!sceneryEntrySchema.safeParse({id:'unsafe',name:'X',category:'floor',environments:['cave'],automatic:true,path:'M0 0 <image href="x"/>'}).success);
+const actors=initialGame('PJ','token');
+actors.members.push({...actors.members[0],id:crypto.randomUUID(),role:'player',x:3,y:3});
+assert(sceneryFillBlocked(actors,'ground').includes('3,3'));
+const {ensureAtlas}=await import('../lib/exploration.ts');
+ensureAtlas(actors).stairs.push({id:crypto.randomUUID(),a:{levelId:'ground',x:9,y:10},b:{levelId:'lower',x:2,y:2}});
+assert(sceneryFillBlocked(actors,'ground').includes('9,10'),'Linked stairs need no separate drawn mark.');
+console.log('PASS: deterministic floor scenery, opt-in community catalog, safe paths, reserved cells, corridors, spacing/caps, hidden batch undo/replay, stale proposals and missing-definition preservation.');
