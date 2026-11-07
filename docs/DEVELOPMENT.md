@@ -209,3 +209,5 @@ Informativní benchmark generátoru spustíš `npm run benchmark:generator`; nem
 ## Testování katalogové knihovny
 
 Společné schéma a resolver jsou v `lib/catalogs/`, Node adaptéry v `server/catalog-*.mjs`. `npm run build:node` navíc sestaví `dist/catalog-core.mjs` pro existující administraci. Po tomto sestavení spusť `npm run test:catalogs`: migrace existující databáze, ZIP, úložiště/restart, řízené GitHub odpovědi a skutečná administrace s herní integrací. Sada běží také v `npm run test:hosting`. Síťové katalogové testy nepoužívají skutečný GitHub. [Architektura a provoz](CATALOG_LIBRARY.md).
+
+`npm run test:catalog-audit -- /tmp/catalog-audit.json` provede samostatně celý přenos demonstračního dolu, aktualizaci s odebranou používanou položkou, obnovu úplného serverového ZIP do jiného datového adresáře a měření API. Používá izolované dočasné databáze a port 18089. Testovací Node server má blokované `fetch` mimo loopback a zaznamenává případný pokus. Zápis výsledků je volitelný; běžná katalogová sada audit provádí také, bez změny dokumentačního artefaktu. Metodiku a omezení uvádí [audit](CATALOG_AUDIT.md).

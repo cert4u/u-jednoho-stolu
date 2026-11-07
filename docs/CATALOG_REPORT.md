@@ -1,6 +1,6 @@
 # Vyhodnocení decentralizované knihovny
 
-[Správa instalace](CATALOG_LIBRARY.md) · [Autor katalogu](CATALOG_AUTHOR.md) · [Vývoj](DEVELOPMENT.md) · [GitHub distribuce](CATALOG_GITHUB.md)
+[Správa instalace](CATALOG_LIBRARY.md) · [Autor katalogu](CATALOG_AUTHOR.md) · [Vývoj](DEVELOPMENT.md) · [GitHub distribuce](CATALOG_GITHUB.md) · [Integrační audit](CATALOG_AUDIT.md)
 
 Tento přehled popisuje implementaci ve vývojové větvi po vydání 1.1.0. Nejde o oznámení již vydané verze.
 

@@ -43,3 +43,4 @@ Dokumentaci měníme společně s funkcemi. Při změně rozhraní, limitu nebo 
 - [Jak vytvořit a zveřejnit katalog](CATALOG_AUTHOR.md) — manifest, ZIP, závislosti a licence.
 - [Technické vyhodnocení knihovny](CATALOG_REPORT.md) — architektura, provedené testy a zbývající omezení.
 - [Distribuce katalogů přes GitHub](CATALOG_GITHUB.md) — instalace, potvrzené aktualizace, změny a bezpečnost stahování.
+- [Integrační audit katalogů](CATALOG_AUDIT.md) — přenosný demonstrační důl, skutečná obnova, výkon a připravenost vydání.

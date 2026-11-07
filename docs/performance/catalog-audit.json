@@ -1,0 +1,288 @@
+{
+  "measuredAt": "2026-11-07T15:04:23.142Z",
+  "node": "v22.23.2",
+  "cpu": "AMD Ryzen 7 7700X 8-Core Processor",
+  "samples": 12,
+  "warmup": 3,
+  "transport": "serial HTTP localhost, production Node build, decoded response body included",
+  "configurations": {
+    "builtin": {
+      "catalogCount": 1,
+      "bestiary": {
+        "p50Ms": 3.167,
+        "p95Ms": 3.235,
+        "samplesMs": [
+          3.193,
+          3.151,
+          3.235,
+          3.234,
+          3.159,
+          2.698,
+          3.185,
+          3.209,
+          3.143,
+          3.136,
+          3.156,
+          3.167
+        ],
+        "responseBytes": 13792
+      },
+      "scenery": {
+        "p50Ms": 3.246,
+        "p95Ms": 3.949,
+        "samplesMs": [
+          3.105,
+          3.095,
+          3.246,
+          3.072,
+          3.402,
+          3.949,
+          3.48,
+          3.035,
+          3.401,
+          3.428,
+          2.929,
+          3.127
+        ],
+        "responseBytes": 6457
+      },
+      "createCampaign": {
+        "p50Ms": 2.989,
+        "p95Ms": 3.308,
+        "samplesMs": [
+          3.308,
+          3.093,
+          2.978,
+          2.92,
+          3.002,
+          3.115,
+          2.899,
+          2.844,
+          2.989,
+          3.27,
+          2.832,
+          2.762
+        ],
+        "responseBytes": 5544
+      },
+      "startAdventure": {
+        "p50Ms": 15.719,
+        "p95Ms": 17.531,
+        "samplesMs": [
+          16.829,
+          15.764,
+          15.971,
+          15.679,
+          15.436,
+          15.719,
+          17.531,
+          17.102,
+          14.806,
+          13.831,
+          13.47,
+          13.259
+        ],
+        "responseBytes": 14900
+      },
+      "gameApi": {
+        "p50Ms": 2.672,
+        "p95Ms": 2.912,
+        "samplesMs": [
+          2.715,
+          2.627,
+          2.912,
+          2.672,
+          2.662,
+          2.624,
+          2.552,
+          2.784,
+          2.502,
+          2.781,
+          2.493,
+          2.701
+        ],
+        "responseBytes": 5320
+      },
+      "gameApi12Monsters": {
+        "p50Ms": 8.955,
+        "p95Ms": 9.677,
+        "samplesMs": [
+          9.627,
+          9.677,
+          9.462,
+          8.996,
+          9.096,
+          8.791,
+          8.12,
+          8.037,
+          8.083,
+          8.955,
+          8.241,
+          7.993
+        ],
+        "responseBytes": 345079
+      }
+    },
+    "threeInstalled": {
+      "catalogCount": 4,
+      "bestiary": {
+        "p50Ms": 5.504,
+        "p95Ms": 6.637,
+        "samplesMs": [
+          5.204,
+          5.426,
+          5.575,
+          6.637,
+          5.56,
+          5.324,
+          5.221,
+          6.578,
+          4.356,
+          5.504,
+          5.378,
+          6.424
+        ],
+        "responseBytes": 78766
+      },
+      "scenery": {
+        "p50Ms": 4.875,
+        "p95Ms": 5.568,
+        "samplesMs": [
+          4.851,
+          3.518,
+          4.879,
+          4.862,
+          5.534,
+          4.499,
+          4.894,
+          4.875,
+          5.568,
+          5.073,
+          4.739,
+          4.762
+        ],
+        "responseBytes": 35844
+      },
+      "createCampaign": {
+        "p50Ms": 2.868,
+        "p95Ms": 3.586,
+        "samplesMs": [
+          3.586,
+          2.997,
+          2.98,
+          2.781,
+          2.746,
+          2.669,
+          2.681,
+          2.868,
+          3.188,
+          2.876,
+          2.784,
+          2.811
+        ],
+        "responseBytes": 5544
+      },
+      "startAdventure": {
+        "p50Ms": 16.61,
+        "p95Ms": 18.04,
+        "samplesMs": [
+          16.379,
+          17.028,
+          16.789,
+          16.334,
+          16.61,
+          16.601,
+          16.529,
+          18.04,
+          16.07,
+          16.187,
+          16.803,
+          16.914
+        ],
+        "responseBytes": 14900
+      },
+      "gameApi": {
+        "p50Ms": 2.478,
+        "p95Ms": 2.87,
+        "samplesMs": [
+          2.582,
+          2.625,
+          2.478,
+          2.548,
+          2.42,
+          2.87,
+          2.418,
+          2.553,
+          2.443,
+          2.404,
+          2.443,
+          2.412
+        ],
+        "responseBytes": 5320
+      },
+      "gameApi12Monsters": {
+        "p50Ms": 8.801,
+        "p95Ms": 10.141,
+        "samplesMs": [
+          8.452,
+          8.587,
+          8.801,
+          8.179,
+          9.065,
+          9.327,
+          9.052,
+          8.439,
+          10.141,
+          8.306,
+          9.103,
+          8.344
+        ],
+        "responseBytes": 345079
+      },
+      "startDemoAdventure": {
+        "p50Ms": 15.334,
+        "p95Ms": 17.967,
+        "samplesMs": [
+          17.967,
+          14.981,
+          16.144,
+          14.265,
+          14.672,
+          14.792,
+          14.522,
+          14.54,
+          15.334,
+          15.404,
+          15.884,
+          16.635
+        ],
+        "responseBytes": 22589
+      }
+    }
+  },
+  "outcome": "passed",
+  "dataset": {
+    "installedCatalogs": 3,
+    "entriesPerInstalledCatalog": [
+      {
+        "bestiary": 3,
+        "presets": 1,
+        "adventures": 1,
+        "scenery": 7
+      },
+      {
+        "bestiary": 50,
+        "presets": 1,
+        "adventures": 1,
+        "scenery": 50
+      },
+      {
+        "bestiary": 50,
+        "presets": 1,
+        "adventures": 1,
+        "scenery": 50
+      }
+    ],
+    "note": "Original demo plus two synthetic medium-sized independent catalogs. Shared images are deduplicated. Not the maximum supported library. Same built-in adventure and same 12-kobold campaign in both configurations."
+  }
+}

@@ -199,4 +199,4 @@ Pro čistě hlasový hovor přidej LiveKit podle [návodu Hlas družiny](VOICE.m
 
 ## Místní knihovna katalogů
 
-Vývojové změny po 1.1.0 přidávají migraci `0001_catalog_library.sql`, místní SQLite katalogy a persistentní `catalog-assets` pod `STUL_DATA_DIR`. Zachovej celý datový volume. Úplná serverová záloha ZIP zahrnuje databázi i obrázky; samotný SQLite export obrázky knihovny nezahrnuje. [Postup správy a obnovy](CATALOG_LIBRARY.md#uložení-a-zálohy). Cloudflare zatím používá vestavěné katalogy, nikoli dynamickou administraci knihovny.
+Vývojové změny po 1.1.0 přidávají migrace `0001_catalog_library.sql` a `0002_catalog_updated_at.sql`, místní SQLite katalogy a persistentní `catalog-assets` pod `STUL_DATA_DIR`. Zachovej celý datový volume. Úplná serverová záloha ZIP zahrnuje databázi i obrázky; samotný SQLite export obrázky knihovny nezahrnuje. [Postup správy a obnovy](CATALOG_LIBRARY.md#uložení-a-zálohy). Cloudflare zatím používá vestavěné katalogy, nikoli dynamickou administraci knihovny.

@@ -4,6 +4,8 @@
 
 Katalog je čistě datový balíček, nikoli plugin. Nemá instalační skript a nespouští JavaScript. Nejjednodušší postup je vytvořit vlastní katalog v administraci, ověřit jeho obsah ve zkušební kampani a použít **Exportovat ZIP**.
 
+Kompletní původní příklad je [Opuštěný trpasličí důl](../examples/catalogs/abandoned-dwarf-mine/README.md). Obsah jeho adresáře lze vložit přímo do kořene samostatného repozitáře. ZIP vytvoří `npm run catalog:demo -- /tmp/opusteny-trpaslici-dul.zip`; výstupní soubor nesmí již existovat. [Integrační audit](CATALOG_AUDIT.md) ověřuje i jeho přenos do nové instalace.
+
 ## Adresářový formát
 
 ZIP i veřejný GitHub repozitář používají stejnou strukturu:

@@ -68,6 +68,8 @@ Rozlišuj tři exporty:
 
 V administraci záloh použij **Úplná záloha ZIP**. Nový snapshot ukládá také soubor příloh vedle `.sqlite`; updater při retenci odstraňuje oba. Starý přímý endpoint SQLite zůstává pro kompatibilitu, ale samotná databáze není úplná záloha obrázků. Připnuté obrázky jednotlivých kampaní jsou navíc přímo v jejich JSON stavu.
 
+Tvorba snapshotu i export úplného ZIP ověřují dostupnost a otisky příloh potřebných pro jeho katalogy a uloženou historii. Pokud chybí soubor příloh, některý potřebný obrázek nebo nesouhlasí jeho otisk, operace selže místo nabídnutí neúplné zálohy. Existující snapshot se kontroluje proti své vlastní databázi; jeho export nevyžaduje současný obsah živého adresáře obrázků. Staré snapshoty bez katalogových příloh zůstávají podporované.
+
 Při ruční obnově serverového ZIP zastav instalaci, uschovej dosavadní celý datový adresář, vrať `game.sqlite` a adresář `catalog-assets` ze **své důvěryhodné zálohy** do datového volume a oprav vlastníka souborů pro uživatele kontejneru. Potom spusť aplikaci a ověř knihovnu i testovací kampaň. Neobnovuj živou SQLite přepisem běžícího souboru. Instalační hesla a `.env` uchovávej samostatně bezpečným způsobem.
 
 Aktualizace a lokální rollback kontejneru používají SQLite snapshot a tentýž persistentní adresář neměnných obrázků. Obrázky se při odebrání katalogu ani návratu automaticky nemažou, takže starší verze a připnuté podklady neztratí soubory. Záloha kampaně zůstává ve formátu 1 s volitelným `contentLibrary`; staré zálohy bez tohoto pole jsou čitelné. Nové zálohy obnovuj aplikací, která připnuté katalogy podporuje.
