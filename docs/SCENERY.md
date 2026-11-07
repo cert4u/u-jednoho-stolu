@@ -28,11 +28,13 @@ Změna podlahy stafáž nemaže: může se stát vnější nebo izolovanou znač
 
 ![Spojené organické plochy vody, mechu, suti a bláta pod předměty](images/organic-surfaces.jpg)
 
+Filtr **Prostředí** platí i pro plochy: voda a suť patří do všech tří prostředí, bláto do dolu a jeskyně, mech do hradu a jeskyně. Volba **Všechna** nabídne všechny čtyři materiály. Jde o doporučení pro výběr, existující kresbu změna filtru nepřevádí ani nemaže.
+
 Ve **Stafáž → Plochy** vyber vodu, bláto, mech nebo suť. Táhni přes podlahu: sousední části stejného materiálu se spojí do jedné nepravidelné kresby s jemnou výplní a texturou. Během tažení vidíš náhled; uvolnění myši uloží celý tah, **Escape** jej zruší a **Zpět** vrátí jedním krokem. Šipky a Enter přidají nebo uberou jedno políčko. Ctrl nebo mezerník s tažením nadále posouvá mapu.
 
 **Přidat** kreslí materiál a na zasaženém políčku případně nahradí jiný materiál. **Ubrat** odstraňuje pouze vybraný materiál. Plocha se může nacházet pod předměty, poznámkami, postavami i příšerami. Volba **Jen PJ** funguje také pro celý tah. Plochy nemají otáčení ani velikost symbolu; otočení předmětů je schované v rozbalovací volbě a zůstává dostupné i v editoru.
 
-Políčka určují umístění štětce, nikoliv výsledný obrys. Kresba vzniká ze spojitého pole pigmentu, zaobleného obrysu a textury ukotvené na papíře; při překreslení se náhodně nemění. Na volné sousední podlaze může okraj mírně přesáhnout políčko štětce. Podlaha, zdi a dveře kresbu oříznou; diagonálně se dotýkající ostrůvky zůstávají oddělené. Při rychlém diagonálním tažení štětec doplní navazující políčka.
+Políčka určují umístění štětce, nikoliv výsledný obrys. Kresba vzniká ze spojitého pole pigmentu, zaobleného obrysu a řídkých tušových značek různé velikosti a natočení ukotvených na papíře; při překreslení se náhodně nemění. Na volné sousední podlaze může okraj mírně přesáhnout políčko štětce. Podlaha, zdi a dveře kresbu oříznou; diagonálně se dotýkající ostrůvky zůstávají oddělené. Při rychlém diagonálním tažení štětec doplní navazující políčka.
 
 Je to dekorace: voda neblokuje cestu ani automaticky nezpůsobuje uklouznutí. Herní význam určí PJ. Na políčku je nejvýše jeden plošný materiál, vedle něj může být běžná stafáž. Limit je 560 políček na patro. Odebrání podlahy odstraní také plochu na ní; Zpět vrátí obojí. Staré podlahové symboly se na plochy automaticky nepřevádějí a náhodný návrh zatím vytváří jednotlivé značky, nikoli plochy; natřené podlahové buňky při tom vynechá.
 

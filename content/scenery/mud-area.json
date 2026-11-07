@@ -3,7 +3,6 @@
   "name": "Bláto",
   "category": "floor",
   "environments": [
-    "castle",
     "mine",
     "cave"
   ],

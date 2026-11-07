@@ -100,6 +100,12 @@ Stejným příkazem použiješ změnu kanálu nebo retence z `.env`. Spouštěj 
 
 Aktualizace v administraci vyměňuje aplikační kontejner. Checkout, Compose, updater a případný LiveKit spravuješ samostatně. Změny aplikačních proměnných nebo připojení volume prováděj plánovaně přes Compose s aktivním image z `.stul-state/runtime.env`.
 
+#### Přechod z 1.0.0 na 1.1.0
+
+V administraci vyber stabilní vydání 1.1.0 a ověř jeho commit a CI. Nové SQL migrace, proměnné, Compose ani updater nejsou potřeba. Před aktualizací uchovej úplnou zálohu a snapshot; po výměně ověř přihlášení PJ i hráče, stafáž, plochy a export/obnovu testovací kampaně. Zálohy jsou nadále ve formátu 1, nově s volitelnými poli `scenery` a `surfaces` ve všech mapách, paměti a historii. Staré zálohy fungují i bez těchto polí.
+
+Při návratu updater obnoví také databázi před aktualizací. Pro obnovu nové JSON zálohy s dekoracemi použij 1.1.0 nebo novější; starší aplikace jejich zachování negarantuje. LiveKit a místní checkout se samostatně nemění.
+
 #### Přechod z 0.6.0 na 1.0.0
 
 V administraci zkontroluj vydání a zvol stabilní 1.0.0. Nastavení prostředí, protokol updateru a konfigurace hostingu se nemění, nové SQL migrace nejsou potřeba. Před výměnou vznikne snapshot databáze; po ní ověř přihlášení PJ i hráče, herní mapu a export úplné zálohy. LiveKit ani místní checkout se automaticky neaktualizují. Úplná JSON záloha zůstává ve formátu 1 a nově zahrnuje příběhovou osnovu, pokud ji používáš.

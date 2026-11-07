@@ -10,7 +10,7 @@
 [![Docker · vlastní hosting](https://img.shields.io/badge/Docker-vlastn%C3%AD%20hosting-2496ED?logo=docker&logoColor=white)](docs/SELF_HOSTING.md)
 [![LiveKit · hlas družiny](https://img.shields.io/badge/LiveKit-hlas%20dru%C5%BEiny-f59e0b)](docs/VOICE.md)
 
-**Verze 1.0.0** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.0.0)
+**Verze 1.1.0** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.1.0)
 
 **Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
 

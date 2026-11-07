@@ -1,22 +1,20 @@
 'use client';
 import { useState } from 'react';
 import { sceneryCatalog, type Scenery } from '../../lib/scenery';
+import {sceneryChoices,type SceneryCategory,type SceneryEnvironment} from '../../lib/scenery-catalog';
 import SceneryFillControls,{type SceneryFillControlsProps} from './fill-controls';
 import SceneryGlyph from './glyph';
 export type SceneryBrush = Pick<Scenery,'kind'|'rotation'|'size'|'hidden'>;
-type Category='object'|'floor'|'area';
+type Category=SceneryCategory;
 export default function SceneryPalette({brush,onChange,moving,onCancelMove,fill,surfaceOp,onSurfaceOp}:{
   brush:SceneryBrush;onChange:(next:SceneryBrush)=>void;moving:boolean;onCancelMove:()=>void;fill:SceneryFillControlsProps;
   surfaceOp:'add'|'remove';onSurfaceOp:(op:'add'|'remove')=>void;
 }){
-  const [environment,setEnvironment]=useState<'all'|'castle'|'mine'|'cave'>('all');
+  const [environment,setEnvironment]=useState<SceneryEnvironment>('all');
   const [category,setCategory]=useState<Category>('object');
-  const matches=(item:typeof sceneryCatalog[number],nextCategory=category,nextEnvironment=environment)=>
-    (nextCategory==='area'?Boolean(item.surface):item.category===nextCategory&&!item.surface)&&
-    (nextEnvironment==='all'||item.environments.includes(nextEnvironment));
   const choose=(nextCategory:Category,nextEnvironment=environment)=>{
     setCategory(nextCategory);setEnvironment(nextEnvironment);
-    const entry=sceneryCatalog.find(item=>matches(item,nextCategory,nextEnvironment));
+    const entry=sceneryChoices(nextCategory,nextEnvironment)[0];
     if(entry)onChange({...brush,kind:entry.id});
   };
   const area=Boolean(sceneryCatalog.find(item=>item.id===brush.kind)?.surface);
@@ -26,7 +24,7 @@ export default function SceneryPalette({brush,onChange,moving,onCancelMove,fill,
     </select></label></div>
     <div className="scenery-categories" role="group" aria-label="Druh stafáže">{(['object','floor','area'] as const).map(value=><button key={value} type="button" aria-pressed={category===value} onClick={()=>choose(value)}>{({object:'Předměty',floor:'Podlahové značky',area:'Plochy'})[value]}</button>)}</div>
     <div className="scenery-choices" role="group" aria-label="Prvky stafáže">
-      {sceneryCatalog.filter(item=>matches(item)).map(item=><button type="button" key={item.id} aria-pressed={brush.kind===item.id} aria-label={item.name} title={item.name} onClick={()=>onChange({...brush,kind:item.id})}>
+      {sceneryChoices(category,environment).map(item=><button type="button" key={item.id} aria-pressed={brush.kind===item.id} aria-label={item.name} title={item.name} onClick={()=>onChange({...brush,kind:item.id})}>
         <svg viewBox="0 0 32 32" aria-hidden="true"><SceneryGlyph kind={item.id}/></svg><span>{item.name}</span>
       </button>)}
     </div>

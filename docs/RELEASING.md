@@ -13,9 +13,11 @@ Tento postup je pro správce projektu. Repozitář má CI, ale nemá automatick�
 
 Pokud má provozovatel novější vývojový commit než zveřejněný release, automatická aktualizace není bezpečnou zkratkou k „nejnovějším funkcím“. Vždy zkontroluj nabízený release a jeho změny.
 
-## Stabilní řada 1.0
+## Stabilní řada 1.x
 
 První vydání této řady je `v1.0.0`. Obsahuje kreslené mapy, sjednocený generátor a soukromou příběhovou osnovu. Původně plánovaný kandidát `0.9.0-alpha.1` nebyl publikovaný; výsledkem je stabilní 1.0.0. Další opravy mají nové patch číslo, rozšíření nové minor číslo. Již publikovaný tag se nemění.
+
+Verze `v1.1.0` přidává ruční stafáž, komunitní katalog, náhodný návrh podlahových značek a organické plochy. Přechod z 1.0.0 nevyžaduje novou infrastrukturu; zálohy formátu 1 rozšiřují volitelná pole mapy.
 
 Před každým vydáním ověř katalogy, generování a založení dobrodružství s PJ i hráčem, export a obnovu existující kampaně a průchod CI přesného commitu. Při zkušebním hraní projdi přechod mezi patry a odhalení připravené Situace. Poznatky zapisuj do issues s označením testované verze. Pokud další vývoj potřebuje předběžné vydání, použij nový prerelease tag; kanál Stable jej nenabídne.
 

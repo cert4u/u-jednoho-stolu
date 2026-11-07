@@ -55,3 +55,19 @@ const community={id:'community-surface',name:'Popel',category:'floor',environmen
 assert(sceneryEntrySchema.safeParse(community).success);
 for(const extra of [{category:'object'},{automatic:true},{surface:{...community.surface,color:'url(https://x)'}},{surface:{...community.surface,texture:'<script>'}}])assert(!sceneryEntrySchema.safeParse({...community,...extra}).success);
 console.log('PASS: organic joined contours, diagonal brush continuity, wall separation, material erasing, bounds, deterministic immutable drawing, hidden/fog memory, replay/undo, backups, 560 cells and community profiles.');
+
+const {sceneryChoices}=await import('../lib/scenery-catalog.ts');
+assert.deepEqual(sceneryChoices('area','castle').map(p=>p.id).sort(),['moss-area','rubble-area','water-area']);
+assert.deepEqual(sceneryChoices('area','mine').map(p=>p.id).sort(),['mud-area','rubble-area','water-area']);
+assert.equal(sceneryChoices('area','cave').length,4);assert.equal(sceneryChoices('area','all').length,4);
+assert(sceneryChoices('floor','all').every(p=>!p.surface));
+const {surfaceTextureMarks}=await import('../lib/surface-texture.ts');
+const textureCells=Array.from({length:60},(_,i)=>[i%10,Math.floor(i/10)]);
+for(const texture of ['ripples','speckles','strokes','stones']){
+ const marks=surfaceTextureMarks(textureCells,'test-material',texture);
+ assert.deepEqual(marks,surfaceTextureMarks([...textureCells].reverse(),'test-material',texture));
+ assert(marks.length>0&&marks.length<textureCells.length,'Textures should leave empty space.');
+ assert.equal(new Set(marks.map(m=>m.d)).size,marks.length);
+ assert(marks.every(m=>!m.d.includes('NaN')&&m.d.startsWith('M')));
+}
+console.log('PASS: area environment filters and sparse deterministic world-anchored texture variants.');

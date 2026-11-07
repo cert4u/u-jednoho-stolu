@@ -12,3 +12,10 @@ export const sceneryCatalog = parseCatalog(catalog,sceneryEntrySchema).map(entry
 export const sceneryKinds = sceneryCatalog.map(entry=>entry.id);
 const byId = new Map(sceneryCatalog.map(entry=>[entry.id,entry]));
 export const findSceneryEntry = (id: string) => byId.get(id);
+
+export type SceneryCategory='object'|'floor'|'area';
+export type SceneryEnvironment='all'|'castle'|'mine'|'cave';
+export function sceneryChoices(category:SceneryCategory,environment:SceneryEnvironment){
+  return sceneryCatalog.filter(entry=>(category==='area'?Boolean(entry.surface):entry.category===category&&!entry.surface)
+    &&(environment==='all'||entry.environments.includes(environment)));
+}

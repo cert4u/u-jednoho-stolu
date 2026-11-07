@@ -4,7 +4,6 @@
   "category": "floor",
   "environments": [
     "castle",
-    "mine",
     "cave"
   ],
   "automatic": false,
