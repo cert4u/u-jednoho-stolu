@@ -1,3 +1,4 @@
+import type {SurfaceBrush} from '../../lib/surfaces';
 import {
   useRef,
   useState,
@@ -30,6 +31,7 @@ import {
 } from './model';
 
 type MapInput = {
+  surfaceBrush?:SurfaceBrush;
   map: Dungeon;
   members: Marker[];
   me: string;
@@ -96,6 +98,7 @@ function geometry(e: ReactPointerEvent<SVGSVGElement>) {
 }
 
 export function useMapInput({
+  surfaceBrush,
   map,
   members,
   me,
@@ -206,6 +209,10 @@ export function useMapInput({
     if (busy || lock.current || retry || preview) return;
     if (effectiveTool === 'scenery' && pj) {
       e.preventDefault();
+      if(surfaceBrush){
+        const s:Stroke={surface:{...surfaceBrush},pointer:e.pointerId,start:p.cell,end:p.cell,points:[p.cell],edges:[],cells:[],edge:p.edge};
+        active.current=s;setStroke(s);e.currentTarget.setPointerCapture(e.pointerId);return;
+      }
       onScenery(p.cell, (e.target as Element).closest('[data-scenery]')?.getAttribute('data-scenery') ?? undefined);
       return;
     }
@@ -330,6 +337,7 @@ export function useMapInput({
     if (e.currentTarget.hasPointerCapture(e.pointerId))
       e.currentTarget.releasePointerCapture(e.pointerId);
     if (s.pan) return;
+    if(s.surface){void sendMap({tool:'surface',...s.surface,points:s.points});return;}
     if (s.note) {
       const note = notes.find((n) => n.id === s.note);
       if (note) {
@@ -462,6 +470,7 @@ export function useMapInput({
     if (e.key !== 'Enter' || busy || preview || lock.current || retry) return;
     e.preventDefault();
     if (effectiveTool === 'scenery' && pj) {
+      if(surfaceBrush){void sendMap({tool:'surface',...surfaceBrush,points:[keyboard]});return;}
       onScenery(keyboard, map.scenery?.find(item => item.x === keyboard[0] && item.y === keyboard[1])?.id);
     } else if (effectiveTool === 'inspect' && pj) {
       setInspection({ point: keyboard });

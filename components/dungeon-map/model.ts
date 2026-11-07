@@ -1,3 +1,4 @@
+import type {SurfaceBrush} from '../../lib/surfaces';
 import { MAP_WIDTH as W, MAP_HEIGHT as H, type Point } from '../../lib/dungeon';
 export { W, H };
 export const SIZE = 36,
@@ -38,6 +39,7 @@ export type Tool =
   | 'inspect'
   | 'scenery';
 export type Stroke = {
+  surface?:SurfaceBrush;
   pointer: number;
   start: Point;
   end: Point;

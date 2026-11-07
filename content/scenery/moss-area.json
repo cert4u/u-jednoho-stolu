@@ -1,0 +1,17 @@
+{
+  "id": "moss-area",
+  "name": "Mech – plocha",
+  "category": "floor",
+  "environments": [
+    "castle",
+    "mine",
+    "cave"
+  ],
+  "automatic": false,
+  "path": "M4 18Q1 7 12 6Q21 1 26 10Q33 19 24 25Q14 32 6 25ZM8 20l2-5 3 3M16 13l3-4M19 23l2-6 3 3",
+  "surface": {
+    "color": "#87916b",
+    "texture": "strokes",
+    "roughness": 0.9
+  }
+}

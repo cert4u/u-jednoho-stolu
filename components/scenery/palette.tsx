@@ -1,39 +1,41 @@
 'use client';
 import { useState } from 'react';
-import { sceneryCatalog, type Scenery, type SceneryKind } from '../../lib/scenery';
+import { sceneryCatalog, type Scenery } from '../../lib/scenery';
 import SceneryFillControls,{type SceneryFillControlsProps} from './fill-controls';
 import SceneryGlyph from './glyph';
 export type SceneryBrush = Pick<Scenery,'kind'|'rotation'|'size'|'hidden'>;
-export default function SceneryPalette({ brush, onChange, moving, onCancelMove, fill }: {
-  brush: SceneryBrush; onChange: (next: SceneryBrush) => void; moving: boolean; onCancelMove: () => void; fill: SceneryFillControlsProps;
-}) {
-  const [environment,setEnvironment] = useState<'all'|'castle'|'mine'|'cave'>('all');
-  const [category,setCategory]=useState<'object'|'floor'>('object');
+type Category='object'|'floor'|'area';
+export default function SceneryPalette({brush,onChange,moving,onCancelMove,fill,surfaceOp,onSurfaceOp}:{
+  brush:SceneryBrush;onChange:(next:SceneryBrush)=>void;moving:boolean;onCancelMove:()=>void;fill:SceneryFillControlsProps;
+  surfaceOp:'add'|'remove';onSurfaceOp:(op:'add'|'remove')=>void;
+}){
+  const [environment,setEnvironment]=useState<'all'|'castle'|'mine'|'cave'>('all');
+  const [category,setCategory]=useState<Category>('object');
+  const matches=(item:typeof sceneryCatalog[number],nextCategory=category,nextEnvironment=environment)=>
+    (nextCategory==='area'?Boolean(item.surface):item.category===nextCategory&&!item.surface)&&
+    (nextEnvironment==='all'||item.environments.includes(nextEnvironment));
+  const choose=(nextCategory:Category,nextEnvironment=environment)=>{
+    setCategory(nextCategory);setEnvironment(nextEnvironment);
+    const entry=sceneryCatalog.find(item=>matches(item,nextCategory,nextEnvironment));
+    if(entry)onChange({...brush,kind:entry.id});
+  };
+  const area=Boolean(sceneryCatalog.find(item=>item.id===brush.kind)?.surface);
   return <section className="scenery-palette" aria-label="Stafáž mapy">
-    <div className="scenery-palette-heading"><strong>Stafáž</strong><label>Prostředí<select value={environment} onChange={event => {
-      const next=event.target.value as typeof environment;setEnvironment(next);
-      const entry=sceneryCatalog.find(item=>item.category===category&&(next==='all'||item.environments.includes(next)));
-      if(entry)onChange({...brush,kind:entry.id});
-    }}>
+    <div className="scenery-palette-heading"><strong>Stafáž</strong><label>Prostředí<select value={environment} onChange={event=>choose(category,event.target.value as typeof environment)}>
       <option value="all">Všechna</option><option value="castle">Hrad</option><option value="mine">Důl</option><option value="cave">Jeskyně</option>
     </select></label></div>
-    <div className="scenery-categories" role="group" aria-label="Druh stafáže">{(['object','floor'] as const).map(value=><button key={value} type="button" aria-pressed={category===value} onClick={()=>{
-      setCategory(value);const entry=sceneryCatalog.find(item=>item.category===value&&(environment==='all'||item.environments.includes(environment)));
-      if(entry)onChange({...brush,kind:entry.id});
-    }}>{value==='object'?'Předměty':'Podlaha'}</button>)}</div>
+    <div className="scenery-categories" role="group" aria-label="Druh stafáže">{(['object','floor','area'] as const).map(value=><button key={value} type="button" aria-pressed={category===value} onClick={()=>choose(value)}>{({object:'Předměty',floor:'Podlahové značky',area:'Plochy'})[value]}</button>)}</div>
     <div className="scenery-choices" role="group" aria-label="Prvky stafáže">
-      {sceneryCatalog.filter(item => item.category===category&&(environment === 'all' || item.environments.includes(environment))).map(item => <button type="button"
-        key={item.kind} aria-pressed={brush.kind === item.kind} aria-label={item.name} title={item.name}
-        onClick={() => onChange({ ...brush, kind: item.kind as SceneryKind })}>
-        <svg viewBox="0 0 32 32" aria-hidden="true"><SceneryGlyph kind={item.kind} /></svg><span>{item.name}</span>
+      {sceneryCatalog.filter(item=>matches(item)).map(item=><button type="button" key={item.id} aria-pressed={brush.kind===item.id} aria-label={item.name} title={item.name} onClick={()=>onChange({...brush,kind:item.id})}>
+        <svg viewBox="0 0 32 32" aria-hidden="true"><SceneryGlyph kind={item.id}/></svg><span>{item.name}</span>
       </button>)}
     </div>
-    <div className="scenery-brush-controls"><label>Velikost<select value={brush.size} onChange={event => onChange({ ...brush, size: event.target.value as Scenery['size'] })}>
-      <option value="small">Malá</option><option value="medium">Střední</option><option value="large">Velká</option>
-    </select></label><button type="button" onClick={() => onChange({ ...brush, rotation: ((brush.rotation+90)%360) as Scenery['rotation'] })}>Otočit · {brush.rotation}°</button>
-    <label className="scenery-hidden"><input type="checkbox" checked={Boolean(brush.hidden)} onChange={event => onChange({ ...brush, hidden: event.target.checked })} />Jen PJ</label></div>
-    {moving ? <p role="status">Klikni na nové místo prvku. <button type="button" onClick={onCancelMove}>Zrušit přesun</button></p> :
-      <p>Kliknutím do mapy přidáš prvek. Kliknutím na stafáž otevřeš úpravy. Šipky a Enter fungují také.</p>}
-    <SceneryFillControls {...fill} />
+    <div className="scenery-brush-controls">
+      {area?<div className="scenery-categories" role="group" aria-label="Tah plochy">{(['add','remove'] as const).map(op=><button key={op} type="button" aria-pressed={surfaceOp===op} onClick={()=>onSurfaceOp(op)}>{op==='add'?'Přidat':'Ubrat'}</button>)}</div>:<label>Velikost<select value={brush.size} onChange={event=>onChange({...brush,size:event.target.value as Scenery['size']})}><option value="small">Malá</option><option value="medium">Střední</option><option value="large">Velká</option></select></label>}
+      <label className="scenery-hidden"><input type="checkbox" checked={Boolean(brush.hidden)} onChange={event=>onChange({...brush,hidden:event.target.checked})}/>Jen PJ</label>
+    </div>
+    {!area&&category==='object'&&<details className="scenery-rotation"><summary>Otočení předmětu</summary><button type="button" onClick={()=>onChange({...brush,rotation:((brush.rotation+90)%360) as Scenery['rotation']})}>Otočit · {brush.rotation}°</button></details>}
+    {moving?<p role="status">Klikni na nové místo prvku. <button type="button" onClick={onCancelMove}>Zrušit přesun</button></p>:<p>{area?'Táhni přes podlahu: sousedící plochy stejného materiálu se spojí. Ubrat maže jen vybraný materiál. Enter upraví jedno políčko; Escape zruší tah.':'Kliknutím vložíš prvek nebo otevřeš úpravy. Šipky a Enter fungují také.'}</p>}
+    {!area&&<SceneryFillControls {...fill}/>}
   </section>;
 }

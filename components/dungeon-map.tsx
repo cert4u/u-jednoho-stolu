@@ -1,4 +1,5 @@
 'use client';
+import {findSceneryEntry} from '../lib/scenery-catalog';
 import {proposeScenery,sceneryFillStamp,type SceneryFillOptions,type ScenerySuggestion} from '../lib/scenery-fill';
 import SceneryPalette, {type SceneryBrush} from './scenery/palette';
 import SceneryEditor from './scenery/editor';
@@ -256,8 +257,10 @@ export default function DungeonMap({
     svg = useRef<SVGSVGElement>(null),
     pendingCenter = useRef(false);
   const [sceneryBrush,setSceneryBrush] = useState<SceneryBrush>({kind:'crate',rotation:0,size:'medium',hidden:false});
+  const [surfaceOp,setSurfaceOp]=useState<'add'|'remove'>('add');
   const [sceneryEdit,setSceneryEdit] = useState<{item:Scenery;levelId:string}>();
   const [movingScenery,setMovingScenery] = useState<{item:Scenery;levelId:string}>();
+  const surfaceBrush=findSceneryEntry(sceneryBrush.kind)?.surface&&!movingScenery?{kind:sceneryBrush.kind,op:surfaceOp,hidden:Boolean(sceneryBrush.hidden)}:undefined;
   const [floorProposal,setFloorProposal]=useState<{levelId:string;stamp:string;options:SceneryFillOptions;items:ScenerySuggestion[];requestId:string}>();
   const fillBlocked=[...new Set([...(exploration?.stairs??[]).map(item=>`${item.x},${item.y}`),...notes.map(item=>`${item.x},${item.y}`),...monsters.filter(item=>!item.archived&&item.x!==null&&item.y!==null).map(item=>`${item.x},${item.y}`),
     ...members.filter(item=>item.role==='player'&&(!exploration?.location||exploration.location.levelId===exploration.levelId)).map(item=>`${item.x},${item.y}`),
@@ -330,6 +333,7 @@ export default function DungeonMap({
     onOpenNote,
     onInspectMonster,
     onScenery: sceneryClick,
+    surfaceBrush,
     onCancelScenery: () => setMovingScenery(undefined),
     effectiveTool,
     canDraw,
@@ -777,7 +781,7 @@ export default function DungeonMap({
           picked={keyboard}
           entrance={map.access?.entrance}
         />
-        {pj && !preview && effectiveTool === 'scenery' && <SceneryPalette brush={sceneryBrush} onChange={setSceneryBrush}
+        {pj && !preview && effectiveTool === 'scenery' && <SceneryPalette surfaceOp={surfaceOp} onSurfaceOp={setSurfaceOp} brush={sceneryBrush} onChange={next=>{setSceneryBrush(next);if(findSceneryEntry(next.kind)?.surface)setFloorProposal(undefined);}}
           moving={Boolean(movingScenery && movingScenery.levelId === (exploration?.levelId || 'ground'))} onCancelMove={()=>setMovingScenery(undefined)}
           fill={{busy:busy||Boolean(movingScenery),hidden:Boolean(sceneryBrush.hidden),
             proposal:floorProposal?{options:floorProposal.options,count:floorProposal.items.length,stale:proposalStale}:undefined,
@@ -833,6 +837,7 @@ export default function DungeonMap({
           >
             <MapCanvas
               appearance={appearance}
+              surfaceBrush={surfaceBrush}
               sceneryPreview={!proposalStale && tool==='scenery' ? floorProposal?.items : undefined}
               map={{ shown, revealed, lit, party, recapCell, visible }}
               input={{

@@ -15,6 +15,7 @@ Jde o limity aktuálního kódu v této větvi, nikoli o příslib vhodnosti pro
 | Poznámky a místnosti na mapě | 200 dohromady na dobrodružství včetně automatických značek generátoru, nejvýše jedna na políčko a patro. Volitelné číslo 1–999 je unikátní na patře; upozornění 1–6 polí, výchozí 2 (automatické značky je mají vypnuté). |
 | Inspekce mapy | Jen PJ. Platný V2 graf vymezuje logickou místnost; ruční/změněná mapa používá propojenou podlahu ohraničenou zdmi a dveřmi. Volná chodba může spojit více místností. Kořist a zkoušky se hledají podle vazby na poznámky v prostoru. |
 | Soubojové pořadí | Nejvýše 64 účastníků. Až 100 rozpracovaných útoků; uzavřená soubojová historie se omezuje samostatně. |
+| Organické plochy | Nejvýše 560 políček na patře, jeden plošný materiál na políčku. Tah 1–2048 bodů. Nezapočítává se do limitu 200 jednotlivých symbolů. |
 | Stafáž | Nejvýše 200 prvků na patře, jeden na políčko. Poznámka PJ do 1000 znaků, tři velikosti, otočení po 90°. Automatická sada nejvýše 10/20/30 prvků podle hustoty, v celkovém limitu patra. |
 | Stavy | Nejvýše 12 na postavu/příšeru, trvání 0–999 kol nebo neurčené. |
 | Vlastní kouzla a schopnosti | Nejvýše 30 na postavu; magenergie a cena 0–9999. |

@@ -1,0 +1,17 @@
+{
+  "id": "mud-area",
+  "name": "Bláto",
+  "category": "floor",
+  "environments": [
+    "castle",
+    "mine",
+    "cave"
+  ],
+  "automatic": false,
+  "path": "M4 12Q10 1 17 7Q30 5 28 19Q30 31 16 26Q2 29 4 12ZM9 15h2M18 13h1M15 22h3",
+  "surface": {
+    "color": "#998064",
+    "texture": "speckles",
+    "roughness": 0.65
+  }
+}

@@ -110,7 +110,7 @@ function validateMapReferences(
   for (const map of maps)
     if (map.generation?.status === 'valid')
       validateGeneratedFloor(map, map.generation);
-  if (g.atlas?.levels.some((l) => l.memory.generation || l.memory.doorSettings || l.memory.scenery?.some(item => item.hidden !== undefined || item.note !== undefined || item.revision !== undefined)))
+  if (g.atlas?.levels.some((l) => l.memory.surfaces?.some(item=>item.hidden!==undefined) || l.memory.generation || l.memory.doorSettings || l.memory.scenery?.some(item => item.hidden !== undefined || item.note !== undefined || item.revision !== undefined)))
     throw new Error('Paměť hráčské mapy nesmí obsahovat tajná metadata.');
   if (
     g.generationRuns?.some((run) =>

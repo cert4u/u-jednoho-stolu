@@ -28,7 +28,7 @@ export function sceneryFillBlocked(game:Game,requested?:unknown):string[]{
   return [...result].sort(sort);
 }
 export function sceneryFillStamp(map:Dungeon,blocked:readonly string[]):string{
-  return JSON.stringify({floors:[...map.floors].sort(sort),edges:Object.entries(map.edges).sort(([a],[b])=>sort(a,b)),
+  return JSON.stringify({surfaces:map.surfaces,floors:[...map.floors].sort(sort),edges:Object.entries(map.edges).sort(([a],[b])=>sort(a,b)),
     stairs:map.stairMarks,access:map.access,generation:map.generation?[map.generation.status,map.generation.style]:null,
     scenery:(map.scenery??[]).map(({id,x,y,kind,rotation,size,revision})=>({id,x,y,kind,rotation,size,revision})).sort((a,b)=>sort(a.id,b.id)),blocked:[...blocked].sort(sort),
     catalog:sceneryCatalog.filter(entry=>entry.automatic).map(({id,environments})=>[id,environments])});
@@ -40,7 +40,7 @@ export function proposeScenery(map:Dungeon,blocked:readonly string[],raw:unknown
   const environment=options.environment==='auto'?(map.generation?.status==='valid'?map.generation.style:undefined):options.environment;
   const kinds=sceneryCatalog.filter(entry=>entry.category==='floor'&&entry.automatic&&(!environment||entry.environments.includes(environment))).map(entry=>entry.id).sort(sort);
   if(!kinds.length)return [];
-  const floors=new Set(map.floors),occupied=new Set([...blocked,...(map.scenery??[]).map(item=>key(item.x,item.y)),...Object.keys(map.stairMarks??{}),...Object.values(map.access??{}).filter(p=>p).map(p=>p!.join(','))]);
+  const floors=new Set(map.floors),occupied=new Set([...blocked,...(map.surfaces??[]).map(item=>key(item.x,item.y)),...(map.scenery??[]).map(item=>key(item.x,item.y)),...Object.keys(map.stairMarks??{}),...Object.values(map.access??{}).filter(p=>p).map(p=>p!.join(','))]);
   for(const [edge,kind]of Object.entries(map.edges))if(kind==='door'){
     const [axis,xs,ys]=edge.split(':'),x=Number(xs),y=Number(ys);
     for(const [cx,cy]of axis==='h'?[[x,y-1],[x,y]]:[[x-1,y],[x,y]])occupied.add(key(cx,cy));

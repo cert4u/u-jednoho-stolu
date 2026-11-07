@@ -103,7 +103,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | [app/api/game/view.ts](../app/api/game/view.ts) | Výslovný výběr polí herního pohledu podle příjemce. Klient používá typ `GameView` z tohoto modulu. |
 | `app/api/voice/route.ts`, `lib/voice.ts` | Ověření členství a krátkodobá hlasová vstupenka pouze pro mikrofon. |
 | `lib/game.ts`, `db/schema.ts` | Vnitřní stav hry a tabulka místností. |
-| `lib/scenery.ts`, `components/scenery/` | Komunitní JSON katalog, deterministické doplnění podlahy, paleta, editor a veřejná paměť; [model a regrese](SCENERY.md). |
+| `lib/scenery.ts`, `components/scenery/` | Komunitní JSON katalog, organické plochy (`lib/surfaces.ts`, `lib/surface-drawing.ts`), deterministické doplnění podlahy, paleta, editor a veřejná paměť; [model a regrese](SCENERY.md). |
 | `lib/dungeon.ts`, `lib/exploration.ts` | Geometrie, patra, dveře, propojení schodů, dohled a paměť mapy. |
 | `lib/dungeon-generator.ts`, `lib/generation.ts` | Verzovaný deterministický náhled, serverové vložení a ochrana kapacity/souběhu. V2 jádro, validátor a sdílené typy jsou v samostatných `generator-*.ts` modulech; [audit a návrh](GENERATOR_V2.md). |
 | [content/](../content) | Samostatné JSON soubory pro příšery, jeskyně a dobrodružství. Indexy vytváří `npm run content:sync`. Katalogy a testy čtou stejná Zod schémata. [Přidávání obsahu](OBSAH.md). |

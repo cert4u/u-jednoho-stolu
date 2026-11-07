@@ -1,0 +1,17 @@
+{
+  "id": "water-area",
+  "name": "Voda",
+  "category": "floor",
+  "environments": [
+    "castle",
+    "mine",
+    "cave"
+  ],
+  "automatic": false,
+  "path": "M3 15Q4 5 13 7Q24 1 28 13Q32 25 20 27Q2 31 3 15ZM8 17Q13 14 18 17M15 22Q20 19 25 22",
+  "surface": {
+    "color": "#688d97",
+    "texture": "ripples",
+    "roughness": 0.45
+  }
+}

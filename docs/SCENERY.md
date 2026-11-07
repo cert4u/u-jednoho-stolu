@@ -1,6 +1,6 @@
 # Stafáž mapy
 
-Nástroj **Stafáž** je dostupný PJ v přípravě i odkrývání. Paleta odděluje **Předměty** a **Podlahu**. Dvanáct původních tušových symbolů zahrnuje bednu, sud, stůl, lavici, polici, sloup, suť, balvan, houby, kořeny, důlní vozík a dřevěnou podpěru. Šest podlahových detailů přidává praskliny, louži, hlínu, dlažbu, mech a střepy. Filtrem **Prostředí** vybereš hrad, důl nebo jeskyni; filtr je doporučení, ne pravidlo umístění.
+Nástroj **Stafáž** je dostupný PJ v přípravě i odkrývání. Paleta odděluje **Předměty**, **Podlahové značky** a **Plochy**. Dvanáct původních tušových symbolů zahrnuje bednu, sud, stůl, lavici, polici, sloup, suť, balvan, houby, kořeny, důlní vozík a dřevěnou podpěru. Šest podlahových detailů přidává praskliny, louži, hlínu, dlažbu, mech a střepy. Filtrem **Prostředí** vybereš hrad, důl nebo jeskyni; filtr je doporučení, ne pravidlo umístění.
 
 ![Stafáž v místnosti i v okolní skále](images/scenery.jpg)
 
@@ -24,6 +24,20 @@ Při automatickém průzkumu se ukládá pouze skutečně viděná podoba. Přes
 
 Změna podlahy stafáž nemaže: může se stát vnější nebo izolovanou značkou. PJ ji může následně přemístit či odstranit. Fyzické překážky, interaktivní truhly a vazby na kořist nejsou součástí stafáže.
 
+## Organické plochy
+
+![Spojené organické plochy vody, mechu, suti a bláta pod předměty](images/organic-surfaces.jpg)
+
+Ve **Stafáž → Plochy** vyber vodu, bláto, mech nebo suť. Táhni přes podlahu: sousední části stejného materiálu se spojí do jedné nepravidelné kresby s jemnou výplní a texturou. Během tažení vidíš náhled; uvolnění myši uloží celý tah, **Escape** jej zruší a **Zpět** vrátí jedním krokem. Šipky a Enter přidají nebo uberou jedno políčko. Ctrl nebo mezerník s tažením nadále posouvá mapu.
+
+**Přidat** kreslí materiál a na zasaženém políčku případně nahradí jiný materiál. **Ubrat** odstraňuje pouze vybraný materiál. Plocha se může nacházet pod předměty, poznámkami, postavami i příšerami. Volba **Jen PJ** funguje také pro celý tah. Plochy nemají otáčení ani velikost symbolu; otočení předmětů je schované v rozbalovací volbě a zůstává dostupné i v editoru.
+
+Políčka určují umístění štětce, nikoliv výsledný obrys. Kresba vzniká ze spojitého pole pigmentu, zaobleného obrysu a textury ukotvené na papíře; při překreslení se náhodně nemění. Na volné sousední podlaze může okraj mírně přesáhnout políčko štětce. Podlaha, zdi a dveře kresbu oříznou; diagonálně se dotýkající ostrůvky zůstávají oddělené. Při rychlém diagonálním tažení štětec doplní navazující políčka.
+
+Je to dekorace: voda neblokuje cestu ani automaticky nezpůsobuje uklouznutí. Herní význam určí PJ. Na políčku je nejvýše jeden plošný materiál, vedle něj může být běžná stafáž. Limit je 560 políček na patro. Odebrání podlahy odstraní také plochu na ní; Zpět vrátí obojí. Staré podlahové symboly se na plochy automaticky nepřevádějí a náhodný návrh zatím vytváří jednotlivé značky, nikoli plochy; natřené podlahové buňky při tom vynechá.
+
+Hráč dostává pouze materiál na spatřených políčkách. Neposílá se celý obrys tajné oblasti. Kresba se sestavuje z jeho známé mapy, změny mimo dohled zůstávají v paměti a navštívené části se tlumí. Jen PJ vidí skryté plochy.
+
 ## Střídmé automatické rozmístění
 
 ![Soukromý náhled podlahových detailů před vložením](images/scenery-floor.jpg)
@@ -38,7 +52,7 @@ Server návrh znovu vypočítá z aktuálních dat. Změna kresby, stafáže neb
 
 ## Komunitní katalog
 
-Každý prvek má vlastní JSON v [content/scenery](../content/scenery). Přidání nevyžaduje úpravu komponent ani seznamu typů. Zkopíruj například [moss.json](../content/scenery/moss.json), zvol nové stabilní ID a stejné jméno souboru:
+Všech 22 definic (18 symbolů a 4 plošné materiály) má vlastní JSON v [content/scenery](../content/scenery). Přidání nevyžaduje úpravu komponent ani seznamu typů. Zkopíruj například [moss.json](../content/scenery/moss.json), zvol nové stabilní ID a stejné jméno souboru:
 
 ```json
 {
@@ -56,22 +70,42 @@ Každý prvek má vlastní JSON v [content/scenery](../content/scenery). Přidá
 - `path` obsahuje pouze SVG příkazy a číselné souřadnice pro plátno **32 × 32**. Symbol je tvořen nevyplněnými tahy, barvu, průhlednost a tloušťku řídí společná vrstva. Nekopíruj celé SVG, HTML, skripty, styly, odkazy ani externí obrázky. Validace je odmítne. Limit je 6000 znaků; pro čitelnost doporučujeme několik jednoduchých tahů uvnitř okraje 2–30.
 - Zachovej tichý tušový vzhled bez barevného pozadí. Ověř symbol v malé velikosti, v obou vzhledech mapy a v šedé paměti. Uveď původ kresby a licenci v PR podle [pravidel přispívání](../CONTRIBUTING.md#licence-a-původ-obsahu).
 
+### Vlastní plošný materiál
+
+Zkopíruj [water-area.json](../content/scenery/water-area.json). Vedle běžných polí definuj:
+
+```json
+"surface": {
+  "color": "#998b78",
+  "texture": "speckles",
+  "roughness": 0.7
+}
+```
+
+Plocha má `category: "floor"` a `automatic: false`. `path` zůstává ikonou v paletě; kresbu mapy tvoří sdílený organický renderer. Barva musí být šestimístný hexadecimální odstín, textura jedna z `ripples` (vlnky), `speckles` (tečky), `strokes` (krátké tahy), `stones` (kamení). `roughness` je 0–1 (výchozí 0,5). Používej tlumené odstíny pro čitelnou mapu. Nový JSON se sám objeví v **Plochách** i filtrech prostředí; žádná komponenta se neupravuje. Vlastní skripty, CSS, odkazy a libovolné SVG textury nejsou podporované.
+
+ID materiálu zůstává zachované i při obnově bez definice; chybějící plocha použije neutrální odstín a texturu. Pro původní vzhled je potřeba vrátit definici do katalogu a aplikaci sestavit.
+
 Spusť `npm run content:sync`, `npm run check:content` a `npm test`. Do PR zahrň JSON, vygenerovaný `index.ts` a snímek použití na mapě. Kontrola hlásí soubor a neplatné pole. Další obsah popisuje [komunitní průvodce](OBSAH.md).
 
 Použité ID nepřejmenovávej a nemaž. Mapa ukládá ID, nikoliv kopii kresby. Pokud vlastní katalog při přenosu zálohy chybí, zobrazí se neutrální značka s otazníkem; původní ID a údaje zůstanou zachovány. Prvek lze přesunout, upravit nebo odstranit. Pro jeho nové vkládání a správnou kresbu musí provozovatel doplnit definici a aplikaci znovu sestavit. Katalogy se z cizích serverů automaticky nestahují.
 
 ## Data a vývoj
 
+Volitelné `Dungeon.surfaces` obsahuje `{kind, x, y, hidden?}` po jednom materiálu na buňku. Akce `map`, `tool: "surface"`, `kind`, `op: "add" | "remove"`, `points`, `hidden`, `levelId`, `requestId` ukládá jeden tah. Souběžné tahy se zpracují nad aktuální mapou; na stejném políčku rozhoduje poslední zápis.
+
 Volitelné `Dungeon.scenery` obsahuje `{id, kind, x, y, rotation, size, hidden?, note?, revision?}`. Uložení používá existující akci `map`, nástroj `scenery`, operaci `save` nebo `remove`, `requestId`, a při úpravě `sceneryId` a `expectedRevision`. První vložení používá `expectedRevision: null`. Bezpečné opakování a historii zajišťuje běžná mapová transakce; hráčský zápis server odmítá.
 
 - [lib/scenery-catalog.ts](../lib/scenery-catalog.ts): validovaný komunitní katalog.
 - [lib/scenery.ts](../lib/scenery.ts): validace uložených prvků, úpravy a projekce do paměti.
+- [lib/surfaces.ts](../lib/surfaces.ts), [lib/surface-drawing.ts](../lib/surface-drawing.ts): štětec, paměť, spojování a stabilní organický obrys.
 - [lib/scenery-fill.ts](../lib/scenery-fill.ts): deterministický návrh, obsazenost a kontrola změn.
 - [glyph.tsx](../components/scenery/glyph.tsx): vykreslení ověřené cesty z katalogu, sdílené mapou a paletou.
 - [layer.tsx](../components/scenery/layer.tsx): neinteraktivní dekorativní vrstva a útlum podle dohledu.
 - [palette.tsx](../components/scenery/palette.tsx), [editor.tsx](../components/scenery/editor.tsx): výběr a soukromé úpravy PJ.
+- [test-surfaces.mjs](../scripts/test-surfaces.mjs), [test-surfaces-api.mjs](../scripts/test-surfaces-api.mjs): organický štětec, souběžně navazující tahy, skrytí, paměť a zálohy.
 - [test-scenery-core.mjs](../scripts/test-scenery-core.mjs): typy, geometrická nezávislost, paměť, Zpět a kompatibilita generování v `npm test`.
 - [test-scenery-fill.mjs](../scripts/test-scenery-fill.mjs): automatický návrh, komunitní definice, limity a hromadné Zpět.
 - [test-scenery.mjs](../scripts/test-scenery.mjs): oprávnění, souběh, opakování, skrytí, paměť a úplné zálohy v obou integračních sadách.
 
-Paměť ukládá jen veřejná vizuální pole; soukromé údaje se neskrývají pouze CSS. Může uchovat až 560 historických značek po jedné na políčko. Validační schéma odmítne tajné údaje v paměti. Záloha formátu 1 podporuje nové volitelné pole ve všech mapách a jejich historiích. Staré zálohy bez stafáže zůstávají platné, SQL migrace se nemění. Pro zachování nové stafáže při obnově používej verzi aplikace, která ji podporuje.
+Paměť ukládá jen veřejná vizuální pole; soukromé údaje se neskrývají pouze CSS. Může uchovat až 560 historických značek po jedné na políčko. Validační schéma odmítne tajné údaje v paměti. Záloha formátu 1 podporuje nová volitelná pole ve všech mapách a jejich historiích. Staré zálohy bez stafáže zůstávají platné, SQL migrace se nemění. Pro zachování nové stafáže při obnově používej verzi aplikace, která ji podporuje.

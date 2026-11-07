@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+const base=process.argv[2]||'http://127.0.0.1:5182';
+async function post(s,action,values={},status=200){const response=await fetch(base+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(s?{Authorization:'Bearer '+s.token}:{})},body:JSON.stringify({action,room:s?.room,requestId:crypto.randomUUID(),...values})});const result=await response.json();assert.equal(response.status,status,result.error);return result;}
+async function get(s,query=''){const response=await fetch(base+'/api/game?room='+s.room+query,{headers:{Authorization:'Bearer '+s.token}});assert.equal(response.status,200);return response.json();}
+const pj=await post(null,'create',{name:'PJ ploch'}),player=await post(null,'join',{room:pj.room,name:'Chodec'});
+await post(pj,'map',{tool:'room',from:[1,1],to:[12,12]});
+const old=await get(pj,'&download=backup');
+const command={tool:'surface',kind:'water-area',op:'add',hidden:false,points:[[3,3],[7,5]],requestId:crypto.randomUUID()};
+await post(player,'map',command,403);
+await post(pj,'map',{...command,kind:'crate'},400);
+await post(pj,'map',{...command,points:[[28,2]]},400);
+const map=(await post(pj,'map',command)).game.dungeon;
+assert(map.surfaces.length>4);
+assert.deepEqual((await post(pj,'map',command)).game.dungeon,map);
+assert.equal((await get(player)).dungeon.surfaces.length,0);
+await post(pj,'map',{tool:'surface',kind:'mud-area',op:'add',points:[[9,9]],hidden:true});
+await post(pj,'map',{tool:'reveal',from:[0,0],to:[27,19]});
+const observed=(await get(player)).dungeon.surfaces;
+assert.equal(observed.length,map.surfaces.length);assert(observed.every(p=>!('hidden' in p)));
+const member=player.game.members.find(m=>m.role==='player');
+await post(pj,'explore',{op:'settings',leaderId:member.id,radius:1});
+await post(pj,'explore',{op:'place',x:3,y:3});
+await post(pj,'map',{tool:'surface',kind:'water-area',op:'remove',points:[[7,5]]});
+assert((await get(player)).dungeon.surfaces.some(p=>p.x===7&&p.y===5),'Unseen removal remains remembered.');
+await post(pj,'explore',{op:'place',x:7,y:5});
+assert(!(await get(player)).dungeon.surfaces.some(p=>p.x===7&&p.y===5));
+const backup=await get(pj,'&download=backup'),restored=await post(null,'restore',{backup});
+assert.deepEqual((await get(restored,'&download=backup')).game.atlas,backup.game.atlas);
+const privateMemory=structuredClone(backup);privateMemory.game.atlas.levels[0].memory.surfaces[0].hidden=false;
+await post(null,'restore',{backup:privateMemory},400);
+const duplicate=structuredClone(backup);duplicate.game.atlas.levels[0].map.surfaces.push(duplicate.game.atlas.levels[0].map.surfaces[0]);
+await post(null,'restore',{backup:duplicate},400);
+const missing=structuredClone(backup);missing.game.atlas.levels[0].map.surfaces[0].kind='community-ash';
+const missingRestored=await post(null,'restore',{backup:missing});assert.equal((await get(missingRestored,'&download=backup')).game.atlas.levels[0].map.surfaces[0].kind,'community-ash');
+const undo=await post(null,'restore',{backup:old});
+await post(undo,'map',command);await post(undo,'map',{tool:'undo'});
+assert.deepEqual((await get(undo)).dungeon,old.game.dungeon);
+console.log('PASS: surface permissions, validation, replay, hidden projection, unseen memory, rediscovery, compatible private backups and atomic brush undo.');

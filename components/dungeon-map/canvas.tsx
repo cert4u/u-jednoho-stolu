@@ -1,3 +1,5 @@
+import OrganicSurfaces from '../scenery/surfaces';
+import {paintSurface,type SurfaceBrush} from '../../lib/surfaces';
 import SceneryPreview from '../scenery/preview';
 import type {ScenerySuggestion} from '../../lib/scenery-fill';
 import SceneryLayer from '../scenery/layer';
@@ -67,6 +69,7 @@ type CanvasProps = {
   preview: boolean;
   selected: string;
   selectedMonster: string;
+  surfaceBrush?:SurfaceBrush;
   sceneryPreview?: ScenerySuggestion[];
 };
 
@@ -84,6 +87,7 @@ export default function MapCanvas({
   preview,
   selected,
   selectedMonster,
+  surfaceBrush,
   sceneryPreview=[],
 }: CanvasProps) {
   const { shown, revealed, lit, party, recapCell, visible } = map;
@@ -207,7 +211,12 @@ export default function MapCanvas({
       ) : (
         <ClassicSurface shown={shown} revealed={revealed} lit={lit} visible={visible} exploring={Boolean(exploration?.enabled)} />
       )}
-      <SceneryLayer map={shown} lit={lit} revealed={revealed} visible={visible} exploring={Boolean(exploration?.enabled)} editable={pj && !preview && effectiveTool === 'scenery'} />
+      <OrganicSurfaces map={(()=>{
+        if(!stroke?.surface)return shown;
+        const draft={...shown,surfaces:shown.surfaces};
+        try{paintSurface(draft,{...stroke.surface,points:stroke.points});return draft;}catch{return shown;}
+      })()} lit={lit} revealed={revealed} visible={visible} exploring={Boolean(exploration?.enabled)}/>
+      <SceneryLayer map={shown} lit={lit} revealed={revealed} visible={visible} exploring={Boolean(exploration?.enabled)} editable={pj && !preview && effectiveTool === 'scenery' && !surfaceBrush} />
       {pj && !preview && <SceneryPreview items={sceneryPreview} />}
       {area && (
         <rect
