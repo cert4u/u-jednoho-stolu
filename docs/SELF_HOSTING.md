@@ -9,7 +9,7 @@ Dokumentace této větve zahrnuje i dosud nevydané změny. Pro stabilní instal
 ## První spuštění
 
 ```sh
-git clone --branch v1.2.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.1 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -208,3 +208,11 @@ Před aktualizací uschovej konzistentní databázový snapshot a potřebnou kon
 Není potřeba nová proměnná prostředí, změna Compose ani přestavba updateru. Zachovej celý datový volume: obrázky nových katalogů leží v `STUL_DATA_DIR/catalog-assets`, nikoli v image aplikace. Nové snapshoty mají obrázkový soubor vedle SQLite; pro přenos celé instalace stahuj **Úplná záloha ZIP**. Samotný SQLite download neobsahuje soubory knihovny.
 
 Návrat na starší image vrací i databázi do snapshotu před aktualizací; novější katalogy a kampaně se tak z tohoto pohledu vrátí v čase. Před návratem zachovej i aktuální kompletní data. Novou katalogovou zálohu kampaně obnovuj aplikací 1.2.0 nebo novější. Cloudflare nadále podporuje vestavěné katalogy a přenesené podklady kampaně, nikoli dynamickou administraci knihovny.
+
+## Přechod z 1.2.0 na 1.2.1
+
+V administraci vyber stabilní vydání 1.2.1 a ověř jeho commit a CI. Nejsou potřeba nové SQL migrace, proměnné prostředí, změna Compose ani přestavba updateru. Zachovej celý datový volume a obvyklou zálohu před výměnou. Z 1.1.0 nebo starší verze se nadále aplikují dřívější migrace knihovny podle předchozího návodu.
+
+Po aktualizaci obnov stránku `/admin`, aby se načetly nové klientské skripty. **Přidat katalog z GitHubu** zobrazí formulář uvnitř stránky; vstupy ani potvrzení už nevyužívají systémové `prompt()`/`confirm()`. Ověř otevření i zrušení dialogu, náhled importu, přepínání obsahu a stránkování katalogu. Rozdělení interního servisu nemění databázové tabulky, API ani uložená data.
+
+Heslo správce je nadále hodnota `STUL_ADMIN_PASSWORD` tvé instalace; projekt nemá společné výchozí heslo. Administraci otevírej na adrese běžící služby, například `http://localhost:8080/admin`, nikoli jako soubor `server/admin.html` z disku. Samostatné spuštění přes Node nezahrnuje Docker updater.

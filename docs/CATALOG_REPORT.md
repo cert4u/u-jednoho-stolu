@@ -2,7 +2,7 @@
 
 [Správa instalace](CATALOG_LIBRARY.md) · [Autor katalogu](CATALOG_AUTHOR.md) · [Vývoj](DEVELOPMENT.md) · [GitHub distribuce](CATALOG_GITHUB.md) · [Integrační audit](CATALOG_AUDIT.md)
 
-Tento přehled popisuje katalogový systém aplikace 1.2.0. Výsledky předchozího integračního auditu a ověření vydání jsou oddělené, aby bylo zřejmé, které kontroly proběhly lokálně a které na CI.
+Tento přehled popisuje katalogový systém řady 1.2. Verze 1.2.1 rozděluje jeho interní Node servis při zachování dat a veřejného rozhraní; odpovědnosti modulů popisuje [vývojový návod](DEVELOPMENT.md#odpovědnosti-katalogového-servisu). Výsledky předchozího integračního auditu a ověření vydání jsou oddělené, aby bylo zřejmé, které kontroly proběhly lokálně a které na CI.
 
 ## Architektura a kompatibilita
 

@@ -10,7 +10,7 @@
 [![Docker · vlastní hosting](https://img.shields.io/badge/Docker-vlastn%C3%AD%20hosting-2496ED?logo=docker&logoColor=white)](docs/SELF_HOSTING.md)
 [![LiveKit · hlas družiny](https://img.shields.io/badge/LiveKit-hlas%20dru%C5%BEiny-f59e0b)](docs/VOICE.md)
 
-**Verze 1.2.0** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.2.0)
+**Verze 1.2.1** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.2.1)
 
 **Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
 
@@ -24,7 +24,9 @@ Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu�
 
 *Ukázka testovací družiny: PJ vidí celou připravenou mapu, hráči pouze objevená místa. Vpravo je hlasový hovor se zvýrazněným mluvčím.*
 
-**Verze 1.2.0 přidává místní a komunitní knihovnu pro Node/Docker**: vlastní katalogy v administraci, přenos ZIP, potvrzená instalace a aktualizace z veřejného GitHubu a přenosné podklady kampaní. [Návod pro správce](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) · [GitHub distribuce](docs/CATALOG_GITHUB.md) · [Integrační audit a demo](docs/CATALOG_AUDIT.md). Katalogy po instalaci fungují offline; GitHub je pouze volitelný distribuční kanál. [Přechod z 1.1.0](docs/SELF_HOSTING.md#přechod-z-110-na-120).
+**Řada 1.2 nabízí místní a komunitní knihovnu pro Node/Docker**: vlastní katalogy v administraci, přenos ZIP, potvrzená instalace a aktualizace z veřejného GitHubu a přenosné podklady kampaní. [Návod pro správce](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) · [GitHub distribuce](docs/CATALOG_GITHUB.md) · [Integrační audit a demo](docs/CATALOG_AUDIT.md). Katalogy po instalaci fungují offline; GitHub je pouze volitelný distribuční kanál. [Přechod z 1.1.0](docs/SELF_HOSTING.md#přechod-z-110-na-120).
+
+Verze **1.2.1** opravuje formuláře administrace v zabudovaných prohlížečích a zpřehledňuje katalogy: seznam a detail vedle sebe, popisy s náhledy, rozbalovací JSON a stránkování bez vnitřního scrollbaru. [Přechod z 1.2.0](docs/SELF_HOSTING.md#přechod-z-120-na-121).
 
 ## Pro koho je projekt určený
 
@@ -134,14 +136,14 @@ V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každ
 
 ## Vlastní server s Dockerem
 
-**Stabilní vydání 1.2.0** obsahuje místní a komunitní katalogy, jejich ZIP/GitHub distribuci a úplné serverové zálohy včetně obrázků. Z 1.1.0 se automaticky provedou dvě SQL migrace; zachovej celý datový volume. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-110-na-120) · [Historie verzí](CHANGELOG.md#120--2026-11-07)
+**Stabilní vydání 1.2.1** obsahuje místní a komunitní katalogy, jejich ZIP/GitHub distribuci a úplné serverové zálohy včetně obrázků. Opravuje administrační dialogy a přidává přehlednější detail katalogu. Přechod z 1.2.0 nevyžaduje novou migraci ani konfiguraci; zachovej celý datový volume. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-120-na-121) · [Historie verzí](CHANGELOG.md#121--2026-11-07)
 
 Aplikace běží na Node.js 22 a ukládá SQLite i katalogové obrázky do trvalého Docker volume. Cloudflare účet není potřeba. Pro novou stabilní instalaci použij konkrétní tag vydání:
 
 Potřebuješ Linux s **Docker Engine 28+ a Compose v2**, Git a OpenSSL. Pro sestavení počítej přibližně se 2 GB volné RAM a několika GB místa na disku.
 
 ```bash
-git clone --branch v1.2.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.1 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32

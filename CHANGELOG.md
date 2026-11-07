@@ -1,10 +1,12 @@
 # Změny
 
-## Příští vydání
+## 1.2.1 — 2026-11-07
 
 - **Administrace v zabudovaných prohlížečích.** Vstupy a bezpečnostní potvrzení používají dialog uvnitř stránky; přidání GitHub katalogu ani obrázku už nezávisí na nepodporovaném `prompt()`. Obnova zálohy dál vyžaduje přesný název.
 - **Přehlednější katalogy.** Navigace administrace, širší pracovní plocha, dvoupanelový detail, čitelné popisy a náhledy, rozbalovací JSON a akce u vybrané položky. Import ZIP má zarovnané tlačítko a seznam se stránkuje po osmi položkách bez vnitřního scrollbaru.
 - **Rozdělení katalogového servisu.** Veřejné rozhraní zůstává v `catalog-store.mjs`; SQLite, validace, použití v kampaních, editor, importy a životní cyklus mají samostatné moduly.
+
+Přechod z 1.2.0 nevyžaduje novou SQL migraci, změnu prostředí, Compose ani updateru. Datové formáty katalogů a záloh se nemění. [Postup aktualizace](docs/SELF_HOSTING.md#přechod-z-120-na-121).
 
 ## 1.2.0 — 2026-11-07
 

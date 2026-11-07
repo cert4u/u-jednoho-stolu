@@ -7,7 +7,7 @@ GitHub je volitelný zdroj dat pro správce instalace Node/Docker. Herní server
 ## Instalace a aktualizace
 
 1. V existující administraci `/admin` otevři **Katalogy → Přidat katalog z GitHubu**.
-2. Zadej veřejný repozitář `https://github.com/autor/repozitar`. Volitelná revize nebo tag se přeloží na konkrétní commit; prázdná hodnota znamená `HEAD`.
+2. V dialogu uvnitř stránky zadej veřejný repozitář `https://github.com/autor/repozitar`. Volitelná revize nebo tag se přeloží na konkrétní commit; prázdná hodnota znamená `HEAD`.
 3. Prohlédni náhled: autora, licenci, verzi, commit, kontrolní otisk, položky a závislosti. Chybějící závislosti nejdříve samostatně nainstaluj. Katalog zatím není součástí knihovny.
 4. Stiskni **Potvrdit instalaci**. Teprve tento krok uloží validovanou místní kopii.
 
@@ -27,7 +27,7 @@ Pro samostatný katalog **Opuštěný trpasličí důl 1.0.0** zadej repozitář
 
 ## Jeden importér a lokální úložiště
 
-`server/catalog-github.mjs` zajišťuje pouze distribuci: přeložení revize, omezené stažení a předání bajtů do `prepareCatalogImport`. Veškerá kontrola ZIP, manifestu, obrázků, schémat a odkazů je společná s místním importem v `catalog-pack.mjs`, `catalog-zip.mjs` a `lib/catalogs`. Potvrzení, historie i návrat používají stávající `catalog-store.mjs`.
+`server/catalog-github.mjs` zajišťuje pouze distribuci: přeložení revize, omezené stažení a předání bajtů do `prepareCatalogImport`. Veškerá kontrola ZIP, manifestu, obrázků, schémat a odkazů je společná s místním importem v `catalog-pack.mjs`, `catalog-zip.mjs` a `lib/catalogs`. Veřejné rozhraní zůstává v `catalog-store.mjs`; náhledy a potvrzené instalace obsluhuje `server/catalogs/imports.mjs`, historii a transakce `repository.mjs` a návrat předchozí verze `lifecycle.mjs`.
 
 Kopie komunitního originálu je pouze pro čtení. Vlastní variantu položky vytvoř přes **Vlastní kopie** do vlastního katalogu. Import ani aktualizace nikdy nenahrazují vlastní katalog stejným ID. Ochranu rozehraných kampaní popisuje [provozní návod](CATALOG_LIBRARY.md#použití-ve-hře-a-stabilita-kampaní).
 

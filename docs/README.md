@@ -44,3 +44,5 @@ Dokumentaci měníme společně s funkcemi. Při změně rozhraní, limitu nebo 
 - [Technické vyhodnocení knihovny](CATALOG_REPORT.md) — architektura, provedené testy a zbývající omezení.
 - [Distribuce katalogů přes GitHub](CATALOG_GITHUB.md) — instalace, potvrzené aktualizace, změny a bezpečnost stahování.
 - [Integrační audit katalogů](CATALOG_AUDIT.md) — přenosný demonstrační důl, skutečná obnova, výkon a připravenost vydání.
+
+Administrace od 1.2.1 používá vlastní stránkové dialogy, dvoupanelový detail katalogu a seznam po osmi položkách. [Návod knihovny](CATALOG_LIBRARY.md) · [Aktualizace z 1.2.0](SELF_HOSTING.md#přechod-z-120-na-121).

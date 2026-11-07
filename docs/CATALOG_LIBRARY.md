@@ -8,7 +8,7 @@ Knihovna je součástí konkrétní instalace **Node/Docker**. Vlastní a již i
 
 ## Správa instalace
 
-Otevři `/admin`, přihlas se heslem správce instalace a přejdi do **Katalogy**. Herní přístup PJ ani hráče zde nestačí. Přehled ukazuje název, neměnné ID, typ, verzi, autora, počty položek, stav a dostupné akce. Otevřený katalog má vlevo seznam položek a vpravo popis a náhled; podrobné údaje jsou v rozbalovací části **Strukturovaná data JSON**. Seznam je stránkovaný po osmi položkách, bez vnitřního scrollbaru; šipky pod seznamem zpřístupní další položky. Vlastní kopii, duplikaci nebo odstranění najdeš u vybrané položky.
+Administraci otevírej na adrese běžící služby, například `http://localhost:8080/admin`; HTML soubor otevřený z disku serverovou správu neobslouží. Otevři `/admin`, přihlas se heslem správce instalace a přejdi do **Katalogy**. Herní přístup PJ ani hráče zde nestačí. Přehled ukazuje název, neměnné ID, typ, verzi, autora, počty položek, stav a dostupné akce. Otevřený katalog má vlevo seznam položek a vpravo popis a náhled; podrobné údaje jsou v rozbalovací části **Strukturovaná data JSON**. Seznam je stránkovaný po osmi položkách, bez vnitřního scrollbaru; šipky pod seznamem zpřístupní další položky. Vlastní kopii, duplikaci nebo odstranění najdeš u vybrané položky.
 
 - **Výchozí:** soubory distribuované s aplikací. Bez databázového importu při startu, pouze pro čtení. Aktualizují se s aplikací.
 - **Vlastní:** obsah správce v místní SQLite. Lze měnit metadata, přidávat a upravovat položky, kopírovat, exportovat a vracet uloženou verzi.
@@ -21,6 +21,8 @@ Otevři `/admin`, přihlas se heslem správce instalace a přejdi do **Katalogy*
 3. Editor používá existující schémata. JSON se kontroluje průběžně a server ověřuje i odkazy. U stafáže a příšery ukazuje náhled. ID existující položky neměň: **Duplikovat** založí nové ID, **Vlastní kopie** umí přenos mezi katalogy.
 4. Obrázky přidávej jako statický WebP. Do pole `portrait` patří ID obrázku bez přípony. Vložené přílohy zůstávají v persistentním adresáři instalace.
 5. **Uložit změny** kontroluje aktuální revizi katalogu. Pokud někdo mezitím uložil jinou úpravu, načti aktuální katalog; zastaralá změna jej nepřepíše.
+
+Rozpracovaná data upravuješ ve **Strukturovaná data JSON**, které je u vlastního katalogu rovnou otevřené. U originálu pouze pro čtení zůstává JSON rozbalitelným technickým detailem vedle čitelného popisu a náhledu.
 
 Pole jednotlivých kategorií popisuje [návod k obsahu](OBSAH.md) a [stafáž](SCENERY.md). Plošné materiály jsou záznamy `scenery` s profilem `surface`, ne pátá databázová kategorie. Smazání položky, která je použitá v kampani nebo potřebná pro jinou předlohu, je blokované. Kopie přebírají údaje o licenci a autorství zdroje; kopírování samo neuděluje nové distribuční oprávnění.
 

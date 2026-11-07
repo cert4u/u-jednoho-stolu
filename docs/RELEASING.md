@@ -21,6 +21,8 @@ Verze `v1.1.0` přidává ruční stafáž, komunitní katalog, náhodný návrh
 
 Verze `v1.2.0` přidává dynamickou knihovnu katalogů na Node/Docker, potvrzené ZIP/GitHub instalace a přenosné podklady kampaní. Při přechodu proběhnou dvě SQL migrace a v datovém volume přibude adresář obrázků; [postup](SELF_HOSTING.md#přechod-z-110-na-120).
 
+Verze `v1.2.1` opravuje administrační dialogy a zpřehledňuje práci s katalogy. Interní servis je rozdělený za stejným veřejným rozhraním; přechod z 1.2.0 nevyžaduje migraci ani změnu infrastruktury. [Postup](SELF_HOSTING.md#přechod-z-120-na-121).
+
 Před každým vydáním ověř katalogy, generování a založení dobrodružství s PJ i hráčem, export a obnovu existující kampaně a průchod CI přesného commitu. Při zkušebním hraní projdi přechod mezi patry a odhalení připravené Situace. Poznatky zapisuj do issues s označením testované verze. Pokud další vývoj potřebuje předběžné vydání, použij nový prerelease tag; kanál Stable jej nenabídne.
 
 ## Kontrolní postup před vydáním
