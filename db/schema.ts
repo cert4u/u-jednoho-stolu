@@ -3,5 +3,5 @@ export const rooms = sqliteTable('rooms', { id: text('id').primaryKey(), data: t
 export const catalogs = sqliteTable('catalogs', {
   id: text('id').primaryKey(), kind: text('kind').notNull(), enabled: integer('enabled').notNull().default(1),
   revision: integer('revision').notNull().default(1), digest: text('digest').notNull(), payload: text('payload').notNull(),
-  source: text('source'), installedAt: text('installed_at').notNull(), checkedAt: text('checked_at'),
+  source: text('source'), installedAt: text('installed_at').notNull(), checkedAt: text('checked_at'), updatedAt: text('updated_at'),
 });

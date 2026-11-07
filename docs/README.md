@@ -42,3 +42,4 @@ Dokumentaci měníme společně s funkcemi. Při změně rozhraní, limitu nebo 
 - [Místní a komunitní katalogy](CATALOG_LIBRARY.md) — administrace, aktualizace, offline provoz a zálohy.
 - [Jak vytvořit a zveřejnit katalog](CATALOG_AUTHOR.md) — manifest, ZIP, závislosti a licence.
 - [Technické vyhodnocení knihovny](CATALOG_REPORT.md) — architektura, provedené testy a zbývající omezení.
+- [Distribuce katalogů přes GitHub](CATALOG_GITHUB.md) — instalace, potvrzené aktualizace, změny a bezpečnost stahování.

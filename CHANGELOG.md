@@ -2,6 +2,8 @@
 
 ## Příští vydání
 
+- **Dokončení GitHub distribuce katalogů.** Kontrola shodného obsahu bez zbytečné instalace, konkrétní seznam změn a nových závislostí, současný i dostupný commit/otisk, datum změny obsahu oddělené od síťové kontroly (`0002_catalog_updated_at.sql`), české chyby přerušeného stahování a přísnější povolené cesty. Rozšířené řízené síťové a migrační testy. [Návod](docs/CATALOG_GITHUB.md).
+
 - **Decentralizovaná knihovna katalogů.** Node/Docker: vlastní katalogy ve stávající administraci, offline komunitní kopie, bezpečný ZIP, potvrzené GitHub instalace a aktualizace s historií, neměnné jmenné prostory a přenosné podklady kampaní. Bestiář, předlohy dobrodružství/jeskyní a stafáž používají společný resolver. Serverová ZIP záloha zahrnuje také obrázky. Nová migrace `0001_catalog_library.sql`; Cloudflare zachovává vestavěné katalogy a přenosné podklady, dynamická knihovna zde není podporovaná. [Správa](docs/CATALOG_LIBRARY.md) · [Tvorba katalogu](docs/CATALOG_AUTHOR.md).
 
 ## 1.1.0 — 2026-11-07

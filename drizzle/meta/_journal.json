@@ -15,6 +15,13 @@
       "when": 1794050000000,
       "tag": "0001_catalog_library",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794050000001,
+      "tag": "0002_catalog_updated_at",
+      "breakpoints": true
     }
   ]
 }

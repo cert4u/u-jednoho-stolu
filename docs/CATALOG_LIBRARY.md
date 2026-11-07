@@ -28,9 +28,11 @@ Pole jednotlivých kategorií popisuje [návod k obsahu](OBSAH.md) a [stafáž](
 
 **Importovat ZIP** nejdříve zobrazí jméno, licenci, verzi, SHA-256, počty položek a závislosti. Teprve **Potvrdit instalaci** uloží celý katalog. Chyba nevytvoří napůl instalovanou knihovnu. Importovaný originál je komunitní a pouze pro čtení.
 
-**Přidat z GitHubu** přijímá pouze veřejný `https://github.com/autor/repozitar`. Volitelně lze zadat tag nebo revizi; výchozí je `HEAD`. Server jej přeloží na konkrétní commit a stáhne archiv této neměnné revize. Nepracuje s živou větví během hry. Zdroj, commit, otisk a datum instalace zůstávají u katalogu.
+**Přidat katalog z GitHubu** přijímá pouze veřejný `https://github.com/autor/repozitar`. Volitelně lze zadat tag nebo revizi; výchozí je `HEAD`. Server jej přeloží na konkrétní commit a stáhne archiv této neměnné revize. Nepracuje s živou větví během hry. Zdroj, commit, otisk a datum instalace zůstávají u katalogu.
 
-U katalogu s GitHub zdrojem použij **Zkontrolovat aktualizaci**. Souhrn porovná současnou a novou verzi a počet přidaných, změněných a odebraných položek. Stejné číslo verze s jiným obsahem má jiný otisk a vyžaduje nové potvrzení. Starší verze se neinstaluje jako aktualizace; slouží k tomu bod návratu. Chyba sítě nebo validace nemění platnou knihovnu. Aplikace sama aktualizace neinstaluje.
+U katalogu s GitHub zdrojem použij **Zkontrolovat aktualizace**. Souhrn porovná současnou a novou verzi a počet přidaných, změněných a odebraných položek. Stejné číslo verze s jiným obsahem má jiný otisk a vyžaduje nové potvrzení. Starší verze se neinstaluje jako aktualizace; slouží k tomu bod návratu. Chyba sítě nebo validace nemění platnou knihovnu. Aplikace sama aktualizace neinstaluje.
+
+Podrobný [postup distribuce přes GitHub](CATALOG_GITHUB.md) popisuje konkrétní seznam změn, stav aktuálního obsahu, datum aktualizace a síťové limity. Shodný obsah nevytváří zbytečný návrh instalace ani bod návratu.
 
 **Procházet komunitní katalogy** načte doporučený seznam z GitHubu projektu až na požádání. Seznam může být prázdný nebo nedostupný; místní knihovna funguje dál. Nejde o registr nutný pro hraní.
 
@@ -53,6 +55,8 @@ Hráči nedostávají soukromou knihovnu ani celé připnuté předlohy. Dostáv
 ## Uložení a zálohy
 
 Nová migrace `0001_catalog_library.sql` přidává SQLite tabulky `catalogs`, `catalog_versions` a `catalog_assets`. Staré SQL migrace se nemění. Knihovna je v databázi instalace; obrázky jsou neměnné soubory `STUL_DATA_DIR/catalog-assets/<sha256>.webp`. Výchozí obsah zůstává ve zdrojových souborech a distribučním balíčku. Zápis souboru se dokončí před potvrzením katalogu v transakci. Při neúspěšném importu může zůstat nepoužitá příloha, nikoli viditelný částečný katalog.
+
+Navazující migrace `0002_catalog_updated_at.sql` přidává datum poslední změny obsahu, oddělené od data síťové kontroly. Již aplikované migrace zůstávají beze změny.
 
 Rozlišuj tři exporty:
 

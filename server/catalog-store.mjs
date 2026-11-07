@@ -5,7 +5,7 @@ const core=()=>import('../dist/catalog-core.mjs');
 const now=()=>new Date().toISOString();
 const previews=new Map();
 const clone=value=>structuredClone(value);
-function rows(db=openDatabase()){return db.prepare('SELECT * FROM catalogs ORDER BY installed_at,id').all().map(row=>({kind:row.kind,enabled:Boolean(row.enabled),revision:row.revision,digest:row.digest,bundle:JSON.parse(row.payload),source:row.source?JSON.parse(row.source):undefined,installedAt:row.installed_at,checkedAt:row.checked_at}));}
+function rows(db=openDatabase()){return db.prepare('SELECT * FROM catalogs ORDER BY installed_at,id').all().map(row=>({kind:row.kind,enabled:Boolean(row.enabled),revision:row.revision,digest:row.digest,bundle:JSON.parse(row.payload),source:row.source?JSON.parse(row.source):undefined,installedAt:row.installed_at,checkedAt:row.checked_at,updatedAt:row.updated_at}));}
 function requireCatalog(id){const found=rows().find(c=>c.bundle.manifest.id===id);if(!found)throw new Error('Katalog neexistuje.');return found;}
 function writable(id,expected){const c=requireCatalog(id);if(c.kind!=='local')throw new Error('Komunitní originál je pouze pro čtení. Vytvoř vlastní kopii.');if(c.revision!==expected)throw new Error('Katalog se změnil; načti aktuální verzi.');return c;}
 function validateLibrary(core,all){
@@ -20,7 +20,7 @@ function transaction(fn){const db=openDatabase();db.exec('BEGIN IMMEDIATE');try{
 function remember(db,c){db.prepare('INSERT INTO catalog_versions(catalog_id,digest,payload,source,saved_at) VALUES(?,?,?,?,?)').run(c.bundle.manifest.id,c.digest,JSON.stringify(c.bundle),c.source?JSON.stringify(c.source):null,now());db.prepare('DELETE FROM catalog_versions WHERE catalog_id=? AND id NOT IN (SELECT id FROM catalog_versions WHERE catalog_id=? ORDER BY id DESC LIMIT 10)').run(c.bundle.manifest.id,c.bundle.manifest.id);}
 function persist(db,c,previous){
  if(previous)remember(db,previous);
- db.prepare('INSERT INTO catalogs(id,kind,enabled,revision,digest,payload,source,installed_at,checked_at) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET enabled=excluded.enabled,revision=excluded.revision,digest=excluded.digest,payload=excluded.payload,source=excluded.source,checked_at=excluded.checked_at').run(c.bundle.manifest.id,c.kind,Number(c.enabled),(previous?.revision??0)+1,c.digest,JSON.stringify(c.bundle),c.source?JSON.stringify(c.source):null,c.installedAt??now(),c.checkedAt??null);
+ db.prepare('INSERT INTO catalogs(id,kind,enabled,revision,digest,payload,source,installed_at,checked_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET enabled=excluded.enabled,revision=excluded.revision,digest=excluded.digest,payload=excluded.payload,source=excluded.source,checked_at=excluded.checked_at,updated_at=excluded.updated_at').run(c.bundle.manifest.id,c.kind,Number(c.enabled),(previous?.revision??0)+1,c.digest,JSON.stringify(c.bundle),c.source?JSON.stringify(c.source):null,c.installedAt??now(),c.checkedAt??null,previous?.digest===c.digest?previous.updatedAt:now());
 }
 function checkRevision(previous,expected){if((previous?.revision??null)!==expected)throw new Error('Katalog se mezitím změnil. Připrav nový návrh.');}
 function assetQuota(db,assets){if(db.prepare('SELECT count(*) n FROM catalog_assets').get().n+assets.filter(a=>!db.prepare('SELECT digest FROM catalog_assets WHERE digest=?').get(a.digest)).length>4096)throw new Error('Knihovna podporuje nejvýše 4096 neměnných příloh.');const used=db.prepare('SELECT coalesce(sum(bytes),0) n FROM catalog_assets').get().n;const fresh=assets.filter(a=>!db.prepare('SELECT digest FROM catalog_assets WHERE digest=?').get(a.digest));if(used+fresh.reduce((n,a)=>n+a.bytes,0)>128_000_000)throw new Error('Přílohy knihovny překračují limit 128 MB.');for(const a of fresh)db.prepare('INSERT OR IGNORE INTO catalog_assets VALUES(?,?,?)').run(a.digest,a.bytes,a.mime);}
@@ -109,11 +109,15 @@ export async function prepareCatalogImport(bytes,{source,updateId}={}){
  if(updateId){if(id!==updateId||previous?.kind!=='community'||previous.source?.repository!==source?.repository)throw new Error('Aktualizace musí patřit původnímu komunitnímu zdroji.');if(api.compareVersions(prepared.bundle.manifest.version,previous.bundle.manifest.version)<0)throw new Error('Starší verzi instaluj pouze návratem historie.');}
  else if(previous)throw new Error('Katalog s tímto ID již existuje. Vytvoř vlastní kopii nebo použij aktualizaci zdroje.');
  const old=new Map(Object.entries(previous?.bundle.entries??{}).flatMap(([type,entries])=>entries.map(e=>[`${type}/${e.id}`,JSON.stringify(e)]))),fresh=new Map(Object.entries(prepared.bundle.entries).flatMap(([type,entries])=>entries.map(e=>[`${type}/${e.id}`,JSON.stringify(e)])));
- const diff={added:[...fresh.keys()].filter(k=>!old.has(k)).length,changed:[...fresh.keys()].filter(k=>old.has(k)&&fresh.get(k)!==old.get(k)).length,removed:[...old.keys()].filter(k=>!fresh.has(k)).length};
+ const items={added:[...fresh.keys()].filter(k=>!old.has(k)),changed:[...fresh.keys()].filter(k=>old.has(k)&&fresh.get(k)!==old.get(k)),removed:[...old.keys()].filter(k=>!fresh.has(k))};
+ const diff=Object.fromEntries(Object.entries(items).map(([key,value])=>[key,value.length]));
+ const dependencies=prepared.bundle.manifest.dependencies.filter(d=>!previous?.bundle.manifest.dependencies.some(p=>p.id===d.id&&p.minVersion===d.minVersion));
+ const summary={manifest:prepared.bundle.manifest,digest:prepared.digest,source,currentVersion:previous?.bundle.manifest.version,currentRevision:previous?.revision,currentDigest:previous?.digest,currentSource:previous?.source,diff,items,newDependencies:dependencies,counts:Object.fromEntries(Object.entries(prepared.bundle.entries).map(([k,v])=>[k,v.length])),preservedCampaigns:updateId?catalogUsage(id).length:0};
+ if(updateId&&prepared.digest===previous.digest)return {...summary,upToDate:true};
  if(updateId&&catalogUsage(id).some(u=>!u.preserved))throw new Error('Nejdřív zachovej podklady existujících kampaní.');
  prunePreviews();if(previews.size>=2)throw new Error('Dokonči nebo zahoď předchozí návrh importu.');
  const token=crypto.randomUUID();previews.set(token,{...prepared,source,previousRevision:previous?.revision??null,expires:Date.now()+5*60e3});
- return {token,manifest:prepared.bundle.manifest,digest:prepared.digest,source,currentVersion:previous?.bundle.manifest.version,diff,counts:Object.fromEntries(Object.entries(prepared.bundle.entries).map(([k,v])=>[k,v.length])),preservedCampaigns:updateId?catalogUsage(id).length:0};
+ return {...summary,token,upToDate:false};
 }
 export function discardImport(token){previews.delete(token);return {ok:true};}
 export async function installPrepared(token){

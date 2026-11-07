@@ -1,5 +1,6 @@
 const $=id=>document.getElementById(id);
 let catalogs=[],selected,editing,preview,busy=false,valid=false,validationTimer,validationRequest=0,copying;
+const date=value=>value?new Date(value).toLocaleString('cs-CZ'):'—';
 const labels={bestiary:'Příšery','dungeon-presets':'Předlohy jeskyní',adventures:'Dobrodružství',scenery:'Stafáž a materiály'};
 const message=value=>{$('catalog-message').textContent=value;};
 const node=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
@@ -14,11 +15,12 @@ async function reload(){catalogs=(await api('')).catalogs;renderList();}
 function renderList(){
  const container=$('catalog-list');container.replaceChildren();const scroll=node('div');scroll.className='catalog-scroll';const table=node('table');const head=node('tr');for(const label of ['Název','Typ','Verze','Autor','Obsah','Stav','Akce'])head.append(node('th',label));table.append(head);
  for(const c of catalogs){const row=node('tr'),m=c.manifest;for(const text of [m.name,({builtin:'Výchozí',local:'Vlastní',community:'Komunitní'})[c.kind],m.version,m.author,Object.entries(c.counts).map(([k,v])=>`${({bestiary:'Příšery','dungeon-presets':'Jeskyně',adventures:'Příběhy',scenery:'Stafáž'})[k]}: ${v}`).join('\n'),preview?.manifest.id===m.id&&preview.digest!==c.digest?'Změna připravená':c.enabled?'Aktivní':'Zakázaný'])row.append(node('td',text));
-  const cell=node('td'),actions=node('div');actions.className='actions';cell.append(actions);actions.append(button('Prohlédnout',()=>open(m.id)));
+  if(c.source){const source=node('small',`${c.source.repository}\nAktualizace: ${date(c.updatedAt)}\nKontrola: ${date(c.checkedAt)}`);row.firstChild.append(node('br'),source);}
+  const cell=node('td'),actions=node('div');actions.className='actions';cell.append(actions);actions.append(button('Otevřít katalog',()=>open(m.id)));
   if(c.kind!=='builtin'){
    const download=node('a','Exportovat ZIP');download.href='/admin/api/catalogs/export?'+new URLSearchParams({id:m.id});actions.append(download);
-   actions.append(button(c.enabled?'Zakázat':'Povolit',async()=>{await api('enable',{id:m.id,expectedRevision:c.revision,enabled:!c.enabled});await reload();}));
-   if(c.source)actions.append(button('Zkontrolovat aktualizaci',()=>github(c)));
+   actions.append(button(c.enabled?'Zakázat':'Povolit',async()=>{if(c.enabled&&!confirm(`Zakázat katalog „${m.name}“ pro nové kampaně? Rozehrané kampaně zachovají své podklady.`))return;await api('enable',{id:m.id,expectedRevision:c.revision,enabled:!c.enabled});await reload();}));
+   if(c.source)actions.append(button('Zkontrolovat aktualizace',()=>github(c)));
    actions.append(button('Odebrat',async()=>{if(!confirm(`Odebrat katalog „${m.name}“? ${c.usage.length?'Připnuté kopie zůstanou v '+c.usage.length+' kampaních.':''} Závislosti mohou odstranění blokovat.`))return;await api('remove',{id:m.id,expectedRevision:c.revision,preserveCampaigns:true});if(selected?.bundle.manifest.id===m.id){selected=undefined;$('catalog-detail').hidden=true;}await reload();}));
   }
   row.append(cell);table.append(row);
@@ -28,9 +30,9 @@ function renderList(){
 async function open(id){
  selected=await api('view?'+new URLSearchParams({id}));editing=undefined;valid=false;$('catalog-editor').hidden=true;$('catalog-copy').hidden=true;$('catalog-detail').hidden=false;
  const m=selected.bundle.manifest;$('catalog-detail-title').textContent=m.name;
- $('catalog-origin').textContent=[`${m.id} · ${m.version} · ${m.license}`,selected.source?`${selected.source.repository}\nCommit: ${selected.source.commit}`:'Místní obsah',`Použití: ${selected.usage.length} kampaní · ${selected.kind==='local'?'Lze upravovat':'Originál pouze pro čtení'}`].join('\n');
+ $('catalog-origin').textContent=[`${m.id} · ${m.version} · ${m.license}`,selected.source?`${selected.source.repository}\nCommit: ${selected.source.commit}`:'Místní obsah',`Instalace: ${date(selected.installedAt)} · Aktualizace: ${date(selected.updatedAt)} · Kontrola: ${date(selected.checkedAt)}`,`Použití: ${selected.usage.length} kampaní · ${selected.kind==='local'?'Lze upravovat':'Originál pouze pro čtení'}`].join('\n');
  if(selected.usage.some(u=>!u.preserved))$('catalog-origin').textContent+='\nNěkteré kampaně nemají připnuté podklady; odebrání a aktualizace jsou blokované.';
- renderItems();const history=$('catalog-history');history.replaceChildren();if(selected.history.length){history.append(node('h4','Body návratu katalogu'));for(const h of selected.history)history.append(button(`${h.saved_at} · ${h.digest.slice(0,12)}`,async()=>{if(!confirm('Vrátit tuto verzi katalogu? Kampaně zachovají své připnuté kopie.'))return;await api('rollback',{id:m.id,expectedRevision:selected.revision,historyId:h.id});await reload();await open(m.id);}));}controls();
+ renderItems();const history=$('catalog-history');history.replaceChildren();if(selected.history.length){history.append(node('h4','Body návratu katalogu'));for(const h of selected.history)history.append(button(`Vrátit předchozí verzi: ${date(h.saved_at)} · ${h.digest.slice(0,12)}`,async()=>{if(!confirm('Vrátit tuto verzi katalogu? Kampaně zachovají své připnuté kopie.'))return;await api('rollback',{id:m.id,expectedRevision:selected.revision,historyId:h.id});await reload();await open(m.id);}));}controls();
 }
 function renderItems(){
  const type=$('catalog-type').value,list=$('catalog-items');list.replaceChildren();for(const entry of selected.bundle.entries[type]){
@@ -77,11 +79,14 @@ async function newEntry(area=false){
  example.id=area?'novy-material':'nova-polozka';edit(type,example);
 }
 function showCopy(type,entry){copying={sourceId:selected.bundle.manifest.id,type,itemId:entry.id};const targets=catalogs.filter(c=>c.kind==='local');if(!targets.length){message('Nejdřív vytvoř vlastní katalog.');return;}$('catalog-copy').hidden=false;$('catalog-copy-target').replaceChildren(...targets.map(c=>{const option=node('option',c.manifest.name);option.value=c.manifest.id;return option;}));$('catalog-copy-id').value=(entry.id.slice(0,42)+'-kopie');}
-function showPreview(result){preview=result;$('catalog-preview').hidden=false;$('catalog-preview-text').textContent=[`${result.manifest.name} (${result.manifest.id})`,`${result.currentVersion??'Nový katalog'} → ${result.manifest.version}`,`Autor: ${result.manifest.author} · Licence: ${result.manifest.license}`,`SHA-256: ${result.digest}`,result.source?`${result.source.repository}\nCommit: ${result.source.commit}`:'Import ze souboru',Object.entries(result.counts).map(([k,v])=>`${labels[k]}: ${v}`).join(' · '),`Přidáno: ${result.diff.added} · Změněno: ${result.diff.changed} · Odstraněno: ${result.diff.removed}`,`Závislosti: ${result.manifest.dependencies.map(d=>`${d.id} >= ${d.minVersion}`).join(', ')||'žádné'}`,result.preservedCampaigns?`${result.preservedCampaigns} kampaní zachová připnuté kopie. Aktualizace je nepřepíše.`:'','Kompatibilita a obsah ověřeny. Knihovna se změní až potvrzením.'].filter(Boolean).join('\n');renderList();}
+function showPreview(result){
+ if(result.upToDate){preview=undefined;$('catalog-preview').hidden=true;message(`Katalog „${result.manifest.name}“ je aktuální. Ověřený obsah odpovídá nainstalované verzi; žádná instalace není potřeba. Commit zdroje: ${result.source.commit}`);renderList();return;}
+ preview=result;$('catalog-install').textContent=result.currentVersion?'Aktualizovat katalog':'Potvrdit instalaci';$('catalog-preview').hidden=false;$('catalog-preview-text').textContent=[`${result.manifest.name} (${result.manifest.id})`,`${result.currentVersion??'Nový katalog'} → ${result.manifest.version}`,`Autor: ${result.manifest.author} · Licence: ${result.manifest.license}`,`SHA-256: ${result.digest}`,result.currentDigest?`Současný SHA-256: ${result.currentDigest}`:'',result.currentSource?`Současný commit: ${result.currentSource.commit}`:'',result.source?`${result.source.repository}\nCommit: ${result.source.commit}`:'Import ze souboru',Object.entries(result.counts).map(([k,v])=>`${labels[k]}: ${v}`).join(' · '),`Přidáno: ${result.diff.added} · Změněno: ${result.diff.changed} · Odstraněno: ${result.diff.removed}`,...Object.entries(result.items??{}).filter(([,items])=>items.length).map(([type,items])=>`${({added:'Přidané položky',changed:'Upravené položky',removed:'Odstraněné položky'})[type]}: ${items.join(', ')}`),`Nové nebo změněné závislosti: ${(result.newDependencies??[]).map(d=>`${d.id} >= ${d.minVersion}`).join(', ')||'žádné'}`,`Závislosti: ${result.manifest.dependencies.map(d=>`${d.id} >= ${d.minVersion}`).join(', ')||'žádné'}`,result.preservedCampaigns?`${result.preservedCampaigns} kampaní zachová připnuté kopie. Aktualizace je nepřepíše.`:'','Kompatibilita a obsah ověřeny. Knihovna se změní až potvrzením.'].filter(Boolean).join('\n');renderList();}
 async function github(catalog,initialRepository){
  const repository=catalog?.source?.repository??initialRepository??prompt('Veřejný GitHub repozitář (https://github.com/autor/katalog):');if(!repository)return;
  const ref=prompt('Revize nebo tag (prázdné = HEAD):','HEAD');if(ref===null)return;
- showPreview(await api('github',{repository,ref:ref||'HEAD',...(catalog?{updateId:catalog.manifest.id}:{})}));
+ if(preview){await api('discard',{token:preview.token});preview=undefined;$('catalog-preview').hidden=true;}
+ const result=await api('github',{repository,ref:ref||'HEAD',...(catalog?{updateId:catalog.manifest.id}:{})});await reload();showPreview(result);
 }
 $('catalog-new').onclick=()=>{$('catalog-create').hidden=false;};$('catalog-create-cancel').onclick=()=>{$('catalog-create').hidden=true;};
 $('catalog-create').onsubmit=e=>{e.preventDefault();void perform(async()=>{

@@ -12,9 +12,12 @@ async function login(){const r=await fetch(origin+'/admin/api/login',{method:'PO
 async function api(action='',data,expected=200,custom={}){const r=await fetch(origin+'/admin/api/catalogs'+(action?'/'+action:''),{headers:{Cookie:cookie,Origin:origin,...(data===undefined?{}:{'Content-Type':'application/json'}),...custom.headers},...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),...custom});const value=await r.json();assert.equal(r.status,expected,value.error);return value;}
 try{
  await start();assert.equal((await fetch(origin+'/admin/api/catalogs')).status,401);
+ assert.equal((await fetch(origin+'/admin/api/catalogs/github',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({repository:'https://github.com/author/mine'})})).status,401);
  const create=await fetch(origin+'/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',name:'PJ'})});const pj=await create.json();
  assert.equal((await fetch(origin+'/admin/api/catalogs',{headers:{Authorization:'Bearer '+pj.token}})).status,401);
  await login();assert.equal((await api()).catalogs.length,1);
+ await api('github',{repository:'https://github.com/author/mine'},403,{method:'POST',headers:{Cookie:cookie,Origin:'https://wrong.test','Content-Type':'application/json'},body:'{}'});
+ await api('github',{repository:'https://localhost/private'},400);
  const manifest={schemaVersion:1,id:'admin-test',name:'Správcův katalog',version:'1.0.0',author:'Test',license:'CC0-1.0',minAppVersion:'1.1.0'};
  await api('create',{manifest},403,{headers:{Cookie:cookie,Origin:'https://wrong.test','Content-Type':'application/json'}});
  await api('create',{manifest});let current=await api('view?id=admin-test');
