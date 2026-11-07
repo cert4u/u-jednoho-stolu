@@ -1,0 +1,15 @@
+{
+  "id": "ochre-seep",
+  "name": "Okrový průsak",
+  "category": "floor",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M4 15Q2 6 13 5Q25 3 28 13Q30 25 19 27Q5 30 4 15ZM8 16Q14 12 22 16",
+  "surface": {
+    "color": "#a38b5d",
+    "texture": "ripples",
+    "roughness": 0.6
+  }
+}

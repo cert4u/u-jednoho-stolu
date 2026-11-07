@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+await import('./generator-test-import.mjs');
+import {demoFiles} from './catalog-demo.mjs';
+import {writeZip} from '../server/catalog-zip.mjs';
+import {unpackCatalog} from '../server/catalog-pack.mjs';
+const core=await import('../lib/catalogs/core.ts');
+const {initialGame}=await import('../lib/game.ts');
+const {startAdventure}=await import('../lib/start-adventure.ts');
+const {editDungeon}=await import('../lib/dungeon.ts');
+const {makeBackup,readBackup}=await import('../lib/backup.ts');
+const base=process.argv[2]||'http://127.0.0.1:5173';
+assert(['localhost','127.0.0.1','[::1]'].includes(new URL(base).hostname));
+const {bundle,images,digest}=await unpackCatalog(writeZip(await demoFiles()),core);
+const installed={bundle,digest,kind:'community',enabled:true,revision:1};
+const resolver=new core.CatalogResolver([installed]);
+const fileAdapter={read:async key=>images.get(key),builtin:async()=>{throw Error('Demo must not depend on builtin art.');}};
+const game=initialGame('Přenesený PJ',crypto.randomUUID()),ref=bundle.manifest.id+':';
+game.contentLibrary=await core.pinContent(undefined,resolver,'adventures',ref+'third-bell',fileAdapter);
+startAdventure(game,game.members[0],ref+'third-bell',new core.CatalogResolver([installed],game.contentLibrary));
+for(const kind of ['broken-winch','ochre-seep'])game.contentLibrary=await core.pinContent(game.contentLibrary,resolver,'scenery',ref+kind,fileAdapter);
+const level=game.atlas.levels[0],[x,y]=level.map.floors[0].split(',').map(Number),definitions=resolver.list('scenery').map(e=>({...e.data,kind:e.ref}));
+level.map=editDungeon(level.map,{tool:'scenery',op:'save',kind:ref+'broken-winch',x,y,size:'small',rotation:0,hidden:false,expectedRevision:null},definitions);
+level.map=editDungeon(level.map,{tool:'surface',op:'add',kind:ref+'ochre-seep',points:[[x,y]]},definitions);
+const backup=makeBackup(game);readBackup(backup);
+async function post(action,data={},session,expected=200){const response=await fetch(base+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(session?{Authorization:'Bearer '+session.token}:{})},body:JSON.stringify({action,room:session?.room,requestId:crypto.randomUUID(),...data})});const value=await response.json();assert.equal(response.status,expected,value.error);return value;}
+async function get(session,query=''){const response=await fetch(base+'/api/game?'+new URLSearchParams({room:session.room})+query,{headers:{Authorization:'Bearer '+session.token}});assert.equal(response.status,200);return response.json();}
+const restored=await post('restore',{backup});
+assert.equal(restored.game.monsters.length,3);assert(restored.game.monsters.every(m=>m.portrait.startsWith('data:image/webp;base64,')));
+assert.equal(restored.game.contentVisuals.length,2);assert.equal(Object.keys(restored.game.storyOutline.phases).length,5);
+assert.deepEqual((await get(restored,'&download=backup')).game.contentLibrary,backup.game.contentLibrary);
+assert((await get(restored,'&catalog=bestiary')).some(e=>e.id===ref+'slag-sentinel'));
+assert.equal((await post('monster',{op:'create',templateId:ref+'slag-sentinel',levelId:level.id},restored)).game.monsters.length,4);
+const player=await post('join',{room:restored.room,name:'Přenesený hráč'}),visible=await get(player);
+assert(!('contentLibrary' in visible));assert(!JSON.stringify(visible).includes(bundle.entries.adventures[0].gmNotes));
+const tampered=structuredClone(backup),key=Object.keys(tampered.game.contentLibrary.images)[0],bytes=Buffer.from(tampered.game.contentLibrary.images[key].data,'base64');bytes[64]^=1;tampered.game.contentLibrary.images[key].data=bytes.toString('base64');await post('restore',{backup:tampered},undefined,400);
+console.log('PASS: portable standalone catalog campaign without installed source: art, five phases, custom scenery/materials, pinned bestiary/actions, private views, re-export and tamper rejection.');

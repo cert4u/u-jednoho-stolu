@@ -26,6 +26,10 @@ try{
  current=await store.viewCatalog('mine');await store.editEntry({id:'mine',type:'bestiary',originalId:'rat-copy',remove:true,expectedRevision:current.revision});
  current=await store.viewCatalog('mine');
  const image=readFileSync('public/monsters/kobold.webp');core.inspectCatalogWebp(image);
+ assert.throws(()=>core.inspectCatalogWebp(Buffer.from('<svg onload="alert(1)"></svg>')));
+ assert.throws(()=>core.inspectCatalogWebp(Buffer.alloc(1_500_001)));
+ const animated=Buffer.concat([image,Buffer.from('ANIM\x00\x00\x00\x00')]);animated.writeUInt32LE(animated.length-8,4);assert.throws(()=>core.inspectCatalogWebp(animated));
+ const hugeCanvas=Buffer.alloc(30);hugeCanvas.write('RIFF',0);hugeCanvas.writeUInt32LE(22,4);hugeCanvas.write('WEBPVP8X',8);hugeCanvas.writeUInt32LE(10,16);hugeCanvas[24]=255;hugeCanvas[25]=255;assert.throws(()=>core.inspectCatalogWebp(hugeCanvas));
  await store.uploadImage('mine',current.revision,'my-rat',image);current=await store.viewCatalog('mine');
  await store.editEntry({id:'mine',type:'bestiary',entry:{...rat,portrait:'my-rat'},originalId:'rat',expectedRevision:current.revision});current=await store.viewCatalog('mine');
  const exported=await store.exportCatalog('mine'),unpacked=await unpackCatalog(exported,core,[]);
@@ -47,6 +51,8 @@ try{
   new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import',schemaVersion:99}))]]),
   new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import'}))],['bestiary/broken.json',Buffer.from('{bad')]]),
   new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import'}))],['script.js',Buffer.from('throw new Error()')]]),
+  new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import'}))],['images/rat.svg',Buffer.from('<svg onload="alert(1)"></svg>')]]),
+  new Map([['catalog.json',Buffer.from(JSON.stringify({...manifest,id:'bad-import'}))],['images/rat.webp',Buffer.from('<svg onload="alert(1)"></svg>')]]),
  ]){await assert.rejects(store.prepareCatalogImport(writeZip(files)));assert.equal((await store.listCatalogs()).length,countBefore);}
  console.log('PASS: local catalog CRUD, immediate validation, collisions/CAS, copy/duplicate/delete, immutable community origins, image persistence, export/import meaning, restart and history rollback.');
 }finally{rmSync(dir,{recursive:true,force:true});}

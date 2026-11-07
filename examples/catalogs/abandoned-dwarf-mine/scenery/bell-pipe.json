@@ -1,0 +1,10 @@
+{
+  "id": "bell-pipe",
+  "name": "Signální potrubí",
+  "category": "object",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M5 5H14V18Q14 25 23 25H28M9 5V18Q9 29 23 29H28M3 3H16V7H3ZM26 23V31"
+}

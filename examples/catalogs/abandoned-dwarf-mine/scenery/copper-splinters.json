@@ -1,0 +1,10 @@
+{
+  "id": "copper-splinters",
+  "name": "Měděné úlomky",
+  "category": "floor",
+  "environments": [
+    "mine"
+  ],
+  "automatic": true,
+  "path": "M5 10L10 6L12 13ZM18 8L25 11L19 16ZM8 22L14 19L17 26ZM23 23L27 21L26 27Z"
+}

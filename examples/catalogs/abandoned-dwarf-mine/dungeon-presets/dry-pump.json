@@ -1,0 +1,18 @@
+{
+  "id": "dry-pump",
+  "label": "Důl pod Tichým hřbetem",
+  "description": "Jedno malé patro starých štol kolem odstaveného čerpadla. Šest komor pro krátké dobrodružství.",
+  "options": {
+    "version": "v2",
+    "style": "mine",
+    "variant": 0,
+    "separateExit": true,
+    "name": "Důl pod Tichým hřbetem",
+    "levels": 1,
+    "rooms": 6,
+    "size": "small",
+    "corridors": "winding",
+    "connections": 1,
+    "seed": "tichy-hrbet-demo-1"
+  }
+}

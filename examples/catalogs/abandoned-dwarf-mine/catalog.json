@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "opusteny-trpaslici-dul",
+  "name": "Opuštěný trpasličí důl",
+  "version": "1.0.0",
+  "author": "Autoři projektu U jednoho stolu",
+  "license": "MIT",
+  "description": "Původní krátká výprava za hlasem zapomenutého čerpadla. Samostatný demonstrační katalog bez obsahových závislostí.",
+  "minAppVersion": "1.1.0",
+  "dependencies": [],
+  "fileLicenses": {}
+}

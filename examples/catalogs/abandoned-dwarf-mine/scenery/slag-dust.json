@@ -1,0 +1,15 @@
+{
+  "id": "slag-dust",
+  "name": "Struskový prach",
+  "category": "floor",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M3 13Q7 3 18 5Q28 7 28 20Q24 30 11 27Q2 24 3 13ZM9 12L12 14M19 20L22 18",
+  "surface": {
+    "color": "#77716b",
+    "texture": "speckles",
+    "roughness": 0.6
+  }
+}

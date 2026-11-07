@@ -1,0 +1,61 @@
+{
+  "id": "third-bell",
+  "title": "Třetí zvon pod Tichým hřbetem",
+  "scene": "Závora opuštěného trpasličího dolu",
+  "summary": "Pět fází krátké výpravy za posledním signálem z uzavřeného dolu. Obnovit čerpadlo znamená rozhodnout také o vodě pro vesnici.",
+  "gmNotes": "Obyvatelé žádají zjistit, proč v noci zní potrubí. Začátek lze odehrát u závory. Fáze jsou osnova pro PJ, ne vynucené pořadí; stopy přesuň podle průzkumu. Šestá komora je volný servisní sklad. Stafáž a plochy rozmístí PJ z palety; formát dobrodružství jejich pozice automaticky neukládá. Původní obsah, volně upravitelná čísla; nepřebírá tabulky žádné pravidlové příručky.",
+  "dungeonPreset": "dry-pump",
+  "rooms": [
+    {
+      "floor": 1,
+      "roomId": "v2-l0-r0",
+      "phase": "entrance-obstacle",
+      "title": "Závora poslední směny",
+      "playerText": "Za zrezlou závorou visí cedulka: Směna se vrátí, až zazní třetí zvon.",
+      "gmNotes": "Závoru lze odjistit opraveným navijákem nebo obejít servisní puklinou. Na stole leží jmenovka předáka. Můráci brání hnízdo, nikoli vstup; olej je odláká.",
+      "monsters": [
+        "lamp-moth"
+      ]
+    },
+    {
+      "floor": 1,
+      "roomId": "v2-l0-r1",
+      "phase": "challenge",
+      "title": "Potrubí, které odpovídá",
+      "playerText": "Z prázdné trubky zazní přesně poslední slovo, které jste řekli.",
+      "gmNotes": "Tři signální údery otevřou ventil. Pořadí ukazují značky na měřičském kolíku; ventil lze také ručně povolit. Šeptač umí zopakovat poslední směnové heslo.",
+      "monsters": [
+        "copper-whisperer"
+      ]
+    },
+    {
+      "floor": 1,
+      "roomId": "v2-l0-r2",
+      "phase": "complication",
+      "title": "Zaplavená evidence",
+      "playerText": "Okrová voda přelévá práh. Na lavici nad ní zůstala suchá účetní kniha.",
+      "gmNotes": "Kniha dokazuje, že důl nebyl vytěžen: uzavřeli jej kvůli prameni pro vesnici. Obnovení těžby může vesnici připravit o vodu. Informaci předej i při neúspěšném hledání; není zamčená za hodem.",
+      "monsters": []
+    },
+    {
+      "floor": 1,
+      "roomId": "v2-l0-r3",
+      "phase": "climax",
+      "title": "Předák ze strusky",
+      "playerText": "Kamenná postava stojí u nehybného kola. Na prsou má prázdné místo po jmenovce.",
+      "gmNotes": "Strážce přijme navrácenou jmenovku a slib zachovat pramen. Boj, dohoda i odvedení pozornosti jsou možné; čerpadlo lze přesměrovat k povrchu bez spuštění těžby. O účincích rozhodne PJ.",
+      "monsters": [
+        "slag-sentinel"
+      ]
+    },
+    {
+      "floor": 1,
+      "roomId": "v2-l0-r4",
+      "phase": "resolution",
+      "title": "Voda pro horní ves",
+      "playerText": "Za výtokovou mříží poprvé po letech zašumí čistá voda. Vedle ní čeká zapečetěná schránka.",
+      "gmNotes": "Schránka obsahuje mapu povrchového vodovodu a dopis dědicům horníků. Odměnou může být pomoc vesnice, ne povinný počet mincí. Pokud družina zvolila těžbu, popiš cenu a nabídni další jednání. Žádný konec není předem přikázaný.",
+      "monsters": []
+    }
+  ]
+}

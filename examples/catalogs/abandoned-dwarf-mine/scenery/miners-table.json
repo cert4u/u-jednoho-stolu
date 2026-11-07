@@ -1,0 +1,10 @@
+{
+  "id": "miners-table",
+  "name": "Stůl směnového písaře",
+  "category": "object",
+  "environments": [
+    "mine"
+  ],
+  "automatic": false,
+  "path": "M4 9H28V24H4ZM7 24V29M25 24V29M9 13H17V20H9ZM20 12L25 19"
+}

@@ -5,10 +5,33 @@ import { open } from 'node:fs/promises';
 import { randomBytes } from 'node:crypto';
 import path from 'node:path';
 import { backupDatabase, dataDirectory } from './database.mjs';
+import {DatabaseSync} from 'node:sqlite';
 
 
 const snapshotZipLimits={archive:280_000_000,total:256_000_000,file:128_000_000,files:4098};
 function lstatSafe(file){try{return lstatSync(file);}catch(error){if(error.code==='ENOENT')return;throw error;}}
+
+// Read the snapshot, not the live library: an older snapshot may use different assets.
+function requiredSnapshotAssets(file){
+ const db=new DatabaseSync(file,{readOnly:true}),required=new Map();
+ try{
+  if(!db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='catalogs'").get())return required;
+  for(const row of db.prepare('SELECT payload FROM catalogs UNION ALL SELECT payload FROM catalog_versions').all()){
+   for(const asset of JSON.parse(row.payload).assets??[]){
+    if(!/^[a-f0-9]{64}$/.test(asset.digest)||!Number.isInteger(asset.bytes)||asset.bytes<20||asset.bytes>1_500_000)throw Error('Neplatné údaje příloh v záloze.');
+    if(required.has(asset.digest)&&required.get(asset.digest)!==asset.bytes)throw Error('Rozpor příloh v záloze.');
+    required.set(asset.digest,asset.bytes);
+   }
+  }
+  return required;
+ }finally{db.close();}
+}
+function verifySnapshotAssets(required,files){
+ for(const [digest,size]of required){
+  const image=files.get('catalog-assets/'+digest+'.webp');
+  if(!image||image.length!==size||createHash('sha256').update(image).digest('hex')!==digest)throw Error('Úplná záloha nemá všechny platné katalogové přílohy. Obnov soubor příloh nebo vytvoř novou zálohu.');
+ }
+}
 
 const namePattern = /^(manual-)?(\d+)-[a-f0-9]{16}\.sqlite$/;
 
@@ -29,6 +52,7 @@ export function createSnapshot(manual = false) {
       const bytes=readFileSync(full);if(createHash('sha256').update(bytes).digest('hex')!==file.slice(0,64))throw new Error('Poškozená příloha při záloze.');
       assetFiles.set('catalog-assets/'+file,bytes);
     }
+    verifySnapshotAssets(requiredSnapshotAssets(temp),assetFiles);
     if(assetFiles.size){writeFileSync(temp+'.assets',writeZip(assetFiles,snapshotZipLimits),{mode:0o600,flush:true});renameSync(temp+'.assets',path.join(dir,name+'.assets.zip'));}
     renameSync(temp, path.join(dir, name));
     const directory = openSync(dir, 'r');
@@ -72,6 +96,7 @@ export async function downloadSnapshot(name, res, bundle = false) {
         const assetStat=await assets.stat();if(!assetStat.isFile()||assetStat.size>140_000_000)throw new Error('Neplatná záloha příloh.');
         for(const [key,value]of readZip(await assets.readFile(),snapshotZipLimits))files.set(key,value);
       }catch(error){if(error.code!=='ENOENT')throw error;}finally{await assets?.close();}
+      verifySnapshotAssets(requiredSnapshotAssets(path.join(dataDirectory(),'backups',name)),files);
       const data=writeZip(files,snapshotZipLimits);
       res.writeHead(200,{'Content-Type':'application/zip','Content-Length':data.length,'Content-Disposition':`attachment; filename="${name.replace('.sqlite','.zip')}"`,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(data);return true;
     }
