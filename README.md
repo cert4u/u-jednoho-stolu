@@ -24,6 +24,8 @@ Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu�
 
 *Ukázka testovací družiny: PJ vidí celou připravenou mapu, hráči pouze objevená místa. Vpravo je hlasový hovor se zvýrazněným mluvčím.*
 
+Na vývojové větvi je připravená **místní a komunitní knihovna pro Node/Docker**: vlastní katalogy v administraci, přenos ZIP, potvrzená instalace a aktualizace z veřejného GitHubu a přenosné podklady kampaní. [Návod pro správce](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md). Jde o změny po vydání 1.1.0; samotný odkaz na poslední release výše tuto funkci neobsahuje.
+
 ## Pro koho je projekt určený
 
 Pro menší partu, která chce hrát současně po večerech a mít společné místo pro své dobrodružství. Jeden hráč vede hru jako **Pán jeskyně**, ostatní hrají své postavy. Každý se připojí přes prohlížeč pomocí pozvánky; přístup ke své postavě si může obnovit osobním klíčem.

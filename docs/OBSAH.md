@@ -1,5 +1,7 @@
 # Přidávání herního obsahu
 
+Obsah bez sestavování aplikace spravuje [místní knihovna katalogů](CATALOG_LIBRARY.md). Přenositelné balíčky popisuje [návod pro autora katalogu](CATALOG_AUTHOR.md). Níže je postup pro přispívání do vestavěného distribuovaného obsahu.
+
 [Vývojový stůl](DEVELOPMENT.md) · [Ilustrace](ILUSTRACE.md) · [Herní příručka](PLAYING.md)
 
 Každá předloha má vlastní soubor `<id>.json` v adresáři [content](../content). ID začíná písmenem a používá malá písmena bez diakritiky, číslice a pomlčky. Použité ID ponech kvůli odkazům z jiných předloh a kampaní.

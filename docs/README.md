@@ -38,3 +38,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 PJ spravuje konkrétní dobrodružství, správce instalace provozuje celý server. Jde o různé přístupy. Kód místnosti je pozvánka k připojení, osobní obnovovací klíč je přístup ke konkrétní postavě. Export kampaně JSON vytváří při obnově novou místnost; snapshot celé SQLite databáze zachovává také původní přístupy.
 
 Dokumentaci měníme společně s funkcemi. Při změně rozhraní, limitu nebo konfigurace oprav odpovídající návod a ověř `npm run check:docs`.
+
+- [Místní a komunitní katalogy](CATALOG_LIBRARY.md) — administrace, aktualizace, offline provoz a zálohy.
+- [Jak vytvořit a zveřejnit katalog](CATALOG_AUTHOR.md) — manifest, ZIP, závislosti a licence.
+- [Technické vyhodnocení knihovny](CATALOG_REPORT.md) — architektura, provedené testy a zbývající omezení.

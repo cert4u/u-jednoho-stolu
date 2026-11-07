@@ -157,3 +157,11 @@ Při `map-note` / `save` lze volitelným booleanem `parchmentOnEntry` nastavit a
 Při `initiative` / `roster` může PJ předat volitelný boolean `autoTick`. Vynechaná hodnota ponechá dosavadní nastavení. S aktivním odpočtem odečte `next` při přechodu do dalšího kola jeden krok u každého kladného trvání stavů účastníků. Kolo i stavy se uloží společně. Ochrana proti opakování požadavku platí pro obě změny.
 
 Operace `equipment` / `use-healing` je dostupná PJ. Vyžaduje `memberId`, `itemId`, kladné celé `hpAmount`, revizi výbavy `expectedRevision` a hodnoty z náhledu `expectedHp` a `expectedMaxHp`. Server ověří náhled, odečte jeden kus a přičte životy nejvýše do maxima. Při plných životech operaci odmítne. Záznam v chatu vidí postava a PJ.
+
+## Runtime katalogy
+
+`GET /api/adventures` vrací pouze souhrny dostupných předloh. Autorizovaný PJ používá `GET /api/game?room=...&catalog=bestiary` a `catalog=preparation` (stafáž a předlohy generátoru); hráč dostává 403. Standardní herní odpověď přidává `contentVisuals` jen pro známou vizuální stafáž, nikdy soukromou `contentLibrary`.
+
+Node administrace používá `/admin/api/catalogs`, `/view`, `/export`, POST `/create`, `/manifest`, `/entry`, `/copy`, `/image`, `/preview`, `/install`, `/discard`, `/enable`, `/remove`, `/rollback`, `/github` a `/recommend`. Je chráněna administrační cookie, kontrolou původu POST a údržbou; herní Bearer token nestačí. Úpravy vyžadují `expectedRevision`. ZIP a WebP endpointy přijímají přímo binární tělo; GitHub a ostatní operace JSON. Náhled importu vrací dočasný token pro následné potvrzení konkrétního ověřeného obsahu.
+
+`GET /admin/api/backup?name=...&bundle=1` vrací úplnou ZIP zálohu databáze s katalogovými obrázky; bez `bundle=1` zůstává původní SQLite export. Přesné limity a datový model popisuje [knihovna](CATALOG_LIBRARY.md).

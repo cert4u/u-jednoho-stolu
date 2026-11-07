@@ -1,5 +1,9 @@
 # Změny
 
+## Příští vydání
+
+- **Decentralizovaná knihovna katalogů.** Node/Docker: vlastní katalogy ve stávající administraci, offline komunitní kopie, bezpečný ZIP, potvrzené GitHub instalace a aktualizace s historií, neměnné jmenné prostory a přenosné podklady kampaní. Bestiář, předlohy dobrodružství/jeskyní a stafáž používají společný resolver. Serverová ZIP záloha zahrnuje také obrázky. Nová migrace `0001_catalog_library.sql`; Cloudflare zachovává vestavěné katalogy a přenosné podklady, dynamická knihovna zde není podporovaná. [Správa](docs/CATALOG_LIBRARY.md) · [Tvorba katalogu](docs/CATALOG_AUTHOR.md).
+
 ## 1.1.0 — 2026-11-07
 
 - **Přirozenější textury a prostředí.** Vnitřní kresba ploch používá řídké, různě velké a natočené tušové značky ukotvené na mapě. Filtr prostředí vybírá i plošné materiály; přepnutí filtru zároveň vybere dostupný štětec.

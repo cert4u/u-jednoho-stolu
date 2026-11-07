@@ -196,3 +196,7 @@ Oficiální podklady: [Docker a ochrana daemonu](https://docs.docker.com/engine/
 ## Volitelné hlasové volání
 
 Pro čistě hlasový hovor přidej LiveKit podle [návodu Hlas družiny](VOICE.md). `compose.voice.yaml` je volitelný doplněk; běžná hra jej nevyžaduje. Aplikace potřebuje tři proměnné `STUL_LIVEKIT_*`, které aktualizátor při výměně kontejneru zachová. Hlasový server se spravuje samostatně.
+
+## Místní knihovna katalogů
+
+Vývojové změny po 1.1.0 přidávají migraci `0001_catalog_library.sql`, místní SQLite katalogy a persistentní `catalog-assets` pod `STUL_DATA_DIR`. Zachovej celý datový volume. Úplná serverová záloha ZIP zahrnuje databázi i obrázky; samotný SQLite export obrázky knihovny nezahrnuje. [Postup správy a obnovy](CATALOG_LIBRARY.md#uložení-a-zálohy). Cloudflare zatím používá vestavěné katalogy, nikoli dynamickou administraci knihovny.

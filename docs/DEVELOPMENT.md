@@ -205,3 +205,7 @@ U změn UI doplň vizuální ověření PJ i hráčského pohledu, mobilního ro
 CI provádí TypeScript, dokumentační odkazy/příkazy, geometrii, oba buildy, integrační sady, Node hosting a Docker upgrade. `npm run lint` je dostupný pomocný skript; neprezentuj jej jako kontrolu provedenou CI, pokud ji workflow nespouští.
 
 Informativní benchmark generátoru spustíš `npm run benchmark:generator`; nemá časový CI limit. V2 sada testuje 2160 konfigurací nezávislým validátorem skutečných hran a připíná původní V1 výstupy.
+
+## Testování katalogové knihovny
+
+Společné schéma a resolver jsou v `lib/catalogs/`, Node adaptéry v `server/catalog-*.mjs`. `npm run build:node` navíc sestaví `dist/catalog-core.mjs` pro existující administraci. Po tomto sestavení spusť `npm run test:catalogs`: migrace existující databáze, ZIP, úložiště/restart, řízené GitHub odpovědi a skutečná administrace s herní integrací. Sada běží také v `npm run test:hosting`. Síťové katalogové testy nepoužívají skutečný GitHub. [Architektura a provoz](CATALOG_LIBRARY.md).

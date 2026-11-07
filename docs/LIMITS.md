@@ -45,3 +45,5 @@ Podrobný [audit herních mechanik](MECHANICS.md) rozlišuje funkční evidenci,
 LiveKit je volitelný a vyžaduje samostatné nasazení. Lokální profil je jen pro stejný počítač. Veřejný profil vyžaduje HTTPS/WSS, správné síťové cesty a pro omezené sítě TURN. Není implementované hlasové šeptání, nahrávání, přepis ani serverové okamžité vykázání účastníka při archivaci postavy. Podrobnosti jsou v [návodu](VOICE.md).
 
 Herní místnost je určená důvěryhodné partě. Pozvánka umožňuje připojit novou postavu až do limitu místnosti; neexistuje obecný účetní systém se schvalováním každého hráče. Databáze uchovává herní tokeny a obsah kampaní; správce instalace má k těmto datům přístup. PJ není správcem serveru, ale serverový administrátor není izolovaný od dat jednotlivých kampaní.
+
+Runtime katalogy mají oddělené [limity archivu, obrázků, knihovny a připnuté kampaně](CATALOG_LIBRARY.md#limity-a-bezpečnost). Katalogy se nevejdou automaticky do původního 3MB limitu kampaně; při použití příliš velkého podkladu se herní akce odmítne s vysvětlením.
