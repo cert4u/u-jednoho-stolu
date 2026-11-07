@@ -134,14 +134,14 @@ V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každ
 
 ## Vlastní server s Dockerem
 
-**Stabilní vydání 0.6.0** přidává správu záloh a kontrolu databáze a služeb při aktualizaci. Při přechodu z 0.5.3 nejdřív aktualizuj updater a konfiguraci Compose. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-053-na-060) · [Historie verzí](CHANGELOG.md#060--2026-11-06)
+**Stabilní vydání 1.2.0** obsahuje místní a komunitní katalogy, jejich ZIP/GitHub distribuci a úplné serverové zálohy včetně obrázků. Z 1.1.0 se automaticky provedou dvě SQL migrace; zachovej celý datový volume. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-110-na-120) · [Historie verzí](CHANGELOG.md#120--2026-11-07)
 
-Pro vlastní server je od verze **0.2.0** připravený Docker Compose. Aplikace běží na Node.js 22 a ukládá data do SQLite v trvalém Docker volume. Cloudflare účet není potřeba.
+Aplikace běží na Node.js 22 a ukládá SQLite i katalogové obrázky do trvalého Docker volume. Cloudflare účet není potřeba. Pro novou stabilní instalaci použij konkrétní tag vydání:
 
 Potřebuješ Linux s **Docker Engine 28+ a Compose v2**, Git a OpenSSL. Pro sestavení počítej přibližně se 2 GB volné RAM a několika GB místa na disku.
 
 ```bash
-git clone https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -166,8 +166,10 @@ Na adrese **`/admin`** se přihlas heslem správce instalace. Tento přístup je
 
 - Administrace nabídne poslední stabilní GitHub Release a odkaz na poznámky k vydání.
 - Po potvrzení se sestaví image z přesného commitu vydání. Během sestavování lze dál hrát.
-- Před výměnou se pozastaví změny a uloží záloha celé databáze. Pokud nová verze nenastartuje, updater se pokusí obnovit původní verzi i databázi.
+- Před výměnou se pozastaví změny a uloží snapshot databáze s katalogovými přílohami. Pokud nová verze nenastartuje, updater se pokusí obnovit původní verzi i databázi.
 - Ruční návrat předchozí verze obnovuje také její databázi; novější změny se před návratem uloží do další zálohy.
+
+V části **Katalogy** může správce vytvářet vlastní obsah a potvrzovat importy i GitHub aktualizace. Po instalaci je obsah místní a funguje bez GitHubu. Pro přenos knihovny stahuj **Úplná záloha ZIP**; samotný SQLite export obrázky neobsahuje. [Správa katalogů](docs/CATALOG_LIBRARY.md).
 
 Pro další spouštění používej `./deploy/stul.sh up -d` nebo `./deploy/stul.sh restart`. Wrapper zachovává aktivní image po aktualizaci. Ze starého checkoutu znovu nespouštěj `up --build`. Samotný updater a zdrojový checkout se udržují ručně podle [návodu](docs/SELF_HOSTING.md#další-spouštění-compose).
 

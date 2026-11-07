@@ -9,7 +9,7 @@ Dokumentace této větve zahrnuje i dosud nevydané změny. Pro stabilní instal
 ## První spuštění
 
 ```sh
-git clone https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
