@@ -1,5 +1,5 @@
 import {prepareCatalogImport} from './catalog-store.mjs';
-import {openDatabase} from './database.mjs';
+import {markCatalogChecked} from './catalogs/repository.mjs';
 export function githubRepository(value){
  let url;try{url=new URL(value);}catch{throw new Error('Zadej veřejný repozitář https://github.com/autor/katalog.');}
  const path=url.pathname.replace(/\/$/,'').replace(/\.git$/,'');
@@ -37,7 +37,7 @@ export async function downloadGithubCatalog(repository,ref='HEAD',fetchImpl=fetc
 export async function prepareGithubCatalog({repository,ref,updateId},fetchImpl=fetch){
  const download=await downloadGithubCatalog(repository,ref||'HEAD',fetchImpl);
  const result=await prepareCatalogImport(download.bytes,{source:download.source,updateId});
- if(updateId)openDatabase().prepare('UPDATE catalogs SET checked_at=? WHERE id=? AND revision=?').run(new Date().toISOString(),updateId,result.currentRevision);
+ if(updateId)markCatalogChecked(updateId,result.currentRevision);
  return result;
 }
 export async function recommendedCatalogs(fetchImpl=fetch){
