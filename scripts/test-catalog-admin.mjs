@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './test-admin-client.mjs';
 import {spawn} from 'node:child_process';
 import {mkdtemp,rm,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -32,7 +33,7 @@ try{
  const prepared=await api('preview',undefined,200,{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/zip'},body:zip});assert.equal((await api()).catalogs.length,2);
  await api('install',{token:prepared.token});const imported=await api('view?id=friend');assert.equal(imported.kind,'community');await api('entry',{id:'friend',expectedRevision:imported.revision,type:'bestiary',entry:{...entry,name:'Overwrite'},originalId:'rat'},400);
  await stop();await start();await login();assert.equal((await api('view?id=admin-test')).bundle.entries.bestiary[0].gmHint,entry.gmHint);
- assert.equal((await fetch(origin+'/admin/catalogs.js')).status,200);
+ assert.equal((await fetch(origin+'/admin/catalogs.js')).status,200);assert.equal((await fetch(origin+'/admin/dialogs.js')).status,200);
  const gamePost=async(s,action,data={},expected=200)=>{
   const r=await fetch(origin+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(s?{Authorization:'Bearer '+s.token}:{})},body:JSON.stringify({room:s?.room,action,requestId:crypto.randomUUID(),...data})});const value=await r.json();assert.equal(r.status,expected,value.error);return value;
  };

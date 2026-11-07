@@ -64,9 +64,9 @@ const server=createServer(async(req,res)=>{try{
   }
   json(res,404,{error:'Nenalezeno.'});return;
  }
- if(pathname==='/admin'||pathname==='/admin/'||pathname==='/admin/app.js'||pathname==='/admin/catalogs.js'){
+ if(pathname==='/admin'||pathname==='/admin/'||pathname==='/admin/app.js'||pathname==='/admin/catalogs.js'||pathname==='/admin/dialogs.js'){
   if(req.method!=='GET'){json(res,405,{error:'Použij GET.'});return;}
-  const js=pathname.endsWith('.js');res.writeHead(200,{'Content-Type':js?'text/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"});res.end(readFileSync(new URL(js?(pathname==='/admin/catalogs.js'?'./admin-catalogs.js':'./admin.js'):'./admin.html',import.meta.url)));return;
+  const js=pathname.endsWith('.js');res.writeHead(200,{'Content-Type':js?'text/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"});res.end(readFileSync(new URL(js?(pathname==='/admin/catalogs.js'?'./admin-catalogs.js':pathname==='/admin/dialogs.js'?'./admin-dialog.js':'./admin.js'):'./admin.html',import.meta.url)));return;
  }
  if(pathname.startsWith('/admin/api/')){
   if(req.method==='POST'&&req.headers.origin!==origin.origin){json(res,403,{error:'Neplatný původ požadavku.'});return;}

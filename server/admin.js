@@ -110,8 +110,9 @@ async function readBackups() {
     const restore = document.createElement('button');
     restore.className = 'secondary';
     restore.textContent = 'Obnovit databázi';
-    restore.onclick = () => {
-      const confirmation = prompt(`Obnova nahradí databázi celého stolu. Aktuální stav zůstane v samostatné záloze.\n\nPro potvrzení zadej přesný název:\n${snapshot.name}`);
+    restore.onclick = async () => {
+      const values = await window.stulAdminDialog.ask({title:'Obnovit databázi',message:`Obnova nahradí databázi celého stolu. Aktuální stav zůstane v samostatné záloze.\n\nPro potvrzení zadej přesný název:\n${snapshot.name}`,fields:[{name:'snapshot',label:'Přesný název zálohy',required:true}],submit:'Obnovit databázi'});
+      const confirmation = values?.snapshot ?? null;
       if (confirmation === null) return;
       if (confirmation !== snapshot.name) { set('message', 'Název zálohy nesouhlasí.'); return; }
       void action('restore', { snapshot: snapshot.name, confirmSnapshot: confirmation });
@@ -178,15 +179,15 @@ el('development').onsubmit = async event => {
   } catch (error) { showError(error); }
   finally { submitting = false; render(); }
 };
-el('update').onclick = () => {
+el('update').onclick = async () => {
   const target = state.channel === 'development' ? selectedCommit : state.latest;
   if (!target) return;
   const warning = target.tag ? '' : '\nVývojový commit může obsahovat i starší kód.';
-  if (confirm(`Nainstalovat ${target.tag || target.ref} (${target.sha.slice(0, 12)})?\nPo sestavení se uloží databáze a stůl přejde do krátké údržby.${warning}`))
+  if (await window.stulAdminDialog.confirm(`Nainstalovat ${target.tag || target.ref} (${target.sha.slice(0, 12)})?\nPo sestavení se uloží databáze a stůl přejde do krátké údržby.${warning}`))
     void action('update', { expectedSha: target.sha, ref: target.ref });
 };
-el('rollback').onclick = () => {
-  if (confirm('Vrátit předchozí verzi a databázi z doby před aktualizací? Aktuální stav se nejprve uloží do samostatné zálohy.'))
+el('rollback').onclick = async () => {
+  if (await window.stulAdminDialog.confirm('Vrátit předchozí verzi a databázi z doby před aktualizací? Aktuální stav se nejprve uloží do samostatné zálohy.'))
     void action('rollback');
 };
 el('snapshot').onclick = () => action('backups');

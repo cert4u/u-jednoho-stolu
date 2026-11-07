@@ -1,5 +1,6 @@
 const $=id=>document.getElementById(id);
-let catalogs=[],selected,editing,preview,busy=false,valid=false,validationTimer,validationRequest=0,copying;
+let catalogs=[],selected,editing,preview,busy=false,valid=false,validationTimer,validationRequest=0,copying,catalogPage=0;
+const catalogPageSize=8;
 const date=value=>value?new Date(value).toLocaleString('cs-CZ'):'—';
 const labels={bestiary:'Příšery','dungeon-presets':'Předlohy jeskyní',adventures:'Dobrodružství',scenery:'Stafáž a materiály'};
 const message=value=>{$('catalog-message').textContent=value;};
@@ -9,7 +10,7 @@ async function api(action,data,options={}){
  const value=await response.json();if(!response.ok)throw new Error(value.error||'Katalogovou operaci se nepodařilo dokončit.');return value;
 }
 function button(text,run,disabled=false){const b=node('button',text);b.type='button';b.className='secondary';b.disabled=disabled;b.onclick=()=>void perform(run);return b;}
-function controls(){for(const b of $('catalog-section').querySelectorAll('button,input,select,textarea'))b.disabled=busy;const readOnly=!selected||selected.kind!=='local';for(const id of ['catalog-metadata','catalog-entry-new','catalog-entry-area','catalog-image'])$(id).disabled=busy||readOnly;$('catalog-save').disabled=busy||!valid;}
+function controls(){for(const b of $('catalog-section').querySelectorAll('button,input,select,textarea'))b.disabled=busy;const readOnly=!selected||selected.kind!=='local';for(const id of ['catalog-metadata','catalog-entry-new','catalog-entry-area','catalog-image'])$(id).disabled=busy||readOnly;$('catalog-save').disabled=busy||!valid||readOnly;$('catalog-save').hidden=readOnly;for(const id of ['catalog-metadata','catalog-entry-new','catalog-entry-area','catalog-image-control'])$(id).hidden=readOnly;const count=selected?.bundle.entries[$('catalog-type').value]?.length??0;$('catalog-prev').disabled=busy||catalogPage===0;$('catalog-next').disabled=busy||(catalogPage+1)*catalogPageSize>=count;}
 async function perform(run){if(busy)return;busy=true;message('');controls();try{await run();}catch(error){message(error.message);}finally{busy=false;controls();}}
 async function reload(){catalogs=(await api('')).catalogs;renderList();}
 function renderList(){
@@ -19,30 +20,38 @@ function renderList(){
   const cell=node('td'),actions=node('div');actions.className='actions';cell.append(actions);actions.append(button('Otevřít katalog',()=>open(m.id)));
   if(c.kind!=='builtin'){
    const download=node('a','Exportovat ZIP');download.href='/admin/api/catalogs/export?'+new URLSearchParams({id:m.id});actions.append(download);
-   actions.append(button(c.enabled?'Zakázat':'Povolit',async()=>{if(c.enabled&&!confirm(`Zakázat katalog „${m.name}“ pro nové kampaně? Rozehrané kampaně zachovají své podklady.`))return;await api('enable',{id:m.id,expectedRevision:c.revision,enabled:!c.enabled});await reload();}));
+   actions.append(button(c.enabled?'Zakázat':'Povolit',async()=>{if(c.enabled&&!await window.stulAdminDialog.confirm(`Zakázat katalog „${m.name}“ pro nové kampaně? Rozehrané kampaně zachovají své podklady.`))return;await api('enable',{id:m.id,expectedRevision:c.revision,enabled:!c.enabled});await reload();}));
    if(c.source)actions.append(button('Zkontrolovat aktualizace',()=>github(c)));
-   actions.append(button('Odebrat',async()=>{if(!confirm(`Odebrat katalog „${m.name}“? ${c.usage.length?'Připnuté kopie zůstanou v '+c.usage.length+' kampaních.':''} Závislosti mohou odstranění blokovat.`))return;await api('remove',{id:m.id,expectedRevision:c.revision,preserveCampaigns:true});if(selected?.bundle.manifest.id===m.id){selected=undefined;$('catalog-detail').hidden=true;}await reload();}));
+   actions.append(button('Odebrat',async()=>{if(!await window.stulAdminDialog.confirm(`Odebrat katalog „${m.name}“? ${c.usage.length?'Připnuté kopie zůstanou v '+c.usage.length+' kampaních.':''} Závislosti mohou odstranění blokovat.`))return;await api('remove',{id:m.id,expectedRevision:c.revision,preserveCampaigns:true});if(selected?.bundle.manifest.id===m.id){selected=undefined;$('catalog-detail').hidden=true;}await reload();}));
   }
   row.append(cell);table.append(row);
  }
  scroll.append(table);container.append(scroll);controls();
 }
 async function open(id){
- selected=await api('view?'+new URLSearchParams({id}));editing=undefined;valid=false;$('catalog-editor').hidden=true;$('catalog-copy').hidden=true;$('catalog-detail').hidden=false;
+ selected=await api('view?'+new URLSearchParams({id}));catalogPage=0;editing=undefined;valid=false;$('catalog-editor').hidden=true;$('catalog-copy').hidden=true;$('catalog-detail').hidden=false;
  const m=selected.bundle.manifest;$('catalog-detail-title').textContent=m.name;
- $('catalog-origin').textContent=[`${m.id} · ${m.version} · ${m.license}`,selected.source?`${selected.source.repository}\nCommit: ${selected.source.commit}`:'Místní obsah',`Instalace: ${date(selected.installedAt)} · Aktualizace: ${date(selected.updatedAt)} · Kontrola: ${date(selected.checkedAt)}`,`Použití: ${selected.usage.length} kampaní · ${selected.kind==='local'?'Lze upravovat':'Originál pouze pro čtení'}`].join('\n');
+ $('catalog-origin').textContent=[`${m.id} · ${m.version} · Autor: ${m.author}`,`Licence: ${m.license}`,selected.source?`${selected.source.repository} · Commit: ${selected.source.commit}`:selected.kind==='builtin'?'Součást aplikace · originál pouze pro čtení':'Vlastní obsah této instalace',selected.kind!=='builtin'?`Instalace: ${date(selected.installedAt)} · Aktualizace: ${date(selected.updatedAt)} · Kontrola: ${date(selected.checkedAt)}`:'',selected.kind!=='builtin'?`Použití: ${selected.usage.length} kampaní`:'' ].filter(Boolean).join('\n');
  if(selected.usage.some(u=>!u.preserved))$('catalog-origin').textContent+='\nNěkteré kampaně nemají připnuté podklady; odebrání a aktualizace jsou blokované.';
- renderItems();const history=$('catalog-history');history.replaceChildren();if(selected.history.length){history.append(node('h4','Body návratu katalogu'));for(const h of selected.history)history.append(button(`Vrátit předchozí verzi: ${date(h.saved_at)} · ${h.digest.slice(0,12)}`,async()=>{if(!confirm('Vrátit tuto verzi katalogu? Kampaně zachovají své připnuté kopie.'))return;await api('rollback',{id:m.id,expectedRevision:selected.revision,historyId:h.id});await reload();await open(m.id);}));}controls();
+ renderItems();const first=selected.bundle.entries[$('catalog-type').value][0];if(first)edit($('catalog-type').value,first,first.id);else $('catalog-editor-empty').hidden=false;$('catalog-detail').scrollIntoView({block:'start'});const history=$('catalog-history');history.replaceChildren();if(selected.history.length){const details=node('details'),summary=node('summary','Historie a body návratu');details.append(summary);history.append(details);for(const h of selected.history)details.append(button(`Vrátit předchozí verzi: ${date(h.saved_at)} · ${h.digest.slice(0,12)}`,async()=>{if(!await window.stulAdminDialog.confirm('Vrátit tuto verzi katalogu? Kampaně zachovají své připnuté kopie.'))return;await api('rollback',{id:m.id,expectedRevision:selected.revision,historyId:h.id});await reload();await open(m.id);}));}controls();
 }
 function renderItems(){
- const type=$('catalog-type').value,list=$('catalog-items');list.replaceChildren();for(const entry of selected.bundle.entries[type]){
-  const item=node('div');item.className='backup-actions';item.append(node('strong',`${entry.name??entry.label??entry.title} (${entry.id})`),button(selected.kind==='local'?'Upravit':'Prohlédnout',()=>edit(type,entry,entry.id)),button('Vlastní kopie',()=>showCopy(type,entry)));
-  if(selected.kind==='local')item.append(button('Duplikovat',()=>{const copy=structuredClone(entry);copy.id=(copy.id.slice(0,42)+'-kopie');edit(type,copy);}),button('Odstranit',async()=>{if(!confirm('Odstranit nepoužitou položku? Odkazy mohou odstranění blokovat.'))return;const id=selected.bundle.manifest.id;await api('entry',{id,expectedRevision:selected.revision,type,originalId:entry.id,remove:true});await reload();await open(id);}));list.append(item);
+ const type=$('catalog-type').value,list=$('catalog-items'),entries=selected.bundle.entries[type];list.replaceChildren();
+ catalogPage=Math.min(catalogPage,Math.max(0,Math.ceil(entries.length/catalogPageSize)-1));const from=catalogPage*catalogPageSize;
+ $('catalog-page').textContent=entries.length?`${from+1}–${Math.min(from+catalogPageSize,entries.length)} z ${entries.length}`:'Žádné položky';$('catalog-pagination').hidden=entries.length<=catalogPageSize;
+ for(const entry of entries.slice(from,from+catalogPageSize)){
+  const item=button('',()=>edit(type,entry,entry.id));item.className='catalog-item'+(editing?.type===type&&editing.originalId===entry.id?' is-selected':'');
+  item.append(node('strong',entry.name??entry.label??entry.title),node('small',entry.id));list.append(item);
  }
  if(!list.childNodes.length)list.append(node('p','Tento typ zatím neobsahuje žádné položky.'));
 }
+async function removeEntry(type,entry){
+ if(!await window.stulAdminDialog.confirm('Odstranit nepoužitou položku? Odkazy mohou odstranění blokovat.'))return;
+ const id=selected.bundle.manifest.id;await api('entry',{id,expectedRevision:selected.revision,type,originalId:entry.id,remove:true});await reload();await open(id);
+}
 function edit(type,entry,originalId){
- editing={type,originalId};$('catalog-editor').hidden=false;$('catalog-editor-title').textContent=selected.kind==='local'?'Editor položky':'Položka pouze pro čtení';$('catalog-editor-help').textContent='ID existující položky je neměnné. Odkazy mimo katalog piš katalog:polozka a deklaruj závislost v metadatech. Obrázek: portrait bez přípony, soubor WebP přidáš níže. Stafáž používá bezpečnou cestu pro plátno 32 × 32.';
+ editing={type,originalId};$('catalog-editor-empty').hidden=true;$('catalog-json-details').open=selected.kind==='local';$('catalog-editor').hidden=false;$('catalog-editor-title').textContent=entry.name??entry.label??entry.title??'Nová položka';$('catalog-editor-help').textContent=selected.kind==='local'?'Popis a náhled vycházejí z dat níže. ID existující položky zůstává stejné; pro novou variantu použij Duplikovat.':'Tuto předlohu lze prohlížet a zkopírovat do vlastního katalogu. Originál zůstane zachovaný.';
+ const actions=$('catalog-item-actions');actions.replaceChildren();if(originalId){actions.append(button('Vlastní kopie',()=>showCopy(type,entry)));if(selected.kind==='local')actions.append(button('Duplikovat',()=>{const copy=structuredClone(entry);copy.id=copy.id.slice(0,42)+'-kopie';edit(type,copy);}),button('Odstranit',()=>removeEntry(type,entry)));}renderItems();
  $('catalog-json').value=JSON.stringify(entry,null,2);$('catalog-json').readOnly=selected.kind!=='local';valid=false;void validate();controls();
 }
 function visualPreview(entry){
@@ -59,8 +68,13 @@ function visualPreview(entry){
 async function validate(){
  const serial=++validationRequest;clearTimeout(validationTimer);valid=false;controls();let entry;
  try{entry=JSON.parse($('catalog-json').value);}catch(error){$('catalog-validation').textContent='Neplatný JSON: '+error.message;return;}
- $('catalog-entry-preview').textContent=[entry.name??entry.label??entry.title??'Metadata katalogu',entry.description??entry.summary??'',entry.maxHp!==undefined?`Životy: ${entry.maxHp} · ÚČ: ${entry.combat?.attack} · OČ: ${entry.combat?.defense} · Útočnost: ${entry.combat?.damage}`:'',entry.gmHint?`Pro PJ: ${entry.gmHint}`:''].filter(Boolean).join('\n');$('catalog-visual-preview').replaceChildren();
- if(selected.kind!=='local'){visualPreview(entry);$('catalog-validation').textContent='Originál je pouze pro čtení. Použij Vlastní kopie.';return;}
+ if(!entry||typeof entry!=='object'||Array.isArray(entry)){$('catalog-validation').textContent='Zadej JSON objekt položky.';return;}
+ const environment={castle:'Hrad',mine:'Důl',cave:'Jeskyně'};
+ const detail=editing.type==='bestiary'?[entry.description,`Životy ${entry.maxHp}  ·  ÚČ ${entry.combat?.attack}  ·  OČ ${entry.combat?.defense}  ·  Útočnost ${entry.combat?.damage}`,entry.gmHint?`Jak s ní hrát (pro PJ)\n${entry.gmHint}`:'']:
+ editing.type==='scenery'?[entry.surface?'Plošný materiál':entry.category==='floor'?'Podlahový detail':'Předmět',`Prostředí: ${(Array.isArray(entry.environments)?entry.environments:[]).map(e=>environment[e]??e).join(', ')}`,entry.automatic?'Lze zahrnout do náhodného rozmístění.':'Ruční umístění v mapě.']:
+ editing.type==='dungeon-presets'?[entry.description,`Patra: ${entry.options?.levels} · Místností na patro: ${entry.options?.rooms}`]:[entry.description??entry.summary??'',entry.gmNotes?`Příprava pro PJ\n${entry.gmNotes}`:''];
+ $('catalog-entry-preview').textContent=detail.filter(Boolean).join('\n\n');$('catalog-visual-preview').replaceChildren();
+ if(selected.kind!=='local'){visualPreview(entry);$('catalog-validation').textContent='Originál je pouze pro čtení. Pro vlastní variantu použij Vlastní kopie.';return;}
  if(editing.type==='manifest'){$('catalog-validation').textContent='Syntaxe JSON je platná; metadata a závislosti ověří server při uložení.';valid=true;controls();return;}
  $('catalog-validation').textContent='Ověřuji schéma a odkazy…';
  validationTimer=setTimeout(async()=>{
@@ -83,26 +97,35 @@ function showPreview(result){
  if(result.upToDate){preview=undefined;$('catalog-preview').hidden=true;message(`Katalog „${result.manifest.name}“ je aktuální. Ověřený obsah odpovídá nainstalované verzi; žádná instalace není potřeba. Commit zdroje: ${result.source.commit}`);renderList();return;}
  preview=result;$('catalog-install').textContent=result.currentVersion?'Aktualizovat katalog':'Potvrdit instalaci';$('catalog-preview').hidden=false;$('catalog-preview-text').textContent=[`${result.manifest.name} (${result.manifest.id})`,`${result.currentVersion??'Nový katalog'} → ${result.manifest.version}`,`Autor: ${result.manifest.author} · Licence: ${result.manifest.license}`,`SHA-256: ${result.digest}`,result.currentDigest?`Současný SHA-256: ${result.currentDigest}`:'',result.currentSource?`Současný commit: ${result.currentSource.commit}`:'',result.source?`${result.source.repository}\nCommit: ${result.source.commit}`:'Import ze souboru',Object.entries(result.counts).map(([k,v])=>`${labels[k]}: ${v}`).join(' · '),`Přidáno: ${result.diff.added} · Změněno: ${result.diff.changed} · Odstraněno: ${result.diff.removed}`,...Object.entries(result.items??{}).filter(([,items])=>items.length).map(([type,items])=>`${({added:'Přidané položky',changed:'Upravené položky',removed:'Odstraněné položky'})[type]}: ${items.join(', ')}`),`Nové nebo změněné závislosti: ${(result.newDependencies??[]).map(d=>`${d.id} >= ${d.minVersion}`).join(', ')||'žádné'}`,`Závislosti: ${result.manifest.dependencies.map(d=>`${d.id} >= ${d.minVersion}`).join(', ')||'žádné'}`,result.preservedCampaigns?`${result.preservedCampaigns} kampaní zachová připnuté kopie. Aktualizace je nepřepíše.`:'','Kompatibilita a obsah ověřeny. Knihovna se změní až potvrzením.'].filter(Boolean).join('\n');renderList();}
 async function github(catalog,initialRepository){
- const repository=catalog?.source?.repository??initialRepository??prompt('Veřejný GitHub repozitář (https://github.com/autor/katalog):');if(!repository)return;
- const ref=prompt('Revize nebo tag (prázdné = HEAD):','HEAD');if(ref===null)return;
+ const values=await window.stulAdminDialog.ask({
+  title:catalog?'Zkontrolovat aktualizace katalogu':'Přidat katalog z GitHubu',
+  message:'Zadej veřejný repozitář a případně tag nebo revizi. Nejdřív se zobrazí náhled; instalaci potvrdíš samostatně.',
+  fields:[{name:'repository',label:'Veřejný GitHub repozitář',type:'url',required:true,value:catalog?.source?.repository??initialRepository??'',readOnly:Boolean(catalog),maxLength:250},{name:'ref',label:'Revize nebo tag (prázdné = HEAD)',value:'HEAD',maxLength:100}],
+  submit:'Připravit náhled',
+ });
+ if(!values)return;const repository=values.repository.trim(),ref=values.ref.trim()||'HEAD';
  if(preview){await api('discard',{token:preview.token});preview=undefined;$('catalog-preview').hidden=true;}
- const result=await api('github',{repository,ref:ref||'HEAD',...(catalog?{updateId:catalog.manifest.id}:{})});await reload();showPreview(result);
+ message('Stahuji a ověřuji katalog…');const result=await api('github',{repository,ref:ref||'HEAD',...(catalog?{updateId:catalog.manifest.id}:{})});await reload();message('');showPreview(result);
 }
 $('catalog-new').onclick=()=>{$('catalog-create').hidden=false;};$('catalog-create-cancel').onclick=()=>{$('catalog-create').hidden=true;};
 $('catalog-create').onsubmit=e=>{e.preventDefault();void perform(async()=>{
  const builtin=catalogs.find(c=>c.kind==='builtin').manifest,manifest={schemaVersion:1,id:$('catalog-id').value,name:$('catalog-name').value,version:'1.0.0',author:$('catalog-author').value,license:$('catalog-license').value,description:'',minAppVersion:builtin.version,dependencies:[{id:'builtin',minVersion:builtin.version}],fileLicenses:{}};
  await api('create',{manifest});$('catalog-create').hidden=true;e.target.reset();await reload();await open(manifest.id);
 });};
-$('catalog-reload').onclick=()=>void perform(reload);$('catalog-type').onchange=()=>{if(selected)renderItems();};
+$('catalog-reload').onclick=()=>void perform(reload);$('catalog-type').onchange=()=>{if(!selected)return;catalogPage=0;const type=$('catalog-type').value,first=selected.bundle.entries[type][0];if(selected.kind!=='local'||!editing){if(first)edit(type,first,first.id);else{$('catalog-editor').hidden=true;$('catalog-editor-empty').hidden=false;editing=undefined;}}renderItems();};
 $('catalog-entry-new').onclick=()=>void perform(()=>newEntry());$('catalog-entry-area').onclick=()=>void perform(()=>newEntry(true));
-$('catalog-metadata').onclick=()=>{editing={type:'manifest'};$('catalog-editor').hidden=false;$('catalog-json').readOnly=false;$('catalog-json').value=JSON.stringify(selected.bundle.manifest,null,2);$('catalog-editor-title').textContent='Metadata katalogu';$('catalog-editor-help').textContent='Název lze změnit, ID musí zůstat stejné. Verze používá formát 1.0.0. Závislosti uvádějí id a minVersion.';void validate();};
-$('catalog-json').oninput=()=>void validate();$('catalog-editor-cancel').onclick=()=>{validationRequest++;clearTimeout(validationTimer);$('catalog-editor').hidden=true;};
+$('catalog-close').onclick=()=>{validationRequest++;clearTimeout(validationTimer);selected=editing=undefined;$('catalog-detail').hidden=true;};
+$('catalog-metadata').onclick=()=>{editing={type:'manifest'};$('catalog-editor-empty').hidden=true;$('catalog-item-actions').replaceChildren();$('catalog-json-details').open=true;$('catalog-editor').hidden=false;$('catalog-json').readOnly=false;$('catalog-json').value=JSON.stringify(selected.bundle.manifest,null,2);$('catalog-editor-title').textContent='Metadata katalogu';$('catalog-editor-help').textContent='Název lze změnit, ID musí zůstat stejné. Verze používá formát 1.0.0. Závislosti uvádějí id a minVersion.';void validate();};
+$('catalog-json').oninput=()=>void validate();$('catalog-editor-cancel').onclick=()=>{validationRequest++;clearTimeout(validationTimer);$('catalog-editor').hidden=true;$('catalog-editor-empty').hidden=false;editing=undefined;renderItems();};
 $('catalog-editor').onsubmit=e=>{e.preventDefault();if(!valid||selected.kind!=='local')return;void perform(async()=>{const id=selected.bundle.manifest.id,data=JSON.parse($('catalog-json').value);if(editing.type==='manifest')await api('manifest',{id,expectedRevision:selected.revision,manifest:data});else await api('entry',{id,expectedRevision:selected.revision,type:editing.type,originalId:editing.originalId,entry:data});await reload();await open(id);});};
 $('catalog-copy').onsubmit=e=>{e.preventDefault();void perform(async()=>{const targetId=$('catalog-copy-target').value,target=catalogs.find(c=>c.manifest.id===targetId);await api('copy',{...copying,targetId,newId:$('catalog-copy-id').value,expectedRevision:target.revision});await reload();await open(targetId);});};
+$('catalog-prev').onclick=()=>{if(catalogPage>0){catalogPage--;renderItems();controls();}};
+$('catalog-next').onclick=()=>{catalogPage++;renderItems();controls();};
+$('catalog-import-button').onclick=()=>$('catalog-import').click();
 $('catalog-import').onchange=e=>void perform(async()=>{const file=e.target.files[0];if(!file)return;if(file.size>40_000_000)throw new Error('ZIP má nejvýše 40 MB.');showPreview(await api('preview',undefined,{method:'POST',headers:{'Content-Type':'application/zip'},body:file}));e.target.value='';});
 $('catalog-install').onclick=()=>void perform(async()=>{if(!preview)return;const result=await api('install',{token:preview.token});preview=undefined;$('catalog-preview').hidden=true;await reload();await open(result.id);});
 $('catalog-discard').onclick=()=>void perform(async()=>{if(preview)await api('discard',{token:preview.token});preview=undefined;$('catalog-preview').hidden=true;});
-$('catalog-image').onchange=e=>void perform(async()=>{const file=e.target.files[0];if(!file||selected?.kind!=='local')return;const portrait=prompt('ID obrázku (bez přípony, pro pole portrait):',file.name.replace(/\.webp$/i,''));if(!portrait)return;const id=selected.bundle.manifest.id;await api('image?'+new URLSearchParams({id,revision:String(selected.revision),portrait}),undefined,{method:'POST',headers:{'Content-Type':'image/webp'},body:file});e.target.value='';await reload();await open(id);message(`Obrázek uložen. V příšeře nastav portrait: "${portrait}".`);});
+$('catalog-image').onchange=e=>void perform(async()=>{const file=e.target.files[0];if(!file||selected?.kind!=='local')return;const values=await window.stulAdminDialog.ask({title:'Přidat WebP obrázek',message:'Zadej ID obrázku bez přípony. Toto ID pak použij v poli portrait.',fields:[{name:'portrait',label:'ID obrázku',required:true,pattern:'[a-z][a-z0-9-]{0,49}',maxLength:50,value:file.name.replace(/\.webp$/i,'')}],submit:'Nahrát obrázek'});if(!values){e.target.value='';return;}const portrait=values.portrait;const id=selected.bundle.manifest.id;await api('image?'+new URLSearchParams({id,revision:String(selected.revision),portrait}),undefined,{method:'POST',headers:{'Content-Type':'image/webp'},body:file});e.target.value='';await reload();await open(id);message(`Obrázek uložen. V příšeře nastav portrait: "${portrait}".`);});
 $('catalog-github').onclick=()=>void perform(()=>github());$('catalog-recommend').onclick=()=>void perform(async()=>{const result=await api('recommend',{});const list=$('catalog-recommendations');list.replaceChildren();for(const c of result.catalogs)list.append(node('p',`${c.name} · ${c.author}`),button('Připravit instalaci',()=>github(undefined,c.repository)));if(!result.catalogs.length)message('Doporučený seznam zatím neobsahuje katalogy. Vlastní adresu lze zadat tlačítkem Přidat z GitHubu.');});
 window.addEventListener('stul-admin-session',()=>void perform(reload));window.addEventListener('stul-admin-logout',()=>{selected=preview=editing=undefined;catalogs=[];$('catalog-list').replaceChildren();$('catalog-editor').hidden=$('catalog-detail').hidden=$('catalog-preview').hidden=true;$('catalog-json').value='';});
 if(!$('panel').hidden)void perform(reload);
