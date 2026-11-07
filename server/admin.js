@@ -12,6 +12,7 @@ async function api(endpoint, data) {
   const result = await response.json();
   if (response.status === 401) {
     state = selectedCommit = undefined;
+    window.dispatchEvent(new Event('stul-admin-logout'));
     backupList = [];
     el('login').hidden = false;
     el('panel').hidden = true;
@@ -132,6 +133,7 @@ async function refresh(force = false, loadBackups = false) {
     el('login').hidden = true;
     el('panel').hidden = false;
     render();
+    if(loadBackups||!previous)window.dispatchEvent(new Event('stul-admin-session'));
     if (loadBackups || !previous || previous.job?.active && !state.job?.active) await readBackups();
   } catch (error) {
     if (!el('panel').hidden || force || loadBackups) showError(error);
@@ -192,6 +194,7 @@ el('logout').onclick = async () => {
   try {
     await api('logout', {});
     state = selectedCommit = undefined;
+    window.dispatchEvent(new Event('stul-admin-logout'));
     backupList = [];
     el('panel').hidden = true;
     el('login').hidden = false;

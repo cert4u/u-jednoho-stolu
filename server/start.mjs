@@ -1,3 +1,4 @@
+import {catalogApi,catalogAsset} from './catalog-api.mjs';
 import {createServer,request} from 'node:http';
 import {readFileSync,existsSync,writeFileSync,unlinkSync,readdirSync,openSync,fsyncSync,closeSync} from 'node:fs';
 import {randomBytes,createHmac,scryptSync} from 'node:crypto';
@@ -28,6 +29,7 @@ async function updater(endpoint,method='GET',data,refresh=false){const url=new U
 const server=createServer(async(req,res)=>{try{
  const url=new URL(req.url,'http://localhost');
  const {pathname}=url;
+ if(pathname.startsWith('/catalog-assets/')){await catalogAsset(req,res,pathname);return;}
  if(pathname==='/healthz'){json(res,200,{ok:true,...info,hostingProtocol:1,maintenance:existsSync(flag)});return;}
  if(pathname.startsWith('/internal/')){
   if(!equal(req.headers.authorization,`Bearer ${token}`)){json(res,401,{error:'Nepovolený přístup.'});return;}
@@ -62,9 +64,9 @@ const server=createServer(async(req,res)=>{try{
   }
   json(res,404,{error:'Nenalezeno.'});return;
  }
- if(pathname==='/admin'||pathname==='/admin/'||pathname==='/admin/app.js'){
+ if(pathname==='/admin'||pathname==='/admin/'||pathname==='/admin/app.js'||pathname==='/admin/catalogs.js'){
   if(req.method!=='GET'){json(res,405,{error:'Použij GET.'});return;}
-  const js=pathname.endsWith('.js');res.writeHead(200,{'Content-Type':js?'text/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"});res.end(readFileSync(new URL(js?'./admin.js':'./admin.html',import.meta.url)));return;
+  const js=pathname.endsWith('.js');res.writeHead(200,{'Content-Type':js?'text/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"});res.end(readFileSync(new URL(js?(pathname==='/admin/catalogs.js'?'./admin-catalogs.js':'./admin.js'):'./admin.html',import.meta.url)));return;
  }
  if(pathname.startsWith('/admin/api/')){
   if(req.method==='POST'&&req.headers.origin!==origin.origin){json(res,403,{error:'Neplatný původ požadavku.'});return;}
@@ -75,6 +77,12 @@ const server=createServer(async(req,res)=>{try{
    attempts.delete(address);const value=`${now+8*3600e3}.${randomBytes(24).toString('hex')}`;res.setHeader('Set-Cookie',cookie(`${value}.${session(value)}`,8*3600));json(res,200,{ok:true});return;
   }
   if(!authorized(req)){json(res,401,{error:'Přihlas se jako správce instalace.'});return;}
+  if(pathname==='/admin/api/catalogs'||pathname.startsWith('/admin/api/catalogs/')){
+   if(req.method==='POST'&&(draining||existsSync(flag))){json(res,503,{error:'Probíhá údržba. Katalogy nyní neupravuj.'});return;}
+   if(req.method==='POST')inFlight++;
+   try{await catalogApi(req,res,url);}finally{if(req.method==='POST')inFlight--;}
+   return;
+  }
   if(pathname==='/admin/api/logout'&&req.method==='POST'){res.setHeader('Set-Cookie',cookie('',0));json(res,200,{ok:true});return;}
   if(pathname==='/admin/api/status'&&req.method==='GET'){
    const local={

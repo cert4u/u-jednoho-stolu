@@ -28,7 +28,8 @@
     "start:node": "node server/start.mjs",
     "benchmark:generator": "node --experimental-strip-types scripts/benchmark-generator.mjs",
     "test:updater": "node scripts/test-updater.mjs",
-    "test:hosting": "node scripts/test-hosting.mjs"
+    "test:hosting": "node scripts/test-hosting.mjs",
+    "test:catalogs": "node scripts/test-catalog-migration.mjs && node scripts/test-catalog-zip.mjs && node scripts/test-catalog-store.mjs && node scripts/test-catalog-github.mjs && node scripts/test-catalog-admin.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

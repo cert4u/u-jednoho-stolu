@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+const dir=mkdtempSync(path.join(tmpdir(),'stul-catalog-github-'));process.env.STUL_DATA_DIR=dir;
+const {downloadGithubCatalog,prepareGithubCatalog,githubRepository,recommendedCatalogs}=await import('../server/catalog-github.mjs');
+const store=await import('../server/catalog-store.mjs'),core=await import('../dist/catalog-core.mjs');
+const {packCatalog}=await import('../server/catalog-pack.mjs');
+const bundle=(version,hp)=>({manifest:{schemaVersion:1,id:'public-mine',name:'Veřejné doly',author:'Autor',license:'CC0-1.0',version,minAppVersion:'1.1.0',dependencies:[],description:'',fileLicenses:{}},entries:{...core.emptyEntries(),bestiary:[{...core.builtinCatalog.bundle.entries.bestiary[0],id:'rat',portrait:undefined,maxHp:hp}]},assets:[]});
+const archive=async b=>packCatalog(b,()=>{throw Error('No image');});
+let calls=[];
+const transport=(zip,sha='a'.repeat(40))=>async(url,options)=>{
+ calls.push({url,options});if(url.startsWith('https://api.github.com/repos/author/mine/commits/'))return new Response(JSON.stringify({sha}));
+ if(url===`https://codeload.github.com/author/mine/zip/${sha}`)return new Response(zip);throw Error('Unexpected network destination');
+};
+try{
+ for(const bad of ['http://github.com/author/mine','https://localhost/repo','https://github.com:444/a/b','https://user:secret@github.com/a/b','https://github.com/a/b/tree/main','https://github.com/a/b?x=1','https://127.0.0.1/a/b','https://github.com/a/..'])assert.throws(()=>githubRepository(bad));
+ assert.equal(githubRepository('https://github.com/Author/Mine.git').repository,'https://github.com/author/mine');
+ await assert.rejects(downloadGithubCatalog('http://localhost/x','HEAD',()=>{throw Error('Must not call');}));
+ const v1=await archive(bundle('1.0.0',12)),v2=await archive(bundle('1.1.0',99));
+ const preview=await prepareGithubCatalog({repository:'https://github.com/author/mine'},transport(v1));
+ assert.equal(preview.source.commit,'a'.repeat(40));assert.equal((await store.listCatalogs()).length,1);
+ assert(calls.every(c=>c.options.redirect==='manual'&&!c.options.headers.Authorization));
+ await store.installPrepared(preview.token);
+ const old=await store.viewCatalog('public-mine');assert.equal(old.kind,'community');assert.equal(old.source.commit,'a'.repeat(40));
+ await store.createCatalog({schemaVersion:1,id:'own',name:'Vlastní',author:'Já',license:'CC0',version:'1.0.0',minAppVersion:'1.1.0'});
+ let own=await store.viewCatalog('own');await store.copyEntry({sourceId:'public-mine',targetId:'own',type:'bestiary',itemId:'rat',newId:'local-rat',expectedRevision:own.revision});
+ const snapshot=await core.pinContent(undefined,new core.CatalogResolver([old]),'bestiary','public-mine:rat');
+ const update=await prepareGithubCatalog({repository:'https://github.com/author/mine',updateId:'public-mine'},transport(v2,'b'.repeat(40)));
+ assert.equal(update.diff.changed,1);assert.equal((await store.viewCatalog('public-mine')).bundle.manifest.version,'1.0.0');
+ await store.installPrepared(update.token);const updated=await store.viewCatalog('public-mine');assert.equal(updated.bundle.entries.bestiary[0].maxHp,99);
+ assert.equal((await store.viewCatalog('own')).bundle.entries.bestiary[0].maxHp,12);
+ assert.equal(new core.CatalogResolver([updated],snapshot).get('bestiary','public-mine:rat').data.maxHp,12);
+ await assert.rejects(prepareGithubCatalog({repository:'https://github.com/author/mine',updateId:'public-mine'},async()=>{throw Error('offline');}),/není dostupný/);
+ assert.equal((await store.viewCatalog('public-mine')).digest,updated.digest);
+ await assert.rejects(downloadGithubCatalog('https://github.com/author/mine','HEAD',async()=>new Response('',{status:302,headers:{Location:'http://127.0.0.1/'}})),/Přesměrování/);
+ await assert.rejects(downloadGithubCatalog('https://github.com/author/mine','HEAD',async()=>new Response('too big',{headers:{'content-length':'999999999'}})),/limit/);
+ await assert.rejects(prepareGithubCatalog({repository:'https://github.com/author/mine',updateId:'public-mine'},transport(Buffer.from('bad'),'c'.repeat(40))));
+ assert.equal((await store.viewCatalog('public-mine')).digest,updated.digest);
+ await store.rollbackCatalog('public-mine',updated.revision,updated.history[0].id);assert.equal((await store.viewCatalog('public-mine')).bundle.entries.bestiary[0].maxHp,12);
+ const sameVersion=await prepareGithubCatalog({repository:'https://github.com/author/mine',updateId:'public-mine'},transport(await archive(bundle('1.0.0',22)),'d'.repeat(40)));
+ assert.notEqual(sameVersion.digest,old.digest,'Version labels alone must not identify bytes.');await store.discardImport(sameVersion.token);
+ const list=await recommendedCatalogs(async()=>new Response(JSON.stringify({encoding:'base64',content:Buffer.from(JSON.stringify([{id:'mine',name:'Doly',author:'Autor',repository:'https://github.com/author/mine'}])).toString('base64')})));
+ assert.equal(list.length,1);
+ console.log('PASS: mocked immutable GitHub install/update, URL/redirect/size guards, outages, rollback, source hashes and protection of local and campaign copies; no live GitHub requests.');
+}finally{rmSync(dir,{recursive:true,force:true});}
