@@ -153,6 +153,12 @@ Refaktor po 1.2.2 nemění kontrakt HTTP, číslo uloženého formátu, migrace,
 
 [Test jádra průzkumu](../scripts/test-exploration-core.mjs) ověřuje původní vstupní modul, známé cesty, průchodnost/viditelnost dveří, diagonální zakrytí a přesun ve tmě bez odhalení okolí. API test `scripts/test-lighting.mjs` dále pokrývá dohoření, nosiče, bojové postavení a světelné režimy. Nativní TS testovací loader rozlišuje soubor `exploration.ts` od stejnojmenného adresáře stejně jako bundler.
 
+### Dekorace pod mapou
+
+[table-atmosphere.tsx](../components/table-atmosphere.tsx) drží skici ve fixním rohu a maskuje je pod podlahou a hranami mapy. [keepsake-mask.ts](../components/dungeon-map/keepsake-mask.ts) vytváří půdorys pouze ze `shown` pohledu a převádí souřadnice papíru do SVG skici. Nikdy mu nepředávej soukromý atlas místo hráčské projekce. Posun a ResizeObserver aktualizují SVG transformaci přes jeden requestAnimationFrame bez herních mutací; při odpojení se posluchače i observer uklidí. Měkké okraje a radiální zeslabení původní skici zůstávají zachované.
+
+[Test masky](../scripts/test-keepsake-mask.mjs) ověřuje projekci, posun a změnu velikosti, prázdnou mapu, unikátní SVG identifikátory a skutečné zapojení hráčského editoru bez úniku neprozkoumaných místností. Vzhled překrytí ověř také v prohlížeči.
+
 ### Stavové přechody a čistý lint
 
 [interaction-state.ts](../components/dungeon-map/interaction-state.ts) popisuje reakce na změnu patra, generování, souboje a výběru. [use-map-interaction.ts](../components/dungeon-map/use-map-interaction.ts) upraví vlastní stav pouze při změně uloženého snímku těchto signálů, ještě před commitem. Nezměněný polling proto neruší ručně zvolený nástroj. `use-map-input.ts` ve stejném přechodu zruší rozpracovaný začátek; pointer ref se uvolní v layout efektu. Běžné efekty mají úplné závislosti a slouží pro posun papíru a DOM, nikoli pro dodatečné přepínání nástrojů.
@@ -276,11 +282,11 @@ Administrace používá společný `server/admin-dialog.js` a HTML `<dialog>` pr
 
 ## Stabilizační kontroly
 
-`npm run lint` používá `--max-warnings 0`: chyby i varování způsobí neúspěch. Původních 6 chyb a 45 varování bylo odstraněno opravou vlastního kódu a generátoru indexů, bez dalších vypnutí pravidel. `scripts/lint-baseline.json` je prázdný; starší příkaz `npm run lint:baseline` proto také toleruje pouze nulu nálezů. Původní výjimky pro distribuované UI šablony zůstávají vymezené v konfiguraci; vlastní herní kód jimi není pokrytý.
+`npm run lint` používá `--max-warnings 0`: chyby i varování způsobí neúspěch. Původních 6 chyb a 45 varování bylo odstraněno opravou vlastního kódu a generátoru indexů, bez dalších vypnutí pravidel. `scripts/lint-baseline.json` je prázdný; starší příkaz `npm run lint:baseline` proto také toleruje pouze nulu nálezů. Po odstranění nepoužívaných UI šablon byly odebrány i jejich zvláštní lint výjimky. Zachované tlačítko pro konektorový panel prochází stejnými pravidly jako ostatní kód.
 
 - `npm run test:stabilization` vyžaduje Node build a volné lokální porty 18096, 18098, 18099. Vytváří vlastní dočasné databáze; nepracuje s živou instalací.
 - `npm run benchmark:polling` měří 150 dotazů osmi klientů proti vlastní Node instanci na 18097. Bez `STUL_REAL_POLL=1` jde o zrychlený ekvivalent přenosu pěti minut, nikoli reálný pětiminutový běh. Výsledky jsou v `/tmp/stul-poll-after.json`; cestu lze změnit pomocí `STUL_METRICS_FILE`.
-- `node scripts/audit-maintainability.mjs` zaznamená statický graf importů a kandidáty k další revizi. Neodstraňuje UI soubory ani závislosti. Řetězcově generované/volitelné pluginové importy nejsou důkazem nepoužití.
+- `node scripts/audit-maintainability.mjs` zapíše aktuální konzervativní graf do `docs/performance/maintainability-current.json`; volitelný argument určí jiný výstup. Zahrnuje vývojové/testovací vstupy, výslovné konektorové kořeny, TypeScript `.mts` protějšky a soubor kopírovaný do updater image. Nic nemaže automaticky. Kandidáty vždy porovnej s konfigurací, CSS a dynamickými importy. [Provedený úklid](CLEANUP.md) zachovává samostatný historický snímek.
 - Pro cílené opakování integračních scénářů lze nastavit `STUL_TEST_CASES=message-replay,conditional-game,stabilization,public-admission-api`; neznámý název se odmítá a bez této proměnné běží celá sada. Nové API regresní scénáře běží také přes `npm run test:ci` a `npm run test:hosting`: hraniční záloha, opakované chaty/hody, výchozí globální omezení zakládání.
 
 `app/page.tsx` skládá obrazovku, transport a identifikátory požadavků jsou v `components/game-table/game-client.ts`; polling zůstává samostatný hook. Definice nástrojů jsou v `components/dungeon-map/toolbox.ts`, geometrie a vstupy zůstávají ve stávajících modulech. Limity těla/zálohy, podmíněná odpověď, přijetí nové místnosti a zprávové operace mají malé samostatné moduly. Generátor V2 ani herní pravidla tato etapa nemění.

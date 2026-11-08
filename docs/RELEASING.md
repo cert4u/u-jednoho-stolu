@@ -63,3 +63,7 @@ Hodnoty jsou příklad. Správce vyplní skutečný stav. Vynechané pole se zob
 Stabilizační opravy navazující na 1.2.1 se vydávají jako 1.2.2. Nová migrace `0003_room_admission.sql` je aditivní; formát přenositelné zálohy zůstává 1. Kapacitní proměnné jsou volitelné, jejich vlastní hodnoty přes `.env` vyžadují odpovídající Compose konfiguraci a znovuvytvoření kontejneru. Updater se nemusí přestavovat. Release marker proto uvádí `migrations: true`, `updater: false`, `config: true`; poznámky musí vysvětlit, že konfigurace je volitelná.
 
 Před tagováním musí projít úplné CI přesného vydávaného commitu, včetně obou Docker scénářů. Poznámky vydání odkazují na tento běh, uvádějí známou lint baseline a odlišují ověřený lokální Cloudflare runtime od veřejného deploymentu. [Migrační návod](SELF_HOSTING.md#přechod-z-121-na-122) · [Historický report stabilizace](FINAL_STABILIZATION.md).
+
+## Vydání 1.2.3
+
+Refaktor, čistý lint, odebrání prověřených nepoužívaných šablon/závislostí a maska dekorací nevyžadují proti 1.2.2 migraci, nové nastavení ani přestavbu updateru. Release marker uvádí `migrations: false`, `updater: false`, `config: false`. Ověř čistou instalaci, oba buildy, striktní lint, úplné CI přesného vydávaného commitu včetně Dockeru a skutečné překrytí při posunu/zoomu. [Rozsah úklidu](CLEANUP.md) · [Migrační návod](SELF_HOSTING.md#přechod-z-122-na-123).

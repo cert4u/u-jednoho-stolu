@@ -4,12 +4,12 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Počítej přibližně se 2 GB volné RAM a několika GB disku pro sestavení image. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Tato dokumentace odpovídá vydání 1.2.2; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
+Tato dokumentace odpovídá vydání 1.2.3; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
 
 ## První spuštění
 
 ```sh
-git clone --branch v1.2.2 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.3 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -227,6 +227,14 @@ Heslo správce je nadále hodnota `STUL_ADMIN_PASSWORD` tvé instalace; projekt 
 Nové proměnné `STUL_ROOM_CREATE_RATE`, `STUL_ROOM_LIMIT` a `STUL_ROOM_BYTES_LIMIT` jsou volitelné. Bez jejich nastavení platí níže uvedené výchozí hodnoty. Není nutná přestavba updateru ani nová služba. Aktualizace aplikace přes updater sama nepřepisuje checkout, `.env` ani Compose soubor. Chceš-li vlastní kvóty nastavovat přes `.env`, převezmi také odpovídající předání proměnných z Compose vydání 1.2.2 a znovu vytvoř kontejner aplikace při zachování datového volume.
 
 [Změny vydání](../CHANGELOG.md#122--2026-11-08) · [Výsledky a omezení ověření](FINAL_STABILIZATION.md).
+
+## Přechod z 1.2.2 na 1.2.3
+
+Vytvoř úplnou serverovou ZIP zálohu včetně katalogových obrázků, uchovej konfiguraci a odpovídající image. Potom vyber stabilní vydání 1.2.3 a jeho ověřený commit v administraci updateru; při ručním sestavení použij tag `v1.2.3`. Zachovej celý datový volume. Nejsou potřeba nové SQL migrace, proměnné prostředí, změna Compose, LiveKitu ani přestavba updateru. Z 1.2.1 nebo starší verze nadále platí dřívější migrační kroky popsané výše.
+
+Po aktualizaci obnov stránku aplikace a `/admin`. Ověř původní kampaň, obrázky, přepnutí nástroje, posun/zoom a ztišení skic pod mapou. Refaktor zachovává pravidla, generátor V2, formát záloh a katalogové balíčky. Úplné zálohy neobsahují žádné nové povinné atributy.
+
+Podporovaný rollback vrací odpovídající image i databázový snapshot. Před návratem zachovej také data vzniklá po aktualizaci; nejde o sloučení novějších změn do staršího snapshotu. [Změny a rozsah úklidu](CLEANUP.md).
 
 ## Ochrany stabilizační větve
 

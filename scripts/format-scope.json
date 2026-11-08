@@ -17,5 +17,9 @@
   "components/dungeon-map/use-map-input.ts",
   "components/game-table/use-browser-entry.ts",
   "lib/objects.ts",
-  "scripts/test-clean-state.mjs"
+  "scripts/test-clean-state.mjs",
+  "components/table-atmosphere.tsx",
+  "components/dungeon-map/keepsake-mask.ts",
+  "scripts/test-keepsake-mask.mjs",
+  "scripts/audit-maintainability.mjs"
 ]

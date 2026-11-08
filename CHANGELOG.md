@@ -1,6 +1,9 @@
 # Změny
 
-## Nevydáno
+## 1.2.3 — 2026-11-08
+
+- Tužka a desetistěnná kostka ustupují pod skutečně zobrazenou geometrií mapy. Měkká SVG maska sleduje posun, zoom i velikost okna; mimo kresbu zůstává původní skica. Hráčská maska používá pouze hráčský pohled.
+- Prověřeným úklidem odstraněno 57 nevyužívaných UI šablon a jeden mobilní hook (6 451 řádků), 10 přímých produkčních závislostí a nepoužívaný `tw-animate-css`. Lockfile má o 20 balíčkových záznamů méně bez změny verzí ostatních balíčků. Zachovány buildy, konektorové adaptéry, volitelné tlačítko a licence. [Rozsah a důkazy](docs/CLEANUP.md).
 
 - Striktní lint bez chyb i varování: stavové přechody editoru mapy místo synchronních setState efektů, bezpečný SSR/hydratační vstup, úplné závislosti a výslovný cleanup relací. Regresní testy zachovávají ruční nástroj při pollingu a pořadí přechodů.
 - Výslovné vyřazování soukromých polí, odstraněné nepoužité importy, opravený generátor pojmenovaných exportů a frameworkové komponenty pro původní WebP. CI vyžaduje `npm run lint` s nulou povolených varování; historická baseline je prázdná.
@@ -13,7 +16,7 @@
 - Rozdělení obsluhy herních akcí na směrování, doménová oprávnění/převod chyb, mapové operace a správu přístupů; odstranění opakovaných bloků pro obsluhu výjimek.
 - Čistá vizuální projekce katalogů oddělená od načítání databáze a připínání obsahu. Regresní testy rolí, vlastnictví postavy, 400/403/409, obsazené mapy, obnovovacích klíčů a skutečných React panelů.
 
-Bez změny herních pravidel, generátoru V2, HTTP kontraktu a uložených formátů; nejsou potřeba nové migrace ani provozní proměnné. [Hranice modulů pro přispěvatele](docs/DEVELOPMENT.md#hranice-odpovědností-při-údržbě). Číslo balíčku zůstává 1.2.2 do dalšího vydání.
+Bez změny herních pravidel, generátoru V2, HTTP kontraktu a uložených formátů; nejsou potřeba nové migrace ani provozní proměnné. [Hranice modulů pro přispěvatele](docs/DEVELOPMENT.md#hranice-odpovědností-při-údržbě). Verze 1.2.3 nevyžaduje proti 1.2.2 SQL migraci, změnu konfigurace ani přestavbu updateru. Před aktualizací uchovej obvyklou úplnou zálohu. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-122-na-123).
 
 ## 1.2.2 — 2026-11-08
 

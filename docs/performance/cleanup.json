@@ -1,0 +1,316 @@
+{
+  "scope": "Conservative literal import graph from app, server, worker, scripts and optional connector UI. Unreachable files and package candidates require review of dynamic imports, CSS and framework/tool configuration; nothing is deleted automatically.",
+  "roots": [
+    "app/api/adventures/route.ts",
+    "app/api/game/actions/domain.ts",
+    "app/api/game/actions/map.ts",
+    "app/api/game/actions/members.ts",
+    "app/api/game/actions.ts",
+    "app/api/game/admission.ts",
+    "app/api/game/conditional-view.ts",
+    "app/api/game/responses.ts",
+    "app/api/game/route.ts",
+    "app/api/game/view.ts",
+    "app/api/voice/route.ts",
+    "app/chatgpt-auth.ts",
+    "app/layout.tsx",
+    "app/page.tsx",
+    "scripts/audit-maintainability.mjs",
+    "scripts/benchmark-generator.mjs",
+    "scripts/benchmark-polling.mjs",
+    "scripts/build-node.mjs",
+    "scripts/catalog-demo.mjs",
+    "scripts/check-content.mjs",
+    "scripts/check-docs.mjs",
+    "scripts/check-lint.mjs",
+    "scripts/connector-preview/connector-preview-session.mjs",
+    "scripts/connector-preview/host-binding.mjs",
+    "scripts/connector-preview/protocol.mjs",
+    "scripts/connector-preview/worker.mjs",
+    "scripts/content-rooms.mjs",
+    "scripts/dev-node.mjs",
+    "scripts/execution-profile.mjs",
+    "scripts/format.mjs",
+    "scripts/generator-test-import.mjs",
+    "scripts/generator-v2-test-validator.mjs",
+    "scripts/init-db.mjs",
+    "scripts/install-ci.mjs",
+    "scripts/npm-install.mjs",
+    "scripts/pnpm-install.mjs",
+    "scripts/run-framework.mjs",
+    "scripts/sites-env.mjs",
+    "scripts/sync-content.mjs",
+    "scripts/test-access.mjs",
+    "scripts/test-action-dispatch.mjs",
+    "scripts/test-admin-behavior.mjs",
+    "scripts/test-admin-client.mjs",
+    "scripts/test-adventures.mjs",
+    "scripts/test-basic-mechanics.mjs",
+    "scripts/test-case-list.mjs",
+    "scripts/test-catalog-admin.mjs",
+    "scripts/test-catalog-audit.mjs",
+    "scripts/test-catalog-core.mjs",
+    "scripts/test-catalog-github.mjs",
+    "scripts/test-catalog-migration.mjs",
+    "scripts/test-catalog-portable.mjs",
+    "scripts/test-catalog-store.mjs",
+    "scripts/test-catalog-zip.mjs",
+    "scripts/test-challenges.mjs",
+    "scripts/test-ci.mjs",
+    "scripts/test-clean-state.mjs",
+    "scripts/test-client.mjs",
+    "scripts/test-conditional-game.mjs",
+    "scripts/test-conditions.mjs",
+    "scripts/test-docker.mjs",
+    "scripts/test-equipment.mjs",
+    "scripts/test-evening.mjs",
+    "scripts/test-exploration-core.mjs",
+    "scripts/test-exploration.mjs",
+    "scripts/test-game-client.mjs",
+    "scripts/test-game.mjs",
+    "scripts/test-generation-v2-integration.mjs",
+    "scripts/test-generator-core.mjs",
+    "scripts/test-generator-preview.mjs",
+    "scripts/test-generator-v2.mjs",
+    "scripts/test-generator.mjs",
+    "scripts/test-hardening-unit.mjs",
+    "scripts/test-hosting.mjs",
+    "scripts/test-initiative.mjs",
+    "scripts/test-integration.mjs",
+    "scripts/test-journey.mjs",
+    "scripts/test-keepsake-mask.mjs",
+    "scripts/test-life.mjs",
+    "scripts/test-lighting.mjs",
+    "scripts/test-loot.mjs",
+    "scripts/test-map-drawing.mjs",
+    "scripts/test-map-inspection.mjs",
+    "scripts/test-map-notes.mjs",
+    "scripts/test-map.mjs",
+    "scripts/test-mechanics.mjs",
+    "scripts/test-message-hosting.mjs",
+    "scripts/test-message-replay.mjs",
+    "scripts/test-monsters.mjs",
+    "scripts/test-note-alerts.mjs",
+    "scripts/test-powers.mjs",
+    "scripts/test-public-admission-api.mjs",
+    "scripts/test-recovery.mjs",
+    "scripts/test-repairs.mjs",
+    "scripts/test-room-admission.mjs",
+    "scripts/test-room-parchments.mjs",
+    "scripts/test-scenery-core.mjs",
+    "scripts/test-scenery-fill.mjs",
+    "scripts/test-scenery.mjs",
+    "scripts/test-session-recap.mjs",
+    "scripts/test-stabilization.mjs",
+    "scripts/test-stable-upgrade.mjs",
+    "scripts/test-story-outline.mjs",
+    "scripts/test-support/catalog-offline.mjs",
+    "scripts/test-support/low-disk.mjs",
+    "scripts/test-support/react-loader.mjs",
+    "scripts/test-surfaces-api.mjs",
+    "scripts/test-surfaces.mjs",
+    "scripts/test-table-layout.mjs",
+    "scripts/test-union.mjs",
+    "scripts/test-updater.mjs",
+    "scripts/test-voice-media.mjs",
+    "scripts/test-voice.mjs",
+    "scripts/tool-environment.mjs",
+    "scripts/vite/connector-preview-plugin.mjs",
+    "scripts/vite/sites-vite-plugin.ts",
+    "server/start.mjs",
+    "deploy/updater/start.mjs",
+    "worker/index.ts",
+    "vite.config.ts",
+    "components/connector-error.tsx",
+    "lib/connectors.ts",
+    "lib/connector-contract.mts",
+    "lib/connector-errors.mts",
+    "lib/connector-preview.d.ts"
+  ],
+  "optionalRoots": [
+    "components/connector-error.tsx",
+    "lib/connectors.ts",
+    "lib/connector-contract.mts",
+    "lib/connector-errors.mts",
+    "lib/connector-preview.d.ts"
+  ],
+  "deploymentAliases": {
+    "deploy/updater/http.mjs": "server/http.mjs"
+  },
+  "reachableModules": 369,
+  "ui": {
+    "total": 1,
+    "reachable": [
+      "components/ui/button.tsx"
+    ],
+    "notReachable": []
+  },
+  "unreachableOwnSources": [],
+  "dependenciesWithoutReachableImport": [],
+  "unresolvedLiteralImports": [],
+  "css": {
+    "bytes": 90840,
+    "important": 58,
+    "repeatedSelectors": [
+      {
+        "selector": ".workspace",
+        "count": 9
+      },
+      {
+        "selector": ".paper-viewport",
+        "count": 9
+      },
+      {
+        "selector": ".topbar",
+        "count": 8
+      },
+      {
+        "selector": ".paper-help",
+        "count": 8
+      },
+      {
+        "selector": ".table",
+        "count": 7
+      },
+      {
+        "selector": ".party",
+        "count": 6
+      },
+      {
+        "selector": ".campaign",
+        "count": 5
+      },
+      {
+        "selector": ".chat-panel",
+        "count": 5
+      },
+      {
+        "selector": ".paper-caption",
+        "count": 5
+      },
+      {
+        "selector": ".current-scene",
+        "count": 5
+      },
+      {
+        "selector": ".mobile-journals",
+        "count": 5
+      },
+      {
+        "selector": ".lobby-grid",
+        "count": 4
+      },
+      {
+        "selector": ".lobby h1",
+        "count": 4
+      },
+      {
+        "selector": ".experience-total",
+        "count": 4
+      },
+      {
+        "selector": ".paper-controls",
+        "count": 4
+      },
+      {
+        "selector": ".mobile-party-panel",
+        "count": 4
+      },
+      {
+        "selector": ".mobile-journals>button",
+        "count": 4
+      },
+      {
+        "selector": ".paper-overlay",
+        "count": 4
+      },
+      {
+        "selector": ".paper-overlay>.paper-controls",
+        "count": 4
+      },
+      {
+        "selector": ".paper-overlay .paper-tools button",
+        "count": 4
+      }
+    ]
+  },
+  "cleanup": {
+    "files": [
+      "components/ui/accordion.tsx",
+      "components/ui/alert-dialog.tsx",
+      "components/ui/alert.tsx",
+      "components/ui/aspect-ratio.tsx",
+      "components/ui/attachment.tsx",
+      "components/ui/avatar.tsx",
+      "components/ui/badge.tsx",
+      "components/ui/breadcrumb.tsx",
+      "components/ui/bubble.tsx",
+      "components/ui/button-group.tsx",
+      "components/ui/card.tsx",
+      "components/ui/checkbox.tsx",
+      "components/ui/collapsible.tsx",
+      "components/ui/combobox.tsx",
+      "components/ui/command.tsx",
+      "components/ui/context-menu.tsx",
+      "components/ui/dialog.tsx",
+      "components/ui/direction.tsx",
+      "components/ui/drawer.tsx",
+      "components/ui/dropdown-menu.tsx",
+      "components/ui/empty.tsx",
+      "components/ui/field.tsx",
+      "components/ui/form.tsx",
+      "components/ui/hover-card.tsx",
+      "components/ui/input-group.tsx",
+      "components/ui/input-otp.tsx",
+      "components/ui/input.tsx",
+      "components/ui/item.tsx",
+      "components/ui/kbd.tsx",
+      "components/ui/label.tsx",
+      "components/ui/marker.tsx",
+      "components/ui/menubar.tsx",
+      "components/ui/message-scroller.tsx",
+      "components/ui/message.tsx",
+      "components/ui/native-select.tsx",
+      "components/ui/navigation-menu.tsx",
+      "components/ui/pagination.tsx",
+      "components/ui/popover.tsx",
+      "components/ui/progress.tsx",
+      "components/ui/radio-group.tsx",
+      "components/ui/resizable.tsx",
+      "components/ui/scroll-area.tsx",
+      "components/ui/select.tsx",
+      "components/ui/separator.tsx",
+      "components/ui/sheet.tsx",
+      "components/ui/sidebar.tsx",
+      "components/ui/skeleton.tsx",
+      "components/ui/slider.tsx",
+      "components/ui/sonner.tsx",
+      "components/ui/spinner.tsx",
+      "components/ui/switch.tsx",
+      "components/ui/table.tsx",
+      "components/ui/tabs.tsx",
+      "components/ui/textarea.tsx",
+      "components/ui/toggle-group.tsx",
+      "components/ui/toggle.tsx",
+      "components/ui/tooltip.tsx",
+      "hooks/use-mobile.ts"
+    ],
+    "lines": 6451,
+    "bytes": 188076,
+    "removedDirectDependencies": [
+      "@base-ui/react",
+      "@hookform/resolvers",
+      "@shadcn/react",
+      "cmdk",
+      "input-otp",
+      "next-themes",
+      "react-hook-form",
+      "react-resizable-panels",
+      "sonner",
+      "vaul",
+      "tw-animate-css"
+    ],
+    "removedLockedPackageEntries": 20,
+    "changedRemainingPackageVersions": []
+  }
+}

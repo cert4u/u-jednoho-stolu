@@ -280,7 +280,12 @@ export default function DungeonMap({
   }
   return (
     <div className="paper-editor" data-map-style={appearance}>
-      <TableAtmosphere />
+      <TableAtmosphere
+        shown={shown}
+        mapSvg={svg}
+        viewport={viewport}
+        zoom={zoom}
+      />
       <div className="paper-overlay" ref={overlay}>
         <div className="paper-controls">
           {pj && (

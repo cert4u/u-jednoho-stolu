@@ -52,3 +52,5 @@ Administrace od 1.2.1 používá vlastní stránkové dialogy, dvoupanelový det
 - [Finální stabilizace a připravenost vydání](FINAL_STABILIZATION.md) — identita klientských operací, React lifecycle, migrace/rollback a skutečné Docker CI.
 
 Vydání **1.2.2** zahrnuje ochrany záloh, kapacitní limity, úsporný polling, bezpečné opakování zpráv a hodů a ochranu rozepsaných katalogových položek. Obsahuje jednu novou SQL migraci; provozní proměnné jsou volitelné. [Přechod z 1.2.1 a rollback](SELF_HOSTING.md#přechod-z-121-na-122).
+
+Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [architektura pro přispěvatele](DEVELOPMENT.md) a [přechod z 1.2.2](SELF_HOSTING.md#přechod-z-122-na-123).
