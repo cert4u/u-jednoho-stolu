@@ -232,7 +232,7 @@ Administrace používá společný `server/admin-dialog.js` a HTML `<dialog>` pr
 
 ## Stabilizační kontroly
 
-`npm run lint` ukazuje všechny nálezy včetně historických. `npm run lint:baseline` je CI brána: podle souboru, pravidla a závažnosti nedovolí zvýšit počty proti auditované verzi 1.2.1. Nový soubor nemá žádnou výjimku. Základ v `scripts/lint-baseline.json` se při běžné změně automaticky nepřegenerovává; případné změny vyžadují samostatnou věcnou revizi. Cílem zůstává postupné odstranění starých nálezů, nikoli jejich skrytí.
+`npm run lint` ukazuje všechny nálezy včetně historických. `npm run lint:baseline` je CI brána: podle souboru, pravidla a závažnosti nedovolí zvýšit počty proti revidované stabilizační baseline, která vychází z 1.2.1 a po opravách se pouze zpřísňuje (aktuálně 6 chyb / 46 varování). Nový soubor nemá žádnou výjimku. Základ v `scripts/lint-baseline.json` se při běžné změně automaticky nepřegenerovává; případné změny vyžadují samostatnou věcnou revizi. Cílem zůstává postupné odstranění starých nálezů, nikoli jejich skrytí.
 
 - `npm run test:stabilization` vyžaduje Node build a volné lokální porty 18096, 18098, 18099. Vytváří vlastní dočasné databáze; nepracuje s živou instalací.
 - `npm run benchmark:polling` měří 150 dotazů osmi klientů proti vlastní Node instanci na 18097. Bez `STUL_REAL_POLL=1` jde o zrychlený ekvivalent přenosu pěti minut, nikoli reálný pětiminutový běh. Výsledky jsou v `/tmp/stul-poll-after.json`; cestu lze změnit pomocí `STUL_METRICS_FILE`.
@@ -242,3 +242,9 @@ Administrace používá společný `server/admin-dialog.js` a HTML `<dialog>` pr
 `app/page.tsx` skládá obrazovku, transport a identifikátory požadavků jsou v `components/game-table/game-client.ts`; polling zůstává samostatný hook. Definice nástrojů jsou v `components/dungeon-map/toolbox.ts`, geometrie a vstupy zůstávají ve stávajících modulech. Limity těla/zálohy, podmíněná odpověď, přijetí nové místnosti a zprávové operace mají malé samostatné moduly. Generátor V2 ani herní pravidla tato etapa nemění.
 
 [Zpráva z ověření](STABILIZATION_AUDIT.md).
+
+### Opakování upgradu z 1.2.1
+
+Pro `node scripts/test-stable-upgrade.mjs /cesta/ke/1.2.1` připrav oddělený adresář ze zdrojů commitu `ef59634d1a5f7ff94d76201cc187dea99c73e0c3`, v něm nainstaluj uzamčené závislosti a spusť `npm run build:node`. Potom sestav aktuální pracovní větev také přes `npm run build:node`. Test sám použije vlastní dočasná data a port 18104; neukazuj ho na provozní datový adresář.
+
+Hromadné herní integrace zakládají více stolů než běžná parta. Jejich testovací instance používají konfigurační limit 1000/min; výchozí 100/min ověřuje samostatná čistá instance s přesně 100 úspěchy a odmítnutím dalšího požadavku. Cloudflare `npm run test:ci` obě instance spravuje automaticky, Node default ověřuje `npm run test:stabilization`. Produkční výchozí hodnoty se nemění.

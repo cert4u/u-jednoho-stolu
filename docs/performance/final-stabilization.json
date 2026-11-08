@@ -1,0 +1,438 @@
+{
+  "baseline": "f4416a6565a81f8bda634f076afba5f9e5b02103",
+  "testedCode": "b2e6d1930eb35d32915805b3667f31141f422b94",
+  "measuredAt": "2026-11-08T06:50:04.391Z",
+  "node": "v22.23.2",
+  "clientJavaScript": {
+    "scope": "All emitted production Node client JavaScript including lazy chunks; gzip per file.",
+    "before": {
+      "files": 10,
+      "bytes": 1271458,
+      "gzipBytes": 357709
+    },
+    "after": {
+      "files": 10,
+      "bytes": 1271827,
+      "gzipBytes": 357837
+    },
+    "rebuiltBefore": {
+      "files": 10,
+      "bytes": 1271458,
+      "gzipBytes": 357704
+    }
+  },
+  "clientCSS": {
+    "before": {
+      "files": 1,
+      "bytes": 188450,
+      "gzipBytes": 33651
+    },
+    "after": {
+      "files": 1,
+      "bytes": 182395,
+      "gzipBytes": 32857
+    }
+  },
+  "polling": {
+    "before": {
+      "mode": "150 accelerated polls; 5-minute transfer equivalent",
+      "typicalBytes": {
+        "pj": 5828,
+        "player": 1287
+      },
+      "clients": 8,
+      "samples": 150,
+      "bodies": [
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "pj",
+          "bytes": 507554
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        }
+      ],
+      "statuses": {
+        "200": 8,
+        "304": 1192
+      },
+      "elapsedMs": 2162.433458,
+      "totalBodyBytes": 530605
+    },
+    "after": {
+      "mode": "150 accelerated polls; 5-minute transfer equivalent",
+      "typicalBytes": {
+        "pj": 5828,
+        "player": 1287
+      },
+      "clients": 8,
+      "samples": 150,
+      "bodies": [
+        {
+          "role": "pj",
+          "bytes": 507554
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        }
+      ],
+      "statuses": {
+        "200": 8,
+        "304": 1192
+      },
+      "elapsedMs": 2444.534441,
+      "totalBodyBytes": 530605
+    },
+    "scope": "Same 20-monster fixture; 150 accelerated polls per each of eight clients. Not a second real five-minute run."
+  },
+  "dependencies": {
+    "removedDirect": [
+      "recharts",
+      "react-day-picker",
+      "embla-carousel-react",
+      "date-fns"
+    ],
+    "removedLockEntries": 39,
+    "existingPackageVersionChanges": 0
+  },
+  "lint": {
+    "before": {
+      "errors": 15,
+      "warnings": 47
+    },
+    "after": {
+      "errors": 6,
+      "warnings": 46
+    }
+  },
+  "maintainability": {
+    "scope": "Static literal import graph from app/server/worker/build entry points; optional registry consumers and generated imports need separate review.",
+    "roots": [
+      "app/api/adventures/route.ts",
+      "app/api/game/actions.ts",
+      "app/api/game/admission.ts",
+      "app/api/game/conditional-view.ts",
+      "app/api/game/responses.ts",
+      "app/api/game/route.ts",
+      "app/api/game/view.ts",
+      "app/api/voice/route.ts",
+      "app/chatgpt-auth.ts",
+      "app/layout.tsx",
+      "app/page.tsx",
+      "server/start.mjs",
+      "deploy/updater/start.mjs",
+      "worker/index.ts",
+      "vite.config.ts"
+    ],
+    "reachableModules": 240,
+    "ui": {
+      "total": 58,
+      "reachable": [],
+      "notReachable": [
+        "components/ui/accordion.tsx",
+        "components/ui/alert-dialog.tsx",
+        "components/ui/alert.tsx",
+        "components/ui/aspect-ratio.tsx",
+        "components/ui/attachment.tsx",
+        "components/ui/avatar.tsx",
+        "components/ui/badge.tsx",
+        "components/ui/breadcrumb.tsx",
+        "components/ui/bubble.tsx",
+        "components/ui/button-group.tsx",
+        "components/ui/button.tsx",
+        "components/ui/card.tsx",
+        "components/ui/checkbox.tsx",
+        "components/ui/collapsible.tsx",
+        "components/ui/combobox.tsx",
+        "components/ui/command.tsx",
+        "components/ui/context-menu.tsx",
+        "components/ui/dialog.tsx",
+        "components/ui/direction.tsx",
+        "components/ui/drawer.tsx",
+        "components/ui/dropdown-menu.tsx",
+        "components/ui/empty.tsx",
+        "components/ui/field.tsx",
+        "components/ui/form.tsx",
+        "components/ui/hover-card.tsx",
+        "components/ui/input-group.tsx",
+        "components/ui/input-otp.tsx",
+        "components/ui/input.tsx",
+        "components/ui/item.tsx",
+        "components/ui/kbd.tsx",
+        "components/ui/label.tsx",
+        "components/ui/marker.tsx",
+        "components/ui/menubar.tsx",
+        "components/ui/message-scroller.tsx",
+        "components/ui/message.tsx",
+        "components/ui/native-select.tsx",
+        "components/ui/navigation-menu.tsx",
+        "components/ui/pagination.tsx",
+        "components/ui/popover.tsx",
+        "components/ui/progress.tsx",
+        "components/ui/radio-group.tsx",
+        "components/ui/resizable.tsx",
+        "components/ui/scroll-area.tsx",
+        "components/ui/select.tsx",
+        "components/ui/separator.tsx",
+        "components/ui/sheet.tsx",
+        "components/ui/sidebar.tsx",
+        "components/ui/skeleton.tsx",
+        "components/ui/slider.tsx",
+        "components/ui/sonner.tsx",
+        "components/ui/spinner.tsx",
+        "components/ui/switch.tsx",
+        "components/ui/table.tsx",
+        "components/ui/tabs.tsx",
+        "components/ui/textarea.tsx",
+        "components/ui/toggle-group.tsx",
+        "components/ui/toggle.tsx",
+        "components/ui/tooltip.tsx"
+      ]
+    },
+    "dependenciesWithoutReachableImport": [
+      "@base-ui/react",
+      "@hookform/resolvers",
+      "@shadcn/react",
+      "class-variance-authority",
+      "clsx",
+      "cmdk",
+      "input-otp",
+      "next-themes",
+      "radix-ui",
+      "react-hook-form",
+      "react-resizable-panels",
+      "sonner",
+      "tailwind-merge",
+      "vaul"
+    ],
+    "css": {
+      "bytes": 90840,
+      "important": 58,
+      "repeatedSelectors": [
+        {
+          "selector": ".workspace",
+          "count": 9
+        },
+        {
+          "selector": ".paper-viewport",
+          "count": 9
+        },
+        {
+          "selector": ".topbar",
+          "count": 8
+        },
+        {
+          "selector": ".paper-help",
+          "count": 8
+        },
+        {
+          "selector": ".table",
+          "count": 7
+        },
+        {
+          "selector": ".party",
+          "count": 6
+        },
+        {
+          "selector": ".campaign",
+          "count": 5
+        },
+        {
+          "selector": ".chat-panel",
+          "count": 5
+        },
+        {
+          "selector": ".paper-caption",
+          "count": 5
+        },
+        {
+          "selector": ".current-scene",
+          "count": 5
+        },
+        {
+          "selector": ".mobile-journals",
+          "count": 5
+        },
+        {
+          "selector": ".lobby-grid",
+          "count": 4
+        },
+        {
+          "selector": ".lobby h1",
+          "count": 4
+        },
+        {
+          "selector": ".experience-total",
+          "count": 4
+        },
+        {
+          "selector": ".paper-controls",
+          "count": 4
+        },
+        {
+          "selector": ".mobile-party-panel",
+          "count": 4
+        },
+        {
+          "selector": ".mobile-journals>button",
+          "count": 4
+        },
+        {
+          "selector": ".paper-overlay",
+          "count": 4
+        },
+        {
+          "selector": ".paper-overlay>.paper-controls",
+          "count": 4
+        },
+        {
+          "selector": ".paper-overlay .paper-tools button",
+          "count": 4
+        }
+      ]
+    }
+  },
+  "verdict": "READY WITH LIMITATIONS",
+  "ci": {
+    "databaseId": 42456742786,
+    "headSha": "b2e6d1930eb35d32915805b3667f31141f422b94",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786",
+    "jobs": [
+      {
+        "databaseId": 128657279235,
+        "name": "test",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786/job/128657279235",
+        "startedAt": "2026-11-08T06:56:25Z",
+        "completedAt": "2026-11-08T07:02:07Z"
+      },
+      {
+        "databaseId": 128657279274,
+        "name": "Docker hosting and upgrade (1.2.1)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786/job/128657279274",
+        "startedAt": "2026-11-08T06:56:25Z",
+        "completedAt": "2026-11-08T06:59:53Z"
+      },
+      {
+        "databaseId": 128657279343,
+        "name": "Docker hosting and upgrade (0.5.3)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786/job/128657279343",
+        "startedAt": "2026-11-08T06:56:25Z",
+        "completedAt": "2026-11-08T06:59:53Z"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "command": "npm run verify",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run lint:baseline",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run build",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run check:client-content",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run test:ci",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run build:node",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run test:hosting",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run test:stabilization",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run test:updater",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "node scripts/test-stable-upgrade.mjs /tmp/stul-baseline-tree",
+      "environment": "local",
+      "result": "passed"
+    },
+    {
+      "command": "npm run lint",
+      "environment": "local",
+      "result": "exit 1: 6 reviewed historical errors, 46 warnings; no increases"
+    }
+  ]
+}

@@ -31,15 +31,17 @@ Zbylých **6 chyb a 46 varování** je stále vidět při `npm run lint`. Revido
 
 ### Prokázaně nepoužité šablony
 
-Odstraněny pouze tři samostatné UI šablony: `chart.tsx`, `calendar.tsx`, `carousel.tsx`, a balíčky `recharts`, `react-day-picker`, `embla-carousel-react`, `date-fns`. Prověřeny byly importy a re-exporty napříč zdroji, dynamické importy, Vite/Sites build hooky, konfigurace shadcn, registry a výstup sestavení. Registry jsou prázdné; samotný alias složky není dynamický loader. Tyto moduly neměly vstupní cestu do aplikace a po odebrání prošel TypeScript i Node build. Čistá instalace a Cloudflare build v hostovaném CI již prošly; závěrečný Node a Docker běh ověřuje také absenci náhodné závislosti na lokálně ponechaném node_modules.
+Odstraněny pouze tři samostatné UI šablony: `chart.tsx`, `calendar.tsx`, `carousel.tsx`, a přímé závislosti `recharts`, `react-day-picker`, `embla-carousel-react`, `date-fns`. Prověřeny byly importy a re-exporty napříč zdroji, dynamické importy, Vite/Sites build hooky, konfigurace shadcn, registry a výstup sestavení. Registry jsou prázdné; samotný alias složky není dynamický loader. Tyto moduly neměly vstupní cestu do aplikace a po odebrání prošel TypeScript i Node build. Čistá instalace, Cloudflare build i Node a Docker běhy v hostovaném CI prošly bez těchto přímých závislostí; výsledek tedy nezávisí na lokálně ponechaném node_modules.
 
 Ostatní obecné komponenty zůstávají: hromadné odstranění celé registry nebo buildových/connector helperů není cílem finální stabilizace. Nejde o plošný refaktor.
 
 ## B. Ověřené scénáře
 
-[Test klientského transportu](../scripts/test-game-client.mjs) používá skutečnou klientskou funkci a řízený fetch. [Automatizovaný herní večer](../scripts/test-evening.mjs) používá tutéž funkci proti skutečnému API: PJ, dva hráči, mapa a patro, pohyb/viditelnost, veřejný chat i šeptání, stejné nezávislé zprávy/hody, ztracené potvrzení po uložení, souboj a souběh, odpojení/opětovné čtení, neplatný i obnovený token, export a obnova všech přenositelných dat včetně ilustrace (Node připíná data, Cloudflare u vestavěné příšery používá distribuovaný soubor). Samostatný přenositelný katalogový test na obou runtimech ověřuje i tři skutečně vložené komunitní obrázky. Druhý hráč a nový člen obnovené místnosti nikdy nedostanou přípravu PJ ani cizí šeptání. Staré zálohy bez operačního ledgeru a s neznámými volitelnými historickými atributy se obnovují.
+[Test klientského transportu](../scripts/test-game-client.mjs) používá skutečnou klientskou funkci a řízený fetch. [Automatizovaný herní večer](../scripts/test-evening.mjs) používá tutéž funkci proti skutečnému API: PJ, dva hráči, mapa a patro, pohyb/viditelnost, veřejný chat i šeptání, stejné nezávislé zprávy/hody, ztracené potvrzení po uložení, souboj a souběh, odpojení/opětovné čtení, neplatný i obnovený token, export a obnova všech přenositelných dat včetně ilustrace (Node připíná data, Cloudflare u vestavěné příšery používá distribuovaný soubor). Samostatný přenositelný katalogový test na obou runtimech ověřuje i tři skutečně vložené komunitní obrázky. Druhý hráč a nový člen obnovené místnosti nikdy nedostanou přípravu PJ ani cizí šeptání. Staré zálohy bez operačního ledgeru se obnovují. Neznámé volitelné historické atributy jsou tolerovány a validátor je ignoruje; nejde o příslib uchování libovolných polí mimo přenosné schéma. Všechna podporovaná příběhová data se porovnávají po skutečné obnově.
 
 ETag je ověřen pro shodné čtení, změnu stavu, jiné patro, cizí roli, opětovné připojení a rotaci/zneplatnění tokenu. Jde o automatizovaný integrační scénář, **nikoli o odehraný večer několika skutečných lidí**.
+
+Krátký skutečný browserový smoke na izolovaném Node serveru prošel: založení stolu, otevření/zavření dialogů Escape, načtení bestiáře, filtrování a přidání kobolda, zveřejnění nálezu, otevření mincovního formuláře a pokračování po upozornění na neuložené změny. Rozepsaná hodnota zůstala zachovaná. Nebyly zapínány mikrofony ani kamery.
 
 Administrace prošla existujícími behaviorálními testy kategorií, rozepsaných změn, rušení, import/update preview, read-only, pomalé odpovědi, dvojího kliku i odhlášení. Nebyla měněna architektura controlleru pouze kvůli jeho délce.
 
@@ -47,23 +49,29 @@ Administrace prošla existujícími behaviorálními testy kategorií, rozepsan�
 
 | Kontrola | Prostředí | Výsledek |
 | --- | --- | --- |
-| `npm run verify` | Lokální | Závěrečný běh bude zaznamenán. |
-| `npm run lint:baseline` | Lokální | Revidovaná baseline 6/46; závěrečný běh bude zaznamenán. |
-| `npm run build` | Lokální Cloudflare | Závěrečný běh bude zaznamenán. |
-| `npm run check:client-content` | Lokální | Závěrečný běh bude zaznamenán. |
-| `npm run test:ci` | Lokální Worker/D1 | Závěrečný běh bude zaznamenán. |
-| `npm run build:node` | Lokální | Po odstranění šablon prošel. |
-| `npm run test:hosting` | Lokální Node | Závěrečný běh bude zaznamenán. |
-| `npm run test:stabilization` | Lokální Node | Závěrečný běh bude zaznamenán. |
+| `npm run verify` | Lokální | Prošlo. |
+| `npm run lint:baseline` | Lokální | Prošlo: 6 historických chyb, 46 varování, žádný nárůst. |
+| `npm run build` | Lokální Cloudflare | Prošlo. |
+| `npm run check:client-content` | Lokální | Prošlo. |
+| `npm run test:ci` | Lokální Worker/D1 | Prošlo. |
+| `npm run build:node` | Lokální | Prošlo. |
+| `npm run test:hosting` | Lokální Node | Prošlo. |
+| `npm run test:stabilization` | Lokální Node | Prošlo. |
 | `npm run test:updater` | Lokální simulace enginu | Prošlo; nenahrazuje Docker. |
 | `test-stable-upgrade` proti sestavenému 1.2.1 | Lokální Node/SQLite | Prošlo. |
-| Docker upgrade/rollback z 0.5.3 a 1.2.1 | GitHub Actions | Bude spuštěno na pracovní větvi; zatím neověřeno. |
+| Docker upgrade/rollback z 0.5.3 a 1.2.1 | GitHub Actions | Oba joby prošly v běhu [42456742786](https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786), commit `b2e6d1930eb35d32915805b3667f31141f422b94`. |
 
 ### Zpřesnění testovacích předpokladů
 
 Při prvním rozšířeném průchodu byly odhaleny i chyby samotných testů: předpoklad vloženého obrázku u každé vestavěné příšery na Cloudflare, společný limit zakládání vyčerpaný celou funkční sadou a chybějící potvrzení konkrétního commitu v Docker fixture z 1.2.1. Updater v posledním případě správně odmítl výměnu ještě před jejím zahájením. Test nyní předává `expectedSha`; produkční ochrana nebyla změněna.
 
-Hromadná izolovaná funkční sada používá běžně konfigurovatelný limit 1000/min. Výchozí produkční ochrana se zvlášť ověřuje v čisté databázi: **přesně 100 úspěšných založení a odmítnutí 101.** Cloudflare CI používá dvě oddělené Worker/D1 instance; Node má samostatnou testovací instanci. Nejde o testovací backdoor v API ani o zvýšení produkčních výchozích hodnot. Vite předává stejné tři již dokumentované konfigurační proměnné do lokálních Cloudflare runtime bindingů.
+Hromadná izolovaná funkční sada používá běžně konfigurovatelný limit 1000/min. Výchozí produkční ochrana se zvlášť ověřuje v čisté databázi: **přesně 100 úspěšných založení a odmítnutí 101.** Cloudflare CI používá dvě oddělené Worker/D1 instance; Node má samostatnou testovací instanci. Příprava hraniční zálohy byla také změněna z kvadratické na lineární. Původní opakovaná serializace několik sekund blokovala klientský event loop a hostovaný Node běh poté selhal na uzavřeném keep-alive socketu (`EPIPE`). Test nyní počítá velikost přírůstkově, stále ověřuje přesnou UTF-8 délku a před velkým POST nechá zpracovat události socketů; neřeší to slepým opakováním požadavku.
+
+Nejde o testovací backdoor v API ani o zvýšení produkčních výchozích hodnot. Vite předává stejné tři již dokumentované konfigurační proměnné do lokálních Cloudflare runtime bindingů.
+
+Závěrečný kompletní hostovaný běh [42456742786](https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786) je **SUCCESS** na commitu `b2e6d1930eb35d32915805b3667f31141f422b94`. Prošel obecný job `test` i oba joby skutečného Docker upgradu/rollbacku. Poslední následný commit doplňuje pouze tento report, návod a naměřená data; produkční kód se po ověřeném commitu nemění.
+
+`npm run lint` byl také skutečně spuštěn a vrací 1 kvůli popsaným 6 historickým chybám / 46 varováním. Není vykazován jako čistý; prochází kontrola revidované baseline. V této etapě nebyl nasazen veřejný Cloudflare Worker ani proveden společný test několika skutečných lidí nebo mikrofonů.
 
 ## C. Zbývající technický dluh
 
@@ -77,12 +85,27 @@ Je ověřeno i otevření aditivního schématu starým runtime, návrat skuteč
 
 Přenosný formát zůstává verze 1, Node hranice 3 000 000 bajtů kompaktního exportu a D1 hranice 1 999 900 bajtů serializovaného řádku. Žádné nové povinné atributy, katalogová služba ani externí infrastruktura.
 
-Docker CI zachovává původní test z 0.5.3 a přidává 1.2.1. Označení image `99.0.0` je výhradně syntetický fixture pro test updateru, který správně odmítá nahrazení jiným commitem stejné verze. Nemění package verzi, nevytváří Git tag, release ani veřejnou image. Test porovnává celé řádky místností a přístupy hráčů, skutečnou výměnu kontejneru, rollback databáze, chybnou image a obnovu katalogových souborů.
+Docker CI zachovává původní test z 0.5.3 a přidává 1.2.1. Verze v metadatech testovací image `99.0.0` je výhradně syntetický fixture pro test updateru, který správně odmítá nahrazení jiným commitem stejné verze. Nemění package verzi, nevytváří Git tag, release ani veřejnou image. Test porovnává celé řádky místností a přístupy hráčů, skutečnou výměnu kontejneru, rollback databáze, chybnou image a obnovu katalogových souborů.
 
 ## E. Výkon
 
-Herní JSON projekce ani ETag infrastruktura se nemění. Přenosový přínos předchozí stabilizace není přeměřován pětiminutovým testem bez důvodu. Závěrečné porovnání velikosti klientského JS a běžných API odpovědí bude doplněno po finálním buildu. Odstraněné šablony nebyly v klientském grafu; nepředstíráme proto jejich zdrojovou velikost jako ušetřený síťový přenos.
+Herní JSON projekce ani ETag infrastruktura se nemění. Přenosový přínos předchozí stabilizace není přeměřován pětiminutovým testem bez důvodu. Produkční Node klientský JS má 1 271 827 B místo 1 271 458 B (+369 B, +0,029 %); gzip po souborech 357 837 B místo 357 709 B (+128 B). Počet chunků zůstává 10. CSS kleslo z 188 450 B na 182 395 B (gzip z 33 651 B na 32 857 B); JS a CSS dohromady jsou o 5 686 B menší. Osm klientů se stejnou kampaní o 20 příšerách přeneslo v 150 zrychlených dotazech stejných 530 605 B, z toho 8 odpovědí 200 a 1 192 odpovědí 304. Běžný stůl PJ/hráč 5 828 / 1 287 B a pohled s příšerami 507 554 / 3 293 B zůstaly stejné. Není zde významný nárůst bundlu ani přenosu; produkční latenci a chování při velké zátěži z tohoto přenosového měření nevyvozujeme. [Podrobné měření](performance/final-stabilization.json). Odstraněné šablony nebyly v klientském grafu; nepředstíráme proto jejich zdrojovou velikost jako ušetřený síťový přenos.
 
 ## F. Připravenost k vydání
 
-**Zatím NOT READY k označení vydání:** místní cílené scénáře prošly, ale závěrečné úplné kontroly a hostované Docker joby ještě nejsou uzavřené. Po jejich dokončení bude stanovisko nahrazeno výsledkem podloženým konkrétními běhy. Žádný známý potvrzený problém neřešíme přidáním herních funkcí nebo automatickým mazáním dat.
+**READY WITH LIMITATIONS – připraveno k vydání pro zamýšlené malé komunitní skupiny.**
+
+Všech devět výslovně požadovaných lokálních příkazů prošlo (striktní lint má samostatně uvedené historické nálezy), stejně jako celý hostovaný CI běh včetně skutečného Docker upgradu, rollbacku a obnovy dat z 1.2.1 i 0.5.3. Nebyla zjištěna známá neopravená kritická chyba ohrožující uživatelská data v ověřeném rozsahu. Nezávislé zprávy/hody se neslučují, opakovaný přenos zachovává identitu a serverový výsledek, soukromá data PJ zůstávají oddělená a export → import zachovává podporovaný příběh, mapu, souboj a obrázky na skutečné hranici obou runtimeů.
+
+Konkrétní omezení: 6 posouzených React lint chyb a 46 varování; mapové/SSR efekty zůstávají zdokumentované, nikoli vypnuté. Cloudflare byl ověřen místním runtime a hostovaným CI, nikoli veřejným deploymentem konkrétního tarifu. Automatizovaný herní večer a krátký skutečný UI smoke nenahrazují společné hraní lidí ani zkoušku mikrofonů. Tato omezení nevyžadují další herní funkce ani novou infrastrukturu.
+
+Technická stabilizace je tím uzavřena. **Nebyl vytvořen release 1.2.2, Git tag ani automatický merge do main.**
+
+### Krátký manuální společný smoke před nasazením
+
+1. V oddělených profilech prohlížeče připoj PJ a dva hráče do testovací místnosti. Ověř jejich role, deníky a že tajné poznámky nevidí hráči.
+2. Změň patro a viditelnost, pošli veřejnou zprávu i šeptání, proveď dva úmyslné stejné hody. Porovnej počty zpráv a samostatné záznamy hodů, nikoli nutně různé číselné výsledky.
+3. Odpoj jednoho hráče od sítě, připoj ho a případně obnov jeho klíč. Ověř správný aktuální pohled a odmítnutí starého tokenu.
+4. Exportuj testovací kampaň a obnov ji do nové místnosti. Před používáním stejného postupu na skutečné kampani uchovej i úplnou serverovou zálohu. Volitelný hovor přes skutečné mikrofony ověř samostatně, pokud jej instalace používá.
+
+Tento lidský společný smoke zatím nebyl odehrán; je doplňkem automatizovaného scénáře, nikoli jeho náhradním označením.
