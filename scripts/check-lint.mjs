@@ -11,5 +11,5 @@ for(const result of results){
   regressions++;console.error(`${file}: ${rule}: ${count} > ${baseline[file]?.[rule]??0}`);
  }
 }
-console.log(`Lint: ${errors} errors, ${warnings} warnings; ${regressions} increases against reviewed 1.2.1 baseline.`);
+console.log(`Lint: ${errors} errors, ${warnings} warnings; ${regressions} increases against reviewed stabilization baseline.`);
 if(regressions)process.exitCode=1;

@@ -3,7 +3,7 @@ import { actionValues } from '../components/game-table/game-client';
 import {CatalogProvider} from '../components/catalog-provider';
 import { type VoicePresence } from '../components/voice-panel';
 import { LifeBadge, LifeSummary } from '../components/life-panel';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import type { Location } from '../lib/exploration';
 import MapNoteNotifications, {
   type EncounterTarget,
@@ -89,7 +89,7 @@ export default function Home() {
     [recoveryCode, setRecoveryCode] = useState(''),
     [recoveryName, setRecoveryName] = useState('');
   const sessionCurrent = useRef<Session | null>(session);
-  sessionCurrent.current = session;
+  useLayoutEffect(() => { sessionCurrent.current = session; }, [session]);
   const dialog = useRef<DialogHandle>(null);
   const [noteSnapshot, setNoteSnapshot] = useState<MapNoteView | undefined>(),
     [noteOpenKey, setNoteOpenKey] = useState(0),

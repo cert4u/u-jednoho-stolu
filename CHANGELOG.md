@@ -2,6 +2,10 @@
 
 ## Nevydáno — stabilizace po 1.2.1
 
+- **Finální oprava klientských operací:** dvě záměrně stejné zprávy/hody mají samostatná ID; opakovaný přenos jedné operace zachovává její ID a výsledek. Obsah se nepoužívá jako identita operace.
+- **React lifecycle:** refs se aktualizují po commit fázi, katalogový stav je vázaný na relaci a role; mince zachovávají revizi prvního rozepsání bez čtení DOM během renderu. Lint baseline klesá na 6 historických chyb a 46 varování.
+- Odstraněny pouze prokazatelně nepoužité šablony grafu, kalendáře a carouselu a jejich čtyři závislosti. Doplněn automatizovaný herní večer, lokální 1.2.1 upgrade/rollback a skutečná Docker CI matice z 0.5.3 i 1.2.1. [Finální report](docs/FINAL_STABILIZATION.md).
+
 - Ochrana všech herních zápisů před překročením 3MB obnovitelné zálohy; ověřený export, kompaktní stahovaný soubor a průběžný limit HTTP těla.
 - Autorizovaný ETag/304 pro nezměněný polling bez změny JSON projekce a bez externí služby.
 - Sdílený limit zakládání/obnovy, kapacita počtu/velikosti kampaní a rezerva volného disku Node. Nová migrace `0003_room_admission.sql` a volitelné provozní proměnné.

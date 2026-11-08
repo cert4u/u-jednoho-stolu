@@ -50,6 +50,10 @@ jobs:
     name: Docker hosting and upgrade
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        base: ['0.5.3', '1.2.1']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
@@ -67,8 +71,14 @@ jobs:
         run: |
           legacy_source=$(mktemp -d)
           trap 'rm -rf "$legacy_source"' EXIT
-          legacy_sha=65382686749237b930bf0cb918761198e6ad6b2c
-          git fetch --no-tags --depth=1 origin refs/tags/v0.5.3
+          if [ "${{ matrix.base }}" = "1.2.1" ]; then
+            legacy_sha=ef59634d1a5f7ff94d76201cc187dea99c73e0c3
+          else
+            legacy_sha=65382686749237b930bf0cb918761198e6ad6b2c
+          fi
+          git fetch --no-tags --depth=1 origin "$legacy_sha"
           test "$(git rev-parse 'FETCH_HEAD^{commit}')" = "$legacy_sha"
           git archive "$legacy_sha" | tar -x -C "$legacy_source"
-          sudo "$(command -v node)" scripts/test-docker.mjs "$legacy_source"
+          # 99.0.0 is an isolated image fixture so the updater can test a newer version.
+          # No package version, Git tag or GitHub Release is created.
+          sudo env STUL_DOCKER_BASE_VERSION="${{ matrix.base }}" STUL_DOCKER_BASE_REVISION="$legacy_sha" STUL_DOCKER_TARGET_VERSION=99.0.0 "$(command -v node)" scripts/test-docker.mjs "$legacy_source"

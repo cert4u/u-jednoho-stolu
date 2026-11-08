@@ -248,4 +248,6 @@ Projekt vznikl jako neoficiální pomůcka inspirovaná původním českým hran
 
 Projekt čerpá inspiraci z DrD 1.5, referencí pro dosavadní základ hodů jsou však veřejná [zjednodušená pravidla ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), odvozená podle jejich tiráže od verze 1.6, edice E. Nejde tedy o přesný přepis ani úplnou implementaci DrD 1.5 či 1.6. Mechaniky jsou místy zjednodušené nebo upravené pro online hraní; rozhodující je popsané chování aplikace a domluva s PJ.
 
+Finální kontrola před vydáním: [výsledky, omezení a připravenost](docs/FINAL_STABILIZATION.md).
+
 Pracovní stabilizační větev po 1.2.1: [ověřené opravy, měření a provozní omezení](docs/STABILIZATION_AUDIT.md). Nejde o nové vydání; při nasazení se řiď dokumentací konkrétního tagu.

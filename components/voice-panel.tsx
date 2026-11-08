@@ -1,11 +1,11 @@
 'use client';
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {Headphones,HeadphoneOff,Mic,MicOff,Phone,PhoneOff} from 'lucide-react';
 import type {Room,RemoteTrack} from 'livekit-client';
 export type VoicePresence=Record<string,{speaking:boolean;muted:boolean}>;
 export default function VoicePanel({session,onPresence}:{session:{room:string;token:string};onPresence:(value:VoicePresence)=>void}){
  const [enabled,setEnabled]=useState<boolean|null>(null),[status,setStatus]=useState('idle'),[error,setError]=useState(''),[muted,setMuted]=useState(true),[deaf,setDeaf]=useState(false),[audioBlocked,setAudioBlocked]=useState(false),[working,setWorking]=useState(false),[devices,setDevices]=useState<MediaDeviceInfo[]>([]),[device,setDevice]=useState('default'),[people,setPeople]=useState<{id:string;name:string;speaking:boolean;muted:boolean}[]>([]);
- const room=useRef<Room|null>(null),audio=useRef<HTMLDivElement>(null),deafRef=useRef(false),attempt=useRef(0),presence=useRef(onPresence);presence.current=onPresence;
+ const room=useRef<Room|null>(null),audio=useRef<HTMLDivElement>(null),deafRef=useRef(false),attempt=useRef(0),presence=useRef(onPresence);useLayoutEffect(()=>{presence.current=onPresence;},[onPresence]);
  useEffect(()=>{let done=false;void fetch('/api/voice?room='+session.room,{headers:{Authorization:'Bearer '+session.token}}).then(async r=>{if(!r.ok)throw Error();const data=await r.json() as {enabled:boolean};if(!done)setEnabled(data.enabled);}).catch(()=>{if(!done){setEnabled(null);setError('Dostupnost hovoru se nepodařilo ověřit.');}});return()=>{done=true;++attempt.current;void room.current?.disconnect();room.current=null;presence.current({});};},[session.room,session.token]);
  function disconnect(){++attempt.current;const current=room.current;room.current=null;void current?.disconnect();audio.current?.replaceChildren();setStatus('idle');setPeople([]);setMuted(true);setWorking(false);setAudioBlocked(false);presence.current({});}
  function message(e:unknown){return e instanceof DOMException&&e.name==='NotAllowedError'?'Pro zapnutí mikrofonu povol jeho použití v prohlížeči.':e instanceof DOMException&&e.name==='NotFoundError'?'Mikrofon nebyl nalezen. Zkontroluj připojení zařízení.':'Hovor se nepodařil. Zkontroluj připojení a mikrofon a zkus to znovu.';}

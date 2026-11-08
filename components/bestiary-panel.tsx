@@ -19,18 +19,20 @@ export function BestiaryPortrait({portrait, name}: {portrait?: string; name: str
   );
 }
 
-export default function BestiaryPanel({busy, onAdd, session}: {
+type Props = {
   busy: boolean;
   onAdd: (templateId: string) => Promise<boolean | undefined>;
   session: Session;
-}) {
+};
+export default function BestiaryPanel(props: Props) {
+  return <ScopedBestiaryPanel key={props.session.room+':'+props.session.token} {...props}/>;
+}
+function ScopedBestiaryPanel({busy,onAdd,session}:Props) {
   const [entries, setEntries] = useState<BestiaryEntry[]>();
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    setEntries(undefined);
-    setError(false);
     void requestBestiary(session, controller.signal).then(
       data => { if (!controller.signal.aborted) setEntries(data); },
       () => { if (!controller.signal.aborted) setError(true); },
@@ -54,7 +56,7 @@ export default function BestiaryPanel({busy, onAdd, session}: {
 
   if (error) return <div role="alert">
     <p>Bestiář se nepodařilo načíst.</p>
-    <button type="button" className="secondary" onClick={() => setAttempt(value => value + 1)}>Zkusit znovu</button>
+    <button type="button" className="secondary" onClick={() => {setEntries(undefined);setError(false);setAttempt(value => value + 1);}}>Zkusit znovu</button>
   </div>;
   if (!entries) return <p role="status">Načítám bestiář…</p>;
 

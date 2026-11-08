@@ -28,3 +28,5 @@ await import('./test-surfaces.mjs');
 await import('./test-catalog-core.mjs');
 
 await import('./test-hardening-unit.mjs');
+
+await import('./test-game-client.mjs');

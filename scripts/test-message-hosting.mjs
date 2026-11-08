@@ -13,7 +13,7 @@ async function start(config){
 async function stop(){server.kill();await new Promise(r=>server.once('exit',r));}
 try{
  await start({});
- for(const name of process.env.STUL_REPRO_BASELINE==='1'?['message-replay']:['message-replay','conditional-game']){
+ for(const name of process.env.STUL_REPRO_BASELINE==='1'?['message-replay']:['message-replay','conditional-game','evening']){
   const runner=spawn(process.execPath,['scripts/test-'+name+'.mjs',origin],{stdio:'inherit',env:process.env});
   assert.equal(await new Promise(r=>runner.once('exit',r)),0);
  }

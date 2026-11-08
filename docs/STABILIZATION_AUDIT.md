@@ -1,5 +1,7 @@
 # Stabilizační a technický audit po 1.2.1
 
+> Historický výchozí audit commitu `f4416a6`. Aktuální opravy klientské identity operací, stav lintu a výsledky Docker CI uvádí navazující [finální stabilizace](FINAL_STABILIZATION.md). Čísla a původní závěry níže popisují tento výchozí audit.
+
 ## 1. Výchozí verze a rozsah
 
 Kontrola z 8. listopadu 2026 vychází z čistého `main`, verze **1.2.1**, commit `ef59634d1a5f7ff94d76201cc187dea99c73e0c3`. Opravy jsou v pracovní větvi `codex/stabilization`. Tato etapa nevytváří nové vydání, tag ani nasazení uživatelské instalace. Testy používají oddělené dočasné databáze.

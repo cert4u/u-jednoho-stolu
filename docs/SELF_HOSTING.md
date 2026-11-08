@@ -238,3 +238,9 @@ Node navíc odmítá herní POST při méně než 16 000 000 volných bajtech na
 Úplná serverová ZIP záloha zůstává oddělená od 3MB přenositelného JSON exportu kampaně. Již nadlimitní historická kampaň se nemaže: zachraň ji serverovou zálohou (na Cloudflare nativním exportem D1) a zmenši ji explicitní úpravou PJ, která se vejde do limitu. Export nadlimitního či neplatného JSON nepředstírá úspěch.
 
 [Podrobný stabilizační audit a stav ověření](STABILIZATION_AUDIT.md).
+
+### Rollback finální stabilizace na 1.2.1
+
+Migrace `0003_room_admission.sql` přidává sloupec s výchozí hodnotou a index. Lokální regresní test ověřuje byte-for-byte zachování všech řádků místností, tokenů, hráčů, příběhu a připnutých obrázků po aktualizaci a restartu. Samotný starý runtime 1.2.1 umí aditivní schéma otevřít, ale podporovaný návrat přes updater obnovuje také konzistentní předaktualizační snapshot a odpovídající image. Změny odehrané po snapshotu tím z hlavní databáze zmizí; updater je před návratem uchová v nové záloze. Proto nezaměňuj kompatibilitu otevření SQLite s bezztrátovým sloučením nových a starých herních dat.
+
+Před upgradem uchovej úplnou serverovou zálohu včetně katalogových obrázků a konfigurace. Snížení kvót neodstraní existující místnosti. Při nedostatku disku se herní zápis odmítne, nikoli částečně uloží. [Aktuální výsledky lokálního a Docker ověření](FINAL_STABILIZATION.md).

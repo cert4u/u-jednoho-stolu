@@ -1,10 +1,10 @@
 'use client';
-import {createContext,forwardRef,useContext,useEffect,useImperativeHandle,useRef,useState,type ReactNode} from 'react';
+import {createContext,forwardRef,useContext,useEffect,useLayoutEffect,useImperativeHandle,useRef,useState,type ReactNode} from 'react';
 import {X} from 'lucide-react';
 export type DialogHandle={run:(action:()=>void)=>void};
 const Guard=createContext<(action:()=>void)=>void>(action=>action());
 export const useDialogGuard=()=>useContext(Guard);
-const GuardedDialog=forwardRef<DialogHandle,{label:string;className:string;onClose:()=>void;children:ReactNode}>(function Dialog({label,className,onClose,children},ref){const box=useRef<HTMLElement>(null),close=useRef(onClose),pending=useRef<(()=>void)|null>(null);close.current=onClose;const [ask,setAsk]=useState(false);
+const GuardedDialog=forwardRef<DialogHandle,{label:string;className:string;onClose:()=>void;children:ReactNode}>(function Dialog({label,className,onClose,children},ref){const box=useRef<HTMLElement>(null),close=useRef(onClose),pending=useRef<(()=>void)|null>(null);useLayoutEffect(()=>{close.current=onClose;},[onClose]);const [ask,setAsk]=useState(false);
  function run(action:()=>void){if(box.current?.querySelector('form[data-dirty="true"],form[data-changed="true"]')){pending.current=action;setAsk(true);}else action();}
  useImperativeHandle(ref,()=>({run}));
  useEffect(()=>{const previous=document.activeElement as HTMLElement|null;box.current?.querySelector<HTMLElement>('button,input,select,textarea')?.focus();const key=(e:KeyboardEvent)=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();run(()=>close.current());}if(e.key==='Tab'&&box.current){const nodes=Array.from(box.current.querySelectorAll<HTMLElement>('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"]')).filter(el=>el.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&(document.activeElement===first||!box.current.contains(document.activeElement))){e.preventDefault();last?.focus();}else if(!e.shiftKey&&(document.activeElement===last||!box.current.contains(document.activeElement))){e.preventDefault();first?.focus();}}};document.addEventListener('keydown',key,true);return()=>{document.removeEventListener('keydown',key,true);previous?.focus({preventScroll:true});};},[]);
