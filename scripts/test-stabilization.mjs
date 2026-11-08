@@ -3,7 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdtempSync,rmSync,writeFileSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {setTimeout as delay} from 'node:timers/promises';
+import {setTimeout as delay,setImmediate as yieldIO} from 'node:timers/promises';
 await import('./generator-test-import.mjs');
 const {demoFiles}=await import('./catalog-demo.mjs');
 const {writeZip}=await import('../server/catalog-zip.mjs');
@@ -41,11 +41,16 @@ try{
  measured.runtime=cloudflare?'cloudflare':'node';measured.maximumBackupBytes=maximum;
  for(const target of [maximum-1,maximum]){
   const backup=structuredClone(canonical);backup.game.experienceAwards=[];backup.game.notes='';
-  while(Buffer.byteLength(JSON.stringify(backup))<target-2000){
-   backup.game.experienceAwards.push({id:'award-'+String(backup.game.experienceAwards.length).padStart(6,'0'),by:backup.game.members[0].id,amount:1,recipients:[],reason:'ž'.repeat(300),time:1});
+  let bytes=Buffer.byteLength(JSON.stringify(backup));
+  while(bytes<target-2000){
+   const award={id:'award-'+String(backup.game.experienceAwards.length).padStart(6,'0'),by:backup.game.members[0].id,amount:1,recipients:[],reason:'ž'.repeat(300),time:1};
+   bytes+=Buffer.byteLength(JSON.stringify(award))+(backup.game.experienceAwards.length?1:0);
+   backup.game.experienceAwards.push(award);
   }
-  backup.game.notes='x'.repeat(target-Buffer.byteLength(JSON.stringify(backup)));
+  backup.game.notes='x'.repeat(target-bytes);
   assert.equal(Buffer.byteLength(JSON.stringify(backup)),target);readBackup(backup);
+  // Let the HTTP pool process socket-close events before a large POST.
+  await yieldIO();
   session=await ok(await post('restore',{backup}));
   const exported=await ok(await get(session,'&download=backup'));
   assert.equal(Buffer.byteLength(JSON.stringify(exported)),target);
