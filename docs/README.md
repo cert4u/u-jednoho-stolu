@@ -50,3 +50,5 @@ Administrace od 1.2.1 používá vlastní stránkové dialogy, dvoupanelový det
 - [Stabilizační audit po 1.2.1](STABILIZATION_AUDIT.md) — reprodukce, obnovitelnost, synchronizace, kapacita, idempotence a skutečně provedené kontroly.
 
 - [Finální stabilizace a připravenost vydání](FINAL_STABILIZATION.md) — identita klientských operací, React lifecycle, migrace/rollback a skutečné Docker CI.
+
+Vydání **1.2.2** zahrnuje ochrany záloh, kapacitní limity, úsporný polling, bezpečné opakování zpráv a hodů a ochranu rozepsaných katalogových položek. Obsahuje jednu novou SQL migraci; provozní proměnné jsou volitelné. [Přechod z 1.2.1 a rollback](SELF_HOSTING.md#přechod-z-121-na-122).

@@ -102,6 +102,6 @@ Společné moduly neimportují Node filesystem. Node adaptér se připojuje pře
 
 Technické formáty: [ZIP APPNOTE](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT) a [WebP RIFF](https://developers.google.com/speed/webp/docs/riff_container). Implementace záměrně podporuje jen výše popsanou omezenou datovou podmnožinu.
 
-### Neuložené položky ve stabilizační větvi
+### Neuložené položky od 1.2.2
 
 Při opuštění vlastní rozepsané položky (jiná kategorie, položka, metadata, zavření editoru/katalogu) se nejprve zobrazí potvrzení. Zrušení zachová JSON i původní kategorii. Nová dosud neuložená položka se také považuje za rozepsanou. Stránkování seznamu nemění rozepsaný editor. Pomalá operace blokuje druhé odeslání a opožděné odpovědi předchozího přihlášení se po odhlášení nepoužijí. Výchozí a komunitní originály zůstávají pouze pro čtení; jejich úpravy patří do vlastní kopie.

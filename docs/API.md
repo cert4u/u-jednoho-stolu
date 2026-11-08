@@ -174,6 +174,8 @@ Rozdělení `catalog-store.mjs` je interní změna; katalogové HTTP cesty, ochr
 
 ## Provozní hranice stabilizační větve
 
+Následující ochrany jsou dostupné od vydání **1.2.2**.
+
 - HTTP JSON tělo má nejvýše **3 100 000 UTF-8 bajtů**; server počítá průběžně i chunked vstup. Překročení vrací 413.
 - Přenositelná záloha formátu 1 má nejvýše **3 000 000 bajtů kompaktního JSON**. Zápisy kontrolují výsledný export před atomickým uložením; překročení vrací 413 a původní kampaň zůstává zachovaná. Export před úspěchem znovu ověří schéma, odkazy a kontrolní otisky obrázků. Neobnovitelná starší kampaň dostane při exportu 409, nikoli zdánlivě úspěšný soubor.
 - `create` a `restore` sdílejí limit zakládání všech stolů instalace: výchozích 100 za klouzavou minutu. Vyčerpání vrací 429 a `Retry-After: 60`. Limit se opírá o SQLite/D1 a přetrvá restart; nečte klientské IP hlavičky.

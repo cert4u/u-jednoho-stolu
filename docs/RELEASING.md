@@ -57,3 +57,9 @@ Pro stručný přehled požadavků v administraci může správce přidat na vla
 ```
 
 Hodnoty jsou příklad. Správce vyplní skutečný stav. Vynechané pole se zobrazí jako „neuvedeno“. Kompatibilitu při instalaci určuje kontrakt image v Dockerfile. Stav CI se čte ze stejného commitu přes GitHub Actions. Záznam vydání má obsahovat ruční postup, pokud je potřeba nejdřív [aktualizovat infrastrukturu](SELF_HOSTING.md#aktualizace-updateru-a-konfigurace-hostingu).
+
+## Vydání 1.2.2
+
+Stabilizační opravy navazující na 1.2.1 se vydávají jako 1.2.2. Nová migrace `0003_room_admission.sql` je aditivní; formát přenositelné zálohy zůstává 1. Kapacitní proměnné jsou volitelné, jejich vlastní hodnoty přes `.env` vyžadují odpovídající Compose konfiguraci a znovuvytvoření kontejneru. Updater se nemusí přestavovat. Release marker proto uvádí `migrations: true`, `updater: false`, `config: true`; poznámky musí vysvětlit, že konfigurace je volitelná.
+
+Před tagováním musí projít úplné CI přesného vydávaného commitu, včetně obou Docker scénářů. Poznámky vydání odkazují na tento běh, uvádějí známou lint baseline a odlišují ověřený lokální Cloudflare runtime od veřejného deploymentu. [Migrační návod](SELF_HOSTING.md#přechod-z-121-na-122) · [Historický report stabilizace](FINAL_STABILIZATION.md).

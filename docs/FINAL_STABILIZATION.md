@@ -1,6 +1,6 @@
 # Finální stabilizace a připravenost vydání
 
-Výchozí commit je `f4416a6565a81f8bda634f076afba5f9e5b02103` ve větvi `codex/stabilization`. Tento dokument navazuje na [původní audit](STABILIZATION_AUDIT.md) a jeho [měření](performance/stabilization.json). Pravidla, generátor V2 a jednoduché rozhraní se nemění. Verze balíčku zůstává 1.2.1. Nevytváří se release, tag ani merge do `main`.
+Výchozí commit je `f4416a6565a81f8bda634f076afba5f9e5b02103` ve větvi `codex/stabilization`. Tento dokument navazuje na [původní audit](STABILIZATION_AUDIT.md) a jeho [měření](performance/stabilization.json). Pravidla, generátor V2 a jednoduché rozhraní se nemění. V době auditu byla verze balíčku 1.2.1 a audit sám nevytvářel release, tag ani merge. Jeho opravy jsou následně zahrnuté do vydání **1.2.2**; [migrační návod](SELF_HOSTING.md#přechod-z-121-na-122) a [changelog](../CHANGELOG.md#122--2026-11-08) popisují vydání. Níže uvedené výsledky zachovávají původní commity a rozsah měření.
 
 ## A. Opravené problémy
 
@@ -69,7 +69,7 @@ Hromadná izolovaná funkční sada používá běžně konfigurovatelný limit 
 
 Nejde o testovací backdoor v API ani o zvýšení produkčních výchozích hodnot. Vite předává stejné tři již dokumentované konfigurační proměnné do lokálních Cloudflare runtime bindingů.
 
-Závěrečný kompletní hostovaný běh [42456742786](https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786) je **SUCCESS** na commitu `b2e6d1930eb35d32915805b3667f31141f422b94`. Prošel obecný job `test` i oba joby skutečného Docker upgradu/rollbacku. Poslední následný commit doplňuje pouze tento report, návod a naměřená data; produkční kód se po ověřeném commitu nemění.
+Závěrečný kompletní hostovaný běh [42456742786](https://github.com/cert4u/u-jednoho-stolu/actions/runs/42456742786) je **SUCCESS** na commitu `b2e6d1930eb35d32915805b3667f31141f422b94`. Prošel obecný job `test` i oba joby skutečného Docker upgradu/rollbacku. Následný auditní commit doplnil pouze tento report, návod a naměřená data. Příprava vydání 1.2.2 pak aktualizuje metadata verze a dokumentaci; přesný vydávaný commit prochází novým úplným CI během.
 
 `npm run lint` byl také skutečně spuštěn a vrací 1 kvůli popsaným 6 historickým chybám / 46 varováním. Není vykazován jako čistý; prochází kontrola revidované baseline. V této etapě nebyl nasazen veřejný Cloudflare Worker ani proveden společný test několika skutečných lidí nebo mikrofonů.
 
@@ -99,7 +99,7 @@ Všech devět výslovně požadovaných lokálních příkazů prošlo (striktn�
 
 Konkrétní omezení: 6 posouzených React lint chyb a 46 varování; mapové/SSR efekty zůstávají zdokumentované, nikoli vypnuté. Cloudflare byl ověřen místním runtime a hostovaným CI, nikoli veřejným deploymentem konkrétního tarifu. Automatizovaný herní večer a krátký skutečný UI smoke nenahrazují společné hraní lidí ani zkoušku mikrofonů. Tato omezení nevyžadují další herní funkce ani novou infrastrukturu.
 
-Technická stabilizace je tím uzavřena. **Nebyl vytvořen release 1.2.2, Git tag ani automatický merge do main.**
+Technická stabilizace je tím uzavřena. Samotný audit nepublikoval release ani neslučoval větev. Následná příprava vydání 1.2.2 má samostatnou CI kontrolu přesného vydávaného commitu; její výsledek je uveden v poznámkách GitHub Release.
 
 ### Krátký manuální společný smoke před nasazením
 

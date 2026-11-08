@@ -1,6 +1,6 @@
 # Změny
 
-## Nevydáno — stabilizace po 1.2.1
+## 1.2.2 — 2026-11-08
 
 - **Finální oprava klientských operací:** dvě záměrně stejné zprávy/hody mají samostatná ID; opakovaný přenos jedné operace zachovává její ID a výsledek. Obsah se nepoužívá jako identita operace.
 - **React lifecycle:** refs se aktualizují po commit fázi, katalogový stav je vázaný na relaci a role; mince zachovávají revizi prvního rozepsání bez čtení DOM během renderu. Lint baseline klesá na 6 historických chyb a 46 varování.
@@ -13,7 +13,7 @@
 - Konzistentní kategorie/editor katalogu, potvrzení neuložených změn a ignorování opožděných odpovědí staré relace.
 - Cílené oddělení definic mapových nástrojů, čitelnější admin controller, omezení skrytí scrollbarů na mapový papír a CI brána proti novým lint nálezům.
 
-[Stabilizační audit](docs/STABILIZATION_AUDIT.md). Verze zůstává 1.2.1; tato etapa sama nevytváří tag ani release.
+Přechod z 1.2.1 aplikuje migraci `0003_room_admission.sql`. Nové kapacitní proměnné jsou volitelné; výchozí hodnoty fungují i bez změny konfigurace. Přestavba updateru není nutná. Před aktualizací uchovej úplnou serverovou zálohu a odpovídající image. [Postup aktualizace a návratu](docs/SELF_HOSTING.md#přechod-z-121-na-122) · [Stabilizační audit](docs/STABILIZATION_AUDIT.md).
 
 ## 1.2.1 — 2026-11-07
 

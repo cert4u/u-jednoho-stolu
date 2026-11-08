@@ -4,12 +4,12 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Počítej přibližně se 2 GB volné RAM a několika GB disku pro sestavení image. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Dokumentace této větve zahrnuje i dosud nevydané změny. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
+Tato dokumentace odpovídá vydání 1.2.2; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
 
 ## První spuštění
 
 ```sh
-git clone --branch v1.2.1 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.2 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -217,9 +217,20 @@ Po aktualizaci obnov stránku `/admin`, aby se načetly nové klientské skripty
 
 Heslo správce je nadále hodnota `STUL_ADMIN_PASSWORD` tvé instalace; projekt nemá společné výchozí heslo. Administraci otevírej na adrese běžící služby, například `http://localhost:8080/admin`, nikoli jako soubor `server/admin.html` z disku. Samostatné spuštění přes Node nezahrnuje Docker updater.
 
+## Přechod z 1.2.1 na 1.2.2
+
+1. Vytvoř úplnou serverovou ZIP zálohu, uchovej konfiguraci a image 1.2.1. Ověř možnost obnovy mimo rozehranou instalaci.
+2. V administraci updateru vyber stabilní vydání 1.2.2 a potvrď konkrétní commit. Při ručním nasazení sestav zdroje tagu `v1.2.2` a zachovej celý datový volume včetně `catalog-assets`.
+3. Node/Docker při startu automaticky aplikuje `0003_room_admission.sql`. Na Cloudflare aplikuj nové D1 migrace běžným postupem před spuštěním nového Workeru. Formát přenositelné zálohy zůstává 1.
+4. Obnov stránku aplikace i `/admin`. Ověř přístup PJ/hráče, existující mapu, zprávy a export testovací kampaně. Před návratem na starší verzi uchovej i data vzniklá po aktualizaci; viz rollback níže.
+
+Nové proměnné `STUL_ROOM_CREATE_RATE`, `STUL_ROOM_LIMIT` a `STUL_ROOM_BYTES_LIMIT` jsou volitelné. Bez jejich nastavení platí níže uvedené výchozí hodnoty. Není nutná přestavba updateru ani nová služba. Aktualizace aplikace přes updater sama nepřepisuje checkout, `.env` ani Compose soubor. Chceš-li vlastní kvóty nastavovat přes `.env`, převezmi také odpovídající předání proměnných z Compose vydání 1.2.2 a znovu vytvoř kontejner aplikace při zachování datového volume.
+
+[Změny vydání](../CHANGELOG.md#122--2026-11-08) · [Výsledky a omezení ověření](FINAL_STABILIZATION.md).
+
 ## Ochrany stabilizační větve
 
-Tato část popisuje dosud nevydanou pracovní větev navazující na 1.2.1. Nová migrace `0003_room_admission.sql` přidává datum vzniku místnosti a index; staré místnosti zachovává s hodnotou 0. Node ji aplikuje při startu, pro D1 použij obvyklý migrační postup. Před nasazením uchovej úplnou serverovou ZIP zálohu a odpovídající image.
+Tyto ochrany jsou součástí vydání 1.2.2. Nová migrace `0003_room_admission.sql` přidává datum vzniku místnosti a index; staré místnosti zachovává s hodnotou 0. Node ji aplikuje při startu, pro D1 použij obvyklý migrační postup. Před nasazením uchovej úplnou serverovou ZIP zálohu a odpovídající image.
 
 | Proměnná | Výchozí hodnota | Význam |
 | --- | --- | --- |
