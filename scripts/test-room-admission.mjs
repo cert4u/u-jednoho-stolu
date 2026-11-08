@@ -26,5 +26,7 @@ try{
  assert.equal((await post({action:'chat',room:successful.room,text:'Storage growth',requestId:crypto.randomUUID()},auth)).status,503);
  assert.equal((await post({action:'notes',room:successful.room,notes:'',expected:{notes:backup.game.notes}},auth)).status,200);
  await stop();await start({STUL_ROOM_CREATE_RATE:'0',STUL_ROOM_LIMIT:'invalid',STUL_ROOM_BYTES_LIMIT:'-1'});assert.equal((await post({action:'create'})).status,200);
+ await stop();rmSync(dir,{recursive:true,force:true});await start({STUL_ROOM_CREATE_RATE:'',STUL_ROOM_LIMIT:'',STUL_ROOM_BYTES_LIMIT:''});
+ const defaults=spawn(process.execPath,['scripts/test-public-admission-api.mjs',origin],{stdio:'inherit'});assert.equal(await new Promise(r=>defaults.once('exit',r)),0);
  console.log('PASS: concurrent global admission, spoofed IP headers, restore/create budget, persistent capacity across restart and byte capacity.');
 }finally{if(server?.exitCode===null)await stop();rmSync(dir,{recursive:true,force:true});}

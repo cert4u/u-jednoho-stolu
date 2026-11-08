@@ -1,3 +1,4 @@
+import {cases} from './test-case-list.mjs';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {mkdtempSync,rmSync,existsSync,symlinkSync} from 'node:fs';
@@ -5,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 const dir=mkdtempSync(path.join(os.tmpdir(),'stul-hosting-')),origin='http://127.0.0.1:18088',password='test-admin-password-long-enough',token='test-updater-token-long-enough-123456';let server;
-async function start(voice=false){server=spawn(process.execPath,['server/start.mjs'],{env:{...process.env,STUL_LIVEKIT_URL:voice?'ws://localhost:7880':'',STUL_LIVEKIT_API_KEY:'voice-test-key',STUL_LIVEKIT_API_SECRET:'voice-test-secret-at-least-thirty-two-characters',PORT:'18088',PUBLIC_ORIGIN:origin,STUL_ADMIN_PASSWORD:password,STUL_UPDATER_TOKEN:token,STUL_UPDATER_URL:'http://127.0.0.1:1',STUL_DATA_DIR:dir},stdio:['ignore','pipe','pipe']});let logs='';server.stdout.on('data',s=>logs+=s);server.stderr.on('data',s=>logs+=s);for(let i=0;i<100;i++){if(server.exitCode!==null)throw new Error(logs);try{if((await fetch(origin+'/healthz')).ok)return;}catch{}await delay(100);}throw new Error('Server timeout '+logs);}
+async function start(voice=false){server=spawn(process.execPath,['server/start.mjs'],{env:{...process.env,STUL_ROOM_CREATE_RATE:'1000',STUL_LIVEKIT_URL:voice?'ws://localhost:7880':'',STUL_LIVEKIT_API_KEY:'voice-test-key',STUL_LIVEKIT_API_SECRET:'voice-test-secret-at-least-thirty-two-characters',PORT:'18088',PUBLIC_ORIGIN:origin,STUL_ADMIN_PASSWORD:password,STUL_UPDATER_TOKEN:token,STUL_UPDATER_URL:'http://127.0.0.1:1',STUL_DATA_DIR:dir},stdio:['ignore','pipe','pipe']});let logs='';server.stdout.on('data',s=>logs+=s);server.stderr.on('data',s=>logs+=s);for(let i=0;i<100;i++){if(server.exitCode!==null)throw new Error(logs);try{if((await fetch(origin+'/healthz')).ok)return;}catch{}await delay(100);}throw new Error('Server timeout '+logs);}
 async function stop(){server.kill();await new Promise(resolve=>server.once('exit',resolve));}
 const post=(endpoint,data,headers={})=>fetch(origin+endpoint,{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(data)});
 try{await start();
@@ -42,7 +43,7 @@ assert.equal((await fetch(origin+'/admin')).status,200);assert.equal((await fetc
  assert.equal(smoke.status,200);
  assert.equal((await smoke.json()).revision,state.installed.revision);
  assert.equal((await post('/internal/maintenance',{enabled:true})).status,401);const internal={Authorization:'Bearer '+token};assert.equal((await post('/internal/backup',{},internal)).status,503);assert.equal((await post('/internal/maintenance',{enabled:true},internal)).status,200);assert.equal((await post('/api/game',{action:'create',name:'Test'})).status,503);const backup=await post('/internal/backup',{},internal);assert.equal(backup.status,200);const {name}=await backup.json();assert.ok(existsSync(path.join(dir,'backups',name)));await stop();await start(true);assert.equal((await post('/api/game',{action:'create',name:'Test'})).status,503);assert.equal((await post('/internal/maintenance',{enabled:false},internal)).status,200);
- const runner=spawn(process.execPath,['scripts/test-integration.mjs',origin],{stdio:'inherit',env:{...process.env,STUL_VOICE_TEST_KEY:'voice-test-key',STUL_VOICE_TEST_SECRET:'voice-test-secret-at-least-thirty-two-characters'}});const code=await new Promise(r=>runner.once('exit',r));assert.equal(code,0);
+ const runner=spawn(process.execPath,['scripts/test-integration.mjs',origin],{stdio:'inherit',env:{...process.env,STUL_TEST_CASES:cases.filter(name=>name!=='public-admission-api').join(','),STUL_VOICE_TEST_KEY:'voice-test-key',STUL_VOICE_TEST_SECRET:'voice-test-secret-at-least-thirty-two-characters'}});const code=await new Promise(r=>runner.once('exit',r));assert.equal(code,0);
  assert.equal((await post('/admin/api/logout',{}, {Cookie:cookie,Origin:origin})).status,401); // sessions expire after restart
  const catalogs=spawn(process.execPath,['--run','test:catalogs'],{stdio:'inherit'});assert.equal(await new Promise(r=>catalogs.once('exit',r)),0);
  console.log('PASS: installation authentication, origin checks, internal token, maintenance, consistent SQLite backup and persistent maintenance across restart.');

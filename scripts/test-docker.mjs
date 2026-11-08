@@ -44,7 +44,7 @@ try{
  }
  const readRooms=()=>{const db=new DatabaseSync(path.join(dataDir,'game.sqlite'),{readOnly:true});try{return db.prepare('SELECT id,data,version FROM rooms ORDER BY id').all();}finally{db.close();}};
  const beforeUpgrade=readRooms();
- await manager.begin('update','docker-update-12345678',legacySource?{}:{expectedSha:newSha});await manager.running;assert.match(manager.state.job.phase,/Hotovo/);assert.equal((await call('/healthz')).revision,newSha);assert.equal(statSync(path.join(stateDir,'runtime.env')).uid,1001);
+ await manager.begin('update','docker-update-12345678',{expectedSha:newSha});await manager.running;assert.match(manager.state.job.phase,/Hotovo/);assert.equal((await call('/healthz')).revision,newSha);assert.equal(statSync(path.join(stateDir,'runtime.env')).uid,1001);
  assert.deepEqual(readRooms(),beforeUpgrade,'Migration preserves every campaign byte, member token and access field.');
  for(const actor of actors)assert.equal((await fetch(`${origin}/api/game?room=${actor.room}`,{headers:{Authorization:'Bearer '+actor.token}})).status,200);
  const activeContainer=await docker('GET','/containers/stul-app/json');assert(activeContainer.Config.Env.includes('STUL_ROOM_LIMIT=50'));

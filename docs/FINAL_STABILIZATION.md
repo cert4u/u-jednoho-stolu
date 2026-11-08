@@ -31,7 +31,7 @@ Zbylých **6 chyb a 46 varování** je stále vidět při `npm run lint`. Revido
 
 ### Prokázaně nepoužité šablony
 
-Odstraněny pouze tři samostatné UI šablony: `chart.tsx`, `calendar.tsx`, `carousel.tsx`, a balíčky `recharts`, `react-day-picker`, `embla-carousel-react`, `date-fns`. Prověřeny byly importy a re-exporty napříč zdroji, dynamické importy, Vite/Sites build hooky, konfigurace shadcn, registry a výstup sestavení. Registry jsou prázdné; samotný alias složky není dynamický loader. Tyto moduly neměly vstupní cestu do aplikace a po odebrání prošel TypeScript i Node build. Čistá instalace/build v CI ověří také absenci náhodné závislosti na lokálně ponechaném node_modules.
+Odstraněny pouze tři samostatné UI šablony: `chart.tsx`, `calendar.tsx`, `carousel.tsx`, a balíčky `recharts`, `react-day-picker`, `embla-carousel-react`, `date-fns`. Prověřeny byly importy a re-exporty napříč zdroji, dynamické importy, Vite/Sites build hooky, konfigurace shadcn, registry a výstup sestavení. Registry jsou prázdné; samotný alias složky není dynamický loader. Tyto moduly neměly vstupní cestu do aplikace a po odebrání prošel TypeScript i Node build. Čistá instalace a Cloudflare build v hostovaném CI již prošly; závěrečný Node a Docker běh ověřuje také absenci náhodné závislosti na lokálně ponechaném node_modules.
 
 Ostatní obecné komponenty zůstávají: hromadné odstranění celé registry nebo buildových/connector helperů není cílem finální stabilizace. Nejde o plošný refaktor.
 
@@ -58,6 +58,12 @@ Administrace prošla existujícími behaviorálními testy kategorií, rozepsan�
 | `npm run test:updater` | Lokální simulace enginu | Prošlo; nenahrazuje Docker. |
 | `test-stable-upgrade` proti sestavenému 1.2.1 | Lokální Node/SQLite | Prošlo. |
 | Docker upgrade/rollback z 0.5.3 a 1.2.1 | GitHub Actions | Bude spuštěno na pracovní větvi; zatím neověřeno. |
+
+### Zpřesnění testovacích předpokladů
+
+Při prvním rozšířeném průchodu byly odhaleny i chyby samotných testů: předpoklad vloženého obrázku u každé vestavěné příšery na Cloudflare, společný limit zakládání vyčerpaný celou funkční sadou a chybějící potvrzení konkrétního commitu v Docker fixture z 1.2.1. Updater v posledním případě správně odmítl výměnu ještě před jejím zahájením. Test nyní předává `expectedSha`; produkční ochrana nebyla změněna.
+
+Hromadná izolovaná funkční sada používá běžně konfigurovatelný limit 1000/min. Výchozí produkční ochrana se zvlášť ověřuje v čisté databázi: **přesně 100 úspěšných založení a odmítnutí 101.** Cloudflare CI používá dvě oddělené Worker/D1 instance; Node má samostatnou testovací instanci. Nejde o testovací backdoor v API ani o zvýšení produkčních výchozích hodnot. Vite předává stejné tři již dokumentované konfigurační proměnné do lokálních Cloudflare runtime bindingů.
 
 ## C. Zbývající technický dluh
 

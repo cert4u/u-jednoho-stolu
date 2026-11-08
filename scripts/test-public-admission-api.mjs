@@ -6,5 +6,5 @@ for(let i=0;i<101;i++){
  if(response.status===429){assert.equal(response.headers.get('retry-after'),'60');break;}
  assert.equal(response.status,200,await response.text());successes++;
 }
-assert(successes<=100,'default shared creation budget must apply in both runtimes');
+assert.equal(successes,100,'fresh default-budget fixture must admit exactly 100 rooms, then reject the next');
 console.log('PASS: default global creation budget is enforced by the runtime API, independent of forged proxy headers.');
