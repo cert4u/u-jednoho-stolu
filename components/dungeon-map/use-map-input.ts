@@ -1,105 +1,19 @@
-import type { SurfaceBrush } from '../../lib/surfaces';
 import {
   useRef,
   useLayoutEffect,
   useState,
-  type Dispatch,
-  type SetStateAction,
-  type RefObject,
   type PointerEvent as ReactPointerEvent,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
-import {
-  cellKey,
-  type Dungeon,
-  type Point,
-  type MapCommand,
-} from '../../lib/dungeon';
-import type { ExplorationView } from '../../lib/exploration';
-import type { MapNoteView, NoteAnchor } from '../../lib/map-notes';
-import type { MonsterView } from '../../lib/monsters';
-import {
-  W,
-  H,
-  WIDTH,
-  HEIGHT,
-  SIZE,
-  PAD,
-  edgeVertices,
-  type Tool,
-  type Stroke,
-  type Marker,
-} from './model';
-
-type MapInput = {
-  resetStart: number;
-  cancelStroke: number;
-  surfaceBrush?: SurfaceBrush;
-  map: Dungeon;
-  members: Marker[];
-  me: string;
-  pj: boolean;
-  busy: boolean;
-  selected: string;
-  exploration?: ExplorationView;
-  notes: MapNoteView[];
-  onSelect: (id: string) => void;
-  onAction: (
-    action: string,
-    values: Record<string, unknown>,
-  ) => Promise<boolean | undefined>;
-  onOpenNote: (anchor: NoteAnchor, publicView: boolean) => void;
-  onCancelScenery: () => void;
-  onScenery: (point: Point, id?: string) => void;
-  onInspectMonster: (id?: string) => void;
-  effectiveTool: Tool;
-  canDraw: boolean;
-  canLead: boolean;
-  selectedCreature?: MonsterView;
-  preview: boolean;
-  visible: boolean;
-  space: boolean;
-  viewport: RefObject<HTMLDivElement | null>;
-  setTool: Dispatch<SetStateAction<Tool>>;
-  setInspection: Dispatch<
-    SetStateAction<{ point: Point; edge?: string } | null>
-  >;
-};
-
+import { cellKey, type Point, type MapCommand } from '../../lib/dungeon';
+import { edgeVertices, type Tool, type Stroke } from './model';
+import type { MapInput } from './input-types';
+import { mapPointerGeometry } from './pointer-geometry';
+import { createMapCommands } from './input-commands';
+import { handleMapKey } from './keyboard-input';
 function geometry(e: ReactPointerEvent<SVGSVGElement>) {
-  const box = e.currentTarget.getBoundingClientRect();
-  const x = Math.max(
-      0,
-      Math.min(
-        W,
-        ((e.clientX - box.left) * WIDTH) / box.width / SIZE - PAD / SIZE,
-      ),
-    ),
-    y = Math.max(
-      0,
-      Math.min(
-        H,
-        ((e.clientY - box.top) * HEIGHT) / box.height / SIZE - PAD / SIZE,
-      ),
-    );
-  const cell: Point = [
-      Math.min(W - 1, Math.floor(x)),
-      Math.min(H - 1, Math.floor(y)),
-    ],
-    vertex: Point = [Math.round(x), Math.round(y)];
-  const horizontal = Math.abs(y - Math.round(y)) <= Math.abs(x - Math.round(x));
-  const edge = horizontal
-    ? `h:${Math.min(W - 1, Math.floor(x))}:${Math.round(y)}`
-    : `v:${Math.round(x)}:${Math.min(H - 1, Math.floor(y))}`;
-  return {
-    cell,
-    vertex,
-    edge,
-    nearEdge:
-      Math.min(Math.abs(y - Math.round(y)), Math.abs(x - Math.round(x))) < 0.24,
-  };
+  return mapPointerGeometry(e, e.currentTarget.getBoundingClientRect());
 }
-
 export function useMapInput({
   surfaceBrush,
   map,
@@ -135,6 +49,31 @@ export function useMapInput({
   const [retry, setRetry] = useState<Record<string, unknown> | null>(null);
   const active = useRef<Stroke | null>(null);
   const lock = useRef(false);
+  // Build command closures only from event handlers, never inspect refs in render.
+  function commands() {
+    return createMapCommands({
+      onAction,
+      exploration,
+      members,
+      pj,
+      me,
+      lock,
+      retry,
+      setRetry,
+    });
+  }
+  function sendMap(command: MapCommand | Record<string, unknown>) {
+    return commands().sendMap(command);
+  }
+  function sendExplore(op: string, values: Record<string, unknown> = {}) {
+    return commands().sendExplore(op, values);
+  }
+  function moveBattle(id: string, to: Point) {
+    return commands().moveBattle(id, to);
+  }
+  function retryMap() {
+    return commands().retryMap();
+  }
   const [observed, setObserved] = useState({ resetStart, cancelStroke });
   if (
     observed.resetStart !== resetStart ||
@@ -180,20 +119,6 @@ export function useMapInput({
     if (active.current) return;
     setTool(next);
     setKeyboardStart(null);
-  }
-  async function sendMap(command: MapCommand | Record<string, unknown>) {
-    const payload = {
-      levelId: exploration?.levelId,
-      ...command,
-      requestId: crypto.randomUUID(),
-    };
-    lock.current = true;
-    setRetry(null);
-    try {
-      if (!(await onAction('map', payload))) setRetry(payload);
-    } finally {
-      lock.current = false;
-    }
   }
   function begin(e: ReactPointerEvent<SVGSVGElement>) {
     if (e.button !== 0 || active.current) return;
@@ -340,8 +265,11 @@ export function useMapInput({
     const s = active.current;
     if (!s || s.pointer !== e.pointerId) return;
     if (s.pan) {
-      viewport.current!.scrollLeft = s.pan.left - (e.clientX - s.pan.x);
-      viewport.current!.scrollTop = s.pan.top - (e.clientY - s.pan.y);
+      viewport.current!.scrollTo({
+        left: s.pan.left - (e.clientX - s.pan.x),
+        top: s.pan.top - (e.clientY - s.pan.y),
+        behavior: 'instant',
+      });
       return;
     }
     const p = geometry(e as ReactPointerEvent<SVGSVGElement>);
@@ -454,151 +382,45 @@ export function useMapInput({
           : s.points;
     void sendMap(command);
   }
-  async function moveBattle(id: string, to: Point) {
-    const who = members.find((m) => m.id === id);
-    if (!who || (!pj && id !== me)) return;
-    return sendExplore('battle-move', {
-      battleId: exploration?.battle?.id,
-      memberId: id,
-      x: to[0],
-      y: to[1],
-      expected: { x: who.x, y: who.y },
-    });
-  }
-  async function sendExplore(op: string, values: Record<string, unknown> = {}) {
-    if (lock.current) return false;
-    lock.current = true;
-    try {
-      return await onAction('explore', {
-        op,
-        ...values,
-        requestId: crypto.randomUUID(),
-      });
-    } finally {
-      lock.current = false;
-    }
-  }
   function cancel() {
     active.current = null;
     setStroke(null);
     setKeyboardStart(null);
   }
   function keyAction(e: ReactKeyboardEvent<SVGSVGElement>) {
-    if (e.key === 'Escape') {
-      onCancelScenery();
-      cancel();
-      return;
-    }
-    const delta: Record<string, Point> = {
-      ArrowLeft: [-1, 0],
-      ArrowRight: [1, 0],
-      ArrowUp: [0, -1],
-      ArrowDown: [0, 1],
-    };
-    if (delta[e.key]) {
-      e.preventDefault();
-      setKeyboard(([x, y]) => [
-        Math.max(0, Math.min(W - 1, x + delta[e.key][0])),
-        Math.max(0, Math.min(H - 1, y + delta[e.key][1])),
-      ]);
-      return;
-    }
-    if (effectiveTool === 'hand') return;
-    if (e.key !== 'Enter' || busy || preview || lock.current || retry) return;
-    e.preventDefault();
-    if (effectiveTool === 'scenery' && pj) {
-      if (surfaceBrush) {
-        void sendMap({ tool: 'surface', ...surfaceBrush, points: [keyboard] });
-        return;
-      }
-      onScenery(
-        keyboard,
-        map.scenery?.find(
-          (item) => item.x === keyboard[0] && item.y === keyboard[1],
-        )?.id,
-      );
-    } else if (effectiveTool === 'inspect' && pj) {
-      setInspection({ point: keyboard });
-    } else if (effectiveTool === 'note') {
-      if (map.floors.includes(cellKey(...keyboard)))
-        onOpenNote(
-          {
-            levelId: exploration?.levelId || 'ground',
-            x: keyboard[0],
-            y: keyboard[1],
-          },
-          false,
-        );
-    } else if (effectiveTool === 'monster') {
-      if (selectedCreature)
-        void onAction('monster', {
-          op: 'move',
-          monsterId: selectedCreature.id,
-          x: keyboard[0],
-          y: keyboard[1],
-          requestId: crypto.randomUUID(),
-        });
-      else onInspectMonster();
-    } else if (effectiveTool === 'place') {
-      void sendExplore('place', { x: keyboard[0], y: keyboard[1] });
-    } else if (effectiveTool === 'openDoor') {
-      void sendExplore('door', { edge: `h:${keyboard[0]}:${keyboard[1]}` });
-    } else if (exploration?.enabled && effectiveTool === 'move') {
-      if (exploration.battle)
-        void moveBattle(selected || (!pj ? me : ''), keyboard);
-      else if (canLead)
-        void sendExplore('move', { x: keyboard[0], y: keyboard[1] });
-    } else if (effectiveTool === 'move') {
-      const id = selected || (!pj ? me : '');
-      if (id) void onAction('move', { id, x: keyboard[0], y: keyboard[1] });
-    } else if (['room', 'reveal', 'hide', 'wall'].includes(effectiveTool)) {
-      if (!keyboardStart) setKeyboardStart(keyboard);
-      else {
-        void sendMap({
-          tool: effectiveTool,
-          ...(effectiveTool === 'wall'
-            ? { points: [keyboardStart, keyboard] }
-            : { from: keyboardStart, to: keyboard }),
-        });
-        setKeyboardStart(null);
-      }
-    } else if (
-      [
-        'entrance',
-        'exit',
-        'stairsUp',
-        'stairsDown',
-        'stairsBoth',
-        'floor',
-        'subtract',
-      ].includes(effectiveTool)
-    )
-      void sendMap({ tool: effectiveTool, points: [keyboard] });
-    else if (effectiveTool === 'door')
-      void sendMap({
-        tool: 'door',
-        edges: [`h:${keyboard[0]}:${keyboard[1]}`],
-      });
-    else
-      void sendMap({
-        tool: 'erase',
-        cells: [keyboard],
-        edges: [`h:${keyboard[0]}:${keyboard[1]}`],
-      });
+    handleMapKey(e, {
+      onCancelScenery,
+      cancel,
+      setKeyboard,
+      effectiveTool,
+      busy,
+      preview,
+      lock,
+      retry,
+      pj,
+      surfaceBrush,
+      sendMap,
+      onScenery,
+      map,
+      setInspection,
+      keyboard,
+      exploration,
+      onOpenNote,
+      selectedCreature,
+      onAction,
+      onInspectMonster,
+      sendExplore,
+      moveBattle,
+      selected,
+      me,
+      canLead,
+      keyboardStart,
+      setKeyboardStart,
+    });
   }
 
   function lostCapture() {
     if (active.current) cancel();
-  }
-
-  async function retryMap() {
-    if (!retry) return;
-    lock.current = true;
-    try {
-      if (await onAction('map', retry)) setRetry(null);
-    } finally {
-      lock.current = false;
-    }
   }
 
   return {

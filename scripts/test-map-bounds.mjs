@@ -11,6 +11,39 @@ const { makeBackup, validateBackup } = await import('../lib/backup.ts');
 const { explorationAction } = await import('../lib/exploration/actions.ts');
 const { surfaceListSchema } = await import('../lib/surfaces.ts');
 const { sceneryListSchema } = await import('../lib/scenery.ts');
+const { mapCellKey, mapEdgeKey, mapPoint } = await import(
+  '../lib/map-coordinates.ts'
+);
+assert(mapPoint.safeParse([W - 1, H - 1]).success);
+for (const invalid of [
+  [W, 0],
+  [0, H],
+  [-1, 0],
+  [0.5, 0],
+  [0, '1'],
+])
+  assert(!mapPoint.safeParse(invalid).success);
+assert(mapCellKey.safeParse(`${W - 1},${H - 1}`).success);
+for (const invalid of [
+  `${W},0`,
+  `0,${H}`,
+  '-1,0',
+  '1.5,0',
+  'constructor',
+  'NaN,0',
+])
+  assert(!mapCellKey.safeParse(invalid).success);
+for (const edge of [`h:${W - 1}:${H}`, `v:${W}:${H - 1}`])
+  assert(mapEdgeKey.safeParse(edge).success);
+for (const invalid of [
+  `h:${W}:${H}`,
+  `v:${W}:${H}`,
+  `h:0:${H + 1}`,
+  `v:${W + 1}:0`,
+  'x:0:0',
+  'h:-1:0',
+])
+  assert(!mapEdgeKey.safeParse(invalid).success);
 let map = editDungeon(emptyDungeon(), {
   tool: 'room',
   from: [0, 0],

@@ -4,7 +4,7 @@ import ts from 'typescript';
 
 // Embedded browsers intentionally do not provide these modal JavaScript APIs.
 // Guard the compatibility boundary that API-only integration tests cannot cover.
-for(const file of ['server/admin.js','server/admin-catalogs.js','server/admin-dialog.js']){
+for(const file of ['server/admin.js','server/admin-catalogs.js','server/admin-catalog-presentation.js','server/admin-dialog.js']){
  const source=ts.createSourceFile(file,readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
  function visit(node){
   if(ts.isCallExpression(node)){

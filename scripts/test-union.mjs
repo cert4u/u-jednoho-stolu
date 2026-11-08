@@ -42,3 +42,10 @@ await import('./test-clean-state.mjs');
 await import('./test-keepsake-mask.mjs');
 
 await import("./test-map-bounds.mjs");
+
+await import("./test-map-input.mjs");
+
+await import("./test-catalog-presentation.mjs");
+
+await import("./test-mechanics-core.mjs");
+await import("./test-map-layers-dialogs.mjs");

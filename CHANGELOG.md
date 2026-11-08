@@ -1,5 +1,25 @@
 # Změny
 
+## Nevydáno
+
+- Styly odpočinku a léčení odděleny od obnovy přístupu: 16 pravidel v `rest-healing.css`, odstraněno pět `!important` (celkem 37). Šest variant formuláře a náhledu porovnáno na běžné i úzké obrazovce bez rozdílu v kontrolovaných stylech a geometrii.
+
+- Další CSS celek pro kořist a výbavu: 36 pravidel včetně úzkého rozložení odděleno do `loot-equipment.css`. Šířka varianty dialogu a rozestupy akcí mají výslovný kontext bez dalšího `!important` (celkem zbývá 42). Ověřeno sedm variant UI bez změny kontrolovaných stylů a geometrie.
+
+- Sjednocené skrytí posuvníků v aplikaci a samostatné administraci bez vypnutí posouvání obsahu. Odstraněny historické přepisy obnovující viditelnou lištu.
+- CSS pořadí souboje a výběru účastníků odděleno do `initiative.css`, včetně mobilních pravidel. Sloučena dvě opakovaná pravidla a odstraněno dalších šest `!important`; po obou CSS krocích zbývá 43.
+
+- První oddělený CSS celek pro stavy a jejich štítky: 18 pravidel přesunuto do `app/styles/conditions.css`, devět `!important` nahrazeno cíleným kontextem. Vzhled ověřen porovnáním vypočtených stylů a geometrie na běžné i úzké obrazovce; audit zahrnuje místní CSS importy.
+
+- Samostatné vrstvy postav, příšer a poznámek mapy se zachováním viditelnosti a ovládání. SVG popisky jsou jednotlivé řetězce bez varování Reactu.
+- Rámec herních dialogů oddělen od směrování a obsahu přípravy, postav a účtu. Zachována ochrana rolí, chybová hlášení a zavírání po úspěšném zápisu.
+- Mechaniky rozděleny na aktéry, historii, společný kontext a jednotlivé akce; veřejný vstup nadále zajišťuje identitu požadavků a synchronizaci. Doplněny regresní testy soukromí, rušení a jednorázového potvrzení zranění.
+
+- Rozdělení obsluhy mapy na pointerový životní cyklus, projekci, klávesnici a odesílání příkazů. Zachovány zámky a identita opakovaných tahů. Katalogová administrace odděluje náhledy a předlohy od stavu editoru a relace; doplněny testy chování a servírování ES modulu.
+
+- Oprava organických plošných materiálů za původní hranicí 28 × 20: renderer používá aktuální rozměry mapy, regresní test pokrývá oba směry rozšíření a krajní roh.
+- Sdílená schémata mapových souřadnic pro stafáž, materiály a zálohy; výpočet organických obrysů rozdělen na menší čisté kroky. Formát souvisejících modulů je nově hlídaný formatterem.
+
 ## 1.2.3 — 2026-11-08
 
 - Ruční kreslicí plocha rozšířena z 28 × 20 na 56 × 40 polí včetně pohybu, poznámek, příšer, stafáže a záloh. Generátor zachovává dosavadní formát a semínka. Pod kresbou dekorace zmizí, v sousedních políčkách mají měkký rozostřený přechod. Starší aplikace nové mapy mimo původní rozměry neimportují.

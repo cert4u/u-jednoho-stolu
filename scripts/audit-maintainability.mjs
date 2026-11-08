@@ -85,9 +85,22 @@ function visit(file) {
 roots.forEach(visit);
 const ui = files('components/ui').filter(source);
 const ownSources = ['components', 'hooks', 'lib'].flatMap(files).filter(source);
-const css = readFileSync('app/globals.css', 'utf8');
-for (const match of css.matchAll(/@import\s+["']([^"']+)["']/g))
-  packages.add(match[1]);
+// Follow local style imports so moving a feature never hides its CSS debt.
+const styleSources = new Map();
+function readStyles(file) {
+  const normalized = path.normalize(file);
+  if (styleSources.has(normalized)) return;
+  const text = readFileSync(normalized, 'utf8');
+  styleSources.set(normalized, text);
+  for (const match of text.matchAll(/@import\s+["']([^"']+)["']/g)) {
+    const name = match[1];
+    if (name.startsWith('.'))
+      readStyles(path.join(path.dirname(normalized), name));
+    else if (!name.startsWith('http')) packages.add(name);
+  }
+}
+readStyles('app/globals.css');
+const css = [...styleSources.values()].join('\n');
 const selectors = new Map();
 for (const match of css
   .replace(/\/\*[\s\S]*?\*\//g, '')
@@ -114,6 +127,7 @@ const report = {
   ).filter((name) => !packages.has(name)),
   unresolvedLiteralImports: [...unresolved].sort(),
   css: {
+    files: [...styleSources.keys()],
     bytes: Buffer.byteLength(css),
     important: (css.match(/!important/g) || []).length,
     repeatedSelectors: [...selectors]

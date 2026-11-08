@@ -1,25 +1,21 @@
-import { MAP_WIDTH, MAP_HEIGHT, MAP_CELLS, MAP_EDGES } from '../map-limits';
-import {surfaceListSchema} from '../surfaces';
+import {
+  mapX,
+  mapY,
+  mapPoint,
+  mapCellKey,
+  mapEdgeKey,
+} from '../map-coordinates';
+import { MAP_CELLS, MAP_EDGES } from '../map-limits';
+import { surfaceListSchema } from '../surfaces';
 import { sceneryListSchema } from '../scenery';
 import { z } from 'zod';
 import { generationMetadataSchema } from '../generator-schema';
 import { id, int, text } from './fields';
 
-export const cell = z
-  .string()
-  .regex(/^\d{1,2},\d{1,2}$/)
-  .refine((k) => {
-    const [x, y] = k.split(',').map(Number);
-    return x < MAP_WIDTH && y < MAP_HEIGHT;
-  });
-const edge = z
-  .string()
-  .regex(/^[hv]:\d{1,2}:\d{1,2}$/)
-  .refine((k) => {
-    const [axis, x, y] = k.split(':');
-    return +x < (axis === 'h' ? MAP_WIDTH : MAP_WIDTH + 1) && +y < (axis === 'h' ? MAP_HEIGHT + 1 : MAP_HEIGHT);
-  });
-const accessPoint = z.tuple([int(0, MAP_WIDTH - 1), int(0, MAP_HEIGHT - 1)]);
+export { mapCellKey as cell } from '../map-coordinates';
+const cell = mapCellKey;
+const edge = mapEdgeKey;
+const accessPoint = mapPoint;
 export const dungeon = z
   .object({
     scenery: sceneryListSchema.optional(),
@@ -63,7 +59,7 @@ export const dungeon = z
             !d.openDoors?.includes(key)),
       ),
   );
-export const location = z.object({ levelId: id, x: int(0, MAP_WIDTH - 1), y: int(0, MAP_HEIGHT - 1) });
+export const location = z.object({ levelId: id, x: mapX, y: mapY });
 export const atlas = z.object({
   lighting: z
     .object({ enabled: z.boolean(), darkRadius: int(0, 12) })

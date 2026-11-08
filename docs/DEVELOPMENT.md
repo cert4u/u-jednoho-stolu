@@ -298,3 +298,46 @@ Administrace používá společný `server/admin-dialog.js` a HTML `<dialog>` pr
 Pro `node scripts/test-stable-upgrade.mjs /cesta/ke/1.2.1` připrav oddělený adresář ze zdrojů commitu `ef59634d1a5f7ff94d76201cc187dea99c73e0c3`, v něm nainstaluj uzamčené závislosti a spusť `npm run build:node`. Potom sestav aktuální pracovní větev také přes `npm run build:node`. Test sám použije vlastní dočasná data a port 18104; neukazuj ho na provozní datový adresář.
 
 Hromadné herní integrace zakládají více stolů než běžná parta. Jejich testovací instance používají konfigurační limit 1000/min; výchozí 100/min ověřuje samostatná čistá instance s přesně 100 úspěchy a odmítnutím dalšího požadavku. Cloudflare `npm run test:ci` obě instance spravuje automaticky, Node default ověřuje `npm run test:stabilization`. Produkční výchozí hodnoty se nemění.
+
+## Souřadnice mapy a kresba materiálů
+
+Rozměry ruční kresby určuje `lib/map-limits.ts`. Zod schémata buněk, hran a bodů jsou v `lib/map-coordinates.ts`; používají je stafáž, plošné materiály i zálohy postav, míst a pater. Při další změně rozměrů začni zde a spusť `scripts/test-map-bounds.mjs`. Generátor má záměrně vlastní verzované rozměry: jeho schémata se nesmějí automaticky převést na rozměry editoru, jinak by se změnil kontrakt metadat.
+
+`lib/surface-drawing.ts` převádí uložený region na SVG obrys ve čtyřech krocích: vzorkování pigmentu, určení hran, spojení do smyček a vyhlazení. Všechny kroky jsou čisté a zachovávají pořadí výpočtu. Regresní případy v `scripts/test-surfaces.mjs` pokrývají i materiály za původními hranicemi mapy a v novém krajním rohu. Samotná úspěšná validace nebo záloha materiálu nezaručuje, že renderer vytvoří viditelný obrys.
+
+## Vstup mapy a klient katalogů
+
+- `components/dungeon-map/use-map-input.ts` řídí životní cyklus pointerového tahu a propojení s Reactem. `pointer-geometry.ts` pouze převádí souřadnice; `keyboard-input.ts` obsluhuje klávesy; `input-commands.ts` odesílá operace přes společný zámek a zachovává původní ID při opakování. Sdílený kontrakt je v `input-types.ts`. Příkazové funkce vznikají až při události, nikoli čtením refs během renderu.
+- `server/admin-catalogs.js` zůstává vlastníkem relace, rozepsaného editoru, revizí validace a pořadí asynchronních operací. `server/admin-catalog-presentation.js` připravuje texty, výchozí položky a DOM náhledy; neprovádí síťové požadavky ani neuchovává stav editoru. Importuje se jako ES modul ze stejného původu, z explicitně povolené URL.
+
+`test-map-input.mjs` kontroluje klávesnici, projekci, zámek a identitu opakovaných tahů. `test-admin-behavior.mjs` spouští skutečný controller s jeho produkčními importy proti testovacímu DOM; `test-catalog-presentation.mjs` ověřuje předlohy a náhledy. Node hosting testuje také dostupnost a MIME typ importovaného modulu.
+
+## Vrstvy mapy, dialogy a mechaniky
+
+`components/dungeon-map/canvas.tsx` skládá vrstvy ve stávajícím pořadí. Postavy, příšery a poznámky mají samostatné komponenty v `layers/`; každá dostává pouze příslušnou část kontraktu `canvas-types.ts`. Filtry viditelnosti, veřejné popisky, data atributy pro tažení a pořadí vrstev jsou součástí jejich chování. Nedoplňuj do hráčského plátna soukromá data jen kvůli vykreslení.
+
+`components/game-table/table-dialog.tsx` řeší společný rámec, chybu a zavření po úspěšném zápisu. Metadata jsou v `table-panel-details.ts`, typy v `table-dialog-types.ts`. Obsah směruje `table-panel-content.tsx` do přípravy dobrodružství (`adventure-panels.tsx`), postav a souboje (`character-panels.tsx`) nebo účtu a nápovědy (`utility-panels.tsx`). Pomocné render funkce pouze vracejí elementy; vlastní hooky patří do komponent panelů. Chybějící nebo nepovolený obsah zachovává dosavadní přechod na nápovědu.
+
+`lib/mechanics.ts` zachovává veřejné exporty a jednotnou obsluhu ID operace, směrování, synchronizace a limitů historie. Interní `mechanics/actors.ts` ověřuje aktéry a vlastnictví, `records.ts` spravuje živé akce a soukromí zpráv, `context.ts` vytváří společný zápis zpráv. `combat-actions.ts` řeší obranu, potvrzení zranění a zrušení; `roll-action.ts` ostatní hody. Běžná obsluha má nadále volat veřejný `mechanicsAction`, nikoli interní akce bez kontroly opakování.
+
+`test-map-layers-dialogs.mjs` vykresluje skutečné vrstvy a všechny dialogy pro PJ i hráče; kontroluje i popisky bez varování Reactu a zavírání až po úspěchu. `test-mechanics-core.mjs` ověřuje opakování, oprávnění obránce, jediné odečtení zranění, propojené rušení a soukromí skrytých příšer. Oba testy jsou součástí `npm test`; serverové scénáře nadále ověřuje `npm run test:hosting`.
+
+## Postupný úklid CSS
+
+Nově oddělené celky patří do `app/styles/` a importují se z `app/globals.css` za Tailwindem, před vlastními pravidly. Zatím zůstávají bez `@layer`: zavedení vrstev by změnilo prioritu vůči historickým pravidlům. Import na začátku může změnit pořadí kaskády, proto samotný přesun textu není důkaz zachování vzhledu.
+
+První celek je `app/styles/conditions.css`: panel stavů, jeho formulář a štítky v družině, deníku a souboji. V souboru nejsou `!important`; cílené selektory vyjadřují kontext štítku a `.condition-form` vymezuje formulář. Dřívější společné pravidlo pro seznamy v dialogu je pro stavy uvedeno zde. Nová pravidla pro stavy přidávej sem, ne jako další přepis na konec globálního souboru. Formatter tento soubor kontroluje.
+
+Před dalším přesunem zaznamenej vypočtené styly a rozměry skutečného UI. U stavů byly porovnány tři stavy (veřejný, vypršelý s dlouhým názvem a tajný) v družině, pořadí souboje a otevřeném panelu. Na běžné i úzké obrazovce se shodovalo 24 kontrolovaných CSS vlastností i geometrie. Počet `!important` ve zdrojových stylech klesl z 58 na 49; v ostatní kaskádě se tím dluh automaticky nevyřešil. Audit `scripts/audit-maintainability.mjs` prochází i místní CSS importy, aby se dluh pouhým přesunem souboru neschoval.
+
+Další oddělený celek je `app/styles/initiative.css`: pořadí souboje, výběr a řazení účastníků i mobilní panel. Zahrnuje původní mediální pravidla; dvě opakovaná pravidla byla sloučena a šest `!important` nahrazeno kontextem `.initiative-form` a selektorem `[hidden]`. Kontrolované styly a geometrie panelu zůstaly stejné na běžné i úzké obrazovce. Tento krok snížil počet `!important` ve zdrojové kaskádě na 43.
+
+Viditelné posuvníky se podle návrhu aplikace nezobrazují nikde. Pravidla jsou v `app/styles/scrollbars.css`; samostatná administrace má stejnou politiku ve vlastním inline CSS. Nepřidávej jednotlivým panelům `scrollbar-width: thin/auto` ani pravidla obnovující `::-webkit-scrollbar`. Skrytá je pouze lišta: `overflow: auto`, posun kolečkem, dotykem, klávesnicí a programový posun zůstávají dostupné. V náhledu bylo skutečným posunem ověřeno dosažení spodní části dlouhého dialogu; všechny přetékající viditelné kontejnery hlásily `scrollbar-width: none` a skrytý WebKit posuvník.
+
+Kořist a správu výbavy vymezuje `app/styles/loot-equipment.css`: 36 pravidel včetně úprav do šířky 480 px. Varianta `.modal.loot-modal` výslovně určuje šířku společného dialogu a `.loot-modal .loot-actions > button` vymezuje rozestupy akčních tlačítek bez `!important`. Souhrn výbavy v deníku (`.possessions`) je sdílená část a zůstává v původních stylech; tento krok ji nepřesouvá.
+
+Před přesunem a po něm byly v prohlížeči porovnány seznam nálezů, příprava s více předměty, zveřejněná kořist s rozbaleným rozdělováním mincí a inventář s uloženými předměty. Editor, detail i inventář byly ověřeny také při šířce 390 px. V sedmi kontrolovaných variantách se shodovaly sledované styly a geometrie; posuvníky zůstaly skryté. Po tomto kroku je v importované zdrojové kaskádě 42 `!important`.
+
+Odpočinek a léčení mají vlastní `app/styles/rest-healing.css` (16 pravidel včetně rozložení pod 480 px). `.recovery-form` vymezuje formulář a nahrazuje pět silových přepisů konkrétními selektory; varianta `.secondary.recovery-open` zachovává rozestup tlačítka v herních mechanikách. Stejně pojmenované styly obnovovacích klíčů (`.recovery-card`) tento soubor neobsahuje.
+
+Přesun byl porovnán na zraněné testovací postavě v šesti variantách: obnova zadaného počtu životů, doplnění do maxima s polem pro magenergii a prázdný výběr, vždy na běžné i úzké obrazovce. Kontrolované styly a geometrie se shodovaly; žádná obnova nebyla odeslána. Posouvání zůstává dostupné bez lišty. Celkově nyní zbývá 37 `!important` v importovaných zdrojových stylech.

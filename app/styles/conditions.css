@@ -1,0 +1,94 @@
+/* Status badges and editor. Keep these rules unlayered, matching the legacy cascade. */
+
+.condition-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.condition-badges > .condition-badge {
+  display: inline-block;
+  padding: 2px 5px;
+  border: 1px solid #d8cba8;
+  border-radius: 4px;
+  background: #f2ebd5;
+  color: #6d6246;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: normal;
+}
+.condition-badges > .condition-badge > span {
+  display: inline;
+}
+.condition-badges > .condition-badge.condition-expired {
+  border-style: dashed;
+  color: #9a6b46;
+}
+.condition-list {
+  margin: 18px 0;
+  max-height: 270px;
+  overflow: auto;
+}
+.condition-card {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  margin-bottom: 8px;
+  background: #faf9f0;
+}
+.condition-card p {
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 7px 0;
+}
+.condition-card > small {
+  font-size: 10px;
+  color: #78826e;
+}
+.condition-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 7px;
+}
+.condition-card-actions button {
+  font-size: 11px;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.condition-form .condition-secret {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+}
+.condition-form .condition-secret input {
+  width: auto;
+  margin: 0;
+  accent-color: var(--action);
+}
+.condition-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.initiative-list .condition-badges {
+  gap: 3px;
+}
+.initiative-list .condition-badges > .condition-badge {
+  font-size: 9px;
+  padding: 1px 4px;
+}
+.member-info .condition-badges {
+  margin-top: 4px;
+}
+.condition-list .condition-badges > .condition-badge {
+  font-size: 12px;
+}
+.modal .condition-list {
+  max-height: none;
+  overflow: visible;
+}

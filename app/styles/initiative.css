@@ -1,0 +1,172 @@
+/* Initiative tracker, participant editor and responsive panel. Status badge styling stays in conditions.css. */
+.initiative-tracker {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 14px;
+}
+.initiative-tracker .section-title {
+  align-items: center;
+  padding-bottom: 6px;
+}
+.initiative-tracker .section-title > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.initiative-tracker .section-title button {
+  padding: 5px;
+}
+.initiative-tracker > p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #78826e;
+  margin: 5px 0 9px;
+}
+.initiative-tracker .initiative-current {
+  color: var(--green);
+}
+.initiative-current strong {
+  display: block;
+  font-size: 12px;
+}
+.initiative-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  max-height: 175px;
+  overflow: auto;
+}
+.initiative-list li {
+  padding: 6px 8px;
+  font-size: 11px;
+  display: flex;
+  gap: 6px;
+  border-radius: 4px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+.initiative-list li > span {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.initiative-list li small {
+  font-size: 9px;
+  color: #947755;
+}
+.initiative-list .is-current {
+  background: #e5ebd9;
+  border-left: 3px solid #657b50;
+  font-weight: 600;
+}
+.initiative-actions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.initiative-next,
+.initiative-prepare {
+  background: var(--action);
+  color: var(--action-text);
+  font-size: 11px;
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+.initiative-next {
+  flex: 1;
+}
+.initiative-candidates {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 12px;
+  margin: 18px 0;
+  max-height: 240px;
+  overflow: auto;
+}
+.initiative-candidates legend {
+  font-size: 12px;
+  color: #78826e;
+}
+.initiative-form .initiative-candidates label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+  font-size: 13px;
+}
+.initiative-form .initiative-candidates input {
+  width: auto;
+  margin: 0;
+  accent-color: var(--action);
+}
+.initiative-candidates small {
+  color: #947755;
+}
+.initiative-edit-list {
+  padding-left: 24px;
+  max-height: 280px;
+  overflow: auto;
+}
+.initiative-edit-list li {
+  padding: 6px 0;
+}
+.initiative-edit-list li > span {
+  display: inline-block;
+  min-width: 40%;
+  font-size: 13px;
+}
+.initiative-edit-list button {
+  padding: 6px;
+  font-size: 11px;
+}
+.mobile-initiative-panel {
+  display: none;
+}
+.mobile-initiative-panel[hidden] {
+  display: none;
+}
+@media (max-width: 850px) {
+  .mobile-initiative-panel {
+    display: block;
+    position: absolute;
+    bottom: 14px;
+    left: 12px;
+    z-index: 24;
+    background: #fcfbf3f5;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 9px 12px;
+    max-width: 280px;
+    max-height: 50vh;
+    overflow: auto;
+  }
+  .mobile-initiative-panel > summary {
+    font-size: 12px;
+    color: var(--control-ink);
+    cursor: pointer;
+  }
+  .mobile-initiative-panel .initiative-tracker {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+}
+.initiative-tools {
+  display: flex;
+  gap: 2px;
+}
+.party > .initiative-tracker {
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+.initiative-actions > button {
+  min-height: 32px;
+  flex-shrink: 0;
+}
+.modal .initiative-candidates,
+.modal .initiative-edit-list {
+  max-height: none;
+  overflow: visible;
+}
+.initiative-list .life-badge {
+  display: block;
+  font-size: 9px;
+}

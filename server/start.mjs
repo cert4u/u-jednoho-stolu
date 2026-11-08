@@ -7,6 +7,12 @@ import {startProdServer} from 'vinext/server/prod-server';
 import {openDatabase,dataDirectory} from './database.mjs';
 import {createSnapshot,snapshots,downloadSnapshot,storageStatus} from './snapshots.mjs';
 import {equal,json,body} from './http.mjs';
+const adminFiles = new Map([
+ ['/admin','./admin.html'], ['/admin/','./admin.html'],
+ ['/admin/app.js','./admin.js'], ['/admin/catalogs.js','./admin-catalogs.js'],
+ ['/admin/dialogs.js','./admin-dialog.js'],
+ ['/admin/admin-catalog-presentation.js','./admin-catalog-presentation.js'],
+]);
 const password=process.env.STUL_ADMIN_PASSWORD||'',token=process.env.STUL_UPDATER_TOKEN||'';
 if(password.length<20||token.length<32)throw new Error('Nastav STUL_ADMIN_PASSWORD (alespoň 20 znaků) a STUL_UPDATER_TOKEN (alespoň 32 znaků).');
 const origin=new URL(process.env.PUBLIC_ORIGIN||'http://localhost:8080');
@@ -65,9 +71,9 @@ const server=createServer(async(req,res)=>{try{
   }
   json(res,404,{error:'Nenalezeno.'});return;
  }
- if(pathname==='/admin'||pathname==='/admin/'||pathname==='/admin/app.js'||pathname==='/admin/catalogs.js'||pathname==='/admin/dialogs.js'){
+ if(adminFiles.has(pathname)){
   if(req.method!=='GET'){json(res,405,{error:'Použij GET.'});return;}
-  const js=pathname.endsWith('.js');res.writeHead(200,{'Content-Type':js?'text/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"});res.end(readFileSync(new URL(js?(pathname==='/admin/catalogs.js'?'./admin-catalogs.js':pathname==='/admin/dialogs.js'?'./admin-dialog.js':'./admin.js'):'./admin.html',import.meta.url)));return;
+  const js=pathname.endsWith('.js');res.writeHead(200,{'Content-Type':js?'text/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"});res.end(readFileSync(new URL(adminFiles.get(pathname),import.meta.url)));return;
  }
  if(pathname.startsWith('/admin/api/')){
   if(req.method==='POST'&&req.headers.origin!==origin.origin){json(res,403,{error:'Neplatný původ požadavku.'});return;}

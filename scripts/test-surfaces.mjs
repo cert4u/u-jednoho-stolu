@@ -1,73 +1,259 @@
 import assert from 'node:assert/strict';
 await import('./generator-test-import.mjs');
-const {emptyDungeon,editDungeon,playerDungeon,applyMap}=await import('../lib/dungeon.ts');
-const {surfaceRegions,rememberSurfaces}=await import('../lib/surfaces.ts');
-const {organicSurfacePath}=await import('../lib/surface-drawing.ts');
-const {sceneryEntrySchema}=await import('../lib/scenery-catalog.ts');
-const {initialGame}=await import('../lib/game.ts');
-const {remember}=await import('../lib/exploration.ts');
-const {makeBackup,readBackup}=await import('../lib/backup.ts');
-const base=editDungeon(emptyDungeon(),{tool:'room',from:[1,1],to:[12,12]});
-const paint=(map,points,extra={})=>editDungeon(map,{tool:'surface',kind:'water-area',op:'add',points,...extra});
-let map=paint(base,[[3,3],[6,6]]);
-assert.equal(surfaceRegions(map).length,1,'Fast diagonal drags must be connected.');
-const original=structuredClone(map);
-const path=organicSurfacePath(surfaceRegions(map)[0]);
-assert(path.includes('Q')&&path.endsWith('Z'));
-assert.equal(path,organicSurfacePath(surfaceRegions({...map,surfaces:[...map.surfaces].reverse()})[0]));
-assert.deepEqual(map,original,'Drawing does not mutate game data.');
-const connected=paint(paint(base,[[3,3],[4,3]]),[[5,3],[6,3]]);
-assert.equal(surfaceRegions(connected).length,1,'Separate adjacent strokes merge.');
-const separated=editDungeon(connected,{tool:'wall',points:[[5,2],[5,5]]});
-assert.equal(surfaceRegions(separated).length,2,'Walls split decoration contours.');
-const diagonals=paint(paint(base,[[2,2]]),[[3,3]]);
-assert.equal(surfaceRegions(diagonals).length,2,'Touching corners do not join.');
-map=paint(map,[[4,3]],{kind:'mud-area'});
-assert.equal(map.surfaces.find(p=>p.x===4&&p.y===3).kind,'mud-area');
-const remove=paint(map,[[4,3]],{op:'remove'});
-assert.equal(remove.surfaces.find(p=>p.x===4&&p.y===3).kind,'mud-area','Erase only selected material.');
-assert(!paint(map,[[4,3]],{op:'remove',kind:'mud-area'}).surfaces.some(p=>p.x===4&&p.y===3));
-for(const extra of [{kind:'crate'},{kind:'missing-material'},{points:[[56,2]]},{points:[[2.5,2]]},{points:[]}])assert.throws(()=>paint(base,[[2,2]],extra));
-assert.throws(()=>paint(base,[[0,0]]));
-map=paint(map,[[8,8]],{hidden:true});map.revealed=[...map.floors];
-const publicMap=playerDungeon(map);
-assert(!publicMap.surfaces.some(p=>p.x===8&&p.y===8));assert(publicMap.surfaces.every(p=>!('hidden' in p)));
-const level={id:'ground',name:'Test',map,memory:emptyDungeon(),history:[],visible:[]};
-remember(level,['3,3','4,3']);
-assert.equal(level.memory.surfaces.length,2);
-const memory=structuredClone(level.memory);
-const changed=paint(map,[[3,3]],{op:'remove'});
-assert.deepEqual(rememberSurfaces(memory,changed,new Set(['10,10'])),memory.surfaces);
-level.map=changed;remember(level,['3,3']);assert.equal(level.memory.surfaces.length,1);
+const { emptyDungeon, editDungeon, playerDungeon, applyMap } = await import(
+  '../lib/dungeon.ts'
+);
+const { surfaceRegions, rememberSurfaces } = await import('../lib/surfaces.ts');
+const { organicSurfacePath } = await import('../lib/surface-drawing.ts');
+const { sceneryEntrySchema } = await import('../lib/scenery-catalog.ts');
+const { initialGame } = await import('../lib/game.ts');
+const { remember } = await import('../lib/exploration.ts');
+const { makeBackup, readBackup } = await import('../lib/backup.ts');
+const base = editDungeon(emptyDungeon(), {
+  tool: 'room',
+  from: [1, 1],
+  to: [12, 12],
+});
+const paint = (map, points, extra = {}) =>
+  editDungeon(map, {
+    tool: 'surface',
+    kind: 'water-area',
+    op: 'add',
+    points,
+    ...extra,
+  });
+let map = paint(base, [
+  [3, 3],
+  [6, 6],
+]);
+assert.equal(
+  surfaceRegions(map).length,
+  1,
+  'Fast diagonal drags must be connected.',
+);
+const original = structuredClone(map);
+const path = organicSurfacePath(surfaceRegions(map)[0]);
+assert(path.includes('Q') && path.endsWith('Z'));
+assert.equal(
+  path,
+  organicSurfacePath(
+    surfaceRegions({ ...map, surfaces: [...map.surfaces].reverse() })[0],
+  ),
+);
+assert.deepEqual(map, original, 'Drawing does not mutate game data.');
+const connected = paint(
+  paint(base, [
+    [3, 3],
+    [4, 3],
+  ]),
+  [
+    [5, 3],
+    [6, 3],
+  ],
+);
+assert.equal(
+  surfaceRegions(connected).length,
+  1,
+  'Separate adjacent strokes merge.',
+);
+const separated = editDungeon(connected, {
+  tool: 'wall',
+  points: [
+    [5, 2],
+    [5, 5],
+  ],
+});
+assert.equal(
+  surfaceRegions(separated).length,
+  2,
+  'Walls split decoration contours.',
+);
+const diagonals = paint(paint(base, [[2, 2]]), [[3, 3]]);
+assert.equal(
+  surfaceRegions(diagonals).length,
+  2,
+  'Touching corners do not join.',
+);
+map = paint(map, [[4, 3]], { kind: 'mud-area' });
+assert.equal(map.surfaces.find((p) => p.x === 4 && p.y === 3).kind, 'mud-area');
+const remove = paint(map, [[4, 3]], { op: 'remove' });
+assert.equal(
+  remove.surfaces.find((p) => p.x === 4 && p.y === 3).kind,
+  'mud-area',
+  'Erase only selected material.',
+);
+assert(
+  !paint(map, [[4, 3]], { op: 'remove', kind: 'mud-area' }).surfaces.some(
+    (p) => p.x === 4 && p.y === 3,
+  ),
+);
+for (const extra of [
+  { kind: 'crate' },
+  { kind: 'missing-material' },
+  { points: [[56, 2]] },
+  { points: [[2.5, 2]] },
+  { points: [] },
+])
+  assert.throws(() => paint(base, [[2, 2]], extra));
+assert.throws(() => paint(base, [[0, 0]]));
+map = paint(map, [[8, 8]], { hidden: true });
+map.revealed = [...map.floors];
+const publicMap = playerDungeon(map);
+assert(!publicMap.surfaces.some((p) => p.x === 8 && p.y === 8));
+assert(publicMap.surfaces.every((p) => !('hidden' in p)));
+const level = {
+  id: 'ground',
+  name: 'Test',
+  map,
+  memory: emptyDungeon(),
+  history: [],
+  visible: [],
+};
+remember(level, ['3,3', '4,3']);
+assert.equal(level.memory.surfaces.length, 2);
+const memory = structuredClone(level.memory);
+const changed = paint(map, [[3, 3]], { op: 'remove' });
+assert.deepEqual(
+  rememberSurfaces(memory, changed, new Set(['10,10'])),
+  memory.surfaces,
+);
+level.map = changed;
+remember(level, ['3,3']);
+assert.equal(level.memory.surfaces.length, 1);
 assert(!JSON.stringify(level.memory).includes('hidden'));
-const game=initialGame('PJ','token');game.dungeon=base;
-const command={tool:'surface',kind:'moss-area',op:'add',points:[[2,2],[7,5]],requestId:crypto.randomUUID()};
-applyMap(game,command);const count=game.dungeon.surfaces.length;
-applyMap(game,command);assert.equal(game.dungeon.surfaces.length,count);
-assert.deepEqual(readBackup(makeBackup(game)).dungeon,game.dungeon);
-applyMap(game,{tool:'undo',requestId:crypto.randomUUID()});assert.deepEqual(game.dungeon,base);
-const cut=editDungeon(map,{tool:'subtract',points:[[4,3]]});assert(!cut.surfaces.some(p=>p.x===4&&p.y===3));
-const max=editDungeon(emptyDungeon(),{tool:'room',from:[0,0],to:[27,19]});
-const all=paint(max,Array.from({length:20},(_,y)=>[y%2?27:0,y]).flatMap(([x,y])=>[[x,y],[27-x,y]]));
-assert.equal(all.surfaces.length,560);
-const start=performance.now();assert(organicSurfacePath(surfaceRegions(all)[0]).length>0);assert(performance.now()-start<2000);
-const community={id:'community-surface',name:'Popel',category:'floor',environments:['cave'],automatic:false,path:'M2 2L30 30',surface:{color:'#999999',texture:'speckles',roughness:.8}};
+const game = initialGame('PJ', 'token');
+game.dungeon = base;
+const command = {
+  tool: 'surface',
+  kind: 'moss-area',
+  op: 'add',
+  points: [
+    [2, 2],
+    [7, 5],
+  ],
+  requestId: crypto.randomUUID(),
+};
+applyMap(game, command);
+const count = game.dungeon.surfaces.length;
+applyMap(game, command);
+assert.equal(game.dungeon.surfaces.length, count);
+assert.deepEqual(readBackup(makeBackup(game)).dungeon, game.dungeon);
+applyMap(game, { tool: 'undo', requestId: crypto.randomUUID() });
+assert.deepEqual(game.dungeon, base);
+const cut = editDungeon(map, { tool: 'subtract', points: [[4, 3]] });
+assert(!cut.surfaces.some((p) => p.x === 4 && p.y === 3));
+const max = editDungeon(emptyDungeon(), {
+  tool: 'room',
+  from: [0, 0],
+  to: [27, 19],
+});
+const all = paint(
+  max,
+  Array.from({ length: 20 }, (_, y) => [y % 2 ? 27 : 0, y]).flatMap(
+    ([x, y]) => [
+      [x, y],
+      [27 - x, y],
+    ],
+  ),
+);
+assert.equal(all.surfaces.length, 560);
+const start = performance.now();
+assert(organicSurfacePath(surfaceRegions(all)[0]).length > 0);
+assert(performance.now() - start < 2000);
+const community = {
+  id: 'community-surface',
+  name: 'Popel',
+  category: 'floor',
+  environments: ['cave'],
+  automatic: false,
+  path: 'M2 2L30 30',
+  surface: { color: '#999999', texture: 'speckles', roughness: 0.8 },
+};
 assert(sceneryEntrySchema.safeParse(community).success);
-for(const extra of [{category:'object'},{automatic:true},{surface:{...community.surface,color:'url(https://x)'}},{surface:{...community.surface,texture:'<script>'}}])assert(!sceneryEntrySchema.safeParse({...community,...extra}).success);
-console.log('PASS: organic joined contours, diagonal brush continuity, wall separation, material erasing, bounds, deterministic immutable drawing, hidden/fog memory, replay/undo, backups, 560 cells and community profiles.');
+for (const extra of [
+  { category: 'object' },
+  { automatic: true },
+  { surface: { ...community.surface, color: 'url(https://x)' } },
+  { surface: { ...community.surface, texture: '<script>' } },
+])
+  assert(!sceneryEntrySchema.safeParse({ ...community, ...extra }).success);
+console.log(
+  'PASS: organic joined contours, diagonal brush continuity, wall separation, material erasing, bounds, deterministic immutable drawing, hidden/fog memory, replay/undo, backups, 560 cells and community profiles.',
+);
 
-const {sceneryChoices}=await import('../lib/scenery-catalog.ts');
-assert.deepEqual(sceneryChoices('area','castle').map(p=>p.id).sort(),['moss-area','rubble-area','water-area']);
-assert.deepEqual(sceneryChoices('area','mine').map(p=>p.id).sort(),['mud-area','rubble-area','water-area']);
-assert.equal(sceneryChoices('area','cave').length,4);assert.equal(sceneryChoices('area','all').length,4);
-assert(sceneryChoices('floor','all').every(p=>!p.surface));
-const {surfaceTextureMarks}=await import('../lib/surface-texture.ts');
-const textureCells=Array.from({length:60},(_,i)=>[i%10,Math.floor(i/10)]);
-for(const texture of ['ripples','speckles','strokes','stones']){
- const marks=surfaceTextureMarks(textureCells,'test-material',texture);
- assert.deepEqual(marks,surfaceTextureMarks([...textureCells].reverse(),'test-material',texture));
- assert(marks.length>0&&marks.length<textureCells.length,'Textures should leave empty space.');
- assert.equal(new Set(marks.map(m=>m.d)).size,marks.length);
- assert(marks.every(m=>!m.d.includes('NaN')&&m.d.startsWith('M')));
+const { sceneryChoices } = await import('../lib/scenery-catalog.ts');
+assert.deepEqual(
+  sceneryChoices('area', 'castle')
+    .map((p) => p.id)
+    .sort(),
+  ['moss-area', 'rubble-area', 'water-area'],
+);
+assert.deepEqual(
+  sceneryChoices('area', 'mine')
+    .map((p) => p.id)
+    .sort(),
+  ['mud-area', 'rubble-area', 'water-area'],
+);
+assert.equal(sceneryChoices('area', 'cave').length, 4);
+assert.equal(sceneryChoices('area', 'all').length, 4);
+assert(sceneryChoices('floor', 'all').every((p) => !p.surface));
+const { surfaceTextureMarks } = await import('../lib/surface-texture.ts');
+const textureCells = Array.from({ length: 60 }, (_, i) => [
+  i % 10,
+  Math.floor(i / 10),
+]);
+for (const texture of ['ripples', 'speckles', 'strokes', 'stones']) {
+  const marks = surfaceTextureMarks(textureCells, 'test-material', texture);
+  assert.deepEqual(
+    marks,
+    surfaceTextureMarks([...textureCells].reverse(), 'test-material', texture),
+  );
+  assert(
+    marks.length > 0 && marks.length < textureCells.length,
+    'Textures should leave empty space.',
+  );
+  assert.equal(new Set(marks.map((m) => m.d)).size, marks.length);
+  assert(marks.every((m) => !m.d.includes('NaN') && m.d.startsWith('M')));
 }
-console.log('PASS: area environment filters and sparse deterministic world-anchored texture variants.');
+console.log(
+  'PASS: area environment filters and sparse deterministic world-anchored texture variants.',
+);
+
+// A material saved outside the legacy paper must still produce visible pigment.
+const { MAP_WIDTH, MAP_HEIGHT } = await import('../lib/map-limits.ts');
+for (const [x, y] of [
+  [30, 5],
+  [5, 25],
+  [40, 30],
+  [MAP_WIDTH - 1, MAP_HEIGHT - 1],
+]) {
+  const extended = editDungeon(emptyDungeon(), {
+    tool: 'room',
+    from: [x, y],
+    to: [x, y],
+  });
+  const painted = paint(extended, [[x, y]]);
+  const region = surfaceRegions(painted)[0];
+  assert(region, `Saved material missing at ${x},${y}`);
+  const contour = organicSurfacePath(region);
+  assert(
+    contour.includes('Q') && contour.endsWith('Z'),
+    `Material at ${x},${y} must have a visible contour`,
+  );
+  assert.equal(contour, organicSurfacePath(region));
+  const coordinates = contour.match(/-?\d+(?:\.\d+)?/g).map(Number);
+  assert(
+    coordinates.every(
+      (value, i) =>
+        value >= 0 && value <= (i % 2 === 0 ? MAP_WIDTH : MAP_HEIGHT),
+    ),
+  );
+  assert.equal(
+    painted.surfaces.length,
+    1,
+    'Rendering must preserve the saved material.',
+  );
+}
+console.log(
+  'PASS: organic materials render beyond both legacy boundaries and at the expanded map corner.',
+);
