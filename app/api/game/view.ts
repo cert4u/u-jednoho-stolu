@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT } from '../../../lib/map-limits';
 import {campaignVisuals} from '../../../lib/catalogs/visuals';
 import { storyOutlineView } from '../../../lib/story-outline';
 import { sessionRecapView } from '../../../lib/session-recap';
@@ -69,8 +70,8 @@ export function gameView(
       (pj ? map : visible).floors.map((k) => [k, 'floor']),
     ),
     fog: pj
-      ? Array.from({ length: 560 }, (_, i) =>
-          cellKey(i % 28, Math.floor(i / 28)),
+      ? Array.from({ length: MAP_WIDTH * MAP_HEIGHT }, (_, i) =>
+          cellKey(i % MAP_WIDTH, Math.floor(i / MAP_WIDTH)),
         ).filter((k) => !seen.has(k))
       : [],
     members: g.members

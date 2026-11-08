@@ -56,7 +56,7 @@ Hotový je volitelný odpočet při přechodu do dalšího kola a použití lé�
 
 ## Podpůrné věci mimo herní pravidla
 
-- Rozšiřování kreslicí plochy: stále platí **28 × 20 polí na patro**. Okolní papír je vzhled, ne další souřadnice. Změna musí zahrnout kreslení, pohyb, dohled, příšery, poznámky i zálohy; nejde jen o roztažení SVG.
+- Kreslicí plocha má **56 × 40 polí na patro**, včetně pohybu, dohledu, příšer, poznámek a záloh. Generátor zachovává svůj původní formát 28 × 20; hotovou jeskyni lze ručně rozšířit. Okolní papír mimo 56 × 40 slouží pouze k posunu pohledu.
 - Ukázání místa družině krátkým označením bez přesunu jejího žetonu.
 - Opakovaně použitelné vlastní přípravy PJ a přehlednější deník herních sezení.
 - Společný test celého večera a skutečných mikrofonů na různých sítích. Automatické kontroly nenahrazují tento provozní test.

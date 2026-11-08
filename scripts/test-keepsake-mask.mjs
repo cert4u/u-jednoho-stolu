@@ -73,6 +73,8 @@ try {
   assert.equal((markup.match(/class="table-keepsakes"/g) || []).length, 2);
   assert(markup.includes('mask-type:luminance'));
   assert(markup.includes('data-map-occlusion="true"'));
+  assert(markup.includes('data-occlusion-halo="true"'));
+  assert(markup.includes(`stdDeviation="${SIZE / 3}"`));
 
   // Exercise the actual editor wiring with a deliberately private source map.
   const { default: Editor } = await import('../components/dungeon-map.tsx');

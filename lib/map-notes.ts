@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT } from './map-limits';
 import {pruneStoryLinks} from './story-outline';
 import type {Game,Member} from './game';
 import {cellKey,dungeonFor,type Dungeon} from './dungeon';
@@ -19,7 +20,7 @@ export function mapNoteAction(g:Game,actor:Member,b:Record<string,unknown>){
  if(actor.role!=='pj')throw new Error('Poznámky na mapě spravuje pouze Pán jeskyně.');
  if(typeof b.requestId!=='string'||! /^[a-zA-Z0-9-]{16,80}$/.test(b.requestId))throw new Error('Chybí identifikátor akce.');
  if(g.mapNoteOperations?.includes(b.requestId))return;
- if(typeof b.levelId!=='string'||typeof b.x!=='number'||typeof b.y!=='number'||!Number.isInteger(b.x)||!Number.isInteger(b.y)||b.x<0||b.x>=28||b.y<0||b.y>=20)throw new Error('Vyber políčko na platném patře.');
+ if(typeof b.levelId!=='string'||typeof b.x!=='number'||typeof b.y!=='number'||!Number.isInteger(b.x)||!Number.isInteger(b.y)||b.x<0||b.x>=MAP_WIDTH||b.y<0||b.y>=MAP_HEIGHT)throw new Error('Vyber políčko na platném patře.');
  const level=g.atlas?getLevel(g.atlas,b.levelId):undefined;if(!g.atlas&&b.levelId!=='ground')throw new Error('Patro neexistuje.');
  const notes=g.mapNotes||[],note=notes.find(n=>n.levelId===b.levelId&&n.x===b.x&&n.y===b.y);
  if(b.op==='save'){
@@ -49,7 +50,7 @@ export function mapNoteAction(g:Game,actor:Member,b:Record<string,unknown>){
  }else{
   if(!note||b.noteId!==note.id||b.expectedRevision!==note.revision)throw new EditConflict('Poznámka se mezitím změnila nebo byla odebrána. Otevři místo znovu.');
   if(b.op==='move'){
-   if(typeof b.toX!=='number'||typeof b.toY!=='number'||!Number.isInteger(b.toX)||!Number.isInteger(b.toY)||b.toX<0||b.toX>=28||b.toY<0||b.toY>=20)throw new Error('Vyber políčko uvnitř mapy.');
+   if(typeof b.toX!=='number'||typeof b.toY!=='number'||!Number.isInteger(b.toX)||!Number.isInteger(b.toY)||b.toX<0||b.toX>=MAP_WIDTH||b.toY<0||b.toY>=MAP_HEIGHT)throw new Error('Vyber políčko uvnitř mapy.');
    if(!(level?.map||dungeonFor(g)).floors.includes(cellKey(b.toX,b.toY)))throw new Error('Značku umísti na podlahu.');
    if(notes.some(n=>n.id!==note.id&&n.levelId===note.levelId&&n.x===b.toX&&n.y===b.toY))throw new Error('Na cílovém políčku už je jiné místo.');
    note.x=b.toX;note.y=b.toY;note.revision++;

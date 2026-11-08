@@ -130,7 +130,7 @@ PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. 
 3. Potvrď **Vložit tato patra do dobrodružství**. Při existující mapě se přidají nová patra; zcela prázdné výchozí patro se využije pro první vygenerované patro.
 4. V přípravě můžeš kresbu upravit. Pro zahájení průzkumu nastav vedoucího a umísti družinu; vygenerovaná kresba se hráčům sama neodhalí.
 
-Celkem lze mít 8 pater po 28 × 20 polích. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností a role pomáhají PJ v náhledu. V2 ukládá graf a původ generování soukromě; po strukturální ruční úpravě se graf označí jako neaktuální. Podrobnosti, audit a měření jsou v [technickém popisu generátoru](docs/GENERATOR_V2.md). První nové patro je přízemí s trvalou značkou vchodu; volba **Samostatný východ na přízemí** přidá druhou značku. Další patra vedou do hloubky.
+Celkem lze mít 8 pater s kreslicí plochou 56 × 40 polí. Generátor nadále připravuje jeskyně v oblasti 28 × 20 polí, které lze ručně rozšířit. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností a role pomáhají PJ v náhledu. V2 ukládá graf a původ generování soukromě; po strukturální ruční úpravě se graf označí jako neaktuální. Podrobnosti, audit a měření jsou v [technickém popisu generátoru](docs/GENERATOR_V2.md). První nové patro je přízemí s trvalou značkou vchodu; volba **Samostatný východ na přízemí** přidá druhou značku. Další patra vedou do hloubky.
 
 V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každém patře může být jedna značka každého druhu; dalším kliknutím ji přesuneš, gumou odstraníš. Tlačítko **Umístit družinu u vchodu** zahájí průzkum od vchodu zobrazeného patra. Samotné vložení značky družinu nepřesouvá. Východ je orientační značka, přechod do venkovní mapy zatím neprovádí. Hráči značky uvidí až po odkrytí; navštívená místa zůstávají v paměti mapy.
 
@@ -229,7 +229,7 @@ Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovac
 
 Úplný přehled technických i herních hranic je v [limitech](docs/LIMITS.md); při potížích začni [řešením problémů](docs/TROUBLESHOOTING.md).
 
-- Mapa jednoho patra má 28 × 20 polí; okolní papír je prostor pro posouvání pohledu.
+- Mapa jednoho patra má 56 × 40 polí; okolní papír je prostor pro posouvání pohledu.
 - Nejvýše 8 pater, 12 aktivních účastníků, 200 postav a 200 příšer včetně archivovaných.
 - Nejvýše 200 poznámek na mapě v celém dobrodružství; jedna poznámka na políčko a patro.
 - Nejvýše 50 připravených/otevřených nálezů a 100 uzavřených, po 24 položkách a 200 záznamech převzetí. Získaná výbava má nejvýše 200 názvů na postavu.

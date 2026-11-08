@@ -67,3 +67,5 @@ Před tagováním musí projít úplné CI přesného vydávaného commitu, vče
 ## Vydání 1.2.3
 
 Refaktor, čistý lint, odebrání prověřených nepoužívaných šablon/závislostí a maska dekorací nevyžadují proti 1.2.2 migraci, nové nastavení ani přestavbu updateru. Release marker uvádí `migrations: false`, `updater: false`, `config: false`. Ověř čistou instalaci, oba buildy, striktní lint, úplné CI přesného vydávaného commitu včetně Dockeru a skutečné překrytí při posunu/zoomu. [Rozsah úklidu](CLEANUP.md) · [Migrační návod](SELF_HOSTING.md#přechod-z-122-na-123).
+
+Mapy v 1.2.3 lze ručně rozšířit na 56 × 40 polí. Generátor ponechává 28 × 20. Zálohy mají stále formát 1, ale starší aplikace mapu s novými souřadnicemi mimo 28 × 20 odmítne; pro návrat použij původní předaktualizační zálohu.

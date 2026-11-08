@@ -7,7 +7,7 @@ Nástroj **Stafáž** je dostupný PJ v přípravě i odkrývání. Paleta oddě
 ## Umístění a úpravy
 
 1. Vyber symbol, malou/střední/velkou velikost a otočení po 90°. Volba **Jen PJ** založí skrytý prvek.
-2. Klikni do políčka mapy, případně použij šipky a Enter. Každé vložení je samostatný tah. Prvek může být uvnitř i vně půdorysu v rámci mřížky 28 × 20.
+2. Klikni do políčka mapy, případně použij šipky a Enter. Každé vložení je samostatný tah. Prvek může být uvnitř i vně půdorysu v rámci mřížky 56 × 40.
 3. Ve zvoleném nástroji klikni na existující symbol nebo na jeho políčku stiskni Enter. Otevře se editor velikosti, otočení, skrytí a poznámky PJ do 1000 znaků.
 4. Pro přesun nejdřív ulož rozepsané změny. **Přesunout v mapě** čeká na nové políčko; umístění potvrdí kliknutí nebo Enter. Přesun lze zrušit v paletě, klávesou Escape nebo změnou nástroje. Přepnutí na jiné patro přesun mezi patry neprovede.
 5. **Odstranit stafáž** prvek odebere. Vložení, úpravu, přesun i odstranění lze vrátit běžným **Zpět**, v rámci společné historie mapy.

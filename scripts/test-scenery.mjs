@@ -8,7 +8,7 @@ const original=await get(pj,'&download=backup');
 const add={tool:'scenery',op:'save',kind:'barrel',size:'medium',rotation:0,note:'TAJNÁ STAFÁŽ',hidden:false,expectedRevision:null,x:3,y:3};
 await post(player,'map',add,403);
 await post(pj,'map',{...add,rotation:45},400);
-await post(pj,'map',{...add,x:28},400);
+await post(pj,'map',{...add,x:56},400);
 const requestId=crypto.randomUUID();
 let state=(await post(pj,'map',{...add,requestId})).game;
 const item=state.dungeon.scenery[0];

@@ -45,7 +45,7 @@ Vchod a samostatný východ jsou trvalé značky mapy; PJ může zahájit průzk
 - [x] Volitelný odpočet stavů po kole a použití léčivého předmětu s náhledem.
 - [ ] Připomenutí postupu úrovně.
 
-Samostatně zbývá rozšiřování kreslicí plochy za současných 28 × 20 polí. Označování místností ani inspekce tento limit neodstranily. Rozsah a pořadí navržených funkcí potvrdí zkušenost z hraní.
+Ruční kreslicí plocha byla rozšířena na 56 × 40 polí; generátor si zachovává verzovaný formát 28 × 20. Další rozšíření vyžaduje nové měření výkonu a kompatibility. Rozsah a pořadí navržených funkcí potvrdí zkušenost z hraní.
 
 ## Možná další rozšíření k diskusi
 

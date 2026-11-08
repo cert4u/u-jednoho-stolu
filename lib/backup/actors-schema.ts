@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT } from '../map-limits';
 import {contentReference} from '../content-schema';
 import { z } from 'zod';
 import { id, int, text } from './fields';
@@ -78,8 +79,8 @@ export const member = z
     maxHp: int(1, 999),
     stats: text(2000),
     inventory: text(4000),
-    x: int(0, 27),
-    y: int(0, 19),
+    x: int(0, MAP_WIDTH - 1),
+    y: int(0, MAP_HEIGHT - 1),
     color: z.string().regex(/^#[0-9a-f]{6}$/i),
     seen: z.number().finite(),
     experience: z.number().int().nonnegative().safe().optional(),
@@ -107,8 +108,8 @@ export const monster = z
     number: int(1, 1000000),
     name: text(60),
     levelId: id,
-    x: int(0, 27).nullable(),
-    y: int(0, 19).nullable(),
+    x: int(0, MAP_WIDTH - 1).nullable(),
+    y: int(0, MAP_HEIGHT - 1).nullable(),
     hp: int(0, 9999),
     maxHp: int(1, 9999),
     stats: text(2000),

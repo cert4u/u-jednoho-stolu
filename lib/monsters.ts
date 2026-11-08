@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT } from './map-limits';
 import {CatalogResolver} from './catalogs/resolver';
 import {visibleConditions,type Condition} from './conditions';
 import {guardPatch,monsterSheet} from './sheets';
@@ -56,7 +57,7 @@ export function monsterAction(g:Game,actor:Member,b:Record<string,unknown>,libra
   break;
  }
  case 'update':{if(!monster||monster.archived)throw new Error('Příšera neexistuje.');guardPatch(b,monsterSheet(monster));const combat=combatFields(b,monster.combat);if(combat)monster.combat=combat;const maxHp=b.maxHp===undefined?monster.maxHp:integer(b.maxHp,1,9999,'Maximum životů');const hp=b.hp===undefined?Math.min(monster.hp,maxHp):integer(b.hp,0,maxHp,'Životy');if(b.name!==undefined)monster.name=title(b.name);monster.maxHp=maxHp;monster.hp=hp;if(b.stats!==undefined)monster.stats=String(b.stats).slice(0,2000);if(b.notes!==undefined)monster.notes=String(b.notes).slice(0,4000);if(b.hidden!==undefined){if(typeof b.hidden!=='boolean')throw new Error('Neplatné nastavení skrytí.');monster.hidden=b.hidden;}break;}
- case 'move':{if(!monster||monster.archived)throw new Error('Příšera neexistuje.');const x=integer(b.x,0,27,'Souřadnice X'),y=integer(b.y,0,19,'Souřadnice Y');const map=g.atlas?getLevel(g.atlas,levelId).map:dungeonFor(g);if(!map.floors.includes(cellKey(x,y)))throw new Error('Příšeru umísti na podlahu místnosti nebo chodby.');monster.levelId=levelId;monster.x=x;monster.y=y;break;}
+ case 'move':{if(!monster||monster.archived)throw new Error('Příšera neexistuje.');const x=integer(b.x,0,MAP_WIDTH-1,'Souřadnice X'),y=integer(b.y,0,MAP_HEIGHT-1,'Souřadnice Y');const map=g.atlas?getLevel(g.atlas,levelId).map:dungeonFor(g);if(!map.floors.includes(cellKey(x,y)))throw new Error('Příšeru umísti na podlahu místnosti nebo chodby.');monster.levelId=levelId;monster.x=x;monster.y=y;break;}
  case 'damage':case 'heal':{if(!monster||monster.archived)throw new Error('Příšera neexistuje.');const amount=integer(b.amount,1,9999,'Počet životů');monster.hp=b.op==='damage'?Math.max(0,monster.hp-amount):Math.min(monster.maxHp,monster.hp+amount);break;}
  case 'remove':{if(!monster)throw new Error('Příšera neexistuje.');monster.archived=true;break;}
  case 'restore':{if(!monster)throw new Error('Příšera neexistuje.');monster.archived=false;break;}

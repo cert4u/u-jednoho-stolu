@@ -2,6 +2,8 @@
 
 ## 1.2.3 — 2026-11-08
 
+- Ruční kreslicí plocha rozšířena z 28 × 20 na 56 × 40 polí včetně pohybu, poznámek, příšer, stafáže a záloh. Generátor zachovává dosavadní formát a semínka. Pod kresbou dekorace zmizí, v sousedních políčkách mají měkký rozostřený přechod. Starší aplikace nové mapy mimo původní rozměry neimportují.
+
 - Tužka a desetistěnná kostka ustupují pod skutečně zobrazenou geometrií mapy. Měkká SVG maska sleduje posun, zoom i velikost okna; mimo kresbu zůstává původní skica. Hráčská maska používá pouze hráčský pohled.
 - Prověřeným úklidem odstraněno 57 nevyužívaných UI šablon a jeden mobilní hook (6 451 řádků), 10 přímých produkčních závislostí a nepoužívaný `tw-animate-css`. Lockfile má o 20 balíčkových záznamů méně bez změny verzí ostatních balíčků. Zachovány buildy, konektorové adaptéry, volitelné tlačítko a licence. [Rozsah a důkazy](docs/CLEANUP.md).
 

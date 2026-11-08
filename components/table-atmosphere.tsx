@@ -6,6 +6,7 @@ import {
   keepsakeFootprint,
   keepsakeProjection,
 } from './dungeon-map/keepsake-mask';
+import { SIZE, WIDTH, HEIGHT } from './dungeon-map/model';
 
 type Props = {
   shown: Dungeon;
@@ -166,12 +167,13 @@ export default function TableAtmosphere({
           </filter>
           <filter
             id={`keepsake-soft-${id}`}
-            x="-10%"
-            y="-10%"
-            width="120%"
-            height="120%"
+            filterUnits="userSpaceOnUse"
+            x={-SIZE * 2}
+            y={-SIZE * 2}
+            width={WIDTH + SIZE * 4}
+            height={HEIGHT + SIZE * 4}
           >
-            <feGaussianBlur stdDeviation="2" />
+            <feGaussianBlur stdDeviation={SIZE / 3} />
           </filter>
           <mask
             id={`keepsake-map-${id}`}
@@ -183,22 +185,32 @@ export default function TableAtmosphere({
             style={{ maskType: 'luminance' }}
           >
             <rect width="330" height="160" fill="white" />
-            <g filter={`url(#keepsake-soft-${id})`}>
+            <g
+              ref={maskShape}
+              transform="translate(-100000 -100000)"
+              data-map-occlusion="true"
+            >
               <g
-                ref={maskShape}
-                transform="translate(-100000 -100000)"
-                data-map-occlusion="true"
+                filter={`url(#keepsake-soft-${id})`}
+                fill="black"
+                stroke="black"
+                strokeWidth={SIZE}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                data-occlusion-halo="true"
               >
-                <path data-occlusion="floor" d={footprint.floor} fill="black" />
-                <path
-                  data-occlusion="edges"
-                  d={footprint.edges}
-                  fill="none"
-                  stroke="black"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                />
+                <path d={footprint.floor} />
+                <path d={footprint.edges} fill="none" />
               </g>
+              <path data-occlusion="floor" d={footprint.floor} fill="black" />
+              <path
+                data-occlusion="edges"
+                d={footprint.edges}
+                fill="none"
+                stroke="black"
+                strokeWidth="6"
+                strokeLinecap="round"
+              />
             </g>
           </mask>
         </defs>

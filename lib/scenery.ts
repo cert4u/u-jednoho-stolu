@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT, MAP_CELLS } from './map-limits';
 import { findSceneryEntry,type SceneryDefinition } from './scenery-catalog';
 import { contentReference } from './content-schema';
 import { z } from 'zod';
@@ -8,14 +9,14 @@ export type SceneryKind = string;
 export { sceneryCatalog, sceneryKinds } from './scenery-catalog';
 export const scenerySchema = z.object({
   id: z.string().uuid(), kind: contentReference,
-  x: z.number().int().min(0).max(27), y: z.number().int().min(0).max(19),
+  x: z.number().int().min(0).max(MAP_WIDTH - 1), y: z.number().int().min(0).max(MAP_HEIGHT - 1),
   rotation: z.union([z.literal(0),z.literal(90),z.literal(180),z.literal(270)]),
   size: z.enum(['small','medium','large']),
   note: z.string().max(1000).optional(), hidden: z.boolean().optional(),
   revision: z.union([z.string().uuid(), z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)]).optional(),
 }).strict();
 export type Scenery = z.infer<typeof scenerySchema>;
-export const sceneryListSchema = z.array(scenerySchema).max(560).refine(items => new Set(items.map(item => item.id)).size === items.length && new Set(items.map(item => `${item.x},${item.y}`)).size === items.length);
+export const sceneryListSchema = z.array(scenerySchema).max(MAP_CELLS).refine(items => new Set(items.map(item => item.id)).size === items.length && new Set(items.map(item => `${item.x},${item.y}`)).size === items.length);
 export const sceneryName = (kind:SceneryKind,entries?:readonly SceneryDefinition[]) => findSceneryEntry(kind,entries)?.name ?? `Neznámý prvek (${kind})`;
 const cell = (x: number, y: number) => `${x},${y}`;
 

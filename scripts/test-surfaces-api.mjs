@@ -8,7 +8,7 @@ const old=await get(pj,'&download=backup');
 const command={tool:'surface',kind:'water-area',op:'add',hidden:false,points:[[3,3],[7,5]],requestId:crypto.randomUUID()};
 await post(player,'map',command,403);
 await post(pj,'map',{...command,kind:'crate'},400);
-await post(pj,'map',{...command,points:[[28,2]]},400);
+await post(pj,'map',{...command,points:[[56,2]]},400);
 const map=(await post(pj,'map',command)).game.dungeon;
 assert(map.surfaces.length>4);
 assert.deepEqual((await post(pj,'map',command)).game.dungeon,map);

@@ -40,3 +40,5 @@ await import('./test-exploration-core.mjs');
 await import('./test-clean-state.mjs');
 
 await import('./test-keepsake-mask.mjs');
+
+await import("./test-map-bounds.mjs");

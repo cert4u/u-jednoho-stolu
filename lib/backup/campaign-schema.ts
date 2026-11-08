@@ -1,3 +1,4 @@
+import { MAP_CELLS } from '../map-limits';
 import {campaignCatalogSchema} from '../catalogs/model';
 import { storyOutlineSchema } from '../story-phases';
 import { z } from 'zod';
@@ -63,7 +64,7 @@ export const backupSchema = z.object({
     scene: text(100),
     notes: text(20000),
     cells: z.record(cell, z.string().max(20)),
-    fog: z.array(cell).max(560),
+    fog: z.array(cell).max(MAP_CELLS),
     members: z.array(member).min(1).max(200),
     messages: z.array(message).max(500),
     experienceAwards: z

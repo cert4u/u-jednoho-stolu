@@ -263,3 +263,5 @@ Node navíc odmítá herní POST při méně než 16 000 000 volných bajtech na
 Migrace `0003_room_admission.sql` přidává sloupec s výchozí hodnotou a index. Lokální regresní test ověřuje byte-for-byte zachování všech řádků místností, tokenů, hráčů, příběhu a připnutých obrázků po aktualizaci a restartu. Samotný starý runtime 1.2.1 umí aditivní schéma otevřít, ale podporovaný návrat přes updater obnovuje také konzistentní předaktualizační snapshot a odpovídající image. Změny odehrané po snapshotu tím z hlavní databáze zmizí; updater je před návratem uchová v nové záloze. Proto nezaměňuj kompatibilitu otevření SQLite s bezztrátovým sloučením nových a starých herních dat.
 
 Před upgradem uchovej úplnou serverovou zálohu včetně katalogových obrázků a konfigurace. Snížení kvót neodstraní existující místnosti. Při nedostatku disku se herní zápis odmítne, nikoli částečně uloží. [Aktuální výsledky lokálního a Docker ověření](FINAL_STABILIZATION.md).
+
+Mapy v 1.2.3 lze ručně rozšířit na 56 × 40 polí. Generátor ponechává 28 × 20. Zálohy mají stále formát 1, ale starší aplikace mapu s novými souřadnicemi mimo 28 × 20 odmítne; pro návrat použij původní předaktualizační zálohu.

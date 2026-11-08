@@ -6,7 +6,7 @@ Jde o limity aktuálního kódu v této větvi, nikoli o příslib vhodnosti pro
 
 | Oblast | Limit / chování |
 | --- | --- |
-| Mapa | 28 × 20 polí na patro, nejvýše 8 pater na místnost. Okolní papír není další kreslicí plocha. |
+| Mapa | 56 × 40 polí na patro, nejvýše 8 pater na místnost. Okolní papír není další kreslicí plocha. |
 | Souřadnice | API od nuly: x 0–27, y 0–19. Uživatelská mřížka je číslovaná od 1. |
 | Hráči | 12 aktivních účastníků včetně PJ, 200 postav včetně archivovaných. |
 | Příšery | 200 včetně archivovaných na dobrodružství. |

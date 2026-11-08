@@ -25,7 +25,7 @@ Novou kontrolu spustíš příkazem `node scripts/audit-maintainability.mjs`. V�
 
 ## Tužka a desetistěnná kostka pod mapou
 
-Skici zůstávají ve svém rohu a zachovávají původní světlost na prázdném papíře. Pod podlahou a hranami zobrazené mapy je měkká SVG maska skryje. Posun, přiblížení, změna patra a velikosti okna mění projekci masky podle skutečné polohy plátna; nezasahují do mapových dat ani ovládání.
+Skici zůstávají ve svém rohu a zachovávají původní světlost na prázdném papíře. Pod podlahou a hranami zobrazené mapy je SVG maska skryje, v okolí přibližně jednoho políčka mají plynulý rozostřený přechod. Prázdná mřížka sama nic nemaskuje. Posun, přiblížení, změna patra a velikosti okna mění projekci masky podle skutečné polohy plátna; nezasahují do mapových dat ani ovládání.
 
 Maska dostává stejný `shown` pohled jako vykreslení mapy. U hráče ani v náhledu družiny se proto nesmí počítat ze soukromého atlasu. Zůstává `aria-hidden`, nemá pointerové hit targety a nezakrývá klikání ani klávesnici. Každý stůl má vlastní identifikátory filtrů a masky.
 
@@ -35,4 +35,4 @@ Maska dostává stejný `shown` pohled jako vykreslení mapy. U hráče ani v n�
 
 Obě varianty se ověřují samostatným buildem a kontrolou soukromí klientského balíčku. Cloudflare používá `npm run test:ci`; Node `npm run test:hosting` a `npm run test:stabilization`. Úplné CI vydávaného commitu a skutečné Docker scénáře jsou uvedené v poznámkách GitHub Release. V lokálním prohlížeči bylo navíc ověřeno skutečné překrytí obou skic pod místností, jejich návrat po odsunutí mapy, přiblížení, ručně kreslený vzhled a náhled družiny s neodhalenou místností. Konzole při této kontrole neobsahovala chyby ani varování. Samotný SVG/HTML test by výsledek rasterizace nedokazoval.
 
-Z 1.2.2 nejsou potřeba nové SQL migrace, změna konfigurace ani updateru. Pravidla, generátor V2, formát kampaní, katalogů a záloh zůstávají stejné. Před aktualizací uchovej obvyklou úplnou serverovou zálohu. [Postup](SELF_HOSTING.md#přechod-z-122-na-123).
+Z 1.2.2 nejsou potřeba nové SQL migrace, změna konfigurace ani updateru. Pravidla a generátor V2 zůstávají stejné. Kreslicí plocha se rozšiřuje na 56 × 40 polí, zatímco generátor zachovává 28 × 20. Zálohy zůstávají ve formátu 1; starší verze aplikace odmítnou import nové mapy, která využívá souřadnice mimo jejich původní limit. Před aktualizací uchovej obvyklou úplnou serverovou zálohu. [Postup](SELF_HOSTING.md#přechod-z-122-na-123).

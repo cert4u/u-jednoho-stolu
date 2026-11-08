@@ -28,7 +28,7 @@ assert.equal(level.memory.scenery.find(item=>item.id===inside.id).x,7);
 assert(!JSON.stringify(level.memory).includes('SECRET'));
 assert.throws(()=>editDungeon(moved,{tool:'scenery',op:'remove',sceneryId:inside.id,expectedRevision:inside.revision}));
 assert.throws(()=>put(base,3,3,{rotation:45}));
-assert.throws(()=>put(base,28,3));
+assert.throws(()=>put(base,56,3));
 assert.throws(()=>put(base,3,3,{note:'x'.repeat(1001)}));
 assert.throws(()=>put(map,3,3));
 for(const kind of sceneryKinds){const item=put(base,4,4,{kind}).scenery[0];assert.equal(item.kind,kind);}

@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT } from '../map-limits';
 import { z } from 'zod';
 import { RECAP_SUMMARY_LIMIT, RECAP_CLUES_LIMIT } from '../session-recap';
 import { coins } from './actors-schema';
@@ -44,8 +45,8 @@ const mapNote = z.object({
   radius: int(1, 6).optional(),
   id,
   levelId: id,
-  x: int(0, 27),
-  y: int(0, 19),
+  x: int(0, MAP_WIDTH - 1),
+  y: int(0, MAP_HEIGHT - 1),
   title: z.string().trim().min(1).max(60),
   text: text(2000),
   secret: text(3000),

@@ -3,12 +3,14 @@
 import { memo, useId, useMemo } from 'react';
 import { roomLabelPoint } from '../lib/room-labels';
 import type { GeneratedFloor, RoomRole } from '../lib/generator-types';
-import { HEIGHT, PAD, SIZE, WIDTH } from './dungeon-map/model';
+import { PAD, SIZE } from './dungeon-map/model';
 import { buildInkDrawing } from './dungeon-map/drawing/geometry';
 import { ClassicSurface } from './dungeon-map/renderers/classic';
 import { HandDrawnSurface } from './dungeon-map/renderers/hand-drawn';
 import { StairSymbol } from './dungeon-map/renderers/symbols';
 import type { MapAppearance } from './dungeon-map/use-map-appearance';
+
+const WIDTH = 28 * SIZE + PAD * 2, HEIGHT = 20 * SIZE + PAD * 2;
 
 const roles: Record<RoomRole, string> = {
   entrance: 'vstupní místnost', room: 'místnost', junction: 'křižovatka',

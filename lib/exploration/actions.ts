@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT } from '../map-limits';
 import type { Game, Member } from '../game';
 import {
   emptyDungeon,
@@ -21,9 +22,9 @@ function coordinate(x: unknown, y: unknown): Point {
     !Number.isInteger(x) ||
     !Number.isInteger(y) ||
     x < 0 ||
-    x >= 28 ||
+    x >= MAP_WIDTH ||
     y < 0 ||
-    y >= 20
+    y >= MAP_HEIGHT
   )
     throw new Error('Vyber políčko uvnitř mapy.');
   return [x, y];

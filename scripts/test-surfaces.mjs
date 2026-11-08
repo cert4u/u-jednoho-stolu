@@ -27,7 +27,7 @@ assert.equal(map.surfaces.find(p=>p.x===4&&p.y===3).kind,'mud-area');
 const remove=paint(map,[[4,3]],{op:'remove'});
 assert.equal(remove.surfaces.find(p=>p.x===4&&p.y===3).kind,'mud-area','Erase only selected material.');
 assert(!paint(map,[[4,3]],{op:'remove',kind:'mud-area'}).surfaces.some(p=>p.x===4&&p.y===3));
-for(const extra of [{kind:'crate'},{kind:'missing-material'},{points:[[28,2]]},{points:[[2.5,2]]},{points:[]}])assert.throws(()=>paint(base,[[2,2]],extra));
+for(const extra of [{kind:'crate'},{kind:'missing-material'},{points:[[56,2]]},{points:[[2.5,2]]},{points:[]}])assert.throws(()=>paint(base,[[2,2]],extra));
 assert.throws(()=>paint(base,[[0,0]]));
 map=paint(map,[[8,8]],{hidden:true});map.revealed=[...map.floors];
 const publicMap=playerDungeon(map);

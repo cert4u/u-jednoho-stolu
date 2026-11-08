@@ -21,5 +21,7 @@
   "components/table-atmosphere.tsx",
   "components/dungeon-map/keepsake-mask.ts",
   "scripts/test-keepsake-mask.mjs",
-  "scripts/audit-maintainability.mjs"
+  "scripts/audit-maintainability.mjs",
+  "lib/map-limits.ts",
+  "scripts/test-map-bounds.mjs"
 ]

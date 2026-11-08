@@ -1,3 +1,4 @@
+import { MAP_WIDTH, MAP_HEIGHT } from '../../../lib/map-limits';
 import { appendMessage } from '../../../lib/message-operations';
 import type { CatalogResolver } from '../../../lib/catalogs/resolver';
 import { guardPatch } from '../../../lib/sheets';
@@ -49,9 +50,9 @@ export async function applyGameAction(
           !Number.isInteger(x) ||
           !Number.isInteger(y) ||
           x < 0 ||
-          x >= 28 ||
+          x >= MAP_WIDTH ||
           y < 0 ||
-          y >= 20
+          y >= MAP_HEIGHT
         )
           return fail('Mimo mapu.');
         target.x = x;

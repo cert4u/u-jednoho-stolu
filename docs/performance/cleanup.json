@@ -82,6 +82,7 @@
     "scripts/test-life.mjs",
     "scripts/test-lighting.mjs",
     "scripts/test-loot.mjs",
+    "scripts/test-map-bounds.mjs",
     "scripts/test-map-drawing.mjs",
     "scripts/test-map-inspection.mjs",
     "scripts/test-map-notes.mjs",
@@ -137,7 +138,7 @@
   "deploymentAliases": {
     "deploy/updater/http.mjs": "server/http.mjs"
   },
-  "reachableModules": 369,
+  "reachableModules": 371,
   "ui": {
     "total": 1,
     "reachable": [
