@@ -30,7 +30,7 @@ try{
  loseNextResponse=true;await sendGameAction(a,'ground','roll',{text:'3k10+2'});
  let game=(await read(pj)).data;assert.equal(game.messages.filter(m=>m.text==='Ahoj').length,3);assert.equal(game.messages.filter(m=>m.roll).length,4);assert.equal(new Set(game.messages.filter(m=>m.roll).map(m=>m.id)).size,4);
  await act(pj,'chat',{text:privateText,to:a.game.me});assert((await read(a)).data.messages.some(m=>m.text===privateText));privateView((await read(b)).data);
- await act(pj,'monster',{op:'create',templateId:'kobold'});game=(await read(pj)).data;const monster=game.monsters[0];assert(monster.portrait.startsWith('data:image/webp;base64,'));
+ await act(pj,'monster',{op:'create',templateId:'kobold'});game=(await read(pj)).data;const monster=game.monsters[0];if(!monster.portrait.startsWith('data:image/webp;base64,')){assert.equal(monster.portrait,'kobold');const art=await fetch('/monsters/kobold.webp');assert.equal(art.status,200);assert((await art.arrayBuffer()).byteLength>100);}
  await act(pj,'initiative',{op:'roster',expectedRevision:game.initiative.revision,order:[{type:'member',id:a.game.me},{type:'member',id:b.game.me},{type:'monster',id:monster.id}]});game=(await read(pj)).data;
  await act(pj,'initiative',{op:'start',expectedRevision:game.initiative.revision});await act(pj,'explore',{op:'battle-start'});
  await Promise.all([act(a,'chat',{text:'Kryju levou stranu.'}),act(b,'roll',{text:'1k6'})]);
