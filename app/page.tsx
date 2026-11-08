@@ -1,4 +1,5 @@
 'use client';
+import { actionValues } from '../components/game-table/game-client';
 import {CatalogProvider} from '../components/catalog-provider';
 import { type VoicePresence } from '../components/voice-panel';
 import { LifeBadge, LifeSummary } from '../components/life-panel';
@@ -138,26 +139,7 @@ export default function Home() {
     game?.messages,
   );
   async function act(action: string, values: Record<string, unknown> = {}) {
-    if (
-      [
-        'explore',
-        'monster',
-        'mechanics',
-        'initiative',
-        'condition',
-        'power',
-        'recovery',
-        'journey',
-        'map-note',
-        'challenge',
-        'loot',
-        'equipment',
-        'life',
-        'generate',
-      ].includes(action) &&
-      !values.requestId
-    )
-      values = { ...values, requestId: crypto.randomUUID() };
+    values = actionValues(action, values);
     const current = sessionCurrent.current;
     const sessionChanged = () =>
       Boolean(current && !sameSession(sessionCurrent.current, current));
@@ -445,7 +427,7 @@ export default function Home() {
       const value = await requestBackup(session);
       downloadText(
         'kampan-zaloha.json',
-        JSON.stringify(value, null, 2),
+        JSON.stringify(value),
         'application/json',
       );
     } catch (e) {

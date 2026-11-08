@@ -3,7 +3,7 @@ import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,existsSync,rmSync} from
 import os from 'node:os';
 import path from 'node:path';
 import {UpdateManager} from '../deploy/updater/manager.mjs';
-const oldSha='a'.repeat(40),newSha='b'.repeat(40),snapshot='1234567890123-1234567890abcdef.sqlite',voiceEnv=['STUL_LIVEKIT_URL=wss://voice.example.test','STUL_LIVEKIT_API_KEY=voice-test','STUL_LIVEKIT_API_SECRET=synthetic-test-secret-with-at-least-32-characters'];
+const oldSha='a'.repeat(40),newSha='b'.repeat(40),snapshot='1234567890123-1234567890abcdef.sqlite',voiceEnv=['STUL_ROOM_CREATE_RATE=75','STUL_ROOM_LIMIT=500','STUL_ROOM_BYTES_LIMIT=128000000','STUL_LIVEKIT_URL=wss://voice.example.test','STUL_LIVEKIT_API_KEY=voice-test','STUL_LIVEKIT_API_SECRET=synthetic-test-secret-with-at-least-32-characters'];
 async function fixture({bad=false,buildFails=false,failCreate=false,failStart=false,smokeFails=false,loseAck=false,version="0.1.0",targetTag="v0.2.0",targetProtocol=1,channel="stable",keep=0}={}){
  const dir=mkdtempSync(path.join(os.tmpdir(),'stul-updater-')),dataDir=path.join(dir,'data'),stateDir=path.join(dir,'state');mkdirSync(path.join(dataDir,'backups'),{recursive:true});writeFileSync(path.join(dataDir,'game.sqlite'),'before');
  let backups=0, counter=0, lost=false, builds=0, containers=new Map([['old',{Id:'old',Name:'/stul-app',Config:{Image:'stul-app:local',Env:voiceEnv},HostConfig:{},NetworkSettings:{Networks:{table:{}}},State:{Running:true},revision:oldSha}]]);

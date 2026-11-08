@@ -21,14 +21,19 @@ function authorization(session: Session) {
   return { Authorization: `Bearer ${session.token}` };
 }
 
-export async function requestGame(session: Session, level: string) {
+type GameResponse = { response: Response; data: GameView & ErrorPayload; etag?: string };
+export function requestGame(session: Session, level: string): Promise<GameResponse>;
+export function requestGame(session: Session, level: string, etag: string | undefined): Promise<Omit<GameResponse, 'data'> & { data?: GameResponse['data'] }>;
+export async function requestGame(session: Session, level: string, etag?: string): Promise<Omit<GameResponse, 'data'> & { data?: GameResponse['data'] }> {
   const query = new URLSearchParams({ room: session.room, level });
   const response = await fetch(`/api/game?${query}`, {
-    headers: authorization(session),
+    headers: { ...authorization(session), ...(etag ? { 'If-None-Match': etag } : {}) },
   });
-  const data = (await response.json()) as GameView & ErrorPayload;
-  return { response, data };
+  const data = response.status === 304 ? undefined : (await response.json()) as GameView & ErrorPayload;
+  return { response, data, etag: response.headers.get('etag') ?? undefined };
 }
+
+const pendingMessages = new Map<string, string>();
 
 export async function sendGameAction(
   session: Session | null,
@@ -36,6 +41,13 @@ export async function sendGameAction(
   action: string,
   values: Record<string, unknown>,
 ) {
+  const messageKey = ['chat', 'roll'].includes(action) && session
+    ? JSON.stringify([session.room, session.token, action, values]) : undefined;
+  if (messageKey && !values.requestId) {
+    if (!pendingMessages.has(messageKey)) pendingMessages.set(messageKey, crypto.randomUUID());
+    values = { ...values, requestId: pendingMessages.get(messageKey) };
+    if (pendingMessages.size > 64) pendingMessages.delete(pendingMessages.keys().next().value!);
+  }
   const response = await fetch('/api/game', {
     method: 'POST',
     headers: {
@@ -45,6 +57,7 @@ export async function sendGameAction(
     body: JSON.stringify({ action, room: session?.room, levelId, ...values }),
   });
   const data = (await response.json()) as ActionResult & ErrorPayload;
+  if (messageKey && response.status < 500) pendingMessages.delete(messageKey);
   if (!response.ok) throw new Error(data.error);
   return data;
 }
@@ -65,4 +78,11 @@ export async function requestBestiary(session: Session, signal: AbortSignal) {
   const response = await fetch(`/api/game?${query}`, { headers: authorization(session), signal });
   if (!response.ok) throw new Error('Bestiář se nepodařilo načíst.');
   return await response.json() as BestiaryEntry[];
+}
+
+export function actionValues(action: string, values: Record<string, unknown>) {
+  const replayable = ['explore', 'monster', 'mechanics', 'initiative', 'condition',
+    'power', 'recovery', 'journey', 'map-note', 'challenge', 'loot', 'equipment', 'life', 'generate'];
+  return replayable.includes(action) && !values.requestId
+    ? { ...values, requestId: crypto.randomUUID() } : values;
 }

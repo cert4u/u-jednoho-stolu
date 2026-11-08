@@ -32,15 +32,22 @@ export function useGamePolling({
     const current = session;
     let disposed = false;
     let running = false;
+    let etag: string | undefined;
 
     async function sync() {
       if (running) return;
       running = true;
       try {
-        const { response, data } = await requestGame(current, editorLevel);
+        const { response, data, etag: nextEtag } = await requestGame(current, editorLevel, etag);
         if (disposed || !sameSession(sessionCurrent.current, current)) return;
 
+        if (response.status === 304) {
+          setConnectionError('');
+          return;
+        }
+        if (!data) throw new Error('Chybí stav hry.');
         if (response.ok) {
+          etag = nextEtag;
           setGame((previous) =>
             !previous || data.revision >= (previous.revision ?? -1)
               ? data

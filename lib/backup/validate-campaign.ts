@@ -7,6 +7,10 @@ export function validateCampaign(campaign: BackupCampaign) {
   if (Object.values(campaign.storyOutline?.phases ?? {}).some(beat => beat.noteIds.some(id => !noteIds.has(id))))
     throw new Error('Příběhová osnova odkazuje na neexistující místo.');
   const memberIds = new Set(campaign.members.map((member) => member.id));
+  const operations = campaign.messageOperations ?? [];
+  if (operations.some(op => !memberIds.has(op.actor)) ||
+      new Set(operations.map(op => op.actor + ':' + op.requestId)).size !== operations.length)
+    throw new Error('Záloha obsahuje neplatnou historii odesílání zpráv.');
   validateJourney(campaign);
   validateParty(campaign, memberIds);
   validateMapReferences(campaign, memberIds);

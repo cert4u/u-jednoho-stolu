@@ -47,3 +47,7 @@ LiveKit je volitelný a vyžaduje samostatné nasazení. Lokální profil je jen
 Herní místnost je určená důvěryhodné partě. Pozvánka umožňuje připojit novou postavu až do limitu místnosti; neexistuje obecný účetní systém se schvalováním každého hráče. Databáze uchovává herní tokeny a obsah kampaní; správce instalace má k těmto datům přístup. PJ není správcem serveru, ale serverový administrátor není izolovaný od dat jednotlivých kampaní.
 
 Runtime katalogy mají oddělené [limity archivu, obrázků, knihovny a připnuté kampaně](CATALOG_LIBRARY.md#limity-a-bezpečnost). Katalogy se nevejdou automaticky do původního 3MB limitu kampaně; při použití příliš velkého podkladu se herní akce odmítne s vysvětlením.
+
+## Stabilizační větev po 1.2.1
+
+Přenositelné JSON kampaně zůstávají omezené na 3 000 000 UTF-8 bajtů kompaktního JSON. Nově se kontroluje také běžný zápis, takže neuloží nadlimitní změnu. Cloudflare navíc omezuje serializovanou místnost na 1 999 900 bajtů kvůli 2MB řádku D1; export zahrnuje jinou sadu přístupových polí, proto jeho hranice závisí na složení kampaně. Serverová ZIP záloha má vlastní pravidla. Zakládání a obnova stolů sdílejí [konfigurovatelné provozní limity](SELF_HOSTING.md#ochrany-stabilizační-větve). Idempotence chatu/hodů má okno posledních 256 operací kampaně; starší klient bez ID není deduplikován. Podmíněný polling šetří přenos nezměněného stavu, při změně dál posílá celý autorizovaný pohled včetně portrétů. Nejde o novou službu pro veřejné sdílení obrázků.

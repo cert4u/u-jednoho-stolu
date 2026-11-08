@@ -247,3 +247,5 @@ Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Pro nové
 Projekt vznikl jako neoficiální pomůcka inspirovaná původním českým hraním DrD. Nejde o produkt ani schválenou aplikaci nakladatelství ALTAR. Repozitář neobsahuje text pravidlových příruček, bestiář ani převzaté ilustrace. Licence k aplikaci neuděluje práva k cizím značkám nebo pravidlovým textům.
 
 Projekt čerpá inspiraci z DrD 1.5, referencí pro dosavadní základ hodů jsou však veřejná [zjednodušená pravidla ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), odvozená podle jejich tiráže od verze 1.6, edice E. Nejde tedy o přesný přepis ani úplnou implementaci DrD 1.5 či 1.6. Mechaniky jsou místy zjednodušené nebo upravené pro online hraní; rozhodující je popsané chování aplikace a domluva s PJ.
+
+Pracovní stabilizační větev po 1.2.1: [ověřené opravy, měření a provozní omezení](docs/STABILIZATION_AUDIT.md). Nejde o nové vydání; při nasazení se řiď dokumentací konkrétního tagu.

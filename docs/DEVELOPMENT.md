@@ -229,3 +229,16 @@ Společné schéma a resolver jsou v `lib/catalogs/`, Node adaptéry v `server/c
 Databázové callbacky jsou synchronní. Import nejprve rezervuje místo a uloží neměnné soubory, potom v konečné transakci znovu kontroluje revizi, kampaně a závislosti. Nepřesouvej síťové či souborové `await` dovnitř databázové transakce. Náhledy ZIP a GitHubu používají stejný modul a tutéž procesovou mapu, nejde o dvě nezávislé fronty.
 
 Administrace používá společný `server/admin-dialog.js` a HTML `<dialog>` pro vstupy i potvrzení. Systémové `prompt()` a `confirm()` v zabudovaných prohlížečích nemusejí fungovat. Při změně klienta ověř kliknutí a zrušení v prohlížeči; samotný API test neověřuje dostupnost formuláře. `scripts/test-admin-client.mjs` navíc staticky odmítá návrat přímých volání nepodporovaných systémových dialogů a běží v administrační integrační sadě.
+
+## Stabilizační kontroly
+
+`npm run lint` ukazuje všechny nálezy včetně historických. `npm run lint:baseline` je CI brána: podle souboru, pravidla a závažnosti nedovolí zvýšit počty proti auditované verzi 1.2.1. Nový soubor nemá žádnou výjimku. Základ v `scripts/lint-baseline.json` se při běžné změně automaticky nepřegenerovává; případné změny vyžadují samostatnou věcnou revizi. Cílem zůstává postupné odstranění starých nálezů, nikoli jejich skrytí.
+
+- `npm run test:stabilization` vyžaduje Node build a volné lokální porty 18096, 18098, 18099. Vytváří vlastní dočasné databáze; nepracuje s živou instalací.
+- `npm run benchmark:polling` měří 150 dotazů osmi klientů proti vlastní Node instanci na 18097. Bez `STUL_REAL_POLL=1` jde o zrychlený ekvivalent přenosu pěti minut, nikoli reálný pětiminutový běh. Výsledky jsou v `/tmp/stul-poll-after.json`; cestu lze změnit pomocí `STUL_METRICS_FILE`.
+- `node scripts/audit-maintainability.mjs` zaznamená statický graf importů a kandidáty k další revizi. Neodstraňuje UI soubory ani závislosti. Řetězcově generované/volitelné pluginové importy nejsou důkazem nepoužití.
+- Pro cílené opakování integračních scénářů lze nastavit `STUL_TEST_CASES=message-replay,conditional-game,stabilization,public-admission-api`; neznámý název se odmítá a bez této proměnné běží celá sada. Nové API regresní scénáře běží také přes `npm run test:ci` a `npm run test:hosting`: hraniční záloha, opakované chaty/hody, výchozí globální omezení zakládání.
+
+`app/page.tsx` skládá obrazovku, transport a identifikátory požadavků jsou v `components/game-table/game-client.ts`; polling zůstává samostatný hook. Definice nástrojů jsou v `components/dungeon-map/toolbox.ts`, geometrie a vstupy zůstávají ve stávajících modulech. Limity těla/zálohy, podmíněná odpověď, přijetí nové místnosti a zprávové operace mají malé samostatné moduly. Generátor V2 ani herní pravidla tato etapa nemění.
+
+[Zpráva z ověření](STABILIZATION_AUDIT.md).

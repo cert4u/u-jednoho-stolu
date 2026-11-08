@@ -31,7 +31,10 @@
     "test:hosting": "node scripts/test-hosting.mjs",
     "catalog:demo": "node scripts/catalog-demo.mjs",
     "test:catalog-audit": "node scripts/test-catalog-audit.mjs",
-    "test:catalogs": "node scripts/test-catalog-migration.mjs && node scripts/test-catalog-zip.mjs && node scripts/test-catalog-store.mjs && node scripts/test-catalog-github.mjs && node scripts/test-catalog-admin.mjs && node scripts/test-catalog-audit.mjs"
+    "test:catalogs": "node scripts/test-catalog-migration.mjs && node scripts/test-catalog-zip.mjs && node scripts/test-catalog-store.mjs && node scripts/test-catalog-github.mjs && node scripts/test-catalog-admin.mjs && node scripts/test-catalog-audit.mjs",
+    "lint:baseline": "node scripts/check-lint.mjs",
+    "test:stabilization": "node scripts/test-stabilization.mjs && node scripts/test-room-admission.mjs && node scripts/test-message-hosting.mjs && node scripts/test-admin-client.mjs && node scripts/test-admin-behavior.mjs",
+    "benchmark:polling": "node scripts/benchmark-polling.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

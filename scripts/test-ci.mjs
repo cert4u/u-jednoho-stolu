@@ -29,7 +29,7 @@ try{
   await delay(300);
  }
  if(!ready)throw new Error('Testovací server nenastartoval do 90 sekund.');
- runner=spawn(process.execPath,['scripts/test-integration.mjs',base],{stdio:'inherit'});
+ runner=spawn(process.execPath,['scripts/test-integration.mjs',base],{stdio:'inherit',env:{...process.env,STUL_TEST_RUNTIME:'cloudflare'}});
  const result=await new Promise((resolve,reject)=>{runner.once('error',reject);runner.once('exit',code=>resolve(code??1));});
  process.exitCode=result;
 }finally{

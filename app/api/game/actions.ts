@@ -1,3 +1,4 @@
+import { appendMessage } from '../../../lib/message-operations';
 import type {CatalogResolver} from '../../../lib/catalogs/resolver';
 import {resolvedScenery} from '../../../lib/catalogs/game-content';
 import {sceneryFillBlocked} from '../../../lib/scenery-fill';
@@ -16,7 +17,7 @@ import { conditionAction } from '../../../lib/conditions';
 import { initiativeAction } from '../../../lib/initiative';
 import { issueRecovery } from '../../../lib/access';
 import { updateCharacter, guardPatch, EditConflict } from '../../../lib/sheets';
-import { mechanicsAction, die } from '../../../lib/mechanics';
+import { mechanicsAction } from '../../../lib/mechanics';
 import { monsterAction } from '../../../lib/monsters';
 import {
   ensureAtlas,
@@ -27,7 +28,7 @@ import {
 } from '../../../lib/exploration';
 import { applyMap, playerDungeon, cellKey } from '../../../lib/dungeon';
 import { awardExperience } from '../../../lib/experience';
-import type { Game, Member } from '../../../lib/game';
+import type { Game, Member, Msg } from '../../../lib/game';
 import { fail } from './responses';
 
 export async function applyGameAction(
@@ -36,6 +37,7 @@ export async function applyGameAction(
   roomId: string,
   b: Record<string, unknown>,
   library?:CatalogResolver,
+  preparedMessage?: Msg,
 ) {
   const pj = me.role === 'pj';
   let recoveryCode: string | undefined;
@@ -46,33 +48,8 @@ export async function applyGameAction(
       break;
     case 'chat':
     case 'roll': {
-      let text = String(b.text || '')
-        .trim()
-        .slice(0, 2000);
-      if (b.action === 'roll') {
-        const match = /^(\d{1,2})[kd](4|6|8|10|12|20|100)([+-]\d{1,3})?$/i.exec(
-          text.replaceAll(' ', ''),
-        );
-        if (!match || +match[1] > 20 || +match[1] < 1)
-          return fail('Použij například 2k6+1 (nejvýše 20 kostek).');
-        const sides = +match[2];
-        const rolls = Array.from({ length: +match[1] }, () => die(sides));
-        text = `${text} → ${rolls.reduce((a, c) => a + c, 0) + Number(match[3] || 0)} (${rolls.join(' + ')}${match[3] || ''})`;
-      }
-      if (!text) return fail('Napiš zprávu.');
-      const to = String(b.to || 'all');
-      if (to !== 'all' && !g.members.some((m) => m.id === to))
-        return fail('Příjemce není u stolu.');
-      g.messages.push({
-        id: crypto.randomUUID(),
-        from: me.id,
-        name: me.name,
-        text,
-        to,
-        time: Date.now(),
-        roll: b.action === 'roll',
-      });
-      g.messages = g.messages.slice(-500);
+      try { await appendMessage(g, me, b, preparedMessage); }
+      catch (error) { return fail(error instanceof Error ? error.message : 'Zprávu nelze odeslat.'); }
       break;
     }
     case 'mechanics':

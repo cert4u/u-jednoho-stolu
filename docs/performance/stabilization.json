@@ -1,0 +1,271 @@
+{
+  "measuredAt": "2026-11-08T06:09:27.597Z",
+  "baseline": "ef59634d1a5f7ff94d76201cc187dea99c73e0c3",
+  "node": "v22.23.2",
+  "scope": "Actual localhost API response body bytes, no HTTP/TLS headers or proxy compression; fixture data only.",
+  "backup": {
+    "before": {
+      "baseRevision": "ef59634",
+      "node": "v22.23.2",
+      "portraitCampaignBytes": 22369,
+      "overLimitMutationStatus": 200,
+      "exportedBytes": 3000001,
+      "restoreStatus": 400
+    },
+    "nodeAfter": {
+      "baseRevision": "ef59634",
+      "node": "v22.23.2",
+      "portraitCampaignBytes": 22369,
+      "runtime": "node",
+      "maximumBackupBytes": 3000000,
+      "overLimitMutationStatus": 413
+    },
+    "cloudflareAfter": {
+      "baseRevision": "ef59634",
+      "node": "v22.23.2",
+      "portraitCampaignBytes": 22369,
+      "runtime": "cloudflare",
+      "maximumBackupBytes": 1999859,
+      "overLimitMutationStatus": 413
+    }
+  },
+  "polling": {
+    "four": {
+      "before": {
+        "mode": "150 accelerated polls; 5-minute transfer equivalent",
+        "typicalBytes": {
+          "pj": 5828,
+          "player": 1287
+        },
+        "clients": 4,
+        "samples": 150,
+        "bodies": [
+          {
+            "role": "pj",
+            "bytes": 505351
+          },
+          {
+            "role": "player",
+            "bytes": 2134
+          },
+          {
+            "role": "player",
+            "bytes": 2134
+          },
+          {
+            "role": "player",
+            "bytes": 2134
+          }
+        ],
+        "statuses": {
+          "200": 600
+        },
+        "elapsedMs": 2108.174856,
+        "totalBodyBytes": 76762950
+      },
+      "after": {
+        "mode": "150 accelerated polls; 5-minute transfer equivalent",
+        "typicalBytes": {
+          "pj": 5828,
+          "player": 1287
+        },
+        "clients": 4,
+        "samples": 150,
+        "bodies": [
+          {
+            "role": "pj",
+            "bytes": 505351
+          },
+          {
+            "role": "player",
+            "bytes": 2134
+          },
+          {
+            "role": "player",
+            "bytes": 2134
+          },
+          {
+            "role": "player",
+            "bytes": 2134
+          }
+        ],
+        "statuses": {
+          "200": 4,
+          "304": 596
+        },
+        "elapsedMs": 1561.418545,
+        "totalBodyBytes": 511753
+      }
+    },
+    "eight": {
+      "before": {
+        "mode": "150 accelerated polls; 5-minute transfer equivalent",
+        "typicalBytes": {
+          "pj": 5828,
+          "player": 1287
+        },
+        "clients": 8,
+        "samples": 150,
+        "bodies": [
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "pj",
+            "bytes": 507554
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          }
+        ],
+        "statuses": {
+          "200": 1200
+        },
+        "elapsedMs": 2799.371413,
+        "totalBodyBytes": 79590750
+      },
+      "after": {
+        "mode": "150 accelerated polls; 5-minute transfer equivalent",
+        "typicalBytes": {
+          "pj": 5828,
+          "player": 1287
+        },
+        "clients": 8,
+        "samples": 150,
+        "bodies": [
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "pj",
+            "bytes": 507554
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          },
+          {
+            "role": "player",
+            "bytes": 3293
+          }
+        ],
+        "statuses": {
+          "200": 8,
+          "304": 1192
+        },
+        "elapsedMs": 2162.433458,
+        "totalBodyBytes": 530605
+      }
+    },
+    "realInterval": {
+      "mode": "150 polls at 2-second intervals",
+      "typicalBytes": {
+        "pj": 5828,
+        "player": 1287
+      },
+      "clients": 8,
+      "samples": 150,
+      "bodies": [
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "pj",
+          "bytes": 507554
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        },
+        {
+          "role": "player",
+          "bytes": 3293
+        }
+      ],
+      "statuses": {
+        "200": 8,
+        "304": 1192
+      },
+      "elapsedMs": 298044.193697,
+      "totalBodyBytes": 530605
+    }
+  },
+  "clientJavaScript": {
+    "scope": "All emitted client JS including lazy chunks, gzip per file; excludes images/fonts/CSS.",
+    "before": {
+      "files": 10,
+      "bytes": 1270891,
+      "gzipBytes": 357033
+    },
+    "after": {
+      "files": 10,
+      "bytes": 1271458,
+      "gzipBytes": 357709
+    }
+  },
+  "timings": {
+    "baselineVerify": "elapsed_seconds=3.47 max_rss_kb=552388",
+    "baselineLint": "Command exited with non-zero status 1\nelapsed_seconds=7.38 max_rss_kb=1001936",
+    "cloudflareIntegration": "elapsed_seconds=73.21 max_rss_kb=811100",
+    "nodeBuild": "elapsed_seconds=4.72 max_rss_kb=1537160",
+    "nodeHosting": "elapsed_seconds=70.69 max_rss_kb=247180",
+    "finalVerify": "elapsed_seconds=3.92 max_rss_kb=648472",
+    "finalLintBaseline": "elapsed_seconds=6.74 max_rss_kb=932760"
+  }
+}

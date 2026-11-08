@@ -1,0 +1,125 @@
+import { MousePointer2, PenTool, Square, DoorOpen, Eraser, Eye, EyeOff, Minus, Map as MapIcon, Hand, ArrowUp, ArrowDown, ArrowUpDown, Skull, StickyNote, LogIn, LogOut, Info, Package } from 'lucide-react';
+
+export const TOOLBOX = [
+  {id:'scenery',icon:Package,name:'Stafáž',hint:'Vyber prvek a klikni do mapy. Existující stafáž lze upravit, přesunout nebo skrýt.'},
+  {
+    id: 'inspect',
+    icon: Info,
+    name: 'Prozkoumat',
+    hint: 'Jen PJ: klikni na značku pro podrobnosti, nebo do místnosti pro přehled jejího obsahu.',
+  },
+  {
+    id: 'entrance',
+    icon: LogIn,
+    name: 'Vchod',
+    hint: 'Klikni na podlahu pro výchozí bod dobrodružství. Nové umístění přesune původní vchod.',
+  },
+  {
+    id: 'exit',
+    icon: LogOut,
+    name: 'Východ',
+    hint: 'Klikni na podlahu pro samostatný východ z podzemí.',
+  },
+  {
+    id: 'note',
+    icon: StickyNote,
+    name: 'Označit místo',
+    hint: 'Klikni na podlahu pro číslo, název a přípravu místnosti. Tajné poznámky vidí jen PJ; popis můžeš zvlášť sdílet.',
+  },
+  {
+    id: 'monster',
+    icon: Skull,
+    name: 'Příšera',
+    hint: 'Vyber příšeru v seznamu a klikni na podlahu. Značku lze i přetáhnout; kliknutí otevře údaje.',
+  },
+  {
+    id: 'stairsUp',
+    icon: ArrowUp,
+    name: 'Schody nahoru',
+    hint: 'Klikni na podlahu pro značku schodiště nahoru. Propojení pater nastavíš zvlášť.',
+  },
+  {
+    id: 'stairsDown',
+    icon: ArrowDown,
+    name: 'Schody dolů',
+    hint: 'Klikni na podlahu pro značku schodiště dolů.',
+  },
+  {
+    id: 'stairsBoth',
+    icon: ArrowUpDown,
+    name: 'Schody oba směry',
+    hint: 'Klikni na podlahu pro schodiště nahoru i dolů.',
+  },
+  {
+    id: 'hand',
+    icon: Hand,
+    name: 'Ruka',
+    hint: 'Táhni papír myší pro posun mapy.',
+  },
+  {
+    id: 'place',
+    icon: MapIcon,
+    name: 'Umístit družinu',
+    hint: 'PJ kliknutím určí počáteční políčko družiny.',
+  },
+  {
+    id: 'openDoor',
+    icon: DoorOpen,
+    name: 'Otevřít / zavřít',
+    hint: 'Vedoucí klikne na dveře vedle družiny. Zavřené dveře zastavují pohyb i výhled.',
+  },
+  {
+    id: 'move',
+    icon: MousePointer2,
+    name: 'Postavy',
+    hint: 'Vyber značku postavy a klikni na cílové políčko. Značku můžeš i přetáhnout.',
+  },
+  {
+    id: 'wall',
+    icon: PenTool,
+    name: 'Příčka',
+    hint: 'Ručně přidaná příčka zůstává i při spojování místností. Táhni tužkou mezi průsečíky mřížky. Kliknutí nakreslí jednu hranu.',
+  },
+  {
+    id: 'room',
+    icon: Square,
+    name: 'Místnost',
+    hint: 'Táhni od rohu k rohu. Překrývající se místnosti se spojí a obvod se přizpůsobí.',
+  },
+  {
+    id: 'floor',
+    icon: PenTool,
+    name: 'Chodba',
+    hint: 'Táhni přes políčka. Chodba spojí prostory a obvodové zdi se upraví.',
+  },
+  {
+    id: 'door',
+    icon: DoorOpen,
+    name: 'Dveře',
+    hint: 'Klikni na hranu čtverečku. Pokud tu není zeď, vznikne příčka s dveřmi.',
+  },
+  {
+    id: 'subtract',
+    icon: Minus,
+    name: 'Ubrat prostor',
+    hint: 'Táhni přes políčka, která chceš odebrat. Obvodové zdi se přizpůsobí.',
+  },
+  {
+    id: 'erase',
+    icon: Eraser,
+    name: 'Guma',
+    hint: 'Maže ruční příčky, dveře a značky schodů, vchodu a východu. Značku smažeš kliknutím doprostřed políčka. Pro změnu půdorysu použij Ubrat prostor.',
+  },
+  {
+    id: 'reveal',
+    icon: Eye,
+    name: 'Odhalit',
+    hint: 'Táhni obdélník přes oblast, kterou má družina vidět.',
+  },
+  {
+    id: 'hide',
+    icon: EyeOff,
+    name: 'Skrýt',
+    hint: 'Táhni obdélník přes oblast, kterou chceš znovu skrýt.',
+  },
+] as const;

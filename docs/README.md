@@ -46,3 +46,5 @@ Dokumentaci měníme společně s funkcemi. Při změně rozhraní, limitu nebo 
 - [Integrační audit katalogů](CATALOG_AUDIT.md) — přenosný demonstrační důl, skutečná obnova, výkon a připravenost vydání.
 
 Administrace od 1.2.1 používá vlastní stránkové dialogy, dvoupanelový detail katalogu a seznam po osmi položkách. [Návod knihovny](CATALOG_LIBRARY.md) · [Aktualizace z 1.2.0](SELF_HOSTING.md#přechod-z-120-na-121).
+
+- [Stabilizační audit po 1.2.1](STABILIZATION_AUDIT.md) — reprodukce, obnovitelnost, synchronizace, kapacita, idempotence a skutečně provedené kontroly.

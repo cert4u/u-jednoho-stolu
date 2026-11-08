@@ -216,3 +216,25 @@ V administraci vyber stabilní vydání 1.2.1 a ověř jeho commit a CI. Nejsou 
 Po aktualizaci obnov stránku `/admin`, aby se načetly nové klientské skripty. **Přidat katalog z GitHubu** zobrazí formulář uvnitř stránky; vstupy ani potvrzení už nevyužívají systémové `prompt()`/`confirm()`. Ověř otevření i zrušení dialogu, náhled importu, přepínání obsahu a stránkování katalogu. Rozdělení interního servisu nemění databázové tabulky, API ani uložená data.
 
 Heslo správce je nadále hodnota `STUL_ADMIN_PASSWORD` tvé instalace; projekt nemá společné výchozí heslo. Administraci otevírej na adrese běžící služby, například `http://localhost:8080/admin`, nikoli jako soubor `server/admin.html` z disku. Samostatné spuštění přes Node nezahrnuje Docker updater.
+
+## Ochrany stabilizační větve
+
+Tato část popisuje dosud nevydanou pracovní větev navazující na 1.2.1. Nová migrace `0003_room_admission.sql` přidává datum vzniku místnosti a index; staré místnosti zachovává s hodnotou 0. Node ji aplikuje při startu, pro D1 použij obvyklý migrační postup. Před nasazením uchovej úplnou serverovou ZIP zálohu a odpovídající image.
+
+| Proměnná | Výchozí hodnota | Význam |
+| --- | --- | --- |
+| `STUL_ROOM_CREATE_RATE` | `100` | Nové a obnovené kampaně za posledních 60 sekund, společný limit instalace. |
+| `STUL_ROOM_LIMIT` | `1000` | Nejvyšší počet místností; žádné automatické mazání. |
+| `STUL_ROOM_BYTES_LIMIT` | `256000000` | Součet UTF-8 bajtů uloženého JSON místností. Platí také pro růst kampaní. |
+
+Hodnoty musejí být kladná bezpečná celá čísla; neplatná nebo chybějící hodnota použije výchozí nastavení. `0` ochranu nevypíná. Compose předává tyto proměnné aplikaci a updater zachovává prostředí původního kontejneru. Úpravu `.env` použije nově vytvořený kontejner aplikace; samotný restart starého kontejneru jeho prostředí nezmění.
+
+Na Cloudflare se stejné hodnoty nastavují jako runtime proměnné/bindingy Workeru (nikoli jako veřejné klientské proměnné). Bez nich platí stejné výchozí hodnoty. Atomická SQLite/D1 podmínka zamezuje závodu mezi současnými zakládáními a růstem dat. Žádný režim nedůvěřuje `X-Forwarded-For` ani jiným dodaným IP hlavičkám.
+
+Při vyčerpané četnosti se vrací 429, při vyčerpané kapacitě 503; obě odpovědi uvádějí opakování za 60 sekund. Navýšení kapacity je rozhodnutí správce. Pokud správce sníží limit pod současné využití, čtení a zápisy zmenšující či zachovávající velikost dat fungují dál.
+
+Node navíc odmítá herní POST při méně než 16 000 000 volných bajtech na datovém volume. Cloudflare nemá lokální diskový senzor; používá datovou kvótu a chyby D1. D1 navíc omezuje celý řádek na 2 000 000 bajtů; aplikace proto před zápisem kontroluje nejvýše 1 999 900 bajtů serializované místnosti a ponechává rezervu na ID, číselné sloupce a SQLite hlavičku. Tento provozní limit zahrnuje i přístupová pole, není to přímo velikost exportovaného souboru. Větší platný JSON formátu 1 lze obnovit na Node/Docker, nikoli do jediného řádku D1. Viz [oficiální limity D1](https://developers.cloudflare.com/d1/platform/limits/). Kvóta JSON nezahrnuje obrázky katalogů, serverové zálohy, WAL ani ostatní soubory. Pro veřejný server proto sleduj i skutečné volné místo a nastav limity těla požadavku/četnosti v reverzní proxy. Aplikační ochrana není úplná obrana proti distribuovanému síťovému zahlcení. Odmítnutí a selhání herního zápisu logují pouze provozní kategorii, bez herních textů a tokenů.
+
+Úplná serverová ZIP záloha zůstává oddělená od 3MB přenositelného JSON exportu kampaně. Již nadlimitní historická kampaň se nemaže: zachraň ji serverovou zálohou (na Cloudflare nativním exportem D1) a zmenši ji explicitní úpravou PJ, která se vejde do limitu. Export nadlimitního či neplatného JSON nepředstírá úspěch.
+
+[Podrobný stabilizační audit a stav ověření](STABILIZATION_AUDIT.md).

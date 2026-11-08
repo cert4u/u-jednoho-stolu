@@ -1,6 +1,6 @@
 import {catalogApi,catalogAsset} from './catalog-api.mjs';
 import {createServer,request} from 'node:http';
-import {readFileSync,existsSync,writeFileSync,unlinkSync,readdirSync,openSync,fsyncSync,closeSync} from 'node:fs';
+import {readFileSync,existsSync,writeFileSync,unlinkSync,readdirSync,openSync,fsyncSync,closeSync,statfsSync} from 'node:fs';
 import {randomBytes,createHmac,scryptSync} from 'node:crypto';
 import path from 'node:path';
 import {startProdServer} from 'vinext/server/prod-server';
@@ -29,6 +29,7 @@ async function updater(endpoint,method='GET',data,refresh=false){const url=new U
 const server=createServer(async(req,res)=>{try{
  const url=new URL(req.url,'http://localhost');
  const {pathname}=url;
+ if(pathname==='/api/game'&&req.method==='POST'){const disk=statfsSync(dataDirectory());if(disk.bavail*disk.bsize<16_000_000){console.warn('game_write_denied_low_disk');res.setHeader('Retry-After','60');json(res,503,{error:'Na serveru není dost volného místa. Kontaktuj správce.'});return;}}
  if(pathname.startsWith('/catalog-assets/')){await catalogAsset(req,res,pathname);return;}
  if(pathname==='/healthz'){json(res,200,{ok:true,...info,hostingProtocol:1,maintenance:existsSync(flag)});return;}
  if(pathname.startsWith('/internal/')){

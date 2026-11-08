@@ -2,7 +2,8 @@ import type { Game } from './game';
 import { backupSchema } from './backup/campaign-schema';
 import { validateCampaign } from './backup/validate-campaign';
 
-export const MAX_BACKUP_BYTES = 3_000_000;
+import { assertBackupSize } from './backup-limits';
+export { MAX_BACKUP_BYTES } from './backup-limits';
 
 export function makeBackup(g: Game) {
   const game = structuredClone(g);
@@ -18,12 +19,8 @@ export function makeBackup(g: Game) {
   };
 }
 
-export function readBackup(value: unknown): Game {
-  if (
-    new TextEncoder().encode(JSON.stringify(value)).length > MAX_BACKUP_BYTES
-  ) {
-    throw new Error('Záloha je příliš velká (nejvýše 3 MB dat).');
-  }
+export function validateBackup(value: unknown) {
+  assertBackupSize(value);
   const result = backupSchema.safeParse(value);
   if (!result.success) {
     throw new Error(
@@ -33,6 +30,11 @@ export function readBackup(value: unknown): Game {
 
   const campaign = result.data.game;
   validateCampaign(campaign);
+  return campaign;
+}
+
+export function readBackup(value: unknown): Game {
+  const campaign = validateBackup(value);
   return {
     ...campaign,
     members: campaign.members.map((member) => ({

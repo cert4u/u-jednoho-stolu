@@ -31,6 +31,8 @@ jobs:
         run: npm run check:docs
       - name: Herní obsah
         run: npm run check:content
+      - name: Lint bez nových nálezů
+        run: npm run lint:baseline
       - name: TypeScript
         run: npm run check
       - name: Geometrie mapy
@@ -42,7 +44,7 @@ jobs:
       - name: Integrační testy
         run: npm run test:ci
       - name: Node hosting a správa instalace
-        run: npm run build:node && npm run check:client-content && npm run test:hosting
+        run: npm run build:node && npm run check:client-content && npm run test:hosting && npm run test:stabilization
 
   docker:
     name: Docker hosting and upgrade

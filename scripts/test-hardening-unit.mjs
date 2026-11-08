@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+await import('./generator-test-import.mjs');
+const {readGameRequest,MAX_GAME_REQUEST_BYTES}=await import('../lib/backup-limits.ts');
+const {initialGame}=await import('../lib/game.ts');
+const {appendMessage,messageReplay}=await import('../lib/message-operations.ts');
+let cancelled=false;
+const stream=new ReadableStream({start(c){c.enqueue(new Uint8Array(MAX_GAME_REQUEST_BYTES));c.enqueue(new Uint8Array(1));},cancel(){cancelled=true;}});
+assert.equal(await readGameRequest(new Request('http://local',{method:'POST',body:stream,duplex:'half'})),null);assert(cancelled);
+const exact=new Request('http://local',{method:'POST',body:'x'.repeat(MAX_GAME_REQUEST_BYTES)});assert.equal((await readGameRequest(exact)).length,MAX_GAME_REQUEST_BYTES);
+const split=new ReadableStream({start(c){for(const b of new TextEncoder().encode('žluťoučký'))c.enqueue(Uint8Array.of(b));c.close();}});
+assert.equal(await readGameRequest(new Request('http://local',{method:'POST',body:split,duplex:'half'})),'žluťoučký');
+const original=initialGame('PJ','token'),b={action:'roll',text:'20k100',requestId:'stable-roll'};
+const first=structuredClone(original);await appendMessage(first,first.members[0],b);const prepared=first.messages.at(-1);
+const retry=structuredClone(original);await appendMessage(retry,retry.members[0],b,prepared);assert.deepEqual(retry.messages,first.messages);
+assert(await messageReplay(retry,retry.members[0],b));await appendMessage(retry,retry.members[0],b);assert.equal(retry.messages.length,1);
+for(let i=0;i<260;i++)await appendMessage(retry,retry.members[0],{action:'chat',text:'x'.repeat(2000),requestId:'ledger-'+i});
+assert.equal(retry.messageOperations.length,256);assert(Buffer.byteLength(JSON.stringify(retry.messageOperations))<80_000);
+console.log('PASS: bounded chunked input cancellation, exact HTTP byte boundary, split UTF-8 and stable prepared dice result across a forced CAS retry.');

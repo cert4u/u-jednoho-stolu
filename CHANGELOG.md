@@ -1,5 +1,16 @@
 # Změny
 
+## Nevydáno — stabilizace po 1.2.1
+
+- Ochrana všech herních zápisů před překročením 3MB obnovitelné zálohy; ověřený export, kompaktní stahovaný soubor a průběžný limit HTTP těla.
+- Autorizovaný ETag/304 pro nezměněný polling bez změny JSON projekce a bez externí služby.
+- Sdílený limit zakládání/obnovy, kapacita počtu/velikosti kampaní a rezerva volného disku Node. Nová migrace `0003_room_admission.sql` a volitelné provozní proměnné.
+- Volitelná, na autora vázaná idempotence chatu a obyčejných hodů včetně CAS retry; staré zprávy a zálohy zůstávají podporované.
+- Konzistentní kategorie/editor katalogu, potvrzení neuložených změn a ignorování opožděných odpovědí staré relace.
+- Cílené oddělení definic mapových nástrojů, čitelnější admin controller, omezení skrytí scrollbarů na mapový papír a CI brána proti novým lint nálezům.
+
+[Stabilizační audit](docs/STABILIZATION_AUDIT.md). Verze zůstává 1.2.1; tato etapa sama nevytváří tag ani release.
+
 ## 1.2.1 — 2026-11-07
 
 - **Administrace v zabudovaných prohlížečích.** Vstupy a bezpečnostní potvrzení používají dialog uvnitř stránky; přidání GitHub katalogu ani obrázku už nezávisí na nepodporovaném `prompt()`. Obnova zálohy dál vyžaduje přesný název.

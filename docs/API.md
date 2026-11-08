@@ -10,7 +10,7 @@ Herní požadavky používají `Authorization: Bearer <token-postavy>`. Nejde o 
 
 Mapové souřadnice jsou od nuly, x 0–27 a y 0–19. Hrany mají klíče `h:x:y` a `v:x:y`; vodorovná hrana spojuje `(x,y)` s `(x+1,y)`, svislá `(x,y)` s `(x,y+1)`. UI mřížka je číslovaná od 1. Výchozí patro má ID `ground`, další patra vlastní identifikátory.
 
-Při opakování podporované mutace zachovej její `requestId` (běžně UUID; validace přijímá 16–80 alfanumerických znaků a pomlček). Nový identifikátor znamená novou akci. Historie opakování je omezená a různě scoped podle modulu; zejména `chat`, obyčejný `roll`, `character`, `notes`, přidání hráče a archivace nejsou univerzálně idempotentní.
+Při opakování podporované mutace zachovej její `requestId` (běžně UUID; validace přijímá 16–80 alfanumerických znaků a pomlček). Nový identifikátor znamená novou akci. Historie opakování je omezená a různě scoped podle modulu; `chat` a obyčejný `roll` nově přijímají volitelný `requestId` (1–100 znaků A–Z, a–z, 0–9, `_`, `-`), scoped na autora. Opakování se stejnými normalizovanými vstupy vrátí aktuální pohled bez dalšího zápisu; jiný obsah se stejným ID vrátí 409. Kampaň uchovává posledních 256 těchto operací (ID zprávy a SHA-256 normalizovaného vstupu, bez další kopie textu nebo obrázků) v soukromém poli `messageOperations`. Starší klient bez ID funguje bez deduplikace. `character`, `notes`, přidání hráče a archivace nejsou univerzálně idempotentní.
 
 ## Čtení a export
 
@@ -21,6 +21,8 @@ Při opakování podporované mutace zachovej její `requestId` (běžně UUID; 
 | `GET /api/game?room=<code>&download=backup` | Jen PJ: úplný JSON export formátu 1. Vynechá herní tokeny/otisky klíčů, nikoli tajné herní texty. |
 
 Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty se dopočítávají a operační historie je odstraněná. Nepoužívej filtrovanou odpověď jako úplnou zálohu nebo náhradu databázového řádku.
+
+Běžné čtení vrací `ETag` z autorizovaného pohledu. Klient může poslat `If-None-Match`; při shodě dostane **304 bez JSON těla**. Autentizace probíhá před porovnáním, odpověď má `Vary: Authorization` a `Cache-Control: no-store`. Klient drží validátor pouze pro konkrétní relaci a patro. Změny přítomnosti se promítají také do otisku. Katalogové a zálohové GET nejsou součástí této optimalizace.
 
 ## Zápis hry
 
@@ -169,3 +171,13 @@ Node administrace používá `/admin/api/catalogs`, `/view`, `/export`, POST `/c
 ### Administrace katalogů v 1.2.1
 
 Rozdělení `catalog-store.mjs` je interní změna; katalogové HTTP cesty, ochrana administrační relací, kontroly původu i `expectedRevision` zůstávají součástí stejného kontraktu. Veřejné klientské soubory `/admin/app.js`, `/admin/catalogs.js` a `/admin/dialogs.js` neobsahují herní tajemství; přístup k datům nadále vyžaduje autorizované API. Dialogy používají HTML formulář uvnitř stránky, ne nativní `prompt()` či `confirm()`.
+
+## Provozní hranice stabilizační větve
+
+- HTTP JSON tělo má nejvýše **3 100 000 UTF-8 bajtů**; server počítá průběžně i chunked vstup. Překročení vrací 413.
+- Přenositelná záloha formátu 1 má nejvýše **3 000 000 bajtů kompaktního JSON**. Zápisy kontrolují výsledný export před atomickým uložením; překročení vrací 413 a původní kampaň zůstává zachovaná. Export před úspěchem znovu ověří schéma, odkazy a kontrolní otisky obrázků. Neobnovitelná starší kampaň dostane při exportu 409, nikoli zdánlivě úspěšný soubor.
+- `create` a `restore` sdílejí limit zakládání všech stolů instalace: výchozích 100 za klouzavou minutu. Vyčerpání vrací 429 a `Retry-After: 60`. Limit se opírá o SQLite/D1 a přetrvá restart; nečte klientské IP hlavičky.
+- Výchozí kapacita je 1 000 místností a 256 000 000 bajtů JSON dat místností. Překročení při založení vrací 503. Růst existující kampaně hlídá stejný atomický kapacitní predikát; při nedostatku kapacity vrací 503. Čtení a zmenšení existujících dat zůstávají možné. Nikdo automaticky nemaže kampaně.
+- Návrat po ztracené HTTP odpovědi u chatu/hodu používá stejné ID. Klient drží nejvýše 64 nevyřízených klíčů pouze v paměti; obnova stránky tuto paměť zahodí. Deduplikace není neomezený auditní archiv.
+
+Konfiguraci a rozdíly hostingu popisuje [provozní návod](SELF_HOSTING.md#ochrany-stabilizační-větve). Měření a omezení jsou v [auditu](STABILIZATION_AUDIT.md).

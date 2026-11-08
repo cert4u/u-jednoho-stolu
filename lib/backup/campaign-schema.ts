@@ -19,6 +19,7 @@ export const backupSchema = z.object({
   version: z.literal(1),
   exportedAt: z.string(),
   game: z.object({
+    messageOperations: z.array(z.object({actor:id,requestId:id,fingerprint:z.string().regex(/^[a-f0-9]{64}$/),messageId:id})).max(256).optional(),
     contentLibrary:campaignCatalogSchema.optional(),
     storyOutline: storyOutlineSchema.optional(),
     sessionRecap: sessionRecap.optional(),

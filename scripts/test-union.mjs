@@ -26,3 +26,5 @@ await import('./test-scenery-fill.mjs');
 await import('./test-surfaces.mjs');
 
 await import('./test-catalog-core.mjs');
+
+await import('./test-hardening-unit.mjs');

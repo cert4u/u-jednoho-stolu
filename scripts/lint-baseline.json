@@ -1,0 +1,101 @@
+{
+  "app/page.tsx": {
+    "2:react-hooks/refs": 1,
+    "2:react-hooks/set-state-in-effect": 1
+  },
+  "components/bestiary-panel.tsx": {
+    "1:@next/next/no-img-element": 1,
+    "2:react-hooks/set-state-in-effect": 1
+  },
+  "components/catalog-provider.tsx": {
+    "2:react-hooks/set-state-in-effect": 1,
+    "1:react-hooks/exhaustive-deps": 1
+  },
+  "components/character-avatar.tsx": {
+    "1:@next/next/no-img-element": 1
+  },
+  "components/character-sheet-artwork.tsx": {
+    "1:@next/next/no-img-element": 1
+  },
+  "components/dungeon-map.tsx": {
+    "2:react-hooks/set-state-in-effect": 5,
+    "1:react-hooks/exhaustive-deps": 6
+  },
+  "components/equipment-panel.tsx": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "components/exploration-controls.tsx": {
+    "1:@typescript-eslint/no-unused-vars": 4
+  },
+  "components/guarded-dialog.tsx": {
+    "2:react-hooks/refs": 1
+  },
+  "components/journey-panel.tsx": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "components/loot-panel.tsx": {
+    "1:@typescript-eslint/no-unused-vars": 1,
+    "2:react-hooks/refs": 4
+  },
+  "components/scenery/palette.tsx": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "components/scenery/surfaces.tsx": {
+    "1:react-hooks/exhaustive-deps": 1
+  },
+  "components/voice-panel.tsx": {
+    "2:react-hooks/refs": 1,
+    "1:react-hooks/exhaustive-deps": 1
+  },
+  "content/adventures/index.ts": {
+    "1:import/no-anonymous-default-export": 1
+  },
+  "content/bestiary/index.ts": {
+    "1:import/no-anonymous-default-export": 1
+  },
+  "content/builtin-digest.ts": {
+    "1:import/no-anonymous-default-export": 1
+  },
+  "content/dungeon-presets/index.ts": {
+    "1:import/no-anonymous-default-export": 1
+  },
+  "content/scenery/index.ts": {
+    "1:import/no-anonymous-default-export": 1
+  },
+  "deploy/updater/docker.mjs": {
+    "1:@typescript-eslint/no-unused-vars": 7
+  },
+  "lib/backup.ts": {
+    "1:@typescript-eslint/no-unused-vars": 3
+  },
+  "lib/catalogs/builtin.ts": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "lib/dungeon-generator-v1.ts": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "lib/dungeon.ts": {
+    "1:@typescript-eslint/no-unused-vars": 2
+  },
+  "lib/loot.ts": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "scripts/check-content.mjs": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "scripts/test-catalog-github.mjs": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "scripts/test-challenges.mjs": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "scripts/test-docker.mjs": {
+    "1:@typescript-eslint/no-unused-vars": 2
+  },
+  "scripts/test-journey.mjs": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  },
+  "scripts/test-repairs.mjs": {
+    "1:@typescript-eslint/no-unused-vars": 1
+  }
+}
