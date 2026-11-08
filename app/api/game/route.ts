@@ -1,7 +1,8 @@
+import {resolvedScenery} from '../../../lib/catalogs/visuals';
 import { env } from 'cloudflare:workers';
 import { assertRoomStorage, RoomStorageSizeError } from '../../../lib/room-storage-limit';
 import { messageReplay, MessageReplayError } from '../../../lib/message-operations';
-import {prepareActionCatalog,portraitForCatalog,resolvedScenery} from '../../../lib/catalogs/game-content';
+import {prepareActionCatalog,portraitForCatalog} from '../../../lib/catalogs/game-content';
 import {loadCatalogs} from '../../../lib/catalogs/runtime';
 import {validateCampaignImages} from '../../../lib/catalogs/image-snapshot';
 import { and, eq, sql } from 'drizzle-orm';

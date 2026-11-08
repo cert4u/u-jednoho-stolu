@@ -2,7 +2,6 @@
 import { actionValues } from '../components/game-table/game-client';
 import {CatalogProvider} from '../components/catalog-provider';
 import { type VoicePresence } from '../components/voice-panel';
-import { LifeBadge, LifeSummary } from '../components/life-panel';
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import type { Location } from '../lib/exploration';
 import MapNoteNotifications, {
@@ -10,11 +9,7 @@ import MapNoteNotifications, {
 } from '../components/map-note-notifications';
 import type { MapNoteAlertView } from '../lib/map-note-alerts';
 import type { MapNoteView, NoteAnchor } from '../lib/map-notes';
-import { JourneySummary } from '../components/journey-panel';
-import ConditionBadges from '../components/condition-badges';
-import { InitiativeTracker } from '../components/initiative-panel';
 import type { InitiativeRef } from '../lib/initiative';
-import { PartyOrder, SidebarLevels } from '../components/party-sidebar';
 import { type DialogHandle } from '../components/guarded-dialog';
 import { downloadText } from '../components/campaign-access';
 import { type RollSetup } from '../components/mechanics-panel';
@@ -22,25 +17,14 @@ import {
   SituationOverlay,
   useRoomSituations,
 } from '../components/room-situation';
-import CharacterAvatar from '../components/character-avatar';
 import DungeonMap from '../components/dungeon-map';
-import {
-  Swords,
-  BookOpen,
-  ScrollText,
-  Dices,
-  Plus,
-  ArrowRight,
-  Check,
-  PenTool,
-  X,
-  Flame,
-  Star,
-  Skull,
-} from 'lucide-react';
+import { X } from 'lucide-react';
 import type { GameView as Game } from './api/game/view';
 import type { Session, ChatTab } from '../components/game-table/types';
 import Lobby from '../components/game-table/lobby';
+import TableHeader from '../components/game-table/table-header';
+import PartySidebar, { MobilePartyPanels } from '../components/game-table/party-sidebar';
+import JournalShortcuts from '../components/game-table/journal-shortcuts';
 import ChatPanel from '../components/game-table/chat-panel';
 import {
   requestGame,
@@ -461,409 +445,179 @@ export default function Home() {
       </div>
     );
   return (
-    <CatalogProvider session={session} pj={me.role==='pj'} visuals={game.contentVisuals}><main className="app">
-      <header className="topbar">
-        <a className="brand" href="#">
-          <Swords /> U jednoho stolu
-        </a>
-        <div className="campaign">
-          <span className="tiny">VAŠE DOBRODRUŽSTVÍ</span>
-          <strong>{game.title}</strong>
-        </div>
-        <div className="current-scene">
-          <span className="tiny">AKTUÁLNÍ SCÉNA</span>
-          {pj ? (
-            <button
-              title="Upravit scénu"
-              aria-label="Upravit scénu"
-              onClick={() => setModal('notes')}
-            >
-              <span>{game.scene}</span>
-              <PenTool size={12} />
-            </button>
-          ) : (
-            <strong>{game.scene}</strong>
-          )}
-        </div>
-        <span className="connection">
-          <i />
-          {connectionError ? 'Připojování…' : 'Stůl je připraven'}
-        </span>
-        {pj && (
-          <button
-            className="invite award-open"
-            onClick={() => setModal('experience')}
-          >
-            <Star size={15} />
-            <span>Přidělit zkušenosti</span>
-          </button>
-        )}
-        <button onClick={copy} className="invite">
-          {copied ? <Check size={15} /> : <Plus size={15} />}{' '}
-          {copied ? 'Odkaz zkopírován' : 'Pozvat družinu'}
-        </button>
-        <button
-          className="avatar"
-          onClick={() => setModal('account')}
-          title="Tvůj přístup"
-        >
-          {me.name[0]}
-        </button>
-      </header>
-      {(error || connectionError) && (
-        <div className="error-banner" role="alert">
-          {error || connectionError}
-          {error && (
-            <button onClick={() => setError('')} aria-label="Zavřít zprávu">
-              <X size={14} />
-            </button>
-          )}
-        </div>
-      )}
-      <MapNoteNotifications
-        key={session.room + ':' + me.id}
-        alerts={pj ? game.noteAlerts || [] : []}
-        room={session.room}
-        me={me.id}
-        loading={openingNote}
-        blocked={!!modal}
-        onOpen={openNoteAlert}
-      />
-      <div className="workspace">
-        <aside className="party" tabIndex={0} aria-label="Družina a příprava">
-          <JournalShortcuts pj={pj} onOpen={openPanel} />
-          <InitiativeTracker
-            data={game.initiative}
-            pj={!!pj}
-            busy={busy}
-            onAction={(values) => act('initiative', values)}
-            onEdit={() => openPanel('initiative')}
-            onConditions={openConditions}
-          />
-          <div className="section-title">
-            <span>DRUŽINA</span>
-            <span>{game.members.length}/12</span>
-          </div>
-          <LifeSummary members={game.members} pj={!!pj} onOpen={openLife} />
-          <div className="party-list">
-            {game.members.map((m) => (
-              <button
-                key={m.id}
-                className={
-                  'member ' +
-                  (selected === m.id ? 'chosen' : '') +
-                  (voicePresence[m.id]?.speaking ? ' voice-speaking' : '')
-                }
-                onClick={() => {
-                  setSelected(m.id);
-                  if (m.id === me.id) setModal('character');
-                }}
-              >
-                <CharacterAvatar member={m} />
-                <span className="member-info">
-                  <strong>
-                    {voicePresence[m.id] && (
-                      <span
-                        className="voice-member"
-                        title={
-                          voicePresence[m.id].speaking
-                            ? 'Právě mluví'
-                            : voicePresence[m.id].muted
-                              ? 'V hovoru · mikrofon vypnutý'
-                              : 'V hovoru'
-                        }
-                        aria-label={
-                          voicePresence[m.id].speaking
-                            ? 'Právě mluví'
-                            : 'V hovoru'
-                        }
-                      >
-                        ●{' '}
-                      </span>
-                    )}
-                    {m.name} {m.id === me.id && <small>(ty)</small>}
-                  </strong>
-                  <small>
-                    {m.role === 'pj'
-                      ? 'Pán jeskyně'
-                      : `${(m.experience ?? 0).toLocaleString('cs-CZ')} zk. · ${m.profession || 'Dobrodruh'}`}
-                  </small>
-                  {m.role !== 'pj' && (
-                    <span className="health">
-                      <i style={{ width: `${(m.hp / m.maxHp) * 100}%` }} />
-                    </span>
-                  )}
-                  <LifeBadge hp={m.hp} life={m.life} />
-                  <ConditionBadges items={m.conditions} />
-                </span>
-                {m.role !== 'pj' && (
-                  <span className="hp">
-                    {m.hp}
-                    <small>/{m.maxHp}</small>
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-          <button className="add-party" onClick={copy}>
-            <Plus size={16} /> Pozvat dalšího hráče
-          </button>
-          {game.exploration && (
-            <PartyOrder
-              data={game.exploration}
-              members={game.members}
-              me={me.id}
-              pj={pj}
-              busy={busy}
-              onAction={(op, values) => act('explore', { op, ...values })}
-              onLevel={setEditorLevel}
-            />
-          )}
-          <div className="sidebar-bottom">
-            <JourneySummary
-              data={game.journey}
-              onOpen={() => openPanel('journey')}
-            />
-            {game.exploration && (
-              <SidebarLevels
-                data={game.exploration}
-                members={game.members}
-                me={me.id}
-                pj={pj}
-                busy={busy}
-                onAction={(op, values) => act('explore', { op, ...values })}
-                onLevel={setEditorLevel}
-              />
-            )}
-            <div className="quote">
-              <Flame size={21} />
-              <p>
-                „Ne všechna zlata se třpytí.
-                <br />
-                Některá se hází kostkou.“
-              </p>
-            </div>
-            <button onClick={() => setModal('help')}>
-              <BookOpen size={17} /> Jak se hraje <ArrowRight size={14} />
-            </button>
-            <span className="version">U jednoho stolu · první výprava</span>
-          </div>
-        </aside>
-        <section className="table">
-          <JournalShortcuts mobile pj={pj} onOpen={openPanel} />
-          <details
-            className="mobile-initiative-panel"
-            hidden={!pj && !game.initiative?.active}
-          >
-            <summary>
-              Souboj
-              {game.initiative?.active
-                ? ` · kolo ${game.initiative.round}`
-                : ''}
-            </summary>
-            <InitiativeTracker
-              data={game.initiative}
-              pj={!!pj}
-              busy={busy}
-              onAction={(values) => act('initiative', values)}
-              onEdit={() => openPanel('initiative')}
-              onConditions={openConditions}
-            />
-          </details>
-          <details className="mobile-party-panel">
-            <summary>Družina, čas a patra</summary>
-            {pj && (
-              <button
-                className="secondary"
-                onClick={() => openPanel('generator')}
-              >
-                Generátor jeskyně
-              </button>
-            )}
-            <LifeSummary members={game.members} pj={!!pj} onOpen={openLife} />
-            <JourneySummary
-              data={game.journey}
-              onOpen={() => openPanel('journey')}
-            />
-            {game.exploration && (
-              <>
-                <PartyOrder
-                  data={game.exploration}
-                  members={game.members}
-                  me={me.id}
-                  pj={pj}
-                  busy={busy}
-                  onAction={(op, values) => act('explore', { op, ...values })}
-                  onLevel={setEditorLevel}
-                />
-                <SidebarLevels
-                  compact
-                  data={game.exploration}
-                  members={game.members}
-                  me={me.id}
-                  pj={pj}
-                  busy={busy}
-                  onAction={(op, values) => act('explore', { op, ...values })}
-                  onLevel={setEditorLevel}
-                />
-              </>
-            )}
-          </details>
-          <DungeonMap
-            recapFocus={recapFocus}
-            loot={game.loot || []}
-            challenges={game.challenges || []}
-            onOpenLoot={(id) => openLoot(id)}
-            onOpenChallenge={(id) => openChallenges(id)}
-            generationPick={generationPick}
-            onGenerate={() => openPanel('generator')}
-            notes={game.mapNotes || []}
-            onOpenNote={openMapNote}
-            monsters={game.monsters || []}
-            selectedMonster={selectedMonster}
-            monsterPick={monsterPick}
-            onInspectMonster={inspectMonster}
-            map={game.dungeon}
-            members={game.members}
-            me={me.id}
-            pj={pj}
-            busy={
-              busy ||
-              Boolean(
-                pj && editorLevel && game.exploration?.levelId !== editorLevel,
-              )
-            }
-            canUndo={game.canUndoMap}
-            exploration={game.exploration}
-            onLevel={setEditorLevel}
-            selected={selected}
-            onSelect={setSelected}
-            onAction={act}
-          />
-          <SituationOverlay
-            message={modal ? undefined : situations.next}
-            onDismiss={situations.dismiss}
-          />
-        </section>
-        <ChatPanel
+    <CatalogProvider session={session} pj={pj} visuals={game.contentVisuals}>
+      <main className="app">
+        <TableHeader
           game={game}
           me={me}
           pj={pj}
-          session={session}
-          busy={busy}
-          tab={tab}
-          setTab={setTab}
-          pendingSituationIds={situations.pendingIds}
-          text={text}
-          setText={setText}
-          to={to}
-          setTo={setTo}
-          dice={dice}
-          setDice={setDice}
-          setVoicePresence={setVoicePresence}
-          act={act}
-          openLoot={openLoot}
-          openChallenges={openChallenges}
-          openRoll={openRoll}
+          connectionError={connectionError}
+          copied={copied}
+          onEditScene={() => setModal('notes')}
+          onAward={() => setModal('experience')}
+          onAccount={() => setModal('account')}
+          onInvite={copy}
         />
-      </div>
-      {modal && (
-        <TableDialog
-          key={session.room + ':' + session.token + ':' + modal}
-          modal={modal}
-          dialog={dialog}
-          game={game}
-          me={me}
-          session={session}
-          busy={busy}
-          error={error}
-          selection={{
-            lifeMemberId,
-            recoveryMemberId,
-            lootId,
-            lootNoteId,
-            challengeId,
-            challengeNoteId,
-            noteAnchor,
-            notePublic,
-            noteOpenKey,
-            mapNote,
-            noteLevelName,
-            conditionTarget,
-            rollSetup,
-            selectedMonster,
-            recoveryCode,
-            recoveryName,
-          }}
-          act={act}
-          setModal={setModal}
-          setTab={setTab}
-          openPanel={openPanel}
-          openRecovery={openRecovery}
-          openLife={openLife}
-          openLoot={openLoot}
-          openChallenges={openChallenges}
-          openStoryPlace={id => {
-            const place = game.storyOutline?.places.find(item => item.id === id);
-            if (place) openNoteAlert({ noteId: id, levelId: place.levelId, levelName: place.levelName }, () => {});
-          }}
-          locateRecap={locateRecap}
-          placeMonster={placeMonster}
-          openRoll={openRoll}
-          reloadEquipment={reloadEquipment}
-          copy={copy}
-          exportGame={exportGame}
-          leave={leave}
+        {(error || connectionError) && (
+          <div className="error-banner" role="alert">
+            {error || connectionError}
+            {error && (
+              <button onClick={() => setError('')} aria-label="Zavřít zprávu">
+                <X size={14} />
+              </button>
+            )}
+          </div>
+        )}
+        <MapNoteNotifications
+          key={session.room + ':' + me.id}
+          alerts={pj ? game.noteAlerts || [] : []}
+          room={session.room}
+          me={me.id}
+          loading={openingNote}
+          blocked={!!modal}
+          onOpen={openNoteAlert}
         />
-      )}
-    </main></CatalogProvider>
-  );
-}
-
-function JournalShortcuts({
-  pj,
-  mobile = false,
-  onOpen,
-}: {
-  pj: boolean;
-  mobile?: boolean;
-  onOpen: (modal: TablePanel) => void;
-}) {
-  return (
-    <nav
-      className={'journal-shortcuts ' + (mobile ? 'mobile-journals' : '')}
-      aria-label="Deníky a příprava"
-    >
-      <button onClick={() => onOpen('character')}>
-        <ScrollText size={18} />
-        <span>Můj deník</span>
-        <ArrowRight size={13} />
-      </button>
-      <button
-        aria-label={pj ? 'Zápisník Pána jeskyně' : 'Jak se hraje'}
-        onClick={() => onOpen(pj ? 'notes' : 'help')}
-      >
-        <BookOpen size={18} />
-        <span>{pj ? 'Zápisník PJ' : 'Jak se hraje'}</span>
-        <ArrowRight size={13} />
-      </button>
-      <button onClick={() => onOpen('session-recap')}>
-        <BookOpen size={18} />
-        <span>Kde jsme skončili</span>
-        <ArrowRight size={13} />
-      </button>
-      <button className="mechanics-open" onClick={() => onOpen('mechanics')}>
-        <Dices size={18} />
-        <span>Hody a souboj</span>
-        <ArrowRight size={13} />
-      </button>
-      {pj && (
-        <button onClick={() => onOpen('monsters')}>
-          <Skull size={18} />
-          <span>Příšery</span>
-          <ArrowRight size={13} />
-        </button>
-      )}
-    </nav>
+        <div className="workspace">
+          <PartySidebar
+            game={game}
+            me={me}
+            pj={pj}
+            busy={busy}
+            act={act}
+            onOpen={openPanel}
+            onLife={openLife}
+            onConditions={openConditions}
+            onLevel={setEditorLevel}
+            selected={selected}
+            voicePresence={voicePresence}
+            onSelectMember={(id) => {
+              setSelected(id);
+              if (id === me.id) setModal('character');
+            }}
+            onInvite={copy}
+            onHelp={() => setModal('help')}
+          />
+          <section className="table">
+            <JournalShortcuts mobile pj={pj} onOpen={openPanel} />
+            <MobilePartyPanels
+              game={game}
+              me={me}
+              pj={pj}
+              busy={busy}
+              act={act}
+              onOpen={openPanel}
+              onLife={openLife}
+              onConditions={openConditions}
+              onLevel={setEditorLevel}
+            />
+            <DungeonMap
+              recapFocus={recapFocus}
+              loot={game.loot || []}
+              challenges={game.challenges || []}
+              onOpenLoot={(id) => openLoot(id)}
+              onOpenChallenge={(id) => openChallenges(id)}
+              generationPick={generationPick}
+              onGenerate={() => openPanel('generator')}
+              notes={game.mapNotes || []}
+              onOpenNote={openMapNote}
+              monsters={game.monsters || []}
+              selectedMonster={selectedMonster}
+              monsterPick={monsterPick}
+              onInspectMonster={inspectMonster}
+              map={game.dungeon}
+              members={game.members}
+              me={me.id}
+              pj={pj}
+              busy={
+                busy ||
+                Boolean(
+                  pj && editorLevel && game.exploration?.levelId !== editorLevel,
+                )
+              }
+              canUndo={game.canUndoMap}
+              exploration={game.exploration}
+              onLevel={setEditorLevel}
+              selected={selected}
+              onSelect={setSelected}
+              onAction={act}
+            />
+            <SituationOverlay
+              message={modal ? undefined : situations.next}
+              onDismiss={situations.dismiss}
+            />
+          </section>
+          <ChatPanel
+            game={game}
+            me={me}
+            pj={pj}
+            session={session}
+            busy={busy}
+            tab={tab}
+            setTab={setTab}
+            pendingSituationIds={situations.pendingIds}
+            text={text}
+            setText={setText}
+            to={to}
+            setTo={setTo}
+            dice={dice}
+            setDice={setDice}
+            setVoicePresence={setVoicePresence}
+            act={act}
+            openLoot={openLoot}
+            openChallenges={openChallenges}
+            openRoll={openRoll}
+          />
+        </div>
+        {modal && (
+          <TableDialog
+            key={session.room + ':' + session.token + ':' + modal}
+            modal={modal}
+            dialog={dialog}
+            game={game}
+            me={me}
+            session={session}
+            busy={busy}
+            error={error}
+            selection={{
+              lifeMemberId,
+              recoveryMemberId,
+              lootId,
+              lootNoteId,
+              challengeId,
+              challengeNoteId,
+              noteAnchor,
+              notePublic,
+              noteOpenKey,
+              mapNote,
+              noteLevelName,
+              conditionTarget,
+              rollSetup,
+              selectedMonster,
+              recoveryCode,
+              recoveryName,
+            }}
+            act={act}
+            setModal={setModal}
+            setTab={setTab}
+            openPanel={openPanel}
+            openRecovery={openRecovery}
+            openLife={openLife}
+            openLoot={openLoot}
+            openChallenges={openChallenges}
+            openStoryPlace={id => {
+              const place = game.storyOutline?.places.find(item => item.id === id);
+              if (place) openNoteAlert({ noteId: id, levelId: place.levelId, levelName: place.levelName }, () => {});
+            }}
+            locateRecap={locateRecap}
+            placeMonster={placeMonster}
+            openRoll={openRoll}
+            reloadEquipment={reloadEquipment}
+            copy={copy}
+            exportGame={exportGame}
+            leave={leave}
+          />
+        )}
+      </main>
+    </CatalogProvider>
   );
 }

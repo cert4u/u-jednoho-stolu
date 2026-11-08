@@ -1,4 +1,4 @@
-import {campaignVisuals} from '../../../lib/catalogs/game-content';
+import {campaignVisuals} from '../../../lib/catalogs/visuals';
 import { storyOutlineView } from '../../../lib/story-outline';
 import { sessionRecapView } from '../../../lib/session-recap';
 import { generationState } from '../../../lib/generation';

@@ -30,3 +30,7 @@ await import('./test-catalog-core.mjs');
 await import('./test-hardening-unit.mjs');
 
 await import('./test-game-client.mjs');
+
+await import('./test-action-dispatch.mjs');
+
+await import('./test-table-layout.mjs');

@@ -1,5 +1,13 @@
 # Změny
 
+## Nevydáno
+
+- Refaktor hlavního stolu: samostatná hlavička, panel družiny, mobilní ovládání a zkratky deníků se zachováním stejného HTML a událostí.
+- Rozdělení obsluhy herních akcí na směrování, doménová oprávnění/převod chyb, mapové operace a správu přístupů; odstranění opakovaných bloků pro obsluhu výjimek.
+- Čistá vizuální projekce katalogů oddělená od načítání databáze a připínání obsahu. Regresní testy rolí, vlastnictví postavy, 400/403/409, obsazené mapy, obnovovacích klíčů a skutečných React panelů.
+
+Bez změny herních pravidel, generátoru V2, HTTP kontraktu a uložených formátů; nejsou potřeba nové migrace ani provozní proměnné. [Hranice modulů pro přispěvatele](docs/DEVELOPMENT.md#hranice-odpovědností-při-údržbě). Číslo balíčku zůstává 1.2.2 do dalšího vydání.
+
 ## 1.2.2 — 2026-11-08
 
 - **Finální oprava klientských operací:** dvě záměrně stejné zprávy/hody mají samostatná ID; opakovaný přenos jedné operace zachovává její ID a výsledek. Obsah se nepoužívá jako identita operace.

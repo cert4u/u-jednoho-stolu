@@ -95,11 +95,11 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 
 | Cesta | Odpovědnost |
 | --- | --- |
-| [app/page.tsx](../app/page.tsx) | Propojení mapy, družiny, chatu a dialogů. |
+| [app/page.tsx](../app/page.tsx) | Stav relace, návaznost akcí, výběr mapy a otevírání dialogů. Hlavičku, postranní panel a mobilní ovládání skládá ze samostatných prezentačních komponent. |
 | [components/dungeon-map.tsx](../components/dungeon-map.tsx) | Editor mapy: režimy, lišta nástrojů, posun, přiblížení a dialogy. [Plátno SVG](../components/dungeon-map/canvas.tsx) vykresluje mapu a značky. [Obsluha vstupu](../components/dungeon-map/use-map-input.ts) zpracovává myš a klávesnici, sestavuje tahy a spravuje jejich opakování. |
 | [components/game-table/](../components/game-table) | Lobby, chat, deník, odměny, registr dialogů a klientská komunikace. `game-client.ts` volá API a `use-game-polling.ts` načítá stav každé dvě sekundy. |
 | [app/api/game/route.ts](../app/api/game/route.ts) | HTTP, ověření člena, vstup do kampaně a zápis s kontrolou revize. |
-| [app/api/game/actions.ts](../app/api/game/actions.ts) | Směrování mutací a kontrola rolí. Pravidla jednotlivých akcí jsou v odpovídajících modulech `lib/`. |
+| [app/api/game/actions.ts](../app/api/game/actions.ts) | Vstupní směrování mutací. [Doménové akce](../app/api/game/actions/domain.ts) sdružují oprávnění a převod chyb, [mapové akce](../app/api/game/actions/map.ts) hlídají úpravy geometrie a průzkum, [správa členů](../app/api/game/actions/members.ts) řeší archivaci a obnovovací klíče. Pravidla zůstávají v `lib/`. |
 | [app/api/game/view.ts](../app/api/game/view.ts) | Výslovný výběr polí herního pohledu podle příjemce. Klient používá typ `GameView` z tohoto modulu. |
 | `app/api/voice/route.ts`, `lib/voice.ts` | Ověření členství a krátkodobá hlasová vstupenka pouze pro mikrofon. |
 | `lib/game.ts`, `db/schema.ts` | Vnitřní stav hry a tabulka místností. |
@@ -129,6 +129,20 @@ Při Node buildu alias ve `vite.config.ts` nahradí `cloudflare:workers` modulem
 `scripts/build-node.mjs` zapisuje `dist/stul-build.json` z verze balíčku, commitu a času. Pro řízený build podporuje `STUL_VERSION` a `STUL_REVISION`; Compose wrapper automaticky předává `STUL_BOOTSTRAP_REVISION` do sestavení. Tyto údaje neurčují herní oprávnění.
 
 Node obálka poslouchá na veřejném aplikačním portu a předává herní požadavky vnitřnímu Vinext serveru na náhodném loopback portu. Sama obsluhuje `/healthz`, `/admin` a `/internal/*`. Hlasová média jdou přímo mezi prohlížečem a LiveKitem; neprocházejí JSON herním API ani jeho dvousekundovým pollingem.
+
+## Hranice odpovědností při údržbě
+
+Směrování API a oprávnění jsou výslovné a oddělené od pravidel hry:
+
+- Novou běžnou akci přidej do `app/api/game/actions/domain.ts`: vlastní doménová funkce v `lib/`, případné `deny` pro oprávnění, náhradní text chyby a `conflicts: true`, pokud `EditConflict` znamená HTTP 409. Doménové funkce musí nadále kontrolovat vlastní platnost vstupů a revize. `mechanics` a `experience` zachovávají původní mapování chyb na 400.
+- Operace měnící mapu patří do `actions/map.ts`. Upravená mapa se při obsazení políčka odmítne před přiřazením náhledu do patra; aktualizace paměti a dohledu následuje až po přijetí tahu. Kontroly společného pohybu a vedení družiny zachovej.
+- Archivace, rotace tokenů a vydání obnovovacích klíčů patří do `actions/members.ts`. Vstup/join, obnova relace, databázový zápis a CAS retry zůstávají v `route.ts`; nepřesouvej je do pravidel.
+- Hlavička, seznam družiny a mobilní panely jsou v [table-header.tsx](../components/game-table/table-header.tsx), [party-sidebar.tsx](../components/game-table/party-sidebar.tsx) a [journal-shortcuts.tsx](../components/game-table/journal-shortcuts.tsx). Přebírají stav a události; samy nenačítají API ani nespravují relaci. Navigace a ochrana otevřených formulářů zůstává v nadřazeném stole.
+- [Katalogová vizuální projekce](../lib/catalogs/visuals.ts) je čistý modul bez databáze, souborového systému a Cloudflare bindingů. Čte pouze resolver a připnuté podklady kampaně. `runtime.ts` načítá instalovanou knihovnu; `game-content.ts` připíná použité položky před mutací. Do veřejné projekce nikdy nepřidávej načítání celé soukromé knihovny.
+
+Refaktor po 1.2.2 nemění kontrakt HTTP, číslo uloženého formátu, migrace, herní mechaniky ani algoritmus generátoru. Kontroluj zvlášť odmítnuté operace: nejen stavový kód, ale i to, že nedošlo k nechtěné změně stavu.
+
+[Test směrování akcí](../scripts/test-action-dispatch.mjs) ověřuje role, vlastnictví postavy, chybové kódy, obsazenou mapu a obnovovací přístupy. [Test rozložení stolu](../scripts/test-table-layout.mjs) vykresluje skutečné React komponenty pro PJ i hráče včetně mobilních ovládacích prvků. Oba běží v `npm test`; sdílený JSX loader v `scripts/test-support/react-loader.mjs` používá také test náhledu generátoru. Vykreslení HTML nenahrazuje vizuální kontrolu v prohlížeči ani integrační test herního API.
 
 ## Souběh, opakování a soukromí
 

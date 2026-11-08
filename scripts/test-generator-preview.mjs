@@ -1,28 +1,11 @@
+import { registerReactTestLoader } from './test-support/react-loader.mjs';
 import assert from 'node:assert/strict';
-import { registerHooks } from 'node:module';
-import { readFileSync } from 'node:fs';
-import ts from 'typescript';
 import { createElement, Fragment } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { generateDungeon } from './generator-test-import.mjs';
 
 // Exercise the actual React renderers without a browser or an additional test framework.
-const hook = registerHooks({
-  resolve(specifier, context, next) {
-    try { return next(specifier, context); }
-    catch (error) {
-      if (error.code === 'ERR_MODULE_NOT_FOUND' && specifier.startsWith('.') && !/\.[a-z]+$/i.test(specifier))
-        return next(specifier + '.tsx', context);
-      throw error;
-    }
-  },
-  load(url, context, next) {
-    if (!url.endsWith('.tsx')) return next(url, context);
-    return { format: 'module', shortCircuit: true, source: ts.transpileModule(readFileSync(new URL(url), 'utf8'), {
-      compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
-    }).outputText };
-  },
-});
+const hook = registerReactTestLoader();
 try {
   const { default: Preview } = await import('../components/generator-preview-map.tsx');
   const { buildInkDrawing } = await import('../components/dungeon-map/drawing/geometry.ts');

@@ -1,19 +1,11 @@
 import type {Game,Member} from '../game';
-import type {Dungeon} from '../dungeon';
 import {getLevel} from '../exploration';
 import {dungeonFor} from '../dungeon';
 import {proposeScenery,sceneryFillBlocked} from '../scenery-fill';
-import {sceneryCatalog,type SceneryDefinition} from '../scenery-catalog';
+import {resolvedScenery} from './visuals';
 import {CatalogResolver,pinContent} from './resolver';
 import {loadCatalogs,catalogFileAdapter} from './runtime';
 import {MAX_BACKUP_BYTES,makeBackup} from '../backup';
-export function resolvedScenery(library?:CatalogResolver):SceneryDefinition[]{return library?library.list('scenery').map(row=>({...row.data,kind:row.ref})):sceneryCatalog;}
-/** Read only pinned visual data in normal game polling; never ship the private library. */
-export function campaignVisuals(g:Game,map:Dungeon){
- const used=new Set([...(map.scenery??[]).map(p=>p.kind),...(map.surfaces??[]).map(p=>p.kind)]);
- if(!g.contentLibrary)return [];
- return resolvedScenery(new CatalogResolver([],g.contentLibrary)).filter(e=>used.has(e.id));
-}
 export async function prepareActionCatalog(g:Game,actor:Member,b:Record<string,unknown>):Promise<CatalogResolver|undefined>{
  if(actor.role!=='pj')return;
  const targets:[Parameters<CatalogResolver['get']>[0],string][]=[];

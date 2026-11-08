@@ -251,3 +251,5 @@ Projekt čerpá inspiraci z DrD 1.5, referencí pro dosavadní základ hodů jso
 Finální kontrola před vydáním: [výsledky, omezení a připravenost](docs/FINAL_STABILIZATION.md).
 
 Podklady vydání 1.2.2: [ověřené opravy, měření a provozní omezení](docs/STABILIZATION_AUDIT.md). Při nasazení se řiď dokumentací konkrétního tagu.
+
+Pro úpravy kódu: [odpovědnosti modulů a pravidla refaktoru](docs/DEVELOPMENT.md#hranice-odpovědností-při-údržbě) popisují směrování akcí, oprávnění, složení stolu a oddělení katalogové projekce od databáze.
