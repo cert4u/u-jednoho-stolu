@@ -27,10 +27,10 @@ Příšeru, předlohu jeskyně, krátké dobrodružství i prvek stafáže můž
 ```bash
 npm run verify
 npm run format:check
-npm run lint:baseline
+npm run lint
 ```
 
-Formát vlastních modulů sjednocuj postupně přes `npm run format`. Seznam kontrolovaných souborů rozšiřuj v `scripts/format-scope.json`; [návod formátování](docs/DEVELOPMENT.md#postupné-jednotné-formátování) vysvětluje rozsah. Lint baseline nepovoluj zvýšením počtů nálezů.
+Formát vlastních modulů sjednocuj postupně přes `npm run format`. Seznam kontrolovaných souborů rozšiřuj v `scripts/format-scope.json`; [návod formátování](docs/DEVELOPMENT.md#postupné-jednotné-formátování) vysvětluje rozsah. Lint musí projít bez chyb i varování; nenavyšuj baseline ani nevypínej pravidla kvůli novému nálezu.
 
 U změny chování doplň smysluplný regresní nebo integrační test. Pro Node spusť `npm run build:node` a `npm run test:hosting`; pro zásah do sdíleného runtime ověř i Cloudflare build a `test:ci` podle vývojového návodu. Pro změnu updateru patří `npm run test:updater` a skutečný Docker test v CI. U samotné dokumentace není nutné opakovat herní integrační sady, pokud jsi neměnil jejich postupy či kód; ověř příkazy a odkazy přiměřeně změně.
 

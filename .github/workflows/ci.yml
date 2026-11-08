@@ -33,8 +33,8 @@ jobs:
         run: npm run format:check
       - name: Herní obsah
         run: npm run check:content
-      - name: Lint bez nových nálezů
-        run: npm run lint:baseline
+      - name: Lint bez chyb a varování
+        run: npm run lint
       - name: TypeScript
         run: npm run check
       - name: Geometrie mapy

@@ -31,9 +31,10 @@ for (const category of categories) {
     '// Vygenerováno příkazem npm run content:sync.',
     ...entries.map(({ file, id }) => `import entry_${id.replaceAll('-', '_')} from './${file}' with { type: 'json' };`),
     '',
-    'export default [',
+    'const entries = [',
     ...entries.map(({ path, id }) => `  { path: '${path}', data: entry_${id.replaceAll('-', '_')} },`),
     '];',
+    'export default entries;',
     '',
   ].join('\n');
   const index = new URL('index.ts', dir);
@@ -59,6 +60,6 @@ for(const file of (await readdir(new URL('../public/monsters/',import.meta.url))
   builtinHash.update('monsters/'+file+'\0');builtinHash.update(await readFile(new URL('../public/monsters/'+file,import.meta.url)));
 }
 const fingerprint=new URL('../content/builtin-digest.ts',import.meta.url);
-const fingerprintSource=`// Vygenerováno příkazem npm run content:sync.\nexport default '${builtinHash.digest('hex')}';\n`;
+const fingerprintSource=`// Vygenerováno příkazem npm run content:sync.\nconst digest = '${builtinHash.digest('hex')}';\nexport default digest;\n`;
 if(check){if(await readFile(fingerprint,'utf8').catch(()=> '')!==fingerprintSource)throw new Error('content/builtin-digest.ts: spusť npm run content:sync.');}
 else await writeFile(fingerprint,fingerprintSource);

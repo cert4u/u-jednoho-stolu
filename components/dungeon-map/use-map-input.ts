@@ -1,6 +1,7 @@
-import type {SurfaceBrush} from '../../lib/surfaces';
+import type { SurfaceBrush } from '../../lib/surfaces';
 import {
   useRef,
+  useLayoutEffect,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -31,7 +32,9 @@ import {
 } from './model';
 
 type MapInput = {
-  surfaceBrush?:SurfaceBrush;
+  resetStart: number;
+  cancelStroke: number;
+  surfaceBrush?: SurfaceBrush;
   map: Dungeon;
   members: Marker[];
   me: string;
@@ -123,6 +126,8 @@ export function useMapInput({
   viewport,
   setTool,
   setInspection,
+  resetStart,
+  cancelStroke,
 }: MapInput) {
   const [stroke, setStroke] = useState<Stroke | null>(null);
   const [keyboard, setKeyboard] = useState<Point>([0, 0]);
@@ -130,6 +135,18 @@ export function useMapInput({
   const [retry, setRetry] = useState<Record<string, unknown> | null>(null);
   const active = useRef<Stroke | null>(null);
   const lock = useRef(false);
+  const [observed, setObserved] = useState({ resetStart, cancelStroke });
+  if (
+    observed.resetStart !== resetStart ||
+    observed.cancelStroke !== cancelStroke
+  ) {
+    setObserved({ resetStart, cancelStroke });
+    setKeyboardStart(null);
+    if (observed.cancelStroke !== cancelStroke) setStroke(null);
+  }
+  useLayoutEffect(() => {
+    active.current = null;
+  }, [cancelStroke]);
   function beginPaper(e: ReactPointerEvent<HTMLDivElement>) {
     if (
       e.target !== e.currentTarget ||
@@ -209,11 +226,28 @@ export function useMapInput({
     if (busy || lock.current || retry || preview) return;
     if (effectiveTool === 'scenery' && pj) {
       e.preventDefault();
-      if(surfaceBrush){
-        const s:Stroke={surface:{...surfaceBrush},pointer:e.pointerId,start:p.cell,end:p.cell,points:[p.cell],edges:[],cells:[],edge:p.edge};
-        active.current=s;setStroke(s);e.currentTarget.setPointerCapture(e.pointerId);return;
+      if (surfaceBrush) {
+        const s: Stroke = {
+          surface: { ...surfaceBrush },
+          pointer: e.pointerId,
+          start: p.cell,
+          end: p.cell,
+          points: [p.cell],
+          edges: [],
+          cells: [],
+          edge: p.edge,
+        };
+        active.current = s;
+        setStroke(s);
+        e.currentTarget.setPointerCapture(e.pointerId);
+        return;
       }
-      onScenery(p.cell, (e.target as Element).closest('[data-scenery]')?.getAttribute('data-scenery') ?? undefined);
+      onScenery(
+        p.cell,
+        (e.target as Element)
+          .closest('[data-scenery]')
+          ?.getAttribute('data-scenery') ?? undefined,
+      );
       return;
     }
     if (effectiveTool === 'inspect' && pj) {
@@ -337,7 +371,10 @@ export function useMapInput({
     if (e.currentTarget.hasPointerCapture(e.pointerId))
       e.currentTarget.releasePointerCapture(e.pointerId);
     if (s.pan) return;
-    if(s.surface){void sendMap({tool:'surface',...s.surface,points:s.points});return;}
+    if (s.surface) {
+      void sendMap({ tool: 'surface', ...s.surface, points: s.points });
+      return;
+    }
     if (s.note) {
       const note = notes.find((n) => n.id === s.note);
       if (note) {
@@ -470,8 +507,16 @@ export function useMapInput({
     if (e.key !== 'Enter' || busy || preview || lock.current || retry) return;
     e.preventDefault();
     if (effectiveTool === 'scenery' && pj) {
-      if(surfaceBrush){void sendMap({tool:'surface',...surfaceBrush,points:[keyboard]});return;}
-      onScenery(keyboard, map.scenery?.find(item => item.x === keyboard[0] && item.y === keyboard[1])?.id);
+      if (surfaceBrush) {
+        void sendMap({ tool: 'surface', ...surfaceBrush, points: [keyboard] });
+        return;
+      }
+      onScenery(
+        keyboard,
+        map.scenery?.find(
+          (item) => item.x === keyboard[0] && item.y === keyboard[1],
+        )?.id,
+      );
     } else if (effectiveTool === 'inspect' && pj) {
       setInspection({ point: keyboard });
     } else if (effectiveTool === 'note') {

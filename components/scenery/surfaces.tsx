@@ -22,7 +22,7 @@ export default function OrganicSurfaces({map,lit,revealed,visible,exploring}:{
       if(floor.has(k)&&!map.edges[edge]&&(!occupied.has(k)||own.has(k)))support.set(k,[nx,ny]);
     }
     return {...region,support:[...support.values()],profile,marks:surfaceTextureMarks([...support.values()],region.kind,profile.texture),path:organicSurfacePath(region,profile.roughness)};
-  }),[map.surfaces,map.floors,map.edges,scenery]);
+  }),[map,scenery]);
   return <g data-map-layer="surfaces" pointerEvents="none" transform={`translate(${PAD} ${PAD}) scale(${SIZE})`}>
     {regions.map((region,i)=>{
       const uid=`surface-${id}-${i}`;

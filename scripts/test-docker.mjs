@@ -1,7 +1,7 @@
 // Run as root on an isolated Docker CI runner: this test replaces real containers.
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
-import {mkdtempSync,chmodSync,chownSync,statSync,readFileSync,writeFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,chmodSync,chownSync,statSync,readFileSync,rmSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';

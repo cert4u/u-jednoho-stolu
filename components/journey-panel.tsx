@@ -1,4 +1,6 @@
 'use client';
+import { omitFields } from '../lib/objects';
+
 import LightSightSettings from './light-sight-settings';
 import type {ExplorationView} from '../lib/exploration';
 import { useRef, useState } from 'react';
@@ -25,7 +27,7 @@ export default function JourneyPanel({ data = empty, pj, busy, onAction,explorat
         signature: string;
         id: string;
     } | null>(null), [editing, setEditing] = useState<Light | null>(null), [minutes, setMinutes] = useState(10);
-    async function send(values: Record<string, unknown>) { const { expectedJourneyRevision, ...intent } = values, signature = JSON.stringify(intent); if (pending.current?.signature !== signature)
+    async function send(values: Record<string, unknown>) { const intent = omitFields(values, ['expectedJourneyRevision']), signature = JSON.stringify(intent); if (pending.current?.signature !== signature)
         pending.current = { signature, id: crypto.randomUUID() }; if (await onAction({ ...values, requestId: pending.current.id })) {
         pending.current = null;
         return true;

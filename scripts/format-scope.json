@@ -11,5 +11,11 @@
   "scripts/format.mjs",
   "scripts/format-scope.json",
   "scripts/generator-test-import.mjs",
-  "scripts/test-exploration-core.mjs"
+  "scripts/test-exploration-core.mjs",
+  "components/dungeon-map/interaction-state.ts",
+  "components/dungeon-map/use-map-interaction.ts",
+  "components/dungeon-map/use-map-input.ts",
+  "components/game-table/use-browser-entry.ts",
+  "lib/objects.ts",
+  "scripts/test-clean-state.mjs"
 ]

@@ -153,6 +153,16 @@ Refaktor po 1.2.2 nemění kontrakt HTTP, číslo uloženého formátu, migrace,
 
 [Test jádra průzkumu](../scripts/test-exploration-core.mjs) ověřuje původní vstupní modul, známé cesty, průchodnost/viditelnost dveří, diagonální zakrytí a přesun ve tmě bez odhalení okolí. API test `scripts/test-lighting.mjs` dále pokrývá dohoření, nosiče, bojové postavení a světelné režimy. Nativní TS testovací loader rozlišuje soubor `exploration.ts` od stejnojmenného adresáře stejně jako bundler.
 
+### Stavové přechody a čistý lint
+
+[interaction-state.ts](../components/dungeon-map/interaction-state.ts) popisuje reakce na změnu patra, generování, souboje a výběru. [use-map-interaction.ts](../components/dungeon-map/use-map-interaction.ts) upraví vlastní stav pouze při změně uloženého snímku těchto signálů, ještě před commitem. Nezměněný polling proto neruší ručně zvolený nástroj. `use-map-input.ts` ve stejném přechodu zruší rozpracovaný začátek; pointer ref se uvolní v layout efektu. Běžné efekty mají úplné závislosti a slouží pro posun papíru a DOM, nikoli pro dodatečné přepínání nástrojů.
+
+[use-browser-entry.ts](../components/game-table/use-browser-entry.ts) načte vstupní relaci líně a používá hydratační signál přes `useSyncExternalStore`. Server a první hydratační render zobrazují stejný načítací stav. Nedostupné úložiště nebo poškozený JSON neblokují vstupní obrazovku.
+
+[omitFields](../lib/objects.ts) ponechává výslovné vyřazení přístupových údajů ze zálohy i soukromých nastavení dveří z veřejné mapy. Odstranění nepoužité destrukturované proměnné nesmí vrátit tajná pole do exportu. Obrázky používají `next/image` s `unoptimized`, protože už jde o připravené WebP nebo připnuté obrázky kampaně; žádný nový image endpoint není potřeba. Nativní test vykreslení používá stejný Vinext image shim jako build.
+
+[Test stavů a projekcí](../scripts/test-clean-state.mjs) ověřuje jednorázové přechody, pořadí souběžných výběrů, zachování ručního nastavení při pollingu, načtení relace, chybějící soukromá pole a povolenou konfiguraci náhradního Docker kontejneru.
+
 ### Postupné jednotné formátování
 
 Projekt používá přesně uzamčený vývojový Prettier a sdílenou konfiguraci `.prettierrc.json`. Formátujeme postupně vybrané vlastní moduly; seznam je v [scripts/format-scope.json](../scripts/format-scope.json). Při přidání nebo zásadní úpravě dalšího modulu rozšiř tento seznam v témže PR. Automatická CI kontrola se vztahuje na tento rozsah; zbytek repozitáře tím není prohlášený za přeformátovaný. Generované soubory, katalogová data, podklady a lockfile se touto kontrolou nepřepisují.
@@ -162,7 +172,7 @@ npm run format
 npm run format:check
 ```
 
-První příkaz upraví soubory ze seznamu, druhý pouze ověří formát a při rozdílu selže. Pro individuální soubor lze použít `npx --no-install prettier --write cesta/k/souboru.ts`. Formátování nemění lint pravidla; `npm run lint:baseline` zůstává samostatnou kontrolou chování Reactu a dalších nálezů. Po tomto refaktoru je evidováno 6 historických chyb a 45 varování; limit pro závislosti efektů editoru mapy byl snížen o odstraněné varování.
+První příkaz upraví soubory ze seznamu, druhý pouze ověří formát a při rozdílu selže. Pro individuální soubor lze použít `npx --no-install prettier --write cesta/k/souboru.ts`. Formátování nenahrazuje lint. `npm run lint` nyní vyžaduje nulu chyb i varování a je povinnou součástí CI; `lint:baseline` zůstává kompatibilní kontrolou s prázdnou historickou baseline. Další změny nesmějí znovu přidat dříve tolerované nálezy.
 
 ## Souběh, opakování a soukromí
 
@@ -236,7 +246,7 @@ Kreslenou prezentaci mapy ověřuje také `test-map-drawing.mjs` v rámci `npm t
 
 U změn UI doplň vizuální ověření PJ i hráčského pohledu, mobilního rozložení, dlouhých textů a klávesnice. U hlasu navíc reálný mikrofon, zamítnuté oprávnění, odpojení a veřejnou síť. Automatické testy přenosu nejsou zkouškou každé domácí sítě.
 
-CI provádí TypeScript, dokumentační odkazy/příkazy, geometrii, oba buildy, integrační sady, Node hosting a Docker upgrade. `npm run lint` je dostupný pomocný skript; neprezentuj jej jako kontrolu provedenou CI, pokud ji workflow nespouští.
+CI provádí striktní `npm run lint` s nulou povolených varování, kontrolu formátu vybraných modulů, TypeScript, dokumentační odkazy/příkazy, geometrii, oba buildy, integrační sady, Node hosting a Docker upgrade.
 
 Informativní benchmark generátoru spustíš `npm run benchmark:generator`; nemá časový CI limit. V2 sada testuje 2160 konfigurací nezávislým validátorem skutečných hran a připíná původní V1 výstupy.
 
@@ -266,7 +276,7 @@ Administrace používá společný `server/admin-dialog.js` a HTML `<dialog>` pr
 
 ## Stabilizační kontroly
 
-`npm run lint` ukazuje všechny nálezy včetně historických. `npm run lint:baseline` je CI brána: podle souboru, pravidla a závažnosti nedovolí zvýšit počty proti revidované stabilizační baseline, která vychází z 1.2.1 a po opravách se pouze zpřísňuje (aktuálně 6 chyb / 46 varování). Nový soubor nemá žádnou výjimku. Základ v `scripts/lint-baseline.json` se při běžné změně automaticky nepřegenerovává; případné změny vyžadují samostatnou věcnou revizi. Cílem zůstává postupné odstranění starých nálezů, nikoli jejich skrytí.
+`npm run lint` používá `--max-warnings 0`: chyby i varování způsobí neúspěch. Původních 6 chyb a 45 varování bylo odstraněno opravou vlastního kódu a generátoru indexů, bez dalších vypnutí pravidel. `scripts/lint-baseline.json` je prázdný; starší příkaz `npm run lint:baseline` proto také toleruje pouze nulu nálezů. Původní výjimky pro distribuované UI šablony zůstávají vymezené v konfiguraci; vlastní herní kód jimi není pokrytý.
 
 - `npm run test:stabilization` vyžaduje Node build a volné lokální porty 18096, 18098, 18099. Vytváří vlastní dočasné databáze; nepracuje s živou instalací.
 - `npm run benchmark:polling` měří 150 dotazů osmi klientů proti vlastní Node instanci na 18097. Bez `STUL_REAL_POLL=1` jde o zrychlený ekvivalent přenosu pěti minut, nikoli reálný pětiminutový běh. Výsledky jsou v `/tmp/stul-poll-after.json`; cestu lze změnit pomocí `STUL_METRICS_FILE`.

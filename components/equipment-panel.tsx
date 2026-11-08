@@ -1,11 +1,13 @@
 'use client';
+import { omitFields } from '../lib/objects';
+
 import {useRef,useState} from 'react';
 import {useDialogGuard} from './guarded-dialog';
 import {Possessions} from './loot-panel';
 import {CURRENCIES,type Coins,type Possession} from '../lib/loot';
 type Person={id:string;name:string;role:string;hp:number;maxHp:number;purse?:Coins;possessions?:Possession[];equipmentRevision?:number};
 type Action=(data:Record<string,unknown>)=>Promise<unknown>;
-function useSend(action:Action){const pending=useRef(new Map<string,string>());return(values:Record<string,unknown>)=>{const {expectedRevision:_,...intent}=values;const signature=JSON.stringify(intent);let id=pending.current.get(signature);if(!id){id=crypto.randomUUID();pending.current.set(signature,id);}return action({...values,requestId:id});};}
+function useSend(action:Action){const pending=useRef(new Map<string,string>());return(values:Record<string,unknown>)=>{const intent=omitFields(values,['expectedRevision']);const signature=JSON.stringify(intent);let id=pending.current.get(signature);if(!id){id=crypto.randomUUID();pending.current.set(signature,id);}return action({...values,requestId:id});};}
 function ItemEditor({member,item,busy,onAction}:{member:Person;item?:Possession;busy:boolean;onAction:Action}){
  const send=useSend(onAction),[revision]=useState(member.equipmentRevision??0);
  return <form onSubmit={e=>{e.preventDefault();const data=new FormData(e.currentTarget);void send({op:item?'edit':'add',memberId:member.id,expectedRevision:revision,...(item?{itemId:item.id}:{}),name:data.get('name'),quantity:Number(data.get('quantity'))});}}><h3>{item?'Upravit předmět':'Přidat předmět'}</h3><div className="equipment-item-fields"><label>Název předmětu<input name="name" required maxLength={60} defaultValue={item?.name||''}/></label><label>Počet kusů<input name="quantity" type="number" required min={item?0:1} max={item?999999:9999} defaultValue={item?.quantity||1}/></label></div><p className="sheet-hint">{item?'Nula odebere položku z výbavy.':'Stejně pojmenované položce se přičtou další kusy.'}</p><button className="secondary" disabled={busy}>{item?'Uložit předmět':'Přidat do výbavy'}</button></form>;

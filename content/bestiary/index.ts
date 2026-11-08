@@ -30,7 +30,7 @@ import entry_will_o_wisp from './will-o-wisp.json' with { type: 'json' };
 import entry_wolf from './wolf.json' with { type: 'json' };
 import entry_zombie from './zombie.json' with { type: 'json' };
 
-export default [
+const entries = [
   { path: 'content/bestiary/animated-armor.json', data: entry_animated_armor },
   { path: 'content/bestiary/bandit.json', data: entry_bandit },
   { path: 'content/bestiary/basilisk.json', data: entry_basilisk },
@@ -62,3 +62,4 @@ export default [
   { path: 'content/bestiary/wolf.json', data: entry_wolf },
   { path: 'content/bestiary/zombie.json', data: entry_zombie },
 ];
+export default entries;

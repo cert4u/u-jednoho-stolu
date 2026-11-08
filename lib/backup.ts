@@ -1,3 +1,4 @@
+import { omitFields } from './objects';
 import type { Game } from './game';
 import { backupSchema } from './backup/campaign-schema';
 import { validateCampaign } from './backup/validate-campaign';
@@ -9,7 +10,7 @@ export function makeBackup(g: Game) {
   const game = structuredClone(g);
   delete game.mapNoteAlerts;
   const members = game.members.map(
-    ({ token, recoveryHash, recoveryReplay, ...member }) => member,
+    (member) => omitFields(member, ['token', 'recoveryHash', 'recoveryReplay']),
   );
   return {
     format: 'u-jednoho-stolu',

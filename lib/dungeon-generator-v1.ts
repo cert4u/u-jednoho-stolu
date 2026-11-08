@@ -1,5 +1,5 @@
 import {emptyDungeon,perimeter,cellKey,type Dungeon,type Point} from './dungeon';
-import type {GeneratedDungeon,GeneratedFloor,GeneratedRoom,GeneratorOptions} from './generator-types';
+import type {GeneratedDungeon,GeneratedFloor,GeneratorOptions} from './generator-types';
 const sizes={small:{min:2,max:4},medium:{min:3,max:6},large:{min:5,max:9}};
 function randomFor(seed:string){let state=2166136261;for(let i=0;i<seed.length;i++)state=Math.imul(state^seed.charCodeAt(i),16777619);return ()=>{state=(state+0x6D2B79F5)|0;let n=state;n=Math.imul(n^(n>>>15),n|1);n^=n+Math.imul(n^(n>>>7),n|61);return ((n^(n>>>14))>>>0)/4294967296;};}
 export function generateDungeon(options:GeneratorOptions):GeneratedDungeon{

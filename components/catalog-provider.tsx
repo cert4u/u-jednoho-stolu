@@ -25,7 +25,7 @@ function ScopedCatalogProvider({session,pj,visuals,children}:Props){
    if(serial===request.current)setError(error instanceof Error?error.message:'Katalogy nejsou dostupné.');
   });
  },[session.room,session.token,pj]);
- useEffect(()=>{void refresh();const focus=()=>void refresh();window.addEventListener('focus',focus);return()=>{request.current++;window.removeEventListener('focus',focus);};},[refresh]);
+ useEffect(()=>{void refresh();const focus=()=>void refresh(), currentRequest=request;window.addEventListener('focus',focus);return()=>{currentRequest.current++;window.removeEventListener('focus',focus);};},[refresh]);
  const scenery=useMemo(()=>{const entries=new Map((pj?available.scenery:sceneryCatalog).map(e=>[e.id,e]));for(const entry of visuals)entries.set(entry.id,entry);return [...entries.values()];},[available,pj,visuals]);
  return <Context.Provider value={{...available,scenery,refresh,error}}>{children}</Context.Provider>;
 }

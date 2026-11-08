@@ -47,7 +47,7 @@ export function lootAction(g:Game,me:Member,b:Record<string,unknown>){
     const money=coins(b.coins);if(!hasCoins(money))throw new Error('Zadej alespoň jednu minci.');if(CURRENCIES.some(c=>money[c.key]>l!.coins[c.key]))throw new EditConflict('Tolik mincí už v nálezu není.');recipients.push(who);awards.push({items:[],coins:money});
    }else if(b.op==='split-coins'){
     if(!isPJ)throw new Error('Společné rozdělení potvrzuje PJ.');if(!Array.isArray(b.memberIds)||!b.memberIds.length||b.memberIds.length>12||new Set(b.memberIds).size!==b.memberIds.length)throw new Error('Vyber různé aktivní postavy.');
-    recipients.push(...b.memberIds.map(target));const share=Object.fromEntries(CURRENCIES.map(c=>[c.key,Math.floor(l!.coins[c.key]/recipients.length)])) as Coins;if(!hasCoins(share))throw new Error('Mincí není dost na stejný podíl. Zbytek můžeš přidělit jednotlivě.');for(const _ of recipients)awards.push({items:[],coins:{...share}});
+    recipients.push(...b.memberIds.map(target));const share=Object.fromEntries(CURRENCIES.map(c=>[c.key,Math.floor(l!.coins[c.key]/recipients.length)])) as Coins;if(!hasCoins(share))throw new Error('Mincí není dost na stejný podíl. Zbytek můžeš přidělit jednotlivě.');awards.push(...recipients.map(()=>({items:[],coins:{...share}})));
    }else throw new Error('Neznámá akce kořisti.');
    if(l.claims.length+recipients.length>200)throw new Error('Nález už má 200 záznamů rozdělení. Uzavři jej a zbytek připrav jako nový nález.');
    // Validate every recipient before transferring anything, including group splits.

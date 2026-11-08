@@ -1,4 +1,5 @@
 'use client';
+import { useMapInteraction } from './dungeon-map/use-map-interaction';
 import { useMapViewport } from './dungeon-map/use-map-viewport';
 import { useMapScenery } from './dungeon-map/use-map-scenery';
 import {
@@ -30,12 +31,7 @@ import {
   StickyNote,
 } from 'lucide-react';
 import { TOOLBOX } from './dungeon-map/toolbox';
-import {
-  cellKey,
-  playerDungeon,
-  type Dungeon,
-  type Point,
-} from '../lib/dungeon';
+import { cellKey, playerDungeon, type Dungeon } from '../lib/dungeon';
 import { useMapAppearance } from './dungeon-map/use-map-appearance';
 import MapCanvas from './dungeon-map/canvas';
 import MapAppearanceControl from './dungeon-map/renderers/appearance-control';
@@ -107,14 +103,26 @@ export default function DungeonMap({
   onOpenNote,
 }: Props) {
   const [appearance, setAppearance] = useMapAppearance();
-  const [inspection, setInspection] = useState<{
-    point: Point;
-    edge?: string;
-  } | null>(null);
-  const [showRooms, setShowRooms] = useState(false),
-    [mode, setMode] = useState<'prepare' | 'play'>('prepare'),
-    [tool, setTool] = useState<Tool>(pj ? 'wall' : 'move'),
-    [preview, setPreview] = useState(false);
+  const [showRooms, setShowRooms] = useState(false);
+  const {
+    mode,
+    tool,
+    preview,
+    inspection,
+    setMode,
+    setTool,
+    setPreview,
+    setInspection,
+    resetStart,
+    cancelStroke,
+  } = useMapInteraction({
+    levelId: exploration?.levelId,
+    generationPick,
+    battleId: exploration?.battle?.id,
+    monsterPick,
+    selected,
+    pj,
+  });
   const {
     overlay,
     viewport,
@@ -176,6 +184,8 @@ export default function DungeonMap({
     lostCapture,
     keyAction,
   } = useMapInput({
+    resetStart,
+    cancelStroke,
     map,
     members,
     me,
@@ -213,43 +223,28 @@ export default function DungeonMap({
     });
     return () => cancelAnimationFrame(frame);
   }, [recapCell, centerOnPoint]);
+  const partyLevel = party?.levelId,
+    partyX = party?.x,
+    partyY = party?.y;
   useEffect(() => {
-    setInspection(null);
-    cancel();
-    if (pendingCenter.current && party) {
+    if (
+      pendingCenter.current &&
+      partyLevel &&
+      partyX !== undefined &&
+      partyY !== undefined
+    ) {
       pendingCenter.current = false;
-      centerParty();
+      centerOnPoint([partyX, partyY], 'smooth');
     }
-  }, [exploration?.levelId]);
+  }, [partyLevel, partyX, partyY, centerOnPoint]);
+  const fittedGeneration = useRef<number | undefined>(undefined);
   useEffect(() => {
+    if (fittedGeneration.current === generationPick) return;
+    fittedGeneration.current = generationPick;
     if (!generationPick || !pj) return;
-    setMode('prepare');
-    setPreview(false);
-    setTool('hand');
-    setKeyboardStart(null);
     const frame = requestAnimationFrame(() => fitPaper());
     return () => cancelAnimationFrame(frame);
-  }, [generationPick]);
-  useEffect(() => {
-    if (exploration?.battle) {
-      setTool('move');
-      setPreview(false);
-      setKeyboardStart(null);
-    }
-  }, [exploration?.battle?.id]);
-  useEffect(() => {
-    if (monsterPick && pj) {
-      setTool('monster');
-      setPreview(false);
-      setKeyboardStart(null);
-    }
-  }, [monsterPick]);
-  useEffect(() => {
-    if (selected) {
-      setTool('move');
-      setKeyboardStart(null);
-    }
-  }, [selected]);
+  }, [generationPick, pj, fitPaper]);
   function centerParty() {
     if (exploration?.location && !party) {
       pendingCenter.current = true;

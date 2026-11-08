@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 
 import {useEffect,useMemo,useState} from 'react';
 import {Plus} from 'lucide-react';
@@ -14,7 +15,7 @@ function searchableName(value: string) {
 export function BestiaryPortrait({portrait, name}: {portrait?: string; name: string}) {
   if (!portrait) return <span className="sheet-hint">Bez dostupné ilustrace</span>;
   return (
-    <img className="bestiary-portrait" src={portrait.startsWith('data:image/webp;base64,')||/^\/catalog-assets\/[a-f0-9]{64}\.webp$/.test(portrait)?portrait:`/monsters/${portrait}.webp`}
+    <Image unoptimized className="bestiary-portrait" src={portrait.startsWith('data:image/webp;base64,')||/^\/catalog-assets\/[a-f0-9]{64}\.webp$/.test(portrait)?portrait:`/monsters/${portrait}.webp`}
       alt={`Ilustrace: ${name}`} width={400} height={480} loading="lazy"/>
   );
 }

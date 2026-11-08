@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 
 import {useState, type ReactNode} from 'react';
 
@@ -55,7 +56,7 @@ export default function CharacterSheetArtwork({initialProfession, children}: {
       {children(setProfession)}
       {artwork && (
         <figure className="character-sheet-artwork">
-          <img src={`/characters/${artwork.file}`} alt={`${artwork.title} ${artwork.description}`} width={720} height={1080}/>
+          <Image unoptimized loading="eager" src={`/characters/${artwork.file}`} alt={`${artwork.title} ${artwork.description}`} width={720} height={1080}/>
         </figure>
       )}
     </div>

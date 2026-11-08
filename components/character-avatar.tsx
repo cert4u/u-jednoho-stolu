@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 
 import { useState, type CSSProperties } from 'react';
 import { Shield } from 'lucide-react';
@@ -28,7 +29,7 @@ export default function CharacterAvatar({ member }: { member: Member }) {
       style={{ '--portrait-color': member.color } as CSSProperties}
       aria-hidden="true"
     >
-      <img
+      <Image unoptimized
         src={`/characters/${artwork.file}`}
         alt=""
         width={720}

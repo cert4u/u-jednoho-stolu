@@ -52,7 +52,8 @@ assert.throws(() => parseCatalog([source({ ...entry, gmHint: undefined })], best
 assert.throws(() => parseCatalog([source(entry), source(entry)], bestiaryEntrySchema), /duplicitní ID/);
 await assert.rejects(checkPortrait({ ...entry, portrait: 'neexistujici-testovaci-ilustrace' }), /chybí ilustrace/);
 const scenery = sceneryCatalog[0];
-const {kind: _kind, ...definition} = scenery;
+const {omitFields}=await import('../lib/objects.ts');
+const definition=omitFields(scenery,['kind']);
 assert(parseCatalog([source(definition,'scenery')],sceneryEntrySchema).length === 1);
 for (const invalid of [
   {...definition,path:'M0 0<script>alert(1)</script>'},

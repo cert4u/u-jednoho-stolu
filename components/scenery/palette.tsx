@@ -1,7 +1,7 @@
 'use client';
 import {useCatalog} from '../catalog-provider';
 import { useState } from 'react';
-import { sceneryCatalog, type Scenery } from '../../lib/scenery';
+import { type Scenery } from '../../lib/scenery';
 import {sceneryChoices,type SceneryCategory,type SceneryEnvironment} from '../../lib/scenery-catalog';
 import SceneryFillControls,{type SceneryFillControlsProps} from './fill-controls';
 import SceneryGlyph from './glyph';

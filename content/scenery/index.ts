@@ -22,7 +22,7 @@ import entry_support from './support.json' with { type: 'json' };
 import entry_table from './table.json' with { type: 'json' };
 import entry_water_area from './water-area.json' with { type: 'json' };
 
-export default [
+const entries = [
   { path: 'content/scenery/barrel.json', data: entry_barrel },
   { path: 'content/scenery/bench.json', data: entry_bench },
   { path: 'content/scenery/boulder.json', data: entry_boulder },
@@ -46,3 +46,4 @@ export default [
   { path: 'content/scenery/table.json', data: entry_table },
   { path: 'content/scenery/water-area.json', data: entry_water_area },
 ];
+export default entries;

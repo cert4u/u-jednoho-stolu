@@ -2,7 +2,7 @@
 import { actionValues } from '../components/game-table/game-client';
 import { CatalogProvider } from '../components/catalog-provider';
 import { type VoicePresence } from '../components/voice-panel';
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
 import type { Location } from '../lib/exploration';
 import MapNoteNotifications, {
   type EncounterTarget,
@@ -36,20 +36,21 @@ import {
 import { useGamePolling } from '../components/game-table/use-game-polling';
 
 import TableDialog from '../components/game-table/table-dialog';
+import { useBrowserEntry } from '../components/game-table/use-browser-entry';
 import { usePanelNavigation } from '../components/game-table/use-panel-navigation';
 
 export default function Home() {
+  const { initial, ready } = useBrowserEntry();
   const [recapFocus, setRecapFocus] = useState<Location>();
   const [voicePresence, setVoicePresence] = useState<VoicePresence>({});
   const [generationPick, setGenerationPick] = useState(0);
-  const [session, setSession] = useState<Session | null>(null),
+  const [session, setSession] = useState<Session | null>(initial.session),
     [game, setGame] = useState<Game | null>(null),
-    [ready, setReady] = useState(false),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
     [name, setName] = useState(''),
-    [code, setCode] = useState(''),
-    [joining, setJoining] = useState(false),
+    [code, setCode] = useState(initial.code),
+    [joining, setJoining] = useState(initial.joining),
     [editorLevel, setEditorLevel] = useState(''),
     [selected, setSelected] = useState(''),
     [tab, setTab] = useState<ChatTab>('chat'),
@@ -112,18 +113,6 @@ export default function Home() {
       : modal === 'map-note'
         ? noteSnapshot
         : undefined;
-  useEffect(() => {
-    try {
-      const s = localStorage.getItem(sessionStorageKey);
-      if (s) setSession(JSON.parse(s));
-      const invite = new URLSearchParams(location.search).get('room');
-      if (invite) {
-        setCode(invite);
-        setJoining(true);
-      }
-    } catch {}
-    setReady(true);
-  }, []);
   useGamePolling({
     session,
     sessionCurrent,

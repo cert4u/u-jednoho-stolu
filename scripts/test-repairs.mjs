@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {registerHooks} from 'node:module';
 registerHooks({resolve(s,c,next){try{return next(s,c);}catch(e){if(s.startsWith('.')&&!/\.[a-z]+$/i.test(s))return next(s+'.ts',c);throw e;}}});
 const {sheetValues}=await import('../lib/sheets.ts');
-const {mechanicsAction,pendingCombat,canReadMessage}=await import('../lib/mechanics.ts');
+const {mechanicsAction,pendingCombat}=await import('../lib/mechanics.ts');
 const {initialGame}=await import('../lib/game.ts');
 const {readBackup,makeBackup}=await import('../lib/backup.ts');
 const base=process.argv[2]||'http://127.0.0.1:5173';

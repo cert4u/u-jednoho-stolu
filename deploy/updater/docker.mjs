@@ -10,6 +10,7 @@ export async function buildImage(sha,tag){
  const timeout=setTimeout(()=>child.kill('SIGKILL'),30*60e3);child.once('error',e=>{clearTimeout(timeout);reject(e);});child.once('exit',code=>{clearTimeout(timeout);if(code===0)resolve();else{console.error(tail.slice(-2000));reject(new Error(`Sestavení image skončilo s kódem ${code}.`));}});
  });return image;
 }
-export function replacementConfig(old,image){const {Hostname,Domainname,Image,Cmd,Entrypoint,Healthcheck,OnBuild,...config}=old.Config;
+export function replacementConfig(old,image){const config={...old.Config};
+ for(const key of ['Hostname','Domainname','Image','Cmd','Entrypoint','Healthcheck','OnBuild'])delete config[key];
  return {...config,Image:image,HostConfig:old.HostConfig,NetworkingConfig:{EndpointsConfig:Object.fromEntries(Object.keys(old.NetworkSettings.Networks).map(name=>[name,{Aliases:['app',process.env.STUL_APP_CONTAINER||'stul-app']}]))}};
 }

@@ -2,9 +2,12 @@
 
 ## Nevydáno
 
+- Striktní lint bez chyb i varování: stavové přechody editoru mapy místo synchronních setState efektů, bezpečný SSR/hydratační vstup, úplné závislosti a výslovný cleanup relací. Regresní testy zachovávají ruční nástroj při pollingu a pořadí přechodů.
+- Výslovné vyřazování soukromých polí, odstraněné nepoužité importy, opravený generátor pojmenovaných exportů a frameworkové komponenty pro původní WebP. CI vyžaduje `npm run lint` s nulou povolených varování; historická baseline je prázdná.
+
 - Další rozdělení editoru mapy: samostatné hooky pro pohled papíru a stafáž, oddělená paleta/editor a navigace mezi herními dialogy. Původní opakování tahů, ochrana rozepsaných formulářů a DOM události zůstávají zachované.
 - Průzkum má stabilní vstupní modul a samostatné typy, atlas, geometrii/cesty, dohled, paměť, pohled a akce. Skupinový a bojový pohyb sdílejí hledání známé cesty. Přidán regresní test dveří, diagonálního zakrytí a přesunu za úplné tmy.
-- Přesně verzovaný vývojový formatter, postupně rozšiřovaný seznam souborů a CI kontrola formátu. Lint baseline se zpřísnila o jedno odstraněné varování; zbývá 6 historických chyb a 45 varování.
+- Přesně verzovaný vývojový formatter, postupně rozšiřovaný seznam souborů a CI kontrola formátu. Následný úklid odstranil i zbývající historické lint nálezy.
 
 - Refaktor hlavního stolu: samostatná hlavička, panel družiny, mobilní ovládání a zkratky deníků se zachováním stejného HTML a událostí.
 - Rozdělení obsluhy herních akcí na směrování, doménová oprávnění/převod chyb, mapové operace a správu přístupů; odstranění opakovaných bloků pro obsluhu výjimek.
