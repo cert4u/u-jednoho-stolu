@@ -252,4 +252,4 @@ Finální kontrola před vydáním: [výsledky, omezení a připravenost](docs/F
 
 Podklady vydání 1.2.2: [ověřené opravy, měření a provozní omezení](docs/STABILIZATION_AUDIT.md). Při nasazení se řiď dokumentací konkrétního tagu.
 
-Pro úpravy kódu: [odpovědnosti modulů a pravidla refaktoru](docs/DEVELOPMENT.md#hranice-odpovědností-při-údržbě) popisují směrování akcí, oprávnění, složení stolu a oddělení katalogové projekce od databáze.
+Pro úpravy kódu: [odpovědnosti modulů a pravidla refaktoru](docs/DEVELOPMENT.md#hranice-odpovědností-při-údržbě) popisují směrování akcí, oprávnění, složení stolu, editor mapy, průzkum a oddělení katalogové projekce od databáze. Pro vybrané moduly používej `npm run format` a `npm run format:check`.

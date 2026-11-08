@@ -1,0 +1,15 @@
+[
+  ".prettierrc.json",
+  "app/page.tsx",
+  "components/dungeon-map.tsx",
+  "components/dungeon-map/use-map-viewport.ts",
+  "components/dungeon-map/use-map-scenery.ts",
+  "components/dungeon-map/scenery-tools.tsx",
+  "components/game-table/use-panel-navigation.ts",
+  "lib/exploration.ts",
+  "lib/exploration/*.ts",
+  "scripts/format.mjs",
+  "scripts/format-scope.json",
+  "scripts/generator-test-import.mjs",
+  "scripts/test-exploration-core.mjs"
+]

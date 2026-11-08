@@ -16,7 +16,7 @@
   },
   "components/dungeon-map.tsx": {
     "2:react-hooks/set-state-in-effect": 5,
-    "1:react-hooks/exhaustive-deps": 6
+    "1:react-hooks/exhaustive-deps": 5
   },
   "components/equipment-panel.tsx": {
     "1:@typescript-eslint/no-unused-vars": 1

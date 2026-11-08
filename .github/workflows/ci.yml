@@ -29,6 +29,8 @@ jobs:
         run: npm run install:ci
       - name: Dokumentace
         run: npm run check:docs
+      - name: Formát upravovaných modulů
+        run: npm run format:check
       - name: Herní obsah
         run: npm run check:content
       - name: Lint bez nových nálezů

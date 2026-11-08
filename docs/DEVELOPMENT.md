@@ -28,7 +28,7 @@ Před první změnou zkus otevřít bestiář. Jeho předlohy najdeš v [katalog
 | Správa `/admin` | Po spuštění `server/start.mjs`. Aktualizace vyžaduje Docker updater. | Node administrace zde neběží. |
 | Hlas | Volitelný LiveKit podle [návodu](VOICE.md), plně popsaný pro Node hosting. | Srovnatelný spravovaný hlasový deployment zde není připravený. |
 
-Oba buildy používají adresář `dist`. Nespouštěj je současně a před startem zvol správný build. `npm run db:init` vyžaduje konfiguraci vytvořenou Cloudflare buildem; pro Node se nepoužívá.
+Oba buildy používají adresář `dist`. Nespouštěj je současně a před startem zvol správný build. Také vývojové Node a Cloudflare procesy ve stejném checkoutu sdílejí optimalizační Vite cache v `node_modules/.vite`: prohlížečový smoke a `test:ci` spouštěj postupně, případně použij oddělený checkout. Souběžné přepnutí runtime může běžícímu procesu odstranit optimalizovanou závislost. `npm run db:init` vyžaduje konfiguraci vytvořenou Cloudflare buildem; pro Node se nepoužívá.
 
 ## Rychlý start Node bez Dockeru
 
@@ -104,7 +104,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | `app/api/voice/route.ts`, `lib/voice.ts` | Ověření členství a krátkodobá hlasová vstupenka pouze pro mikrofon. |
 | `lib/game.ts`, `db/schema.ts` | Vnitřní stav hry a tabulka místností. |
 | `lib/scenery.ts`, `components/scenery/` | Komunitní JSON katalog, organické plochy (`lib/surfaces.ts`, `lib/surface-drawing.ts`), deterministické doplnění podlahy, paleta, editor a veřejná paměť; [model a regrese](SCENERY.md). |
-| `lib/dungeon.ts`, `lib/exploration.ts` | Geometrie, patra, dveře, propojení schodů, dohled a paměť mapy. |
+| `lib/dungeon.ts`, [lib/exploration.ts](../lib/exploration.ts), [lib/exploration/](../lib/exploration) | Geometrie mapy a stabilní vstupní modul průzkumu. Vnitřní moduly oddělují atlas, hledání cest, dohled, paměť, veřejný pohled a herní akce. |
 | `lib/dungeon-generator.ts`, `lib/generation.ts` | Verzovaný deterministický náhled, serverové vložení a ochrana kapacity/souběhu. V2 jádro, validátor a sdílené typy jsou v samostatných `generator-*.ts` modulech; [audit a návrh](GENERATOR_V2.md). |
 | [content/](../content) | Samostatné JSON soubory pro příšery, jeskyně a dobrodružství. Indexy vytváří `npm run content:sync`. Katalogy a testy čtou stejná Zod schémata. [Přidávání obsahu](OBSAH.md). |
 | `lib/monsters.ts`, `lib/initiative.ts`, `lib/mechanics.ts`, `lib/combat-rules.ts` | Příšery, pořadí souboje, hody, návaznost útoku/obrany a zranění. |
@@ -143,6 +143,26 @@ Směrování API a oprávnění jsou výslovné a oddělené od pravidel hry:
 Refaktor po 1.2.2 nemění kontrakt HTTP, číslo uloženého formátu, migrace, herní mechaniky ani algoritmus generátoru. Kontroluj zvlášť odmítnuté operace: nejen stavový kód, ale i to, že nedošlo k nechtěné změně stavu.
 
 [Test směrování akcí](../scripts/test-action-dispatch.mjs) ověřuje role, vlastnictví postavy, chybové kódy, obsazenou mapu a obnovovací přístupy. [Test rozložení stolu](../scripts/test-table-layout.mjs) vykresluje skutečné React komponenty pro PJ i hráče včetně mobilních ovládacích prvků. Oba běží v `npm test`; sdílený JSX loader v `scripts/test-support/react-loader.mjs` používá také test náhledu generátoru. Vykreslení HTML nenahrazuje vizuální kontrolu v prohlížeči ani integrační test herního API.
+
+### Editor mapy a průzkum
+
+- [use-map-viewport.ts](../components/dungeon-map/use-map-viewport.ts) vlastní zoom, DOM refs papíru, posun, vycentrování, ResizeObserver a klávesové/modifikátorové události. Posluchače při odpojení uklízí; doménové herní operace neposílá.
+- [use-map-scenery.ts](../components/dungeon-map/use-map-scenery.ts) spravuje štětec, výběr/přesun značky a návrh rozmístění se stampem a stabilním requestId. [scenery-tools.tsx](../components/dungeon-map/scenery-tools.tsx) vykresluje paletu a editor. Kliknutí do mapy nadále používá `sendMap` z `use-map-input.ts`, aby zachovalo opakování nepotvrzeného tahu.
+- [use-panel-navigation.ts](../components/game-table/use-panel-navigation.ts) vlastní výběry dialogů a společnou cestu přes `DialogHandle.run`; ochrana rozepsaného formuláře se kontroluje před změnou výběru. Přímé přechody z již otevřeného setkání zachovávají dosavadní obsluhu nadřazeného stolu. Relace a polling zůstávají oddělené.
+- `lib/exploration.ts` zachovává původní exporty. `model.ts` obsahuje typy, `atlas.ts` výběr/normalizaci pater, `geometry.ts` hledání známé cesty a přímý výhled, `memory.ts` zapamatování pozorovaného, `visibility.ts` světla a přepočet dohledu, `view.ts` veřejný pohled a `actions.ts` změny průzkumu. Při přesunu se po každém kroku stále volá přepočet světlem omezeného dohledu. Sdílené hledání cesty nemění pořadí sousedů ani rozdílné chybové texty skupinového a bojového pohybu.
+
+[Test jádra průzkumu](../scripts/test-exploration-core.mjs) ověřuje původní vstupní modul, známé cesty, průchodnost/viditelnost dveří, diagonální zakrytí a přesun ve tmě bez odhalení okolí. API test `scripts/test-lighting.mjs` dále pokrývá dohoření, nosiče, bojové postavení a světelné režimy. Nativní TS testovací loader rozlišuje soubor `exploration.ts` od stejnojmenného adresáře stejně jako bundler.
+
+### Postupné jednotné formátování
+
+Projekt používá přesně uzamčený vývojový Prettier a sdílenou konfiguraci `.prettierrc.json`. Formátujeme postupně vybrané vlastní moduly; seznam je v [scripts/format-scope.json](../scripts/format-scope.json). Při přidání nebo zásadní úpravě dalšího modulu rozšiř tento seznam v témže PR. Automatická CI kontrola se vztahuje na tento rozsah; zbytek repozitáře tím není prohlášený za přeformátovaný. Generované soubory, katalogová data, podklady a lockfile se touto kontrolou nepřepisují.
+
+```bash
+npm run format
+npm run format:check
+```
+
+První příkaz upraví soubory ze seznamu, druhý pouze ověří formát a při rozdílu selže. Pro individuální soubor lze použít `npx --no-install prettier --write cesta/k/souboru.ts`. Formátování nemění lint pravidla; `npm run lint:baseline` zůstává samostatnou kontrolou chování Reactu a dalších nálezů. Po tomto refaktoru je evidováno 6 historických chyb a 45 varování; limit pro závislosti efektů editoru mapy byl snížen o odstraněné varování.
 
 ## Souběh, opakování a soukromí
 

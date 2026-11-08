@@ -34,3 +34,5 @@ await import('./test-game-client.mjs');
 await import('./test-action-dispatch.mjs');
 
 await import('./test-table-layout.mjs');
+
+await import('./test-exploration-core.mjs');

@@ -2,6 +2,10 @@
 
 ## Nevydáno
 
+- Další rozdělení editoru mapy: samostatné hooky pro pohled papíru a stafáž, oddělená paleta/editor a navigace mezi herními dialogy. Původní opakování tahů, ochrana rozepsaných formulářů a DOM události zůstávají zachované.
+- Průzkum má stabilní vstupní modul a samostatné typy, atlas, geometrii/cesty, dohled, paměť, pohled a akce. Skupinový a bojový pohyb sdílejí hledání známé cesty. Přidán regresní test dveří, diagonálního zakrytí a přesunu za úplné tmy.
+- Přesně verzovaný vývojový formatter, postupně rozšiřovaný seznam souborů a CI kontrola formátu. Lint baseline se zpřísnila o jedno odstraněné varování; zbývá 6 historických chyb a 45 varování.
+
 - Refaktor hlavního stolu: samostatná hlavička, panel družiny, mobilní ovládání a zkratky deníků se zachováním stejného HTML a událostí.
 - Rozdělení obsluhy herních akcí na směrování, doménová oprávnění/převod chyb, mapové operace a správu přístupů; odstranění opakovaných bloků pro obsluhu výjimek.
 - Čistá vizuální projekce katalogů oddělená od načítání databáze a připínání obsahu. Regresní testy rolí, vlastnictví postavy, 400/403/409, obsazené mapy, obnovovacích klíčů a skutečných React panelů.

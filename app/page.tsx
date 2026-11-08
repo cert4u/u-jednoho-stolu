@@ -1,6 +1,6 @@
 'use client';
 import { actionValues } from '../components/game-table/game-client';
-import {CatalogProvider} from '../components/catalog-provider';
+import { CatalogProvider } from '../components/catalog-provider';
 import { type VoicePresence } from '../components/voice-panel';
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import type { Location } from '../lib/exploration';
@@ -9,10 +9,8 @@ import MapNoteNotifications, {
 } from '../components/map-note-notifications';
 import type { MapNoteAlertView } from '../lib/map-note-alerts';
 import type { MapNoteView, NoteAnchor } from '../lib/map-notes';
-import type { InitiativeRef } from '../lib/initiative';
 import { type DialogHandle } from '../components/guarded-dialog';
 import { downloadText } from '../components/campaign-access';
-import { type RollSetup } from '../components/mechanics-panel';
 import {
   SituationOverlay,
   useRoomSituations,
@@ -23,7 +21,9 @@ import type { GameView as Game } from './api/game/view';
 import type { Session, ChatTab } from '../components/game-table/types';
 import Lobby from '../components/game-table/lobby';
 import TableHeader from '../components/game-table/table-header';
-import PartySidebar, { MobilePartyPanels } from '../components/game-table/party-sidebar';
+import PartySidebar, {
+  MobilePartyPanels,
+} from '../components/game-table/party-sidebar';
 import JournalShortcuts from '../components/game-table/journal-shortcuts';
 import ChatPanel from '../components/game-table/chat-panel';
 import {
@@ -35,22 +35,13 @@ import {
 } from '../components/game-table/game-client';
 import { useGamePolling } from '../components/game-table/use-game-polling';
 
-import TableDialog, {
-  type TablePanel,
-} from '../components/game-table/table-dialog';
+import TableDialog from '../components/game-table/table-dialog';
+import { usePanelNavigation } from '../components/game-table/use-panel-navigation';
 
 export default function Home() {
   const [recapFocus, setRecapFocus] = useState<Location>();
   const [voicePresence, setVoicePresence] = useState<VoicePresence>({});
   const [generationPick, setGenerationPick] = useState(0);
-  const [recoveryMemberId, setRecoveryMemberId] = useState<
-    string | undefined
-  >();
-  const [lifeMemberId, setLifeMemberId] = useState<string | undefined>();
-  const [lootId, setLootId] = useState(''),
-    [lootNoteId, setLootNoteId] = useState<string | undefined>();
-  const [challengeId, setChallengeId] = useState(''),
-    [challengeNoteId, setChallengeNoteId] = useState<string | undefined>();
   const [session, setSession] = useState<Session | null>(null),
     [game, setGame] = useState<Game | null>(null),
     [ready, setReady] = useState(false),
@@ -61,10 +52,7 @@ export default function Home() {
     [joining, setJoining] = useState(false),
     [editorLevel, setEditorLevel] = useState(''),
     [selected, setSelected] = useState(''),
-    [selectedMonster, setSelectedMonster] = useState(''),
-    [monsterPick, setMonsterPick] = useState(0),
     [tab, setTab] = useState<ChatTab>('chat'),
-    [modal, setModal] = useState<TablePanel | ''>(''),
     [text, setText] = useState(''),
     [to, setTo] = useState('all'),
     [dice, setDice] = useState('1k6'),
@@ -73,7 +61,9 @@ export default function Home() {
     [recoveryCode, setRecoveryCode] = useState(''),
     [recoveryName, setRecoveryName] = useState('');
   const sessionCurrent = useRef<Session | null>(session);
-  useLayoutEffect(() => { sessionCurrent.current = session; }, [session]);
+  useLayoutEffect(() => {
+    sessionCurrent.current = session;
+  }, [session]);
   const dialog = useRef<DialogHandle>(null);
   const [noteSnapshot, setNoteSnapshot] = useState<MapNoteView | undefined>(),
     [noteOpenKey, setNoteOpenKey] = useState(0),
@@ -81,10 +71,34 @@ export default function Home() {
     [openingNote, setOpeningNote] = useState(false);
   const [noteAnchor, setNoteAnchor] = useState<NoteAnchor | null>(null),
     [notePublic, setNotePublic] = useState(false);
-  const [conditionTarget, setConditionTarget] = useState<
-    InitiativeRef | undefined
-  >();
-  const [rollSetup, setRollSetup] = useState<RollSetup>({});
+  const {
+    modal,
+    setModal,
+    recoveryMemberId,
+    lifeMemberId,
+    lootId,
+    lootNoteId,
+    challengeId,
+    challengeNoteId,
+    conditionTarget,
+    rollSetup,
+    selectedMonster,
+    monsterPick,
+    setLootId,
+    setLootNoteId,
+    setChallengeId,
+    setChallengeNoteId,
+    setSelectedMonster,
+    openRecovery,
+    openLife,
+    openLoot,
+    openChallenges,
+    openConditions,
+    openRoll,
+    openPanel,
+    placeMonster,
+    inspectMonster,
+  } = usePanelNavigation(dialog, setError);
   const me = game?.members.find((m) => m.id === game.me);
   const pj = me?.role === 'pj';
   const mapNote =
@@ -203,7 +217,9 @@ export default function Home() {
     else action();
   }
   function openNoteAlert(
-    alert: Pick<MapNoteAlertView, 'noteId' | 'levelId' | 'levelName'> & {id?: string},
+    alert: Pick<MapNoteAlertView, 'noteId' | 'levelId' | 'levelName'> & {
+      id?: string;
+    },
     opened: () => void,
     target?: EncounterTarget,
   ) {
@@ -296,90 +312,6 @@ export default function Home() {
     } finally {
       setBusy(false);
     }
-  }
-  function openRecovery(id?: string) {
-    const action = () => {
-      setError('');
-      setRecoveryMemberId(id);
-      setModal('recovery');
-    };
-    if (dialog.current) dialog.current.run(action);
-    else action();
-  }
-  function openLife(id?: string) {
-    const action = () => {
-      setError('');
-      setLifeMemberId(id);
-      setModal('life');
-    };
-    if (dialog.current) dialog.current.run(action);
-    else action();
-  }
-  function openLoot(id = '', noteId?: string) {
-    const action = () => {
-      setError('');
-      setLootId(id);
-      setLootNoteId(noteId);
-      setModal('loot');
-    };
-    if (dialog.current) dialog.current.run(action);
-    else action();
-  }
-  function openChallenges(id = '', noteId?: string) {
-    const action = () => {
-      setError('');
-      setChallengeId(id);
-      setChallengeNoteId(noteId);
-      setModal('challenges');
-    };
-    if (dialog.current) dialog.current.run(action);
-    else action();
-  }
-  function openConditions(target?: InitiativeRef) {
-    const action = () => {
-      setError('');
-      setConditionTarget(target);
-      setModal('conditions');
-    };
-    if (dialog.current) dialog.current.run(action);
-    else action();
-  }
-  function openRoll(setup: RollSetup = {}) {
-    const action = () => {
-      setError('');
-      setRollSetup(setup);
-      setModal('mechanics');
-    };
-    if (dialog.current) dialog.current.run(action);
-    else action();
-  }
-  function openPanel(name: TablePanel) {
-    if (name === 'recovery') {
-      openRecovery();
-      return;
-    }
-    if (name === 'loot') {
-      openLoot();
-      return;
-    }
-    if (name === 'mechanics') openRoll();
-    else {
-      const action = () => {
-        setError('');
-        setModal(name);
-      };
-      if (dialog.current) dialog.current.run(action);
-      else action();
-    }
-  }
-  function placeMonster(id: string) {
-    setSelectedMonster(id);
-    setMonsterPick((n) => n + 1);
-    setModal('');
-  }
-  function inspectMonster(id = '') {
-    setSelectedMonster(id);
-    setModal('monsters');
   }
   function leave() {
     sessionCurrent.current = null;
@@ -531,7 +463,9 @@ export default function Home() {
               busy={
                 busy ||
                 Boolean(
-                  pj && editorLevel && game.exploration?.levelId !== editorLevel,
+                  pj &&
+                    editorLevel &&
+                    game.exploration?.levelId !== editorLevel,
                 )
               }
               canUndo={game.canUndoMap}
@@ -604,9 +538,19 @@ export default function Home() {
             openLife={openLife}
             openLoot={openLoot}
             openChallenges={openChallenges}
-            openStoryPlace={id => {
-              const place = game.storyOutline?.places.find(item => item.id === id);
-              if (place) openNoteAlert({ noteId: id, levelId: place.levelId, levelName: place.levelName }, () => {});
+            openStoryPlace={(id) => {
+              const place = game.storyOutline?.places.find(
+                (item) => item.id === id,
+              );
+              if (place)
+                openNoteAlert(
+                  {
+                    noteId: id,
+                    levelId: place.levelId,
+                    levelName: place.levelName,
+                  },
+                  () => {},
+                );
             }}
             locateRecap={locateRecap}
             placeMonster={placeMonster}

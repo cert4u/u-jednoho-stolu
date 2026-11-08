@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.next/
+.wrangler/
+.sites-runtime/
+.stul*/
+outputs/
+work/
+package-lock.json
+content/
+public/

@@ -34,7 +34,9 @@
     "test:catalogs": "node scripts/test-catalog-migration.mjs && node scripts/test-catalog-zip.mjs && node scripts/test-catalog-store.mjs && node scripts/test-catalog-github.mjs && node scripts/test-catalog-admin.mjs && node scripts/test-catalog-audit.mjs",
     "lint:baseline": "node scripts/check-lint.mjs",
     "test:stabilization": "node scripts/test-stabilization.mjs && node scripts/test-room-admission.mjs && node scripts/test-message-hosting.mjs && node scripts/test-admin-client.mjs && node scripts/test-admin-behavior.mjs",
-    "benchmark:polling": "node scripts/benchmark-polling.mjs"
+    "benchmark:polling": "node scripts/benchmark-polling.mjs",
+    "format": "node scripts/format.mjs --write",
+    "format:check": "node scripts/format.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -73,6 +75,7 @@
     "eslint": "9.39.4",
     "eslint-config-next": "16.3.4",
     "json-rpc-2.0": "1.7.1",
+    "prettier": "3.6.2",
     "raw-body": "3.0.2",
     "react-server-dom-webpack": "19.2.6",
     "tailwindcss": "4.2.1",

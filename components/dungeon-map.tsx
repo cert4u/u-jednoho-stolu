@@ -1,10 +1,10 @@
 'use client';
-import {useCatalog} from './catalog-provider';
-import {findSceneryEntry} from '../lib/scenery-catalog';
-import {proposeScenery,sceneryFillStamp,type SceneryFillOptions,type ScenerySuggestion} from '../lib/scenery-fill';
-import SceneryPalette, {type SceneryBrush} from './scenery/palette';
-import SceneryEditor from './scenery/editor';
-import type {Scenery} from '../lib/scenery';
+import { useMapViewport } from './dungeon-map/use-map-viewport';
+import { useMapScenery } from './dungeon-map/use-map-scenery';
+import {
+  MapSceneryPalette,
+  MapSceneryDialog,
+} from './dungeon-map/scenery-tools';
 import type { MapNoteView, NoteAnchor } from '../lib/map-notes';
 import { createPortal } from 'react-dom';
 import GuardedDialog from './guarded-dialog';
@@ -16,7 +16,19 @@ import ExplorationControls from './exploration-controls';
 import type { MonsterView } from '../lib/monsters';
 import type { ExplorationView, Location } from '../lib/exploration';
 import { useEffect, useRef, useState } from 'react';
-import { PenTool, Eye, EyeOff, Undo2, Plus, Minus, Maximize2, Map as MapIcon, Hand, Check, StickyNote } from 'lucide-react';
+import {
+  PenTool,
+  Eye,
+  EyeOff,
+  Undo2,
+  Plus,
+  Minus,
+  Maximize2,
+  Map as MapIcon,
+  Hand,
+  Check,
+  StickyNote,
+} from 'lucide-react';
 import { TOOLBOX } from './dungeon-map/toolbox';
 import {
   cellKey,
@@ -102,39 +114,27 @@ export default function DungeonMap({
   const [showRooms, setShowRooms] = useState(false),
     [mode, setMode] = useState<'prepare' | 'play'>('prepare'),
     [tool, setTool] = useState<Tool>(pj ? 'wall' : 'move'),
-    [preview, setPreview] = useState(false),
-    [zoom, setZoomValue] = useState(0.8),
-    [space, setSpace] = useState(false),
-    [ctrlPan, setCtrlPan] = useState(false);
-  const overlay = useRef<HTMLDivElement>(null),
-    zoomValue = useRef(0.8),
-    viewport = useRef<HTMLDivElement>(null),
-    svg = useRef<SVGSVGElement>(null),
-    pendingCenter = useRef(false);
-  const {scenery:catalogScenery}=useCatalog();
-  const [sceneryBrush,setSceneryBrush] = useState<SceneryBrush>({kind:'crate',rotation:0,size:'medium',hidden:false});
-  const [surfaceOp,setSurfaceOp]=useState<'add'|'remove'>('add');
-  const [sceneryEdit,setSceneryEdit] = useState<{item:Scenery;levelId:string}>();
-  const [movingScenery,setMovingScenery] = useState<{item:Scenery;levelId:string}>();
-  const surfaceBrush=findSceneryEntry(sceneryBrush.kind,catalogScenery)?.surface&&!movingScenery?{kind:sceneryBrush.kind,op:surfaceOp,hidden:Boolean(sceneryBrush.hidden)}:undefined;
-  const [floorProposal,setFloorProposal]=useState<{levelId:string;stamp:string;options:SceneryFillOptions;items:ScenerySuggestion[];requestId:string}>();
-  const fillBlocked=[...new Set([...(exploration?.stairs??[]).map(item=>`${item.x},${item.y}`),...notes.map(item=>`${item.x},${item.y}`),...monsters.filter(item=>!item.archived&&item.x!==null&&item.y!==null).map(item=>`${item.x},${item.y}`),
-    ...members.filter(item=>item.role==='player'&&(!exploration?.location||exploration.location.levelId===exploration.levelId)).map(item=>`${item.x},${item.y}`),
-    ...(exploration?.location?.levelId===exploration?.levelId&&exploration?.location?[`${exploration.location.x},${exploration.location.y}`]:[])])];
-  const fillStamp=sceneryFillStamp(map,fillBlocked,catalogScenery);
-  const proposalStale=Boolean(floorProposal&&(floorProposal.levelId!==(exploration?.levelId||'ground')||floorProposal.stamp!==fillStamp));
-  function sceneryClick(point:Point,id?:string) {
-    const levelId=exploration?.levelId || 'ground';
-    if(movingScenery) {
-      if(movingScenery.levelId !== levelId){setMovingScenery(undefined);return;}
-      void sendMap({tool:'scenery',op:'save',...movingScenery.item,sceneryId:movingScenery.item.id,
-        expectedRevision:movingScenery.item.revision ?? 0,x:point[0],y:point[1]});
-      setMovingScenery(undefined);
-    } else if(id) {
-      const item=map.scenery?.find(item=>item.id===id);
-      if(item)setSceneryEdit({item:structuredClone(item),levelId});
-    } else void sendMap({tool:'scenery',op:'save',...sceneryBrush,note:'',expectedRevision:null,x:point[0],y:point[1]});
-  }
+    [preview, setPreview] = useState(false);
+  const {
+    overlay,
+    viewport,
+    svg,
+    zoom,
+    space,
+    ctrlPan,
+    setZoom,
+    fitPaper,
+    centerOnPoint,
+  } = useMapViewport();
+  const pendingCenter = useRef(false);
+  const scenery = useMapScenery({
+    map,
+    members,
+    exploration,
+    notes,
+    monsters,
+    onAction,
+  });
   const visible = preview || !pj;
   const shown = visible ? exploration?.playerMap || playerDungeon(map) : map;
   const revealed = new Set(map.revealed);
@@ -188,9 +188,9 @@ export default function DungeonMap({
     onAction,
     onOpenNote,
     onInspectMonster,
-    onScenery: sceneryClick,
-    surfaceBrush,
-    onCancelScenery: () => setMovingScenery(undefined),
+    onScenery: (point, id) => scenery.click(point, id, sendMap),
+    surfaceBrush: scenery.surfaceBrush,
+    onCancelScenery: scenery.cancelMove,
     effectiveTool,
     canDraw,
     canLead,
@@ -203,26 +203,16 @@ export default function DungeonMap({
     setInspection,
   });
   function switchTool(next: Tool) {
-    if(next !== 'scenery') setMovingScenery(undefined);
+    if (next !== 'scenery') scenery.cancelMove();
     inputSwitchTool(next);
   }
   useEffect(() => {
     if (!recapCell) return;
     const frame = requestAnimationFrame(() => {
-      const el = viewport.current;
-      if (!el) return;
-      const scale = zoomValue.current;
-      el.scrollTo({
-        left:
-          (PAPER_MARGIN + PAD + (recapCell.x + 0.5) * SIZE) * scale -
-          el.clientWidth / 2,
-        top:
-          (PAPER_MARGIN + PAD + (recapCell.y + 0.5) * SIZE) * scale -
-          el.clientHeight / 2,
-      });
+      centerOnPoint([recapCell.x, recapCell.y]);
     });
     return () => cancelAnimationFrame(frame);
-  }, [recapCell]);
+  }, [recapCell, centerOnPoint]);
   useEffect(() => {
     setInspection(null);
     cancel();
@@ -260,122 +250,13 @@ export default function DungeonMap({
       setKeyboardStart(null);
     }
   }, [selected]);
-  useEffect(() => {
-    const el = viewport.current;
-    if (!el) return;
-    const observer = new ResizeObserver(() => fitPaper());
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    const el = viewport.current;
-    if (!el) return;
-    const wheel = (e: WheelEvent) => {
-      if (!e.ctrlKey && !e.metaKey) return;
-      e.preventDefault();
-      setZoom((z) =>
-        Math.min(
-          1.6,
-          Math.max(
-            0.4,
-            Math.round((z + (e.deltaY < 0 ? 0.1 : -0.1)) * 100) / 100,
-          ),
-        ),
-      );
-    };
-    el.addEventListener('wheel', wheel, { passive: false });
-    return () => el.removeEventListener('wheel', wheel);
-  }, []);
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'Control') setCtrlPan(true);
-      if (
-        e.code === 'Space' &&
-        !(e.target as HTMLElement)?.closest(
-          'input,textarea,select,button,[role="dialog"]',
-        )
-      ) {
-        setSpace(true);
-        if (e.target === svg.current) e.preventDefault();
-      }
-    };
-    const up = (e: Event) => {
-      if (e instanceof KeyboardEvent) {
-        if (e.code === 'Space') setSpace(false);
-        setCtrlPan(e.ctrlKey);
-      } else {
-        setSpace(false);
-        setCtrlPan(false);
-      }
-    };
-    window.addEventListener('keydown', down);
-    window.addEventListener('keyup', up);
-    window.addEventListener('blur', up);
-    return () => {
-      window.removeEventListener('keydown', down);
-      window.removeEventListener('keyup', up);
-      window.removeEventListener('blur', up);
-    };
-  }, []);
-  function setZoom(next: number | ((previous: number) => number)) {
-    const previous = zoomValue.current;
-    const value = Math.min(
-      1.6,
-      Math.max(0.4, typeof next === 'function' ? next(previous) : next),
-    );
-    const el = viewport.current;
-    const cx = el ? (el.scrollLeft + el.clientWidth / 2) / previous : 0,
-      cy = el ? (el.scrollTop + el.clientHeight / 2) / previous : 0;
-    zoomValue.current = value;
-    setZoomValue(value);
-    if (el)
-      requestAnimationFrame(() => {
-        if (viewport.current === el)
-          el.scrollTo({
-            left: cx * value - el.clientWidth / 2,
-            top: cy * value - el.clientHeight / 2,
-          });
-      });
-  }
-  function fitPaper(limit = 1.2) {
-    const el = viewport.current;
-    if (!el) return;
-    const top = Math.max(
-      80,
-      (overlay.current?.getBoundingClientRect().bottom || 0) -
-        el.getBoundingClientRect().top +
-        24,
-    );
-    const available = Math.max(200, el.clientHeight - top - 65);
-    const value = Math.max(
-      0.4,
-      Math.min(limit, (el.clientWidth - 90) / WIDTH, available / HEIGHT),
-    );
-    setZoom(value);
-    requestAnimationFrame(() => {
-      if (viewport.current === el)
-        el.scrollTo({
-          left: (PAPER_MARGIN + WIDTH / 2) * value - el.clientWidth / 2,
-          top: (PAPER_MARGIN + HEIGHT / 2) * value - (top + available / 2),
-        });
-    });
-  }
   function centerParty() {
     if (exploration?.location && !party) {
       pendingCenter.current = true;
       onLevel(exploration.location.levelId);
       return;
     }
-    if (!party || !viewport.current) return;
-    viewport.current.scrollTo({
-      left:
-        (PAPER_MARGIN + PAD + (party.x + 0.5) * SIZE) * zoom -
-        viewport.current.clientWidth / 2,
-      top:
-        (PAPER_MARGIN + PAD + (party.y + 0.5) * SIZE) * zoom -
-        viewport.current.clientHeight / 2,
-      behavior: 'smooth',
-    });
+    if (party) centerOnPoint([party.x, party.y], 'smooth');
   }
   const roomNotes = notes
     .filter(
@@ -399,16 +280,7 @@ export default function DungeonMap({
     .sort((a, b) => a.roomNumber! - b.roomNumber!);
   function findRoom(n: MapNoteView) {
     setKeyboard([n.x, n.y]);
-    const el = viewport.current;
-    if (el)
-      el.scrollTo({
-        left:
-          (PAPER_MARGIN + PAD + (n.x + 0.5) * SIZE) * zoom - el.clientWidth / 2,
-        top:
-          (PAPER_MARGIN + PAD + (n.y + 0.5) * SIZE) * zoom -
-          el.clientHeight / 2,
-        behavior: 'smooth',
-      });
+    centerOnPoint([n.x, n.y], 'smooth');
     setShowRooms(false);
   }
   return (
@@ -464,58 +336,61 @@ export default function DungeonMap({
               <MapIcon size={15} /> Vaše společná mapa
             </span>
           )}
-            <div className="paper-utility">
-              <MapAppearanceControl appearance={appearance} onChange={setAppearance} />
+          <div className="paper-utility">
+            <MapAppearanceControl
+              appearance={appearance}
+              onChange={setAppearance}
+            />
+            <button
+              aria-label="Seznam místností"
+              aria-expanded={showRooms}
+              onClick={() => setShowRooms((v) => !v)}
+            >
+              <StickyNote size={16} />
+              <span>Místa</span>
+            </button>
+            {exploration?.location && (
               <button
-                aria-label="Seznam místností"
-                aria-expanded={showRooms}
-                onClick={() => setShowRooms((v) => !v)}
+                title="Najít družinu"
+                aria-label="Najít družinu"
+                onClick={centerParty}
               >
-                <StickyNote size={16} />
-                <span>Místa</span>
+                <MapIcon size={16} />
               </button>
-              {exploration?.location && (
-                <button
-                  title="Najít družinu"
-                  aria-label="Najít družinu"
-                  onClick={centerParty}
-                >
-                  <MapIcon size={16} />
-                </button>
-              )}
-              {pj && (
-                <button
-                  title="Vrátit poslední tah nebo odhalení"
-                  aria-label="Vrátit poslední akci mapy"
-                  disabled={!canUndo || busy || preview || !!stroke || !!retry}
-                  onClick={() => void sendMap({ tool: 'undo' })}
-                >
-                  <Undo2 size={17} />
-                </button>
-              )}
+            )}
+            {pj && (
               <button
-                aria-label="Oddálit mapu"
-                disabled={!!stroke}
-                onClick={() => setZoom((z) => Math.max(0.4, z - 0.1))}
+                title="Vrátit poslední tah nebo odhalení"
+                aria-label="Vrátit poslední akci mapy"
+                disabled={!canUndo || busy || preview || !!stroke || !!retry}
+                onClick={() => void sendMap({ tool: 'undo' })}
               >
-                <Minus size={14} />
+                <Undo2 size={17} />
               </button>
-              <span>{Math.round(zoom * 100)}%</span>
-              <button
-                aria-label="Přiblížit mapu"
-                disabled={!!stroke}
-                onClick={() => setZoom((z) => Math.min(1.6, z + 0.1))}
-              >
-                <Plus size={14} />
-              </button>
-              <button
-                aria-label="Přizpůsobit mapu oknu"
-                disabled={!!stroke}
-                onClick={() => fitPaper()}
-              >
-                <Maximize2 size={14} />
-              </button>
-            </div>
+            )}
+            <button
+              aria-label="Oddálit mapu"
+              disabled={!!stroke}
+              onClick={() => setZoom((z) => Math.max(0.4, z - 0.1))}
+            >
+              <Minus size={14} />
+            </button>
+            <span>{Math.round(zoom * 100)}%</span>
+            <button
+              aria-label="Přiblížit mapu"
+              disabled={!!stroke}
+              onClick={() => setZoom((z) => Math.min(1.6, z + 0.1))}
+            >
+              <Plus size={14} />
+            </button>
+            <button
+              aria-label="Přizpůsobit mapu oknu"
+              disabled={!!stroke}
+              onClick={() => fitPaper()}
+            >
+              <Maximize2 size={14} />
+            </button>
+          </div>
           <div className="paper-toolbar">
             <div className="paper-tools">
               {TOOLBOX.filter((t) =>
@@ -556,36 +431,59 @@ export default function DungeonMap({
                         'move',
                         ...(exploration ? ['place', 'openDoor'] : []),
                       ].includes(t.id),
-              ).sort((a, b) => {
-                const order = ['inspect', 'hand', 'move', 'note', 'monster', 'scenery', 'room', 'floor', 'wall', 'door', 'stairsUp', 'stairsDown', 'stairsBoth', 'entrance', 'exit', 'subtract', 'erase', 'place', 'openDoor', 'reveal', 'hide'];
-                return order.indexOf(a.id) - order.indexOf(b.id);
-              }).map(({ id, icon: Icon, name, hint }) => (
-                <button
-                  key={id}
-                  data-tool={id}
-                  title={hint}
-                  aria-label={name}
-                  aria-pressed={effectiveTool === id && !preview}
-                  className={effectiveTool === id && !preview ? 'active' : ''}
-                  disabled={preview || busy || !!stroke || !!retry}
-                  onClick={() => {
-                    switchTool(id);
-                    if (id === 'monster' && !selectedCreature)
-                      onInspectMonster();
-                  }}
-                >
-                  <Icon size={17} />
-                  <span>
-                    {id === 'move' &&
-                    exploration?.enabled &&
-                    !exploration.battle
-                      ? 'Družina'
-                      : name}
-                  </span>
-                </button>
-              ))}
+              )
+                .sort((a, b) => {
+                  const order = [
+                    'inspect',
+                    'hand',
+                    'move',
+                    'note',
+                    'monster',
+                    'scenery',
+                    'room',
+                    'floor',
+                    'wall',
+                    'door',
+                    'stairsUp',
+                    'stairsDown',
+                    'stairsBoth',
+                    'entrance',
+                    'exit',
+                    'subtract',
+                    'erase',
+                    'place',
+                    'openDoor',
+                    'reveal',
+                    'hide',
+                  ];
+                  return order.indexOf(a.id) - order.indexOf(b.id);
+                })
+                .map(({ id, icon: Icon, name, hint }) => (
+                  <button
+                    key={id}
+                    data-tool={id}
+                    title={hint}
+                    aria-label={name}
+                    aria-pressed={effectiveTool === id && !preview}
+                    className={effectiveTool === id && !preview ? 'active' : ''}
+                    disabled={preview || busy || !!stroke || !!retry}
+                    onClick={() => {
+                      switchTool(id);
+                      if (id === 'monster' && !selectedCreature)
+                        onInspectMonster();
+                    }}
+                  >
+                    <Icon size={17} />
+                    <span>
+                      {id === 'move' &&
+                      exploration?.enabled &&
+                      !exploration.battle
+                        ? 'Družina'
+                        : name}
+                    </span>
+                  </button>
+                ))}
             </div>
-
           </div>
         </div>
         <>
@@ -637,14 +535,9 @@ export default function DungeonMap({
           picked={keyboard}
           entrance={map.access?.entrance}
         />
-        {pj && !preview && effectiveTool === 'scenery' && <SceneryPalette surfaceOp={surfaceOp} onSurfaceOp={setSurfaceOp} brush={sceneryBrush} onChange={next=>{setSceneryBrush(next);if(findSceneryEntry(next.kind,catalogScenery)?.surface)setFloorProposal(undefined);}}
-          moving={Boolean(movingScenery && movingScenery.levelId === (exploration?.levelId || 'ground'))} onCancelMove={()=>setMovingScenery(undefined)}
-          fill={{busy:busy||Boolean(movingScenery),hidden:Boolean(sceneryBrush.hidden),
-            proposal:floorProposal?{options:floorProposal.options,count:floorProposal.items.length,stale:proposalStale}:undefined,
-            onDiscard:()=>setFloorProposal(undefined),
-            onPreview:options=>setFloorProposal({levelId:exploration?.levelId||'ground',stamp:fillStamp,options,items:proposeScenery(map,fillBlocked,options,catalogScenery),requestId:crypto.randomUUID()}),
-            onApply:async()=>{if(!floorProposal||proposalStale)return;const ok=await onAction('map',{tool:'scenery-fill',levelId:floorProposal.levelId,options:floorProposal.options,expectedStamp:floorProposal.stamp,requestId:floorProposal.requestId});if(ok)setFloorProposal(undefined);return ok;},
-          }} />}
+        {pj && !preview && effectiveTool === 'scenery' && (
+          <MapSceneryPalette scenery={scenery} busy={busy} />
+        )}
         {pj && preview && (
           <div className="preview-notice">
             <Eye size={14} /> Takto mapu vidí hráči. Pro úpravy se vrať do
@@ -696,8 +589,12 @@ export default function DungeonMap({
           >
             <MapCanvas
               appearance={appearance}
-              surfaceBrush={surfaceBrush}
-              sceneryPreview={!proposalStale && tool==='scenery' ? floorProposal?.items : undefined}
+              surfaceBrush={scenery.surfaceBrush}
+              sceneryPreview={
+                !scenery.proposalStale && tool === 'scenery'
+                  ? scenery.proposal?.items
+                  : undefined
+              }
               map={{ shown, revealed, lit, party, recapCell, visible }}
               input={{
                 zoom,
@@ -779,14 +676,14 @@ export default function DungeonMap({
           </GuardedDialog>,
           document.body,
         )}
-      {pj && !visible && sceneryEdit && sceneryEdit.levelId === (exploration?.levelId || 'ground') && createPortal(
-        <GuardedDialog label="Stafáž mapy" className="modal scenery-modal" onClose={()=>setSceneryEdit(undefined)}>
-          <SceneryEditor key={sceneryEdit.item.id} item={sceneryEdit.item}
-            current={map.scenery?.find(item=>item.id===sceneryEdit.item.id)} busy={busy}
-            onSave={async values=>{const ok=await onAction('map',{...values,tool:'scenery',op:'save',levelId:sceneryEdit.levelId});if(ok)setSceneryEdit(undefined);return ok;}}
-            onRemove={async values=>{const ok=await onAction('map',{...values,tool:'scenery',op:'remove',levelId:sceneryEdit.levelId});if(ok)setSceneryEdit(undefined);return ok;}}
-            onMove={()=>{setMovingScenery(sceneryEdit);setSceneryEdit(undefined);switchTool('scenery');}} />
-        </GuardedDialog>,document.body)}
+      {pj && !visible && (
+        <MapSceneryDialog
+          scenery={scenery}
+          map={map}
+          busy={busy}
+          onMove={() => switchTool('scenery')}
+        />
+      )}
       {retry && (
         <div className="map-retry" role="alert">
           <span>Tah není potvrzený. Zkus jej znovu odeslat.</span>
