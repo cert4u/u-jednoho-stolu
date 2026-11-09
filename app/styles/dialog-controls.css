@@ -1,0 +1,17 @@
+/* Checkbox rows have their own layout inside dialogs, including nested forms. */
+.modal :is(.power-announce, .journey-lit, .map-note-notify) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+}
+
+.modal .power-announce {
+  gap: 8px;
+}
+
+.modal :is(.power-announce, .journey-lit, .map-note-notify) > input {
+  width: auto;
+  margin: 0;
+  accent-color: var(--action);
+}

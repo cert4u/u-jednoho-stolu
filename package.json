@@ -1,6 +1,6 @@
 {
   "name": "u-jednoho-stolu",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "private": true,
   "engines": {
     "node": ">=22.15.0"
@@ -18,8 +18,9 @@
     "content:sync": "node scripts/sync-content.mjs",
     "check:client-content": "node --experimental-strip-types scripts/check-content.mjs --client",
     "check:content": "node scripts/sync-content.mjs --check && node --experimental-strip-types scripts/check-content.mjs",
+    "check:css": "node scripts/check-css.mjs",
     "check:docs": "node scripts/check-docs.mjs",
-    "verify": "npm run check:docs && npm run check:content && npm run check && npm test",
+    "verify": "npm run check:docs && npm run check:css && npm run check:content && npm run check && npm test",
     "test": "node --experimental-strip-types scripts/test-union.mjs",
     "db:init": "node scripts/init-db.mjs",
     "test:integration": "node scripts/test-integration.mjs",

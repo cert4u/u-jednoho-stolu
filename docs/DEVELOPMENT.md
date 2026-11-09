@@ -340,4 +340,10 @@ Před přesunem a po něm byly v prohlížeči porovnány seznam nálezů, pří
 
 Odpočinek a léčení mají vlastní `app/styles/rest-healing.css` (16 pravidel včetně rozložení pod 480 px). `.recovery-form` vymezuje formulář a nahrazuje pět silových přepisů konkrétními selektory; varianta `.secondary.recovery-open` zachovává rozestup tlačítka v herních mechanikách. Stejně pojmenované styly obnovovacích klíčů (`.recovery-card`) tento soubor neobsahuje.
 
-Přesun byl porovnán na zraněné testovací postavě v šesti variantách: obnova zadaného počtu životů, doplnění do maxima s polem pro magenergii a prázdný výběr, vždy na běžné i úzké obrazovce. Kontrolované styly a geometrie se shodovaly; žádná obnova nebyla odeslána. Posouvání zůstává dostupné bez lišty. Celkově nyní zbývá 37 `!important` v importovaných zdrojových stylech.
+Přesun byl porovnán na zraněné testovací postavě v šesti variantách: obnova zadaného počtu životů, doplnění do maxima s polem pro magenergii a prázdný výběr, vždy na běžné i úzké obrazovce. Kontrolované styly a geometrie se shodovaly; žádná obnova nebyla odeslána. Posouvání zůstává dostupné bez lišty. V této etapě zbývalo 37 `!important` v importovaných zdrojových stylech.
+
+Zkoušky a pasti mají vlastní `app/styles/challenges.css`. Soubor zahrnuje formulář, historii a karty u chatu. Specifičnost checkboxu určuje jeho umístění v dialogu, čímž odpadly čtyři deklarace `!important`. Kontrola v prohlížeči porovnala velikosti a vypočtené styly na běžné obrazovce i při šířce 390 px. V této etapě zbývalo 33 deklarací `!important`.
+
+Ve vydání 1.2.4 zbývá **0 deklarací `!important` ve vlastním CSS** včetně inline stylů samostatné administrace. `dialog-controls.css` sjednocuje checkboxy kouzel, světel a poznámek mapy. Mapa má jeden zdroj rozměrů kreslicí plochy a zkratka pro příšery má vlastní třídu místo pravidla podle pořadí tlačítek. V administraci se rozložení panelu zapíná jen tehdy, když panel nemá atribut `hidden`.
+
+`npm run check:css` kontroluje vlastní styly aplikace a administrace v `npm run verify` a CI. Kontrola se nevztahuje na CSS generované závislostmi. Tailwind Preflight nadále chrání běžný atribut `hidden` vlastním pravidlem; styly závislosti neupravujeme. Při úpravě vybírej selektor podle skutečné součásti UI a u vyřazovaných prvků nech `hidden` řídit viditelnost.

@@ -29,6 +29,8 @@ jobs:
         run: npm run install:ci
       - name: Dokumentace
         run: npm run check:docs
+      - name: CSS bez silových přepisů
+        run: npm run check:css
       - name: Formát upravovaných modulů
         run: npm run format:check
       - name: Herní obsah

@@ -4,12 +4,12 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Počítej přibližně se 2 GB volné RAM a několika GB disku pro sestavení image. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Tato dokumentace odpovídá vydání 1.2.3; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
+Tato dokumentace odpovídá vydání 1.2.4; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
 
 ## První spuštění
 
 ```sh
-git clone --branch v1.2.3 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.4 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -235,6 +235,12 @@ Vytvoř úplnou serverovou ZIP zálohu včetně katalogových obrázků, uchovej
 Po aktualizaci obnov stránku aplikace a `/admin`. Ověř původní kampaň, obrázky, přepnutí nástroje, posun/zoom a ztišení skic pod mapou. Refaktor zachovává pravidla, generátor V2, formát záloh a katalogové balíčky. Úplné zálohy neobsahují žádné nové povinné atributy.
 
 Podporovaný rollback vrací odpovídající image i databázový snapshot. Před návratem zachovej také data vzniklá po aktualizaci; nejde o sloučení novějších změn do staršího snapshotu. [Změny a rozsah úklidu](CLEANUP.md).
+
+## Přechod z 1.2.3 na 1.2.4
+
+Vytvoř úplnou serverovou ZIP zálohu, uchovej konfiguraci a zachovej celý datový volume. Vyber stabilní vydání 1.2.4 v administraci updateru; při ručním sestavení použij tag `v1.2.4`. Přechod nevyžaduje SQL migraci, změnu konfigurace ani přestavbu updateru nebo LiveKitu. Formát záloh se nemění.
+
+Po aktualizaci obnov herní stránku i `/admin`. Ověř přihlášení, otevření mapy a posun obsahu v dialogu. Podporovaný rollback vrací image i databázový snapshot z doby před aktualizací. [Změny vydání](../CHANGELOG.md#124--2026-11-09).
 
 ## Ochrany stabilizační větve
 

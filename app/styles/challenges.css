@@ -1,0 +1,120 @@
+/* Challenge editor, history and pending cards in the chat panel. */
+
+.challenge-pending {
+  padding: 12px;
+  border: 1px solid #ded6bc;
+  border-radius: 6px;
+  background: #f5f0df;
+  margin-bottom: 18px;
+  max-height: 45dvh;
+  overflow: auto;
+}
+
+.challenge-pending h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.challenge-card {
+  padding: 10px 0;
+  border-top: 1px solid #e3dcc5;
+  overflow-wrap: anywhere;
+}
+
+.challenge-card > strong {
+  font-size: 12px;
+  display: block;
+}
+
+.challenge-card p,
+.challenge-card > small {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #6f765f;
+}
+
+.challenge-card > div {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.challenge-card button {
+  border: 1px solid #d1d8bd;
+  background: var(--control);
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 11px;
+  color: var(--control-ink);
+  border-color: var(--control-border);
+}
+
+.modal .challenge-check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+}
+
+.modal .challenge-check input {
+  width: auto;
+  margin: 0;
+  accent-color: var(--action);
+}
+
+.challenge-source {
+  background: #f2eddd;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #77694b;
+}
+
+.challenge-history {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.challenge-history h3 {
+  font-size: 17px;
+  margin-bottom: 12px;
+}
+
+.challenge-history button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  gap: 4px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.challenge-history small {
+  color: #78826d;
+  font-size: 11px;
+}
+
+.challenge-history details {
+  margin-top: 16px;
+  font-size: 12px;
+}
+
+.challenge-history summary {
+  cursor: pointer;
+}
+
+.chat-panel > .challenge-pending {
+  flex-shrink: 0;
+  max-height: min(300px, 35dvh, max(80px, calc(100% - 310px)));
+  margin: 12px 12px 0;
+}

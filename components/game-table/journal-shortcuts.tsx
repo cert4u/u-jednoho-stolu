@@ -35,13 +35,13 @@ export default function JournalShortcuts({
         <span>Kde jsme skončili</span>
         <ArrowRight size={13} />
       </button>
-      <button className="mechanics-open" onClick={() => onOpen('mechanics')}>
+      <button onClick={() => onOpen('mechanics')}>
         <Dices size={18} />
         <span>Hody a souboj</span>
         <ArrowRight size={13} />
       </button>
       {pj && (
-        <button onClick={() => onOpen('monsters')}>
+        <button className="monsters-open" onClick={() => onOpen('monsters')}>
           <Skull size={18} />
           <span>Příšery</span>
           <ArrowRight size={13} />

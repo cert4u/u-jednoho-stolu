@@ -59,5 +59,8 @@
   "app/styles/scrollbars.css",
   "app/styles/initiative.css",
   "app/styles/loot-equipment.css",
-  "app/styles/rest-healing.css"
+  "app/styles/rest-healing.css",
+  "app/styles/challenges.css",
+  "app/styles/dialog-controls.css",
+  "scripts/check-css.mjs"
 ]

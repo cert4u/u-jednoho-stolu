@@ -1,10 +1,15 @@
 # Změny
 
-## Nevydáno
+## 1.2.4 — 2026-11-09
 
-- Styly odpočinku a léčení odděleny od obnovy přístupu: 16 pravidel v `rest-healing.css`, odstraněno pět `!important` (celkem 37). Šest variant formuláře a náhledu porovnáno na běžné i úzké obrazovce bez rozdílu v kontrolovaných stylech a geometrii.
+- Vlastní CSS aplikace i administrace je bez `!important`. Přednost pravidel vyjadřuje kontext ovládacího prvku; nepoužívané přepisy rozměrů mapy a starého tlačítka schodů byly odstraněny. Posouvání obsahu funguje bez viditelných lišt. Kontrola `npm run check:css` je součástí CI.
+- Aktualizace z 1.2.3 zachovává datový formát a nevyžaduje migraci, změnu konfigurace ani přestavbu updateru. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-123-na-124).
 
-- Další CSS celek pro kořist a výbavu: 36 pravidel včetně úzkého rozložení odděleno do `loot-equipment.css`. Šířka varianty dialogu a rozestupy akcí mají výslovný kontext bez dalšího `!important` (celkem zbývá 42). Ověřeno sedm variant UI bez změny kontrolovaných stylů a geometrie.
+- Styly zkoušek a pastí přesunuty do `challenges.css`. Checkbox používá kontext dialogu, takže odpadly čtyři deklarace `!important`.
+
+- Styly odpočinku a léčení odděleny od obnovy přístupu: 16 pravidel v `rest-healing.css`, odstraněno pět `!important` (v této etapě zbývalo 37). Šest variant formuláře a náhledu porovnáno na běžné i úzké obrazovce bez rozdílu v kontrolovaných stylech a geometrii.
+
+- Další CSS celek pro kořist a výbavu: 36 pravidel včetně úzkého rozložení odděleno do `loot-equipment.css`. Šířka varianty dialogu a rozestupy akcí mají výslovný kontext bez dalšího `!important` (v této etapě zbývalo 42). Ověřeno sedm variant UI bez změny kontrolovaných stylů a geometrie.
 
 - Sjednocené skrytí posuvníků v aplikaci a samostatné administraci bez vypnutí posouvání obsahu. Odstraněny historické přepisy obnovující viditelnou lištu.
 - CSS pořadí souboje a výběru účastníků odděleno do `initiative.css`, včetně mobilních pravidel. Sloučena dvě opakovaná pravidla a odstraněno dalších šest `!important`; po obou CSS krocích zbývá 43.
