@@ -10,7 +10,7 @@
 [![Docker · vlastní hosting](https://img.shields.io/badge/Docker-vlastn%C3%AD%20hosting-2496ED?logo=docker&logoColor=white)](docs/SELF_HOSTING.md)
 [![LiveKit · hlas družiny](https://img.shields.io/badge/LiveKit-hlas%20dru%C5%BEiny-f59e0b)](docs/VOICE.md)
 
-**Verze 1.2.5** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.2.5)
+**Verze 1.2.6** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.2.6)
 
 **Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
 
@@ -26,7 +26,7 @@ Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu�
 
 **Řada 1.2 nabízí místní a komunitní knihovnu pro Node/Docker**: vlastní katalogy v administraci, přenos ZIP, potvrzená instalace a aktualizace z veřejného GitHubu a přenosné podklady kampaní. [Návod pro správce](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) · [GitHub distribuce](docs/CATALOG_GITHUB.md) · [Integrační audit a demo](docs/CATALOG_AUDIT.md). Katalogy po instalaci fungují offline; GitHub je pouze volitelný distribuční kanál. [Přechod z 1.1.0](docs/SELF_HOSTING.md#přechod-z-110-na-120).
 
-Verze **1.2.5** dokončuje rozdělení stylů stolu, mapy a dialogů. Zpřehledňuje také generátor V2, Node hosting a správu katalogů. Výstupy generátoru pro stejná semínka zůstávají stejné. [Vývoj a údržba stylů](docs/DEVELOPMENT.md#postupný-úklid-css).
+Verze **1.2.6** chrání zobrazené patro před opožděnými odpověďmi a sjednocuje mapové příkazy pro myš a klávesnici. [Přehled změn](CHANGELOG.md#126--2026-11-09).
 
 ## Pro koho je projekt určený
 
@@ -136,14 +136,14 @@ V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každ
 
 ## Vlastní server s Dockerem
 
-**Stabilní vydání 1.2.5** zahrnuje místní a komunitní katalogy, jejich ZIP/GitHub distribuci a úplné serverové zálohy včetně obrázků. Přechod z 1.2.4 nevyžaduje migraci ani změnu konfigurace. Zachovej celý datový volume a před aktualizací vytvoř úplnou zálohu. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-124-na-125) · [Historie verzí](CHANGELOG.md#125--2026-11-09).
+**Stabilní vydání 1.2.6** zahrnuje místní a komunitní katalogy, jejich ZIP/GitHub distribuci a úplné serverové zálohy včetně obrázků. Přechod z 1.2.5 nevyžaduje migraci ani změnu konfigurace. Zachovej celý datový volume a před aktualizací vytvoř úplnou zálohu. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-125-na-126) · [Historie verzí](CHANGELOG.md#126--2026-11-09).
 
 Aplikace běží na Node.js 22 a ukládá SQLite i katalogové obrázky do trvalého Docker volume. Cloudflare účet není potřeba. Pro novou stabilní instalaci použij konkrétní tag vydání:
 
 Potřebuješ Linux s **Docker Engine 28+ a Compose v2**, Git a OpenSSL. Pro sestavení počítej přibližně se 2 GB volné RAM a několika GB místa na disku.
 
 ```bash
-git clone --branch v1.2.5 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.6 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32

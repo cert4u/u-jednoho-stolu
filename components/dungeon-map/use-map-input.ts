@@ -57,6 +57,9 @@ export function useMapInput({
       members,
       pj,
       me,
+      selected,
+      canLead,
+      busy,
       lock,
       retry,
       setRetry,
@@ -67,9 +70,6 @@ export function useMapInput({
   }
   function sendExplore(op: string, values: Record<string, unknown> = {}) {
     return commands().sendExplore(op, values);
-  }
-  function moveBattle(id: string, to: Point) {
-    return commands().moveBattle(id, to);
   }
   function retryMap() {
     return commands().retryMap();
@@ -298,7 +298,8 @@ export function useMapInput({
     setStroke(null);
     if (e.currentTarget.hasPointerCapture(e.pointerId))
       e.currentTarget.releasePointerCapture(e.pointerId);
-    if (s.pan) return;
+    if (s.pan || busy || lock.current || retry || preview) return;
+    const actions = commands();
     if (s.surface) {
       void sendMap({ tool: 'surface', ...s.surface, points: s.points });
       return;
@@ -309,8 +310,7 @@ export function useMapInput({
         if (s.start.join() === s.end.join())
           onOpenNote({ levelId: note.levelId, x: note.x, y: note.y }, false);
         else
-          void onAction('map-note', {
-            op: 'move',
+          void actions.moveNote({
             levelId: note.levelId,
             x: note.x,
             y: note.y,
@@ -318,53 +318,31 @@ export function useMapInput({
             toY: s.end[1],
             noteId: note.id,
             expectedRevision: note.revision,
-            requestId: crypto.randomUUID(),
           });
       }
       return;
     }
     if (s.monster) {
       if (s.start.join() === s.end.join()) onInspectMonster(s.monster);
-      else
-        void onAction('monster', {
-          op: 'move',
-          monsterId: s.monster,
-          x: s.end[0],
-          y: s.end[1],
-          requestId: crypto.randomUUID(),
-        });
+      else void actions.moveMonster(s.monster, s.end);
       return;
     }
     if (effectiveTool === 'monster') {
       if (selectedCreature)
-        void onAction('monster', {
-          op: 'move',
-          monsterId: selectedCreature.id,
-          x: s.end[0],
-          y: s.end[1],
-          requestId: crypto.randomUUID(),
-        });
+        void actions.moveMonster(selectedCreature.id, s.end);
       else onInspectMonster();
       return;
     }
     if (effectiveTool === 'place') {
-      void sendExplore('place', { x: s.end[0], y: s.end[1] });
+      void actions.placeParty(s.end);
       return;
     }
     if (effectiveTool === 'openDoor') {
-      void sendExplore('door', { edge: s.edge });
-      return;
-    }
-    if (exploration?.enabled && effectiveTool === 'move') {
-      if (exploration.battle)
-        void moveBattle(s.token || selected || (!pj ? me : ''), s.end);
-      else if (canLead) void sendExplore('move', { x: s.end[0], y: s.end[1] });
+      void actions.toggleDoor(s.edge);
       return;
     }
     if (s.token || effectiveTool === 'move') {
-      const id = s.token || selected || (!pj ? me : '');
-      if (id && !preview)
-        void onAction('move', { id, x: s.end[0], y: s.end[1] });
+      void actions.moveCharacter(s.end, s.token);
       return;
     }
     if (!canDraw) return;
@@ -399,7 +377,6 @@ export function useMapInput({
       retry,
       pj,
       surfaceBrush,
-      sendMap,
       onScenery,
       map,
       setInspection,
@@ -407,13 +384,8 @@ export function useMapInput({
       exploration,
       onOpenNote,
       selectedCreature,
-      onAction,
       onInspectMonster,
-      sendExplore,
-      moveBattle,
-      selected,
-      me,
-      canLead,
+      ...commands(),
       keyboardStart,
       setKeyboardStart,
     });

@@ -21,7 +21,9 @@ type MapAction = (
   action: string,
   values: Record<string, unknown>,
 ) => Promise<boolean | undefined>;
-type SendMap = (values: Record<string, unknown>) => Promise<void>;
+type SendMap = (
+  values: Record<string, unknown>,
+) => Promise<boolean | undefined>;
 type Selection = { item: Scenery; levelId: string };
 type Proposal = {
   levelId: string;

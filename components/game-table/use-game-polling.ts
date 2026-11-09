@@ -1,45 +1,51 @@
 'use client';
 
-import {
-  useEffect,
-  type Dispatch,
-  type RefObject,
-  type SetStateAction,
-} from 'react';
+import { useEffect, type RefObject } from 'react';
 import type { GameView } from '../../app/api/game/view';
-import type { Session } from './types';
+import type { ViewRequest } from './use-game-view';
+import type { Session, SessionScope } from './types';
 import { requestGame, sameSession, sessionStorageKey } from './game-client';
 
 type Options = {
-  session: Session | null;
-  sessionCurrent: RefObject<Session | null>;
-  editorLevel: string;
-  setSession: Dispatch<SetStateAction<Session | null>>;
-  setGame: Dispatch<SetStateAction<GameView | null>>;
+  scope: SessionScope;
+  sessionCurrent: RefObject<SessionScope>;
+  view: ViewRequest;
+  isCurrentView: (view: ViewRequest) => boolean;
+  changeSession: (session: Session | null) => void;
+  acceptGame: (view: ViewRequest, game: GameView) => void;
   setConnectionError: (message: string) => void;
 };
 
 export function useGamePolling({
-  session,
+  scope,
   sessionCurrent,
-  editorLevel,
-  setSession,
-  setGame,
+  view,
+  isCurrentView,
+  changeSession,
+  acceptGame,
   setConnectionError,
 }: Options) {
   useEffect(() => {
+    const { session } = scope;
     if (!session) return;
     const current = session;
     let disposed = false;
     let running = false;
     let etag: string | undefined;
 
+    const isCurrent = () =>
+      !disposed && sessionCurrent.current === scope && isCurrentView(view);
+
     async function sync() {
-      if (running) return;
+      if (running || !isCurrent()) return;
       running = true;
       try {
-        const { response, data, etag: nextEtag } = await requestGame(current, editorLevel, etag);
-        if (disposed || !sameSession(sessionCurrent.current, current)) return;
+        const {
+          response,
+          data,
+          etag: nextEtag,
+        } = await requestGame(current, view.levelId, etag);
+        if (!isCurrent()) return;
 
         if (response.status === 304) {
           setConnectionError('');
@@ -48,28 +54,34 @@ export function useGamePolling({
         if (!data) throw new Error('Chybí stav hry.');
         if (response.ok) {
           etag = nextEtag;
-          setGame((previous) =>
-            !previous || data.revision >= (previous.revision ?? -1)
-              ? data
-              : previous,
-          );
+          acceptGame(view, data);
           setConnectionError('');
           return;
         }
 
-        setConnectionError(data.error ?? '');
         if (response.status === 401 || response.status === 404) {
-          const stored = localStorage.getItem(sessionStorageKey);
-          const latest = stored ? (JSON.parse(stored) as Session) : null;
-          if (latest && latest.token !== current.token) {
-            setSession(latest);
-          } else {
-            localStorage.removeItem(sessionStorageKey);
-            setSession(null);
+          let replacement: Session | null = null;
+          try {
+            const stored = localStorage.getItem(sessionStorageKey);
+            const latest = stored ? (JSON.parse(stored) as Session) : null;
+            if (
+              typeof latest?.room === 'string' &&
+              latest.room &&
+              typeof latest.token === 'string' &&
+              latest.token &&
+              !sameSession(latest, current)
+            ) {
+              replacement = latest;
+            }
+          } catch {
+            // A missing or unreadable saved login cannot replace an expired one.
           }
+          changeSession(replacement);
+          return;
         }
+        setConnectionError(data.error ?? '');
       } catch {
-        if (!disposed)
+        if (isCurrent())
           setConnectionError(
             'Spojení se přerušilo. Zkoušíme se znovu připojit…',
           );
@@ -85,11 +97,12 @@ export function useGamePolling({
       clearInterval(timer);
     };
   }, [
-    session,
+    scope,
     sessionCurrent,
-    editorLevel,
-    setSession,
-    setGame,
+    view,
+    isCurrentView,
+    changeSession,
+    acceptGame,
     setConnectionError,
   ]);
 }

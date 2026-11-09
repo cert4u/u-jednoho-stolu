@@ -57,4 +57,4 @@ Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [a
 
 Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-úklid-css) · [přechod z 1.2.3](SELF_HOSTING.md#přechod-z-123-na-124).
 
-Vydání **1.2.5**: [rozdělení CSS](DEVELOPMENT.md#postupný-úklid-css), [generátor, hosting a správa katalogů](DEVELOPMENT.md#generátor-v2-node-hosting-a-katalogová-administrace) a [přechod z 1.2.4](SELF_HOSTING.md#přechod-z-124-na-125).
+Vydání **1.2.6**: [změny herního stolu a ovládání mapy](../CHANGELOG.md#126--2026-11-09) a [přechod z 1.2.5](SELF_HOSTING.md#přechod-z-125-na-126).

@@ -15,6 +15,7 @@ const adminFiles = new Map([
   ['/admin/dialogs.js', '../admin-dialog.js'],
   ['/admin/admin-catalog-presentation.js', '../admin-catalog-presentation.js'],
   ['/admin/admin-catalog-state.js', '../admin-catalog-state.js'],
+  ['/admin/admin-catalog-editor.js', '../admin-catalog-editor.js'],
   ['/admin/admin-catalog-view.js', '../admin-catalog-view.js'],
   ['/admin/admin-catalog-api.js', '../admin-catalog-api.js'],
   ['/admin/admin-catalog-operations.js', '../admin-catalog-operations.js'],

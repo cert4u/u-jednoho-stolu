@@ -1,5 +1,12 @@
 # Změny
 
+## 1.2.6 — 2026-11-09
+
+- Při rychlém přepínání pater rozhoduje o přijetí herního pohledu aktuální relace, požadované patro a revize kampaně. Opožděná odpověď z jiného patra nepřepíše mapu ani znovu neotevře opuštěnou přípravu.
+- Myš a klávesnice sdílejí příkazy pro mapu, postavy, příšery a dveře. Při probíhajícím zápisu společný zámek další souběžný příkaz odmítne. Opakování neúspěšné úpravy kresby používá stejné ID a původní patro.
+- Herní API odděluje přístup ke stolu, správu záloh a zápis místnosti. Lišta mapy, náhled a nastavení generátoru i editor katalogů mají samostatné moduly.
+- [Postup aktualizace z 1.2.5](docs/SELF_HOSTING.md#přechod-z-125-na-126).
+
 ## 1.2.5 — 2026-11-09
 
 - `app/globals.css` je pouze vstup se seznamem importů. Pravidla mapy, stolu a dialogů mají vlastní čitelné soubory a pravidla pro menší obrazovky zůstávají u příslušného UI. Odstraněny styly staré mapy a přepisy, které už v kaskádě neplatily. Kontrola CSS i formatter se vztahují na všechny nové moduly.

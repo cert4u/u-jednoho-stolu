@@ -4,69 +4,118 @@ import type { MapInput } from './input-types';
 
 type InputCommands = Pick<
   MapInput,
-  'onAction' | 'exploration' | 'members' | 'pj' | 'me'
+  | 'onAction'
+  | 'exploration'
+  | 'members'
+  | 'pj'
+  | 'me'
+  | 'selected'
+  | 'canLead'
+  | 'busy'
 > & {
   lock: RefObject<boolean>;
   retry: Record<string, unknown> | null;
   setRetry: Dispatch<SetStateAction<Record<string, unknown> | null>>;
 };
-/** A command keeps its request ID across retries; all tools share one in-flight lock. */
+
 export function createMapCommands({
   onAction,
   exploration,
   members,
   pj,
   me,
+  selected,
+  canLead,
+  busy,
   lock,
   retry,
   setRetry,
 }: InputCommands) {
-  async function sendMap(command: MapCommand | Record<string, unknown>) {
-    const payload = {
-      levelId: exploration?.levelId,
-      ...command,
-      requestId: crypto.randomUUID(),
-    };
+  async function runCommand(run: () => Promise<boolean | undefined>) {
+    if (busy || lock.current) return false;
     lock.current = true;
-    setRetry(null);
     try {
-      if (!(await onAction('map', payload))) setRetry(payload);
+      return await run();
     } finally {
       lock.current = false;
     }
   }
-  async function moveBattle(id: string, to: Point) {
-    const who = members.find((m) => m.id === id);
-    if (!who || (!pj && id !== me)) return;
-    return sendExplore('battle-move', {
-      battleId: exploration?.battle?.id,
-      memberId: id,
-      x: to[0],
-      y: to[1],
-      expected: { x: who.x, y: who.y },
+
+  function sendMap(command: MapCommand | Record<string, unknown>) {
+    return runCommand(async () => {
+      const payload = {
+        levelId: exploration?.levelId,
+        ...command,
+        requestId: crypto.randomUUID(),
+      };
+      setRetry(null);
+      const ok = await onAction('map', payload);
+      if (!ok) setRetry(payload);
+      return ok;
     });
   }
-  async function sendExplore(op: string, values: Record<string, unknown> = {}) {
-    if (lock.current) return false;
-    lock.current = true;
-    try {
-      return await onAction('explore', {
-        op,
-        ...values,
-        requestId: crypto.randomUUID(),
-      });
-    } finally {
-      lock.current = false;
-    }
-  }
-  async function retryMap() {
+
+  function retryMap() {
     if (!retry) return;
-    lock.current = true;
-    try {
-      if (await onAction('map', retry)) setRetry(null);
-    } finally {
-      lock.current = false;
+    // Retrying a drawing edit resends the original payload and operation ID.
+    return runCommand(async () => {
+      const ok = await onAction('map', retry);
+      if (ok) setRetry(null);
+      return ok;
+    });
+  }
+
+  function sendReplayable(action: string, values: Record<string, unknown>) {
+    return runCommand(() =>
+      onAction(action, { ...values, requestId: crypto.randomUUID() }),
+    );
+  }
+
+  function sendExplore(op: string, values: Record<string, unknown> = {}) {
+    return sendReplayable('explore', { op, ...values });
+  }
+
+  function moveCharacter([x, y]: Point, token?: string) {
+    const id = token || selected || (!pj ? me : '');
+    if (exploration?.enabled) {
+      if (exploration.battle) {
+        const who = members.find((member) => member.id === id);
+        if (!who || (!pj && id !== me)) return;
+        return sendExplore('battle-move', {
+          battleId: exploration.battle.id,
+          memberId: id,
+          x,
+          y,
+          expected: { x: who.x, y: who.y },
+        });
+      }
+      if (canLead) return sendExplore('move', { x, y });
+    } else if (id) {
+      return runCommand(() => onAction('move', { id, x, y }));
     }
   }
-  return { sendMap, sendExplore, moveBattle, retryMap };
+
+  function moveMonster(monsterId: string, [x, y]: Point) {
+    return sendReplayable('monster', { op: 'move', monsterId, x, y });
+  }
+
+  function placeParty([x, y]: Point) {
+    return sendExplore('place', { x, y });
+  }
+
+  function toggleDoor(edge: string) {
+    return sendExplore('door', { edge });
+  }
+
+  return {
+    sendMap,
+    sendExplore,
+    moveCharacter,
+    moveMonster,
+    placeParty,
+    toggleDoor,
+    moveNote: (values: Record<string, unknown>) =>
+      sendReplayable('map-note', { ...values, op: 'move' }),
+    retryMap,
+  };
 }

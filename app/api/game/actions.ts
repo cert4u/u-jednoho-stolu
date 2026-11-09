@@ -8,7 +8,7 @@ import { applyDomainAction, type ActionResult } from './actions/domain';
 import { applyMapAction, applyExplorationAction } from './actions/map';
 import { applyMemberAction } from './actions/members';
 
-// HTTP-facing dispatch only: persistence and CAS retries remain in route.ts.
+// Dispatch against one revision; the route can reapply the action if the write loses a race.
 export async function applyGameAction(
   game: Game,
   member: Member,

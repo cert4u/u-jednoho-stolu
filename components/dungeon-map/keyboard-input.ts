@@ -22,15 +22,11 @@ type MapKeyboardContext = Pick<
   | 'exploration'
   | 'onOpenNote'
   | 'selectedCreature'
-  | 'onAction'
   | 'onInspectMonster'
-  | 'selected'
-  | 'me'
-  | 'canLead'
 > &
   Pick<
     ReturnType<typeof createMapCommands>,
-    'sendMap' | 'sendExplore' | 'moveBattle'
+    'sendMap' | 'moveCharacter' | 'moveMonster' | 'placeParty' | 'toggleDoor'
   > & {
     cancel: () => void;
     setKeyboard: Dispatch<SetStateAction<Point>>;
@@ -61,13 +57,11 @@ export function handleMapKey(
     exploration,
     onOpenNote,
     selectedCreature,
-    onAction,
     onInspectMonster,
-    sendExplore,
-    moveBattle,
-    selected,
-    me,
-    canLead,
+    moveCharacter,
+    moveMonster,
+    placeParty,
+    toggleDoor,
     keyboardStart,
     setKeyboardStart,
   }: MapKeyboardContext,
@@ -118,27 +112,14 @@ export function handleMapKey(
         false,
       );
   } else if (effectiveTool === 'monster') {
-    if (selectedCreature)
-      void onAction('monster', {
-        op: 'move',
-        monsterId: selectedCreature.id,
-        x: keyboard[0],
-        y: keyboard[1],
-        requestId: crypto.randomUUID(),
-      });
+    if (selectedCreature) void moveMonster(selectedCreature.id, keyboard);
     else onInspectMonster();
   } else if (effectiveTool === 'place') {
-    void sendExplore('place', { x: keyboard[0], y: keyboard[1] });
+    void placeParty(keyboard);
   } else if (effectiveTool === 'openDoor') {
-    void sendExplore('door', { edge: `h:${keyboard[0]}:${keyboard[1]}` });
-  } else if (exploration?.enabled && effectiveTool === 'move') {
-    if (exploration.battle)
-      void moveBattle(selected || (!pj ? me : ''), keyboard);
-    else if (canLead)
-      void sendExplore('move', { x: keyboard[0], y: keyboard[1] });
+    void toggleDoor(`h:${keyboard[0]}:${keyboard[1]}`);
   } else if (effectiveTool === 'move') {
-    const id = selected || (!pj ? me : '');
-    if (id) void onAction('move', { id, x: keyboard[0], y: keyboard[1] });
+    void moveCharacter(keyboard);
   } else if (['room', 'reveal', 'hide', 'wall'].includes(effectiveTool)) {
     if (!keyboardStart) setKeyboardStart(keyboard);
     else {

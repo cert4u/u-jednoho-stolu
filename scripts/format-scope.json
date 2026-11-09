@@ -62,5 +62,17 @@
   "server/start.mjs",
   "server/hosting/*.mjs",
   "server/admin-catalog-*.js",
-  "scripts/test-admin-client.mjs"
+  "scripts/test-admin-client.mjs",
+  "components/generator-panel.tsx",
+  "components/generator-panel/*.tsx",
+  "components/dungeon-map/toolbar.tsx",
+  "components/dungeon-map/room-list.tsx",
+  "components/game-table/use-map-note-navigation.ts",
+  "components/game-table/use-game-polling.ts",
+  "components/game-table/use-game-view.ts",
+  "scripts/test-table-session.mjs",
+  "app/api/game/route.ts",
+  "app/api/game/campaign.ts",
+  "app/api/game/room-access.ts",
+  "app/api/game/room-store.ts"
 ]

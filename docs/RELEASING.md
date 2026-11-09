@@ -77,3 +77,7 @@ Refaktor aplikace a dokončení úklidu CSS nevyžadují proti 1.2.3 migraci, zm
 ## Vydání 1.2.5
 
 Rozdělení CSS, generátoru V2, hostingu a katalogové administrace nevyžaduje proti 1.2.4 migraci, změnu konfigurace ani přestavbu updateru. Release marker uvádí `migrations: false`, `updater: false`, `config: false`. Před publikací ověř referenční výstupy generátoru, prohlížeč pro PJ i hráče, načtení modulů administrace a CI přesného commitu. [Postup přechodu](SELF_HOSTING.md#přechod-z-124-na-125).
+
+## Vydání 1.2.6
+
+Při vydání ověř opožděné odpovědi při přepínání pater a přístupu do kampaně, shodu mapových příkazů z myši a klávesnice a opakování úpravy mapy se stejným ID. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-125-na-126).

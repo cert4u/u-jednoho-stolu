@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type RefObject } from 'react';
+import { useCallback, useState, type RefObject } from 'react';
 import type { InitiativeRef } from '../../lib/initiative';
 import type { DialogHandle } from '../guarded-dialog';
 import type { RollSetup } from '../mechanics-panel';
@@ -22,6 +22,20 @@ export function usePanelNavigation(
   const [rollSetup, setRollSetup] = useState<RollSetup>({});
   const [selectedMonster, setSelectedMonster] = useState('');
   const [monsterPick, setMonsterPick] = useState(0);
+
+  const resetPanels = useCallback(() => {
+    setModal('');
+    setRecoveryMemberId(undefined);
+    setLifeMemberId(undefined);
+    setLootId('');
+    setLootNoteId(undefined);
+    setChallengeId('');
+    setChallengeNoteId(undefined);
+    setConditionTarget(undefined);
+    setRollSetup({});
+    setSelectedMonster('');
+    setMonsterPick(0);
+  }, []);
 
   function open(panel: TablePanel, prepare?: () => void) {
     const action = () => {
@@ -68,6 +82,7 @@ export function usePanelNavigation(
   }
 
   return {
+    resetPanels,
     modal,
     setModal,
     recoveryMemberId,

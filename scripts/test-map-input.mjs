@@ -52,10 +52,13 @@ const onAction = async (action, payload) => {
 };
 const context = {
   onAction,
-  exploration: { levelId: 'ground', battle: { id: 'fight' } },
+  exploration: { levelId: 'ground', enabled: true, battle: { id: 'fight' } },
   members: [{ id: 'hero', x: 3, y: 4 }],
   pj: false,
   me: 'hero',
+  selected: '',
+  canLead: false,
+  busy: false,
   lock,
   retry,
   setRetry: (value) => {
@@ -78,9 +81,9 @@ assert.strictEqual(
   failed,
   'Retry reuses the payload and operation ID.',
 );
-await commands.moveBattle('other', [8, 8]);
+await commands.moveCharacter([8, 8], 'other');
 assert.equal(calls.length, 2);
-await commands.moveBattle('hero', [8, 8]);
+await commands.moveCharacter([8, 8]);
 assert.deepEqual(calls.at(-1).payload.expected, { x: 3, y: 4 });
 assert.equal(calls.at(-1).payload.memberId, 'hero');
 let release;
@@ -93,7 +96,18 @@ const pending = createMapCommands({
 });
 const inFlight = pending.sendExplore('move', { x: 4, y: 4 });
 assert(lock.current);
-assert.equal(await pending.sendExplore('move', { x: 5, y: 4 }), false);
+assert.equal(await pending.placeParty([5, 4]), false);
+assert.equal(await pending.moveMonster('m', [5, 4]), false);
+assert.equal(await pending.sendMap({ tool: 'floor', points: [[5, 4]] }), false);
+assert.equal(
+  await createMapCommands({ ...context, retry: failed }).retryMap(),
+  false,
+);
+assert.equal(
+  calls.length,
+  3,
+  'overlapping writes cannot bypass the shared lock',
+);
 release(true);
 await inFlight;
 assert(!lock.current);
@@ -139,16 +153,23 @@ const state = {
     state.keyboardStart = value;
   },
   sendMap: (command) => mapCommands.push(command),
-  sendExplore: (op, data) => actions.push({ op, data }),
-  moveBattle: (id, to) => actions.push({ id, to }),
-  onAction: (action, data) => actions.push({ action, data }),
+  onAction: async (action, data) => {
+    actions.push({ action, data });
+    return true;
+  },
   onScenery: (point, id) => actions.push({ scenery: point, id }),
   setInspection: (value) => actions.push({ inspection: value }),
   onOpenNote: (anchor, publicView) => actions.push({ anchor, publicView }),
   onInspectMonster: (id) => actions.push({ monster: id }),
 };
 const key = (key) =>
-  handleMapKey({ key, preventDefault: () => prevented++ }, state);
+  handleMapKey(
+    { key, preventDefault: () => prevented++ },
+    {
+      ...createMapCommands({ ...state, members: context.members }),
+      ...state,
+    },
+  );
 key('Enter');
 assert.deepEqual(state.keyboardStart, [2, 3]);
 assert.equal(mapCommands.length, 0);
@@ -190,14 +211,48 @@ assert.deepEqual(state.keyboard, [0, 0]);
 state.effectiveTool = 'move';
 state.exploration = { enabled: true, battle: { id: 'fight' } };
 key('Enter');
-assert.deepEqual(actions.pop(), { id: 'hero', to: [0, 0] });
+let sent = actions.pop();
+assert.equal(sent.action, 'explore');
+assert.equal(sent.data.op, 'battle-move');
+assert.equal(sent.data.memberId, 'hero');
+await new Promise(setImmediate);
 state.exploration = { enabled: true };
 state.canLead = false;
 key('Enter');
 assert.equal(actions.length, 0);
 state.canLead = true;
 key('Enter');
-assert.deepEqual(actions.pop(), { op: 'move', data: { x: 0, y: 0 } });
+sent = actions.pop();
+assert.equal(sent.data.op, 'move');
+assert.equal(sent.data.x, 0);
+assert.equal(sent.data.y, 0);
+await new Promise(setImmediate);
+
+const sharedTools = [
+  [
+    'monster',
+    'monster',
+    'move',
+    (commands) => commands.moveMonster('m', [0, 0]),
+  ],
+  ['place', 'explore', 'place', (commands) => commands.placeParty([0, 0])],
+  ['openDoor', 'explore', 'door', (commands) => commands.toggleDoor('h:0:0')],
+];
+state.selectedCreature = { id: 'm' };
+for (const [tool, action, op, pointer] of sharedTools) {
+  state.effectiveTool = tool;
+  key('Enter');
+  const fromKeyboard = actions.pop();
+  await new Promise(setImmediate);
+  await pointer(createMapCommands({ ...state, members: context.members }));
+  const fromPointer = actions.pop();
+  assert.equal(fromKeyboard.action, action);
+  assert.equal(fromKeyboard.data.op, op);
+  const { requestId: keyboardId, ...keyboardData } = fromKeyboard.data;
+  const { requestId: pointerId, ...pointerData } = fromPointer.data;
+  assert(keyboardId && pointerId && keyboardId !== pointerId);
+  assert.deepEqual(keyboardData, pointerData);
+}
 state.effectiveTool = 'scenery';
 state.surfaceBrush = { kind: 'water-area', op: 'add', hidden: false };
 key('Enter');

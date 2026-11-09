@@ -156,6 +156,15 @@ vm.runInContext(
   context,
 );
 const run = (code) => vm.runInContext(code, context);
+const hasUnsavedDraft = () => {
+  let prevented = false;
+  listeners.get('beforeunload')({
+    preventDefault: () => {
+      prevented = true;
+    },
+  });
+  return prevented;
+};
 await run("open('local-test')");
 assert.equal(run('state.editing.type'), 'bestiary');
 el('catalog-type').value = 'scenery';
@@ -210,11 +219,11 @@ run('clearEditor()');
 run(
   `edit('bestiary',{id:'new-test',name:'New',description:'Draft',maxHp:2,combat:{attack:0,defense:0,damage:0}})`,
 );
-assert.equal(run('Boolean(isDirty())'), true);
+assert.equal(hasUnsavedDraft(), true);
 run('state.valid=true');
 el('catalog-editor').onsubmit({ preventDefault() {} });
 await new Promise((r) => setImmediate(r));
-assert.equal(run('Boolean(isDirty())'), false);
+assert.equal(hasUnsavedDraft(), false);
 assert(entries.bestiary.some((e) => e.id === 'new-test'));
 assert.equal(el('catalog-message').textContent, '');
 run('clearEditor()');
@@ -242,6 +251,17 @@ run(
   `showPreview({token:'update-token',manifest:{...state.selected.bundle.manifest,dependencies:[],version:'1.1.0'},currentVersion:'1.0.0',digest:'b'.repeat(64),counts:{bestiary:1},diff:{added:0,changed:1,removed:0}})`,
 );
 assert.equal(el('catalog-install').textContent, 'Aktualizovat katalog');
+// Reopening a catalog with no entry cancels validation queued by the old editor.
+await run("open('local-test', true)");
+assert.equal(el('catalog-validation').textContent, 'Ověřuji schéma a odkazy…');
+const previousEntries = entries.bestiary;
+entries.bestiary = [];
+await run("open('local-test', true)");
+await new Promise((resolve) => setTimeout(resolve, 375));
+assert.equal(el('catalog-editor').hidden, true);
+assert.equal(el('catalog-validation').textContent, 'Ověřuji schéma a odkazy…');
+assert.equal(run('state.valid'), false);
+entries.bestiary = previousEntries;
 selected.kind = 'community';
 await run("open('local-test')");
 assert.equal(el('catalog-json').readOnly, true);

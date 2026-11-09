@@ -17,24 +17,13 @@ import ExplorationControls from './exploration-controls';
 import type { MonsterView } from '../lib/monsters';
 import type { ExplorationView, Location } from '../lib/exploration';
 import { useEffect, useRef, useState } from 'react';
-import {
-  PenTool,
-  Eye,
-  EyeOff,
-  Undo2,
-  Plus,
-  Minus,
-  Maximize2,
-  Map as MapIcon,
-  Hand,
-  Check,
-  StickyNote,
-} from 'lucide-react';
+import { Eye, EyeOff, Map as MapIcon, Hand, Check } from 'lucide-react';
 import { TOOLBOX } from './dungeon-map/toolbox';
 import { cellKey, playerDungeon, type Dungeon } from '../lib/dungeon';
 import { useMapAppearance } from './dungeon-map/use-map-appearance';
 import MapCanvas from './dungeon-map/canvas';
-import MapAppearanceControl from './dungeon-map/renderers/appearance-control';
+import MapToolbar from './dungeon-map/toolbar';
+import MapRoomList from './dungeon-map/room-list';
 import { useMapInput } from './dungeon-map/use-map-input';
 import {
   W,
@@ -253,26 +242,6 @@ export default function DungeonMap({
     }
     if (party) centerOnPoint([party.x, party.y], 'smooth');
   }
-  const roomNotes = notes
-    .filter(
-      (n) =>
-        (!visible || n.shared) &&
-        n.roomNumber &&
-        (!visible ||
-          (shown.floors.includes(cellKey(n.x, n.y)) &&
-            shown.revealed.includes(cellKey(n.x, n.y)))),
-    )
-    .map((n) =>
-      visible && pj
-        ? {
-            ...n,
-            roomNumber: n.published?.roomNumber,
-            title: n.published?.title || n.title,
-          }
-        : n,
-    )
-    .filter((n) => n.roomNumber)
-    .sort((a, b) => a.roomNumber! - b.roomNumber!);
   function findRoom(n: MapNoteView) {
     setKeyboard([n.x, n.y]);
     centerOnPoint([n.x, n.y], 'smooth');
@@ -287,243 +256,54 @@ export default function DungeonMap({
         zoom={zoom}
       />
       <div className="paper-overlay" ref={overlay}>
-        <div className="paper-controls">
-          {pj && (
-            <button className="generator-open" onClick={onGenerate}>
-              Generátor
-            </button>
-          )}
-          {pj ? (
-            <>
-              <div className="paper-modes">
-                <button
-                  className={mode === 'prepare' && !preview ? 'active' : ''}
-                  onClick={() => {
-                    setPreview(false);
-                    setMode('prepare');
-                    switchTool('wall');
-                  }}
-                  disabled={busy || !!stroke}
-                >
-                  <PenTool size={14} /> Příprava mapy
-                </button>
-                <button
-                  className={mode === 'play' && !preview ? 'active' : ''}
-                  onClick={() => {
-                    setPreview(false);
-                    setMode('play');
-                    switchTool('reveal');
-                  }}
-                  disabled={busy || !!stroke}
-                >
-                  <Eye size={14} /> Odkrývání
-                </button>
-              </div>
-              <button
-                className={'player-view ' + (preview ? 'active' : '')}
-                aria-pressed={preview}
-                onClick={() => {
-                  setPreview(!preview);
-                  setKeyboardStart(null);
-                }}
-                disabled={busy || !!stroke}
-              >
-                <UsersIcon /> Pohled družiny
-              </button>
-            </>
-          ) : (
-            <span className="paper-player-label">
-              <MapIcon size={15} /> Vaše společná mapa
-            </span>
-          )}
-          <div className="paper-utility">
-            <MapAppearanceControl
-              appearance={appearance}
-              onChange={setAppearance}
-            />
-            <button
-              aria-label="Seznam místností"
-              aria-expanded={showRooms}
-              onClick={() => setShowRooms((v) => !v)}
-            >
-              <StickyNote size={16} />
-              <span>Místa</span>
-            </button>
-            {exploration?.location && (
-              <button
-                title="Najít družinu"
-                aria-label="Najít družinu"
-                onClick={centerParty}
-              >
-                <MapIcon size={16} />
-              </button>
-            )}
-            {pj && (
-              <button
-                title="Vrátit poslední tah nebo odhalení"
-                aria-label="Vrátit poslední akci mapy"
-                disabled={!canUndo || busy || preview || !!stroke || !!retry}
-                onClick={() => void sendMap({ tool: 'undo' })}
-              >
-                <Undo2 size={17} />
-              </button>
-            )}
-            <button
-              aria-label="Oddálit mapu"
-              disabled={!!stroke}
-              onClick={() => setZoom((z) => Math.max(0.4, z - 0.1))}
-            >
-              <Minus size={14} />
-            </button>
-            <span>{Math.round(zoom * 100)}%</span>
-            <button
-              aria-label="Přiblížit mapu"
-              disabled={!!stroke}
-              onClick={() => setZoom((z) => Math.min(1.6, z + 0.1))}
-            >
-              <Plus size={14} />
-            </button>
-            <button
-              aria-label="Přizpůsobit mapu oknu"
-              disabled={!!stroke}
-              onClick={() => fitPaper()}
-            >
-              <Maximize2 size={14} />
-            </button>
-          </div>
-          <div className="paper-toolbar">
-            <div className="paper-tools">
-              {TOOLBOX.filter((t) =>
-                !pj
-                  ? [
-                      'hand',
-                      'move',
-                      ...(exploration?.enabled && canLead ? ['openDoor'] : []),
-                    ].includes(t.id)
-                  : mode === 'prepare'
-                    ? [
-                        'inspect',
-                        'scenery',
-                        'entrance',
-                        'exit',
-                        'note',
-                        'hand',
-                        'monster',
-                        'wall',
-                        'room',
-                        'floor',
-                        'door',
-                        'stairsUp',
-                        'stairsDown',
-                        'stairsBoth',
-                        'subtract',
-                        'erase',
-                        'move',
-                      ].includes(t.id)
-                    : [
-                        'inspect',
-                        'scenery',
-                        'note',
-                        'hand',
-                        'monster',
-                        'reveal',
-                        'hide',
-                        'move',
-                        ...(exploration ? ['place', 'openDoor'] : []),
-                      ].includes(t.id),
-              )
-                .sort((a, b) => {
-                  const order = [
-                    'inspect',
-                    'hand',
-                    'move',
-                    'note',
-                    'monster',
-                    'scenery',
-                    'room',
-                    'floor',
-                    'wall',
-                    'door',
-                    'stairsUp',
-                    'stairsDown',
-                    'stairsBoth',
-                    'entrance',
-                    'exit',
-                    'subtract',
-                    'erase',
-                    'place',
-                    'openDoor',
-                    'reveal',
-                    'hide',
-                  ];
-                  return order.indexOf(a.id) - order.indexOf(b.id);
-                })
-                .map(({ id, icon: Icon, name, hint }) => (
-                  <button
-                    key={id}
-                    data-tool={id}
-                    title={hint}
-                    aria-label={name}
-                    aria-pressed={effectiveTool === id && !preview}
-                    className={effectiveTool === id && !preview ? 'active' : ''}
-                    disabled={preview || busy || !!stroke || !!retry}
-                    onClick={() => {
-                      switchTool(id);
-                      if (id === 'monster' && !selectedCreature)
-                        onInspectMonster();
-                    }}
-                  >
-                    <Icon size={17} />
-                    <span>
-                      {id === 'move' &&
-                      exploration?.enabled &&
-                      !exploration.battle
-                        ? 'Družina'
-                        : name}
-                    </span>
-                  </button>
-                ))}
-            </div>
-          </div>
-        </div>
-        <>
-          {showRooms && (
-            <section className="map-room-list" aria-label="Místnosti na patře">
-              <strong>Místnosti · {exploration?.levelName || 'Přízemí'}</strong>
-              {roomNotes.length ? (
-                roomNotes.map((n) => (
-                  <div key={n.id}>
-                    <button
-                      disabled={busy}
-                      onClick={() => findRoom(n)}
-                      title="Najít v mapě"
-                    >
-                      {n.roomNumber} · {n.title}
-                    </button>
-                    <button
-                      disabled={busy}
-                      onClick={() =>
-                        onOpenNote(
-                          { levelId: n.levelId, x: n.x, y: n.y },
-                          visible,
-                        )
-                      }
-                      aria-label={`Otevřít místo ${n.roomNumber}`}
-                    >
-                      {visible ? 'Popis' : 'Příprava'}
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <p>
-                  {pj && !visible
-                    ? 'Nástrojem Označit místo klikni do místnosti a zadej její číslo a název.'
-                    : 'Zatím neznáte žádné označené místnosti.'}
-                </p>
-              )}
-            </section>
-          )}
-        </>
+        <MapToolbar
+          pj={pj}
+          mode={mode}
+          preview={preview}
+          effectiveTool={effectiveTool}
+          locked={busy || !!stroke}
+          toolsLocked={preview || busy || !!stroke || !!retry}
+          zoomLocked={!!stroke}
+          canUndo={canUndo && !busy && !preview && !stroke && !retry}
+          canLead={canLead}
+          exploration={exploration}
+          showRooms={showRooms}
+          zoom={zoom}
+          appearance={appearance}
+          onAppearance={setAppearance}
+          onMode={(next) => {
+            setPreview(false);
+            setMode(next);
+            switchTool(next === 'prepare' ? 'wall' : 'reveal');
+          }}
+          onTogglePreview={() => {
+            setPreview(!preview);
+            setKeyboardStart(null);
+          }}
+          onToggleRooms={() => setShowRooms((value) => !value)}
+          onGenerate={onGenerate}
+          onCenterParty={centerParty}
+          onUndo={() => void sendMap({ tool: 'undo' })}
+          onZoomOut={() => setZoom((z) => Math.max(0.4, z - 0.1))}
+          onZoomIn={() => setZoom((z) => Math.min(1.6, z + 0.1))}
+          onFit={() => fitPaper()}
+          onTool={(id) => {
+            switchTool(id);
+            if (id === 'monster' && !selectedCreature) onInspectMonster();
+          }}
+        />
+        {showRooms && (
+          <MapRoomList
+            notes={notes}
+            shown={shown}
+            visible={visible}
+            pj={pj}
+            busy={busy}
+            levelName={exploration?.levelName}
+            onFindRoom={findRoom}
+            onOpenNote={onOpenNote}
+          />
+        )}
         <ExplorationControls
           data={exploration}
           members={members}
@@ -734,7 +514,4 @@ export default function DungeonMap({
       </div>
     </div>
   );
-}
-function UsersIcon() {
-  return <Eye size={14} />;
 }

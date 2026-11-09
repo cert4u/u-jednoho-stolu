@@ -2,7 +2,7 @@
 
 [Dokumentace](README.md) · [Architektura](DEVELOPMENT.md)
 
-Toto je přehled aktuálního interního API pro přispěvatele, nikoli verzované veřejné integrační rozhraní se zaručenou stabilitou. Vstupní bod je [herní route](../app/api/game/route.ts). Oprávnění a směrování najdeš v [akcích](../app/api/game/actions.ts), validaci hodnot v odpovídajících modulech `lib/` a tvar odpovědi v [herním pohledu](../app/api/game/view.ts). Příklady požadavků jsou v integračních testech.
+Toto je přehled aktuálního interního API pro přispěvatele, nikoli verzované veřejné integrační rozhraní se zaručenou stabilitou. Vstupní bod je [herní route](../app/api/game/route.ts). Ověření člena, připojení a obnova přístupu jsou v [room-access.ts](../app/api/game/room-access.ts). Oprávnění a směrování jednotlivých akcí najdeš v [actions.ts](../app/api/game/actions.ts), validaci hodnot v odpovídajících modulech `lib/` a tvar odpovědi v [herním pohledu](../app/api/game/view.ts). Příklady požadavků jsou v integračních testech.
 
 ## Přístupy a společné konvence
 

@@ -2,13 +2,9 @@
 import { actionValues } from '../components/game-table/game-client';
 import { CatalogProvider } from '../components/catalog-provider';
 import { type VoicePresence } from '../components/voice-panel';
-import { useState, useLayoutEffect, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type { Location } from '../lib/exploration';
-import MapNoteNotifications, {
-  type EncounterTarget,
-} from '../components/map-note-notifications';
-import type { MapNoteAlertView } from '../lib/map-note-alerts';
-import type { MapNoteView, NoteAnchor } from '../lib/map-notes';
+import MapNoteNotifications from '../components/map-note-notifications';
 import { type DialogHandle } from '../components/guarded-dialog';
 import { downloadText } from '../components/campaign-access';
 import {
@@ -18,7 +14,11 @@ import {
 import DungeonMap from '../components/dungeon-map';
 import { X } from 'lucide-react';
 import type { GameView as Game } from './api/game/view';
-import type { Session, ChatTab } from '../components/game-table/types';
+import type {
+  Session,
+  SessionScope,
+  ChatTab,
+} from '../components/game-table/types';
 import Lobby from '../components/game-table/lobby';
 import TableHeader from '../components/game-table/table-header';
 import PartySidebar, {
@@ -30,28 +30,33 @@ import {
   requestGame,
   sendGameAction,
   requestBackup,
-  sameSession,
   sessionStorageKey,
 } from '../components/game-table/game-client';
+import { useGameView } from '../components/game-table/use-game-view';
 import { useGamePolling } from '../components/game-table/use-game-polling';
 
 import TableDialog from '../components/game-table/table-dialog';
 import { useBrowserEntry } from '../components/game-table/use-browser-entry';
 import { usePanelNavigation } from '../components/game-table/use-panel-navigation';
+import { useMapNoteNavigation } from '../components/game-table/use-map-note-navigation';
 
 export default function Home() {
   const { initial, ready } = useBrowserEntry();
   const [recapFocus, setRecapFocus] = useState<Location>();
   const [voicePresence, setVoicePresence] = useState<VoicePresence>({});
   const [generationPick, setGenerationPick] = useState(0);
-  const [session, setSession] = useState<Session | null>(initial.session),
-    [game, setGame] = useState<Game | null>(null),
-    [error, setError] = useState(''),
+  const [scope, setScope] = useState<SessionScope>(() => ({
+    session: initial.session,
+  }));
+  const { session } = scope;
+  const { game, view, isCurrentView, setEditorLevel, resetView, acceptGame } =
+    useGameView();
+  const editorLevel = view.levelId;
+  const [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
     [name, setName] = useState(''),
     [code, setCode] = useState(initial.code),
     [joining, setJoining] = useState(initial.joining),
-    [editorLevel, setEditorLevel] = useState(''),
     [selected, setSelected] = useState(''),
     [tab, setTab] = useState<ChatTab>('chat'),
     [text, setText] = useState(''),
@@ -61,17 +66,9 @@ export default function Home() {
   const [connectionError, setConnectionError] = useState(''),
     [recoveryCode, setRecoveryCode] = useState(''),
     [recoveryName, setRecoveryName] = useState('');
-  const sessionCurrent = useRef<Session | null>(session);
-  useLayoutEffect(() => {
-    sessionCurrent.current = session;
-  }, [session]);
+  const sessionCurrent = useRef(scope);
   const dialog = useRef<DialogHandle>(null);
-  const [noteSnapshot, setNoteSnapshot] = useState<MapNoteView | undefined>(),
-    [noteOpenKey, setNoteOpenKey] = useState(0),
-    [noteLevelName, setNoteLevelName] = useState('Přízemí'),
-    [openingNote, setOpeningNote] = useState(false);
-  const [noteAnchor, setNoteAnchor] = useState<NoteAnchor | null>(null),
-    [notePublic, setNotePublic] = useState(false);
+  const navigation = usePanelNavigation(dialog, setError);
   const {
     modal,
     setModal,
@@ -85,11 +82,7 @@ export default function Home() {
     rollSetup,
     selectedMonster,
     monsterPick,
-    setLootId,
-    setLootNoteId,
-    setChallengeId,
-    setChallengeNoteId,
-    setSelectedMonster,
+    resetPanels,
     openRecovery,
     openLife,
     openLoot,
@@ -99,26 +92,66 @@ export default function Home() {
     openPanel,
     placeMonster,
     inspectMonster,
-  } = usePanelNavigation(dialog, setError);
+  } = navigation;
   const me = game?.members.find((m) => m.id === game.me);
   const pj = me?.role === 'pj';
-  const mapNote =
-    (game?.exploration?.levelId || 'ground') === noteAnchor?.levelId
-      ? game?.mapNotes?.find(
-          (n) =>
-            n.levelId === noteAnchor.levelId &&
-            n.x === noteAnchor.x &&
-            n.y === noteAnchor.y,
-        )
-      : modal === 'map-note'
-        ? noteSnapshot
-        : undefined;
-  useGamePolling({
-    session,
+  const {
+    selection: noteSelection,
+    openingNote,
+    openMapNote,
+    openNoteAlert,
+    resetNotes,
+  } = useMapNoteNavigation({
+    game,
+    view,
+    isCurrentView,
+    acceptGame,
+    setEditorLevel,
+    setError,
+    scope,
     sessionCurrent,
-    editorLevel,
-    setSession,
-    setGame,
+    dialog,
+    navigation,
+  });
+  const changeSession = useCallback(
+    (next: Session | null, snapshot: Game | null = null) => {
+      // Invalidate old requests immediately, before React commits the new table.
+      const nextScope = { session: next };
+      sessionCurrent.current = nextScope;
+      setScope(nextScope);
+      resetView(snapshot);
+      setBusy(false);
+      setError('');
+      setConnectionError('');
+      setSelected('');
+      setRecapFocus(undefined);
+      setGenerationPick(0);
+      setVoicePresence({});
+      setTab('chat');
+      setText('');
+      setTo('all');
+      setDice('1k6');
+      setCopied(false);
+      setRecoveryCode('');
+      setRecoveryName('');
+      resetPanels();
+      resetNotes();
+      try {
+        if (next) localStorage.setItem(sessionStorageKey, JSON.stringify(next));
+        else localStorage.removeItem(sessionStorageKey);
+      } catch {
+        // The current tab can still play when browser storage is unavailable.
+      }
+    },
+    [resetNotes, resetPanels, resetView],
+  );
+  useGamePolling({
+    scope,
+    sessionCurrent,
+    view,
+    isCurrentView,
+    changeSession,
+    acceptGame,
     setConnectionError,
   });
   const situations = useRoomSituations(
@@ -126,20 +159,19 @@ export default function Home() {
     game?.messages,
   );
   async function act(action: string, values: Record<string, unknown> = {}) {
+    const isCurrent = () => sessionCurrent.current === scope;
+    if (!isCurrent() || !isCurrentView(view)) return false;
     values = actionValues(action, values);
-    const current = sessionCurrent.current;
-    const sessionChanged = () =>
-      Boolean(current && !sameSession(sessionCurrent.current, current));
     setBusy(true);
     setError('');
     try {
-      const d = await sendGameAction(
-        current,
-        editorLevel || game?.exploration?.levelId,
-        action,
-        values,
-      );
-      if (sessionChanged()) return false;
+      const displayedLevel = editorLevel || game?.exploration?.levelId;
+      const d = await sendGameAction(session, displayedLevel, action, values);
+      if (!isCurrent()) return false;
+      if (d.token) {
+        changeSession({ room: d.room, token: d.token }, d.game);
+        setModal('account');
+      }
       if (d.recoveryCode) {
         setRecoveryCode(d.recoveryCode);
         const memberId = d.recoveryCode.split(':')[1];
@@ -147,44 +179,35 @@ export default function Home() {
           d.game.members.find((m) => m.id === memberId)?.name || 'Postava',
         );
       }
-      if (d.token) {
-        setBusy(false);
-        setRecapFocus(undefined);
-        setNoteSnapshot(undefined);
-        setEditorLevel('');
-        setSelected('');
-        setSelectedMonster('');
-        const s = { room: d.room, token: d.token };
-        sessionCurrent.current = s;
-        localStorage.setItem(sessionStorageKey, JSON.stringify(s));
-        setSession(s);
-        setModal('account');
+      if (!d.token && isCurrentView(view)) {
+        if (action === 'generate' && d.generatedLevels?.[0]) {
+          acceptGame(setEditorLevel(d.generatedLevels[0]), d.game);
+          setGenerationPick((n) => n + 1);
+        } else if (
+          action === 'explore' &&
+          ['travel', 'place'].includes(String(values.op))
+        ) {
+          acceptGame(setEditorLevel(''), d.game);
+        } else {
+          const returnedLevel = d.game.exploration?.levelId;
+          const wantedLevel =
+            editorLevel || d.game.exploration?.location?.levelId;
+          if (!pj || !wantedLevel || returnedLevel === wantedLevel)
+            acceptGame(view, d.game);
+        }
       }
-      if (action === 'generate' && d.generatedLevels?.[0]) {
-        setEditorLevel(d.generatedLevels[0]);
-        setGenerationPick((n) => n + 1);
-      }
-      if (
-        action === 'explore' &&
-        ['travel', 'place'].includes(String(values.op))
-      )
-        setEditorLevel('');
-      setGame((previous) =>
-        d.token || !previous || d.game.revision >= (previous.revision ?? -1)
-          ? d.game
-          : previous,
-      );
       return true;
     } catch (e) {
-      if (!sessionChanged())
+      if (isCurrent())
         setError(e instanceof Error ? e.message : 'Něco se nepodařilo.');
       return false;
     } finally {
-      if (!sessionChanged()) setBusy(false);
+      if (isCurrent()) setBusy(false);
     }
   }
   function locateRecap(location: Location) {
     const action = () => {
+      if (sessionCurrent.current !== scope) return;
       if (pj) setEditorLevel(location.levelId);
       setRecapFocus({ ...location });
       setModal('');
@@ -192,153 +215,66 @@ export default function Home() {
     if (dialog.current) dialog.current.run(action);
     else action();
   }
-  function openMapNote(anchor: NoteAnchor, publicView: boolean) {
-    const action = () => {
-      setError('');
-      setNoteSnapshot(undefined);
-      setNoteOpenKey((k) => k + 1);
-      setNoteLevelName(game?.exploration?.levelName || 'Přízemí');
-      setNoteAnchor(anchor);
-      setNotePublic(publicView);
-      setModal('map-note');
-    };
-    if (dialog.current) dialog.current.run(action);
-    else action();
-  }
-  function openNoteAlert(
-    alert: Pick<MapNoteAlertView, 'noteId' | 'levelId' | 'levelName'> & {
-      id?: string;
-    },
-    opened: () => void,
-    target?: EncounterTarget,
-  ) {
-    const action = async () => {
-      const current = sessionCurrent.current;
-      if (!current) return;
-      setOpeningNote(true);
-      setError('');
-      try {
-        const { response, data } = await requestGame(current, alert.levelId);
-        if (!response.ok)
-          throw new Error(data.error || 'Přípravu se nepodařilo načíst.');
-        if (!sameSession(sessionCurrent.current, current)) return;
-        const note = data.mapNotes?.find((item) => item.id === alert.noteId);
-        if (!note) throw new Error('Poznámka už není dostupná.');
-        if (target) {
-          const links =
-            data.noteAlerts?.find((item) => item.id === alert.id)?.encounter ??
-            [];
-          const available =
-            target.kind === 'combat'
-              ? links.some((item) => item.kind === 'monster')
-              : links.some(
-                  (item) => item.kind === target.kind && item.id === target.id,
-                );
-          if (!available)
-            throw new Error('Tato část setkání už není dostupná.');
-        }
-        setEditorLevel(alert.levelId);
-        setGame((previous) =>
-          !previous || data.revision >= previous.revision ? data : previous,
-        );
-        switch (target?.kind) {
-          case 'challenge':
-            setChallengeId(target.id);
-            setChallengeNoteId(undefined);
-            setModal('challenges');
-            break;
-          case 'loot':
-            setLootId(target.id);
-            setLootNoteId(undefined);
-            setModal('loot');
-            break;
-          case 'monster':
-            setSelectedMonster(target.id);
-            setModal('monsters');
-            break;
-          case 'combat':
-            setModal('initiative');
-            break;
-          default:
-            setNoteSnapshot(note);
-            setNoteOpenKey((key) => key + 1);
-            setNoteLevelName(alert.levelName);
-            setNoteAnchor({ levelId: alert.levelId, x: note.x, y: note.y });
-            setNotePublic(false);
-            setModal('map-note');
-        }
-        if (!target) opened();
-      } catch (error) {
-        setError(
-          error instanceof Error
-            ? error.message
-            : 'Přípravu se nepodařilo otevřít.',
-        );
-      } finally {
-        setOpeningNote(false);
-      }
-    };
-    if (dialog.current) dialog.current.run(() => void action());
-    else void action();
-  }
   async function reloadEquipment() {
-    const current = sessionCurrent.current;
-    if (!current) return false;
+    const isCurrent = () => sessionCurrent.current === scope;
+    if (!session || !isCurrent() || !isCurrentView(view)) return false;
     setBusy(true);
     setError('');
     try {
-      const { response, data } = await requestGame(current, editorLevel);
+      const { response, data } = await requestGame(session, editorLevel);
+      if (!isCurrent() || !isCurrentView(view)) return false;
       if (!response.ok)
         throw new Error(data.error || 'Výbavu se nepodařilo načíst.');
-      if (!sameSession(sessionCurrent.current, current)) return false;
-      setGame((previous) =>
-        !previous || data.revision >= previous.revision ? data : previous,
-      );
+      acceptGame(view, data);
       return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Výbavu se nepodařilo načíst.');
+      if (isCurrent() && isCurrentView(view)) {
+        setError(
+          e instanceof Error ? e.message : 'Výbavu se nepodařilo načíst.',
+        );
+      }
       return false;
     } finally {
-      setBusy(false);
+      if (isCurrent()) setBusy(false);
     }
   }
   function leave() {
-    sessionCurrent.current = null;
-    setBusy(false);
-    setRecapFocus(undefined);
-    setNoteSnapshot(undefined);
-    localStorage.removeItem(sessionStorageKey);
-    setSession(null);
-    setGame(null);
-    setRecoveryCode('');
-    setModal('');
-    setConnectionError('');
+    if (sessionCurrent.current === scope) changeSession(null);
   }
   async function copy() {
+    if (!session || sessionCurrent.current !== scope) return;
     try {
       await navigator.clipboard.writeText(
-        `${location.origin}/?room=${session?.room}`,
+        `${location.origin}/?room=${session.room}`,
       );
+      if (sessionCurrent.current !== scope) return;
       setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+      setTimeout(() => {
+        if (sessionCurrent.current === scope) setCopied(false);
+      }, 2500);
     } catch {
-      setError('Odkaz nelze zkopírovat. Kód místnosti: ' + session?.room);
+      if (sessionCurrent.current === scope) {
+        setError('Odkaz nelze zkopírovat. Kód místnosti: ' + session.room);
+      }
     }
   }
   async function exportGame() {
+    if (!session || sessionCurrent.current !== scope) return;
     setError('');
     try {
-      if (!session) return;
       const value = await requestBackup(session);
+      if (sessionCurrent.current !== scope) return;
       downloadText(
         'kampan-zaloha.json',
         JSON.stringify(value),
         'application/json',
       );
     } catch (e) {
-      setError(
-        e instanceof Error ? e.message : 'Zálohu se nepodařilo stáhnout.',
-      );
+      if (sessionCurrent.current === scope) {
+        setError(
+          e instanceof Error ? e.message : 'Zálohu se nepodařilo stáhnout.',
+        );
+      }
     }
   }
 
@@ -484,7 +420,9 @@ export default function Home() {
             setTo={setTo}
             dice={dice}
             setDice={setDice}
-            setVoicePresence={setVoicePresence}
+            setVoicePresence={(presence) => {
+              if (sessionCurrent.current === scope) setVoicePresence(presence);
+            }}
             act={act}
             openLoot={openLoot}
             openChallenges={openChallenges}
@@ -508,11 +446,7 @@ export default function Home() {
               lootNoteId,
               challengeId,
               challengeNoteId,
-              noteAnchor,
-              notePublic,
-              noteOpenKey,
-              mapNote,
-              noteLevelName,
+              ...noteSelection,
               conditionTarget,
               rollSetup,
               selectedMonster,

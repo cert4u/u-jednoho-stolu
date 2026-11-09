@@ -9,6 +9,7 @@ for (const file of [
   'server/admin-catalogs.js',
   'server/admin-catalog-presentation.js',
   'server/admin-catalog-state.js',
+  'server/admin-catalog-editor.js',
   'server/admin-catalog-view.js',
   'server/admin-catalog-api.js',
   'server/admin-catalog-operations.js',
