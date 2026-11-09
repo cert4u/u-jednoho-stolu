@@ -1,5 +1,13 @@
 # Změny
 
+## 1.2.5 — 2026-11-09
+
+- `app/globals.css` je pouze vstup se seznamem importů. Pravidla mapy, stolu a dialogů mají vlastní čitelné soubory a pravidla pro menší obrazovky zůstávají u příslušného UI. Odstraněny styly staré mapy a přepisy, které už v kaskádě neplatily. Kontrola CSS i formatter se vztahují na všechny nové moduly.
+
+- Generátor V2 má oddělené plánování, půdorysy, trasy, hodnocení a sestavení mapy. Stejná verze, semínko a nastavení nadále vracejí stejnou mapu.
+- Node hosting odděluje ověření správce, administrační HTTP, údržbu, klienta updateru a herní proxy. Správa katalogů má samostatný stav, vykreslování, HTTP klienta a operace nad katalogy.
+- Pro přechod z 1.2.4 nejsou nové migrace ani změny konfigurace. [Postup aktualizace](docs/SELF_HOSTING.md#přechod-z-124-na-125).
+
 ## 1.2.4 — 2026-11-09
 
 - Vlastní CSS aplikace i administrace je bez `!important`. Přednost pravidel vyjadřuje kontext ovládacího prvku; nepoužívané přepisy rozměrů mapy a starého tlačítka schodů byly odstraněny. Posouvání obsahu funguje bez viditelných lišt. Kontrola `npm run check:css` je součástí CI.

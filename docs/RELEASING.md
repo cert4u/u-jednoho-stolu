@@ -73,3 +73,7 @@ Mapy v 1.2.3 lze ručně rozšířit na 56 × 40 polí. Generátor ponechává 2
 ## Vydání 1.2.4
 
 Refaktor aplikace a dokončení úklidu CSS nevyžadují proti 1.2.3 migraci, změnu konfigurace ani přestavbu updateru. Release marker uvádí `migrations: false`, `updater: false`, `config: false`. K běžným kontrolám patří `npm run check:css`, posun mapy a dialogů bez viditelných lišt a skrytí administračních prvků podle jejich stavu. [Postup přechodu](SELF_HOSTING.md#přechod-z-123-na-124).
+
+## Vydání 1.2.5
+
+Rozdělení CSS, generátoru V2, hostingu a katalogové administrace nevyžaduje proti 1.2.4 migraci, změnu konfigurace ani přestavbu updateru. Release marker uvádí `migrations: false`, `updater: false`, `config: false`. Před publikací ověř referenční výstupy generátoru, prohlížeč pro PJ i hráče, načtení modulů administrace a CI přesného commitu. [Postup přechodu](SELF_HOSTING.md#přechod-z-124-na-125).

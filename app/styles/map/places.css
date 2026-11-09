@@ -1,0 +1,238 @@
+.map-note-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.map-note-published {
+  background: #f4f0df;
+  border: 1px solid #e0d6b8;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 18px 0;
+  font-size: 12px;
+}
+.map-note-published .map-note-text {
+  font-size: 12px;
+  max-height: none;
+  overflow: visible;
+}
+.map-note-published small {
+  display: block;
+  line-height: 1.7;
+  color: #8c846a;
+}
+.map-note-published button {
+  font-size: 11px;
+  border: 1px solid #d9ceb0;
+  border-radius: 4px;
+  padding: 6px 9px;
+  margin-top: 9px;
+}
+.map-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.map-note-actions button {
+  width: auto;
+  margin: 0;
+}
+.map-note-conflict {
+  font-size: 12px;
+  color: #9b6c43;
+  border-left: 3px solid #b18b57;
+  padding: 8px 12px;
+}
+
+.map-note-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  width: 350px;
+  max-width: calc(100vw - 32px);
+  padding: 18px;
+  border: 1px solid #cfbea0;
+  border-radius: 7px;
+  background: #fcf9ed;
+  box-shadow: 0 8px 28px #4f493b33;
+  color: var(--ink);
+}
+.map-note-toast .eyebrow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 9px;
+  margin-bottom: 10px;
+}
+.map-note-toast > strong {
+  display: block;
+  font-size: 13px;
+}
+.map-note-toast > p {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  line-height: 1.4;
+  margin: 9px 0;
+  overflow-wrap: anywhere;
+}
+.map-note-toast > small {
+  display: block;
+  color: #8a8c78;
+  font-size: 10px;
+}
+.map-note-toast > div {
+  display: flex;
+  gap: 9px;
+  margin-top: 13px;
+  flex-wrap: wrap;
+}
+.map-note-toast > div button {
+  padding: 8px 10px;
+  border: 1px solid #d9d7c5;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.map-note-toast > div button:first-child {
+  background: var(--action);
+  color: var(--action-text);
+}
+.map-note-toast .map-note-toast-close {
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  padding: 4px;
+}
+.map-note-toast-all {
+  font-size: 10px;
+  margin-top: 10px;
+  text-decoration: underline;
+}
+@media (max-width: 480px) {
+  .map-note-toast {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+@media (max-width: 620px) {
+  .map-note-toast {
+    max-height: calc(100dvh - 32px);
+    overflow: auto;
+  }
+}
+.map-room-list {
+  pointer-events: auto;
+  align-self: flex-start;
+  min-width: 230px;
+  max-width: min(360px, 100%);
+  max-height: 40dvh;
+  overflow: auto;
+  background: #fcf9efef;
+  border: 1px solid #d8d5c2;
+  border-radius: 5px;
+  padding: 12px;
+  box-shadow: 0 4px 16px #49433118;
+}
+.map-room-list > strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.map-room-list > div {
+  display: flex;
+  border-top: 1px solid #e8e4d5;
+  gap: 8px;
+  align-items: center;
+}
+.map-room-list button {
+  font-size: 12px;
+  text-align: left;
+  padding: 9px 2px;
+  overflow-wrap: anywhere;
+}
+.map-room-list button:first-child {
+  flex: 1;
+}
+.map-room-list button:last-child {
+  font-size: 10px;
+  color: var(--control-ink);
+}
+.map-room-list p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.map-inspector-modal {
+  max-width: 650px;
+}
+.map-inspection h3 {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  margin: 24px 0 10px;
+}
+.map-inspection p {
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.inspection-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #e3ddcb;
+}
+.inspection-item > button,
+.inspection-link {
+  display: block;
+  text-align: left;
+  color: var(--control-ink);
+  font-size: 14px;
+  padding: 6px 0;
+  overflow-wrap: anywhere;
+}
+.inspection-item small {
+  display: block;
+  font-size: 11px;
+  color: #857e6b;
+}
+.inspection-item p {
+  margin: 6px 0;
+}
+
+.encounter-links {
+  margin-top: 12px;
+  border-top: 1px solid var(--control-border);
+  padding-top: 9px;
+}
+.encounter-links ul {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0 4px;
+  max-height: min(180px, 26dvh);
+  overflow-y: auto;
+}
+.encounter-links li + li {
+  margin-top: 4px;
+}
+.encounter-links li button,
+.encounter-combat {
+  padding: 6px 8px;
+  border: 1px solid var(--control-border);
+  border-radius: 5px;
+  background: var(--control);
+  color: var(--control-ink);
+}
+.encounter-links li button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  text-align: left;
+  width: 100%;
+}
+.encounter-links li button span {
+  overflow-wrap: anywhere;
+}
+.encounter-links li button small {
+  display: block;
+  font-size: 10px;
+}
+.encounter-combat {
+  font-size: 11px;
+}

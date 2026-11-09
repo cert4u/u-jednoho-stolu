@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: ['0.5.3', '1.2.1', '1.2.2']
+        base: ['0.5.3', '1.2.1', '1.2.2', '1.2.4']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
@@ -75,7 +75,9 @@ jobs:
         run: |
           legacy_source=$(mktemp -d)
           trap 'rm -rf "$legacy_source"' EXIT
-          if [ "${{ matrix.base }}" = "1.2.2" ]; then
+          if [ "${{ matrix.base }}" = "1.2.4" ]; then
+            legacy_sha=1c099d79c1bf80894396a84962af5c40c7d6384e
+          elif [ "${{ matrix.base }}" = "1.2.2" ]; then
             legacy_sha=a1eb019c9966e97ea418d78a36a01b779db8b9e6
           elif [ "${{ matrix.base }}" = "1.2.1" ]; then
             legacy_sha=ef59634d1a5f7ff94d76201cc187dea99c73e0c3

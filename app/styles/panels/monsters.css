@@ -1,0 +1,321 @@
+.monster-modal {
+  width: 850px;
+}
+.monster-intro {
+  font-size: 12px;
+  color: #707b65;
+  line-height: 1.7;
+  margin: -8px 0 20px;
+}
+.monster-layout {
+  display: grid;
+  grid-template-columns: 235px minmax(0, 1fr);
+  gap: 23px;
+}
+.monster-list {
+  border-right: 1px solid var(--line);
+  padding-right: 18px;
+  max-height: 65vh;
+  overflow: auto;
+}
+.modal .monster-list {
+  max-height: none;
+  overflow: visible;
+}
+.add-monster {
+  width: 100%;
+  padding: 11px;
+  background: var(--control);
+  border: 1px solid #d6dec6;
+  border-radius: 5px;
+  font-size: 11px;
+  color: var(--control-ink);
+  margin-bottom: 12px;
+  border-color: var(--control-border);
+}
+.monster-list-item {
+  display: flex;
+  width: 100%;
+  gap: 9px;
+  justify-content: flex-start;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 10px 5px;
+  margin-bottom: 4px;
+}
+.monster-list-item.active {
+  background: #f2eadc;
+  border-color: #dfd1b6;
+}
+.monster-number {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 27px;
+  height: 27px;
+  border-radius: 5px;
+  background: #9d6250;
+  color: #fff9eb;
+  font-size: 11px;
+}
+.monster-list-item > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+.monster-list-item strong {
+  font-size: 11px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.monster-list-item small {
+  font-size: 8px;
+  color: #a19f89;
+  line-height: 1.5;
+}
+.monster-list-item > svg {
+  color: #a69c81;
+  flex-shrink: 0;
+}
+.monster-empty {
+  text-align: center;
+  padding: 25px 10px;
+  color: #a5aa93;
+}
+.monster-empty > svg {
+  margin: 0 auto 17px;
+  color: #b1ad94;
+}
+.monster-empty h3 {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+.monster-empty p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #a0a88d;
+}
+.monster-heading {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+.monster-heading h3 {
+  font-size: 20px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.monster-heading > span {
+  font-size: 11px;
+  color: #a18c65;
+  white-space: nowrap;
+}
+.monster-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 10px;
+  color: #a1957a;
+  margin: 10px 0 16px;
+}
+.monster-status b {
+  font-weight: 500;
+  color: #a66c58;
+}
+.monster-place {
+  width: 100%;
+  background: #eee7d3;
+  border: 1px solid #dfd2ae;
+  border-radius: 5px;
+  color: #917b4d;
+  padding: 11px;
+  font-size: 11px;
+  justify-content: flex-start;
+}
+.monster-damage {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  margin: 14px 0;
+  padding: 12px;
+  background: #f2f0e6;
+  border-radius: 6px;
+}
+.monster-damage label {
+  margin: 0;
+  flex: 1;
+  min-width: 70px;
+}
+.monster-damage input {
+  padding: 8px;
+}
+.monster-damage > button {
+  font-size: 10px;
+  padding: 9px;
+  background: #e8dfcc;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.monster-checkbox {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  line-height: 1.6;
+  color: #8b947a;
+}
+.monster-checkbox input {
+  width: 15px;
+  flex-shrink: 0;
+  margin: 0;
+}
+.monster-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 17px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+.monster-actions > button {
+  font-size: 9px;
+  border: 1px solid #dfdfce;
+  border-radius: 4px;
+  padding: 8px;
+  background: #f7f7ee;
+  border-color: var(--control-border);
+  color: var(--control-ink);
+}
+.archived-monsters {
+  font-size: 10px;
+  color: #a29c84;
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 12px;
+}
+.archived-monsters > summary {
+  cursor: pointer;
+}
+.archived-monsters > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  padding: 9px 0;
+  border-bottom: 1px solid #e7e5d9;
+}
+.archived-monsters button {
+  padding: 5px;
+  color: var(--control-ink);
+}
+.monster-editor .primary {
+  margin-top: 16px;
+}
+@media (max-width: 650px) {
+  .monster-layout {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .monster-list {
+    max-height: 210px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 15px;
+  }
+  .monster-heading h3 {
+    font-size: 17px;
+  }
+  .monster-damage {
+    gap: 6px;
+    padding: 9px;
+  }
+  .monster-damage > button {
+    font-size: 9px;
+    padding: 9px 6px;
+  }
+}
+.monster-list-item small {
+  font-size: 10px;
+  color: #757d68;
+}
+.monster-damage {
+  flex-wrap: wrap;
+}
+@media (min-width: 651px) {
+  .modal .monster-list {
+    max-height: 50dvh;
+    overflow: auto;
+  }
+}
+
+.open-bestiary {
+  margin-top: 8px;
+}
+.open-bestiary[aria-pressed='true'] {
+  border-color: var(--ink);
+}
+.bestiary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+}
+.bestiary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.bestiary-card h4,
+.bestiary-card p {
+  margin: 0;
+}
+.bestiary-card p,
+.bestiary-card small,
+.bestiary-status {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.bestiary-card small {
+  margin-top: auto;
+}
+.bestiary-card button {
+  align-self: flex-start;
+}
+.bestiary-portrait {
+  display: block;
+  width: 100%;
+  height: 138px;
+  object-fit: contain;
+  border-radius: 5px;
+  background: #f7f0e4;
+}
+.bestiary-instance .bestiary-portrait {
+  max-width: 180px;
+  margin: 0 0 12px;
+}
+
+.bestiary-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr));
+  gap: 12px;
+}
+.bestiary-filters label {
+  min-width: 0;
+}
+.bestiary-gm-hint {
+  background: var(--control);
+  border-radius: 4px;
+  padding: 7px 8px;
+}
+.bestiary-gm-hint strong {
+  display: block;
+}

@@ -1,0 +1,11 @@
+.party,
+.messages,
+.dialog-scroll {
+  overscroll-behavior: contain;
+}
+.party:focus-visible,
+.messages:focus-visible,
+.dialog-scroll:focus-visible {
+  outline: 2px solid #8c9c78;
+  outline-offset: -3px;
+}

@@ -1,0 +1,337 @@
+.under-map {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 8px;
+  color: #9ba38e;
+  margin-top: 12px;
+}
+.under-map span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+@media (max-width: 620px) {
+  .under-map {
+    font-size: 7px;
+  }
+}
+.paper-editor {
+  min-width: 0;
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  isolation: isolate;
+}
+.paper-frame {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  overflow: hidden;
+  max-width: none;
+  min-width: 0;
+}
+.paper-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e1dfcf;
+  color: #929380;
+  font-size: 8px;
+  letter-spacing: 1px;
+  position: absolute;
+  left: 20px;
+  bottom: 63px;
+  z-index: 5;
+  width: auto;
+  max-width: calc(100% - 40px);
+  padding: 0;
+  gap: 15px;
+  border: 0;
+  background: none;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.paper-caption > span {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.paper-caption small {
+  font-size: 8px;
+  letter-spacing: 0;
+  color: #a1a28c;
+}
+.graph-paper {
+  display: block;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+  position: absolute;
+  z-index: 1;
+  max-width: none;
+}
+.graph-paper:focus-visible {
+  outline-offset: -3px;
+  outline: none;
+}
+.paper-ruler {
+  font:
+    8px 'DM Sans',
+    sans-serif;
+  fill: #a3a88f;
+}
+.keyboard-cell {
+  display: none;
+}
+.graph-paper:focus-visible .keyboard-cell {
+  display: block;
+}
+.paper-help {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 9px;
+  line-height: 1.7;
+  position: absolute;
+  bottom: 31px;
+  left: 20px;
+  right: 20px;
+  z-index: 5;
+  margin: 0;
+  pointer-events: none;
+  color: #6e765e;
+}
+.paper-help > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  font-size: 8px;
+}
+.map-retry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  background: #f5e6d6;
+  padding: 12px;
+  color: #966244;
+  font-size: 11px;
+}
+.map-retry button {
+  border: 1px solid #d8bc9c;
+  padding: 6px;
+  border-radius: 4px;
+}
+@media (max-width: 1150px) {
+  .paper-help {
+    flex-direction: column;
+    gap: 3px;
+  }
+  .paper-caption small {
+    max-width: 130px;
+    text-align: right;
+  }
+}
+/* The middle of the table is a continuous sheet; panels sit above its edges. */
+.paper-viewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  max-width: none;
+  overflow: auto;
+  background: #f9f4e5;
+  overscroll-behavior: contain;
+  min-width: 0;
+}
+.paper-world {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+  background-color: #f9f4e5;
+  background-image:
+    linear-gradient(#8ca5b22b 1px, transparent 1px),
+    linear-gradient(90deg, #8ca5b22b 1px, transparent 1px);
+}
+.paper-world::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.22' filter='url(%23g)'/%3E%3C/svg%3E");
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+}
+.paper-editor::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      #eeeadd80,
+      transparent 65px,
+      transparent calc(100% - 58px),
+      #eeeadd80
+    ),
+    linear-gradient(
+      180deg,
+      #eeeadd55,
+      transparent 42px,
+      transparent calc(100% - 55px),
+      #eeeadd75
+    );
+  box-shadow:
+    inset 12px 0 22px -24px #65573988,
+    inset -12px 0 22px -24px #65573988;
+}
+.paper-editor > .under-map {
+  position: absolute;
+  bottom: 12px;
+  left: 20px;
+  right: 20px;
+  z-index: 5;
+  margin: 0;
+  color: #9ba087;
+  pointer-events: none;
+}
+.paper-editor > .map-retry {
+  position: absolute;
+  bottom: 90px;
+  left: 20px;
+  right: 20px;
+  z-index: 15;
+  border-radius: 5px;
+  box-shadow: 0 4px 14px #5c422519;
+}
+@media (max-width: 850px) {
+  .paper-help {
+    left: 12px;
+    right: 12px;
+  }
+  .paper-editor > .under-map {
+    left: 12px;
+    right: 12px;
+    font-size: 7px;
+  }
+  .paper-caption {
+    left: 12px;
+    bottom: 80px;
+  }
+}
+@media (max-width: 620px) {
+  .paper-caption {
+    display: none;
+  }
+  .paper-help {
+    bottom: 34px;
+  }
+  .paper-help > span:last-child {
+    font-size: 7px;
+    white-space: normal;
+  }
+  .paper-editor > .under-map {
+    bottom: 8px;
+    font-size: 6px;
+    gap: 7px;
+  }
+}
+/* Worn paper dissolves unevenly into the table beneath the panels. */
+.paper-worn-edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.table-keepsakes {
+  position: absolute;
+  right: 25px;
+  bottom: 67px;
+  width: 285px;
+  height: auto;
+  z-index: 6;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.55;
+  mask-image: radial-gradient(
+    ellipse at 50% 55%,
+    #000 18%,
+    #000b 62%,
+    transparent 100%
+  );
+}
+.paper-help > span,
+.paper-editor > .under-map > span {
+  max-width: calc(100% - 10px);
+}
+@media (max-width: 1100px) {
+  .table-keepsakes {
+    width: 220px;
+    right: 12px;
+    bottom: 84px;
+  }
+}
+@media (max-width: 620px) {
+  .table-keepsakes {
+    width: 155px;
+    right: 10px;
+    bottom: 92px;
+    opacity: 0.42;
+  }
+  .paper-worn-edges {
+    opacity: 0.65;
+  }
+}
+@media (max-width: 620px) {
+  .paper-help > span:last-child {
+    font-size: 9px;
+  }
+  .paper-help > span {
+    white-space: normal;
+  }
+}
+@media (max-width: 850px) {
+  .paper-help,
+  .paper-editor > .under-map {
+    display: none;
+  }
+}
+
+.map-room-name {
+  font:
+    11px Georgia,
+    serif;
+  fill: #595441;
+  paint-order: stroke;
+  stroke: #faf7e9;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.paper-editor[data-map-style='hand-drawn'] .paper-world {
+  background-color: #f6efdd;
+  background-image:
+    linear-gradient(#887a5e13 1px, transparent 1px),
+    linear-gradient(90deg, #887a5e13 1px, transparent 1px);
+}
+.paper-editor[data-map-style='hand-drawn'] .paper-ruler {
+  fill: #98876a;
+}
+.paper-editor[data-map-style='hand-drawn'] .map-room-name {
+  fill: #64543e;
+}
+.paper-viewport:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: -3px;
+}

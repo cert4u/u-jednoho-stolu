@@ -56,3 +56,5 @@ Vydání **1.2.2** zahrnuje ochrany záloh, kapacitní limity, úsporný polling
 Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [architektura pro přispěvatele](DEVELOPMENT.md) a [přechod z 1.2.2](SELF_HOSTING.md#přechod-z-122-na-123).
 
 Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-úklid-css) · [přechod z 1.2.3](SELF_HOSTING.md#přechod-z-123-na-124).
+
+Vydání **1.2.5**: [rozdělení CSS](DEVELOPMENT.md#postupný-úklid-css), [generátor, hosting a správa katalogů](DEVELOPMENT.md#generátor-v2-node-hosting-a-katalogová-administrace) a [přechod z 1.2.4](SELF_HOSTING.md#přechod-z-124-na-125).

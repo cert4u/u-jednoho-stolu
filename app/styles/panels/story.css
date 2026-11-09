@@ -1,0 +1,106 @@
+.recap-location {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px;
+  margin: 12px 0;
+  background: var(--control);
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  color: var(--control-ink);
+}
+.recap-location span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.recap-location button {
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  padding: 6px 9px;
+  background: var(--paper);
+}
+.recap-reading p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.story-phase {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 12px 0;
+  background: #fbf8ee;
+}
+.story-phase > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--control-ink);
+}
+.story-phase > summary:before {
+  content: '▸';
+  font-size: 12px;
+}
+.story-phase[open] > summary:before {
+  content: '▾';
+}
+.story-phase > summary > span {
+  flex: 1;
+}
+.story-phase > summary small {
+  max-width: 45%;
+  font-size: 11px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.story-phase > .sheet-hint {
+  margin: 12px 0;
+}
+.story-phase fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.story-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  margin: 10px 0;
+}
+.story-check input {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin: 1px 0;
+}
+.story-link-picker {
+  margin: 14px 0;
+  font-size: 12px;
+}
+.story-link-picker > summary {
+  cursor: pointer;
+}
+.story-place-options {
+  max-height: 220px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+}
+.story-place-links .secondary {
+  font-size: 12px;
+  text-align: left;
+  overflow-wrap: anywhere;
+  margin: 6px 0;
+}
+
+.story-check input {
+  accent-color: var(--action);
+}

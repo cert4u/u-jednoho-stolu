@@ -1,0 +1,129 @@
+.character-powers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 12px;
+  background: #f2f3e8;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 12px;
+}
+.character-powers .secondary {
+  margin: 0;
+  font-size: 12px;
+}
+.mana-card {
+  background: #f3f4e9;
+  border: 1px solid #dce1cf;
+  border-radius: 6px;
+  padding: 14px;
+  margin: 18px 0;
+}
+.mana-card > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.mana-card > div > span {
+  font-size: 22px;
+  font-family: Georgia, serif;
+  color: var(--green);
+}
+.mana-card > .secondary {
+  font-size: 11px;
+  margin-top: 12px;
+}
+.mana-editor {
+  margin-top: 16px;
+}
+.mana-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.power-list {
+  max-height: none;
+  overflow: visible;
+  margin: 20px 0;
+}
+.power-card {
+  background: #fbfaf3;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.power-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  overflow-wrap: anywhere;
+}
+.power-title > span {
+  font-size: 11px;
+  color: #80876f;
+  flex-shrink: 0;
+}
+.power-card details {
+  font-size: 12px;
+  margin-top: 8px;
+}
+.power-card details > summary {
+  cursor: pointer;
+  color: #6b7a5b;
+}
+.power-card details p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.power-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.power-actions button {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 7px 9px;
+}
+.power-actions .power-use {
+  background: var(--action);
+  color: var(--action-text);
+}
+.power-shortage {
+  display: block;
+  color: #99764f;
+  font-size: 10px;
+  margin-top: 6px;
+}
+.power-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .mana-fields {
+    grid-template-columns: 1fr;
+  }
+  .power-title {
+    align-items: start;
+    flex-direction: column;
+    gap: 3px;
+  }
+}
+.character-powers {
+  margin: 14px 0;
+  gap: 10px;
+}
+.character-powers .secondary {
+  width: auto;
+  padding: 9px 12px;
+}

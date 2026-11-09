@@ -1,0 +1,160 @@
+.character-modal {
+  width: 650px;
+}
+.identity-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 90px;
+  gap: 12px;
+}
+.identity-fields input {
+  font-size: 12px;
+}
+.sheet-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 19px;
+  margin-top: 14px;
+  gap: 12px;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 1.5px;
+  color: #707b65;
+}
+.sheet-section-title small {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.ability-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 13px;
+}
+.ability-grid label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 6px;
+  background: #f0f2e7;
+  border: 1px solid #dfe4d3;
+  border-radius: 8px;
+  margin: 0;
+  font-size: 11px;
+}
+.ability-short {
+  color: #96a183;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+}
+.ability-grid input {
+  font-family: 'Lora', serif;
+  font-size: 26px;
+  text-align: center;
+  padding: 9px 3px;
+  margin-top: 3px;
+  background: #fcfcf6;
+}
+@media (max-width: 480px) {
+  .identity-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  .identity-fields label:last-child {
+    grid-column: 1/-1;
+    max-width: 100px;
+  }
+  .ability-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .character-modal {
+    padding: 23px 18px;
+  }
+}
+.character-modal {
+  width: 760px;
+}
+.possessions {
+  border: 1px solid #ddd8c0;
+  border-radius: 6px;
+  background: #f6f2e4;
+  padding: 14px;
+  margin: 18px 0;
+}
+.possessions h3 {
+  font-size: 17px;
+}
+.possessions ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+.possessions li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 6px 0;
+  border-top: 1px solid #e4dfcc;
+}
+.possessions li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.possessions li strong {
+  white-space: nowrap;
+}
+
+.character-sheet-illustrated {
+  display: grid;
+  gap: 24px;
+}
+.character-sheet-fields {
+  min-width: 0;
+}
+.character-sheet-artwork {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+.character-sheet-artwork img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(64dvh, 510px);
+  object-fit: contain;
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+}
+@media (min-width: 900px) {
+  .character-modal:has(.character-sheet-illustrated) {
+    width: 1060px;
+  }
+  .character-sheet-illustrated {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 32%);
+    align-items: start;
+  }
+  .character-sheet-artwork {
+    position: sticky;
+    top: 0;
+  }
+}
+
+.identity-fields .profession-field {
+  min-width: 0;
+}
+.identity-fields .profession-field label {
+  grid-column: auto;
+  max-width: none;
+}
+.profession-field select {
+  min-width: 0;
+  font-size: 12px;
+}
+.profession-field input:not([type='hidden']) {
+  margin-top: 5px;
+}

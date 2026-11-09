@@ -1,0 +1,89 @@
+/* Rolls stay close to the sheets and their outcomes stay at the table. */
+.combat-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.combat-fields label {
+  font-size: 11px;
+}
+.sheet-rolls {
+  background: #f1f0e4;
+  border: 1px solid #e2dfce;
+  border-radius: 6px;
+  margin: 14px 0;
+  padding: 11px;
+}
+.sheet-rolls > span {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #9a9e87;
+}
+.sheet-rolls > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 11px;
+}
+.sheet-rolls button,
+.roll-followup,
+.monster-roll {
+  background: var(--control);
+  border: 1px solid #d4dec3;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 10px;
+  color: var(--control-ink);
+  gap: 6px;
+  border-color: var(--control-border);
+}
+.mechanics-modes {
+  display: flex;
+  gap: 6px;
+  margin: 18px 0;
+  padding: 4px;
+  background: #f0f0e5;
+  border-radius: 5px;
+}
+.mechanics-modes > button {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  color: var(--control-ink);
+}
+.mechanics-modes > button.active {
+  background: var(--control-selected);
+  color: var(--control-ink);
+  box-shadow: 0 1px 3px #6544201a;
+}
+.mechanics-context {
+  font-size: 12px;
+  line-height: 1.9;
+  padding: 14px;
+  background: #f0eddf;
+  border: 1px solid #e2dcc8;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  overflow-wrap: anywhere;
+}
+.roll-followup {
+  margin-top: 11px;
+  font-size: 10px;
+}
+.roll-confirmed {
+  display: block;
+  color: #91a17d;
+  font-size: 9px;
+  margin-top: 8px;
+}
+.monster-roll {
+  margin-bottom: 12px;
+  width: 100%;
+}
+@media (max-width: 620px) {
+  .combat-fields {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

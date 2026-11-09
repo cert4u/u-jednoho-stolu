@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
-import * as presentation from '../server/admin-catalog-presentation.js';
 // Execute the actual administrator controller against a minimal DOM. Browser smoke remains separate.
 const elements = new Map();
 class Element {
@@ -129,34 +128,41 @@ const context = vm.createContext({
   },
 });
 // Transpile only ESM syntax; run the actual controller and imported production helpers.
-context.exports = {};
-context.require = (specifier) => {
-  assert.equal(specifier, './admin-catalog-presentation.js');
-  return presentation;
-};
-vm.runInContext(
-  ts.transpileModule(
-    readFileSync(
-      process.env.STUL_ADMIN_SOURCE || 'server/admin-catalogs.js',
-      'utf8',
-    ),
-    {
-      compilerOptions: {
-        module: ts.ModuleKind.CommonJS,
-        target: ts.ScriptTarget.ES2022,
-      },
+const compile = (source) =>
+  ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
     },
-  ).outputText,
+  }).outputText;
+const modules = new Map();
+context.require = function load(specifier) {
+  assert.match(specifier, /^\.\/admin-catalog-[a-z-]+\.js$/);
+  if (modules.has(specifier)) return modules.get(specifier);
+  const exports = {};
+  modules.set(specifier, exports);
+  const code = compile(
+    readFileSync(new URL('../server/' + specifier, import.meta.url), 'utf8'),
+  );
+  vm.runInContext(`(function (exports, require) {${code}\n})`, context)(
+    exports,
+    load,
+  );
+  return exports;
+};
+context.exports = {};
+vm.runInContext(
+  compile(readFileSync('server/admin-catalogs.js', 'utf8')),
   context,
 );
 const run = (code) => vm.runInContext(code, context);
 await run("open('local-test')");
-assert.equal(run('editing.type'), 'bestiary');
+assert.equal(run('state.editing.type'), 'bestiary');
 el('catalog-type').value = 'scenery';
 await el('catalog-type').onchange();
 await new Promise((r) => setImmediate(r));
 assert.equal(
-  run('editing.type'),
+  run('state.editing.type'),
   'scenery',
   'category must select matching editor',
 );
@@ -167,16 +173,16 @@ el('catalog-type').value = 'bestiary';
 await el('catalog-type').onchange();
 await new Promise((r) => setImmediate(r));
 assert.equal(el('catalog-type').value, 'scenery');
-assert.equal(run('editing.type'), 'scenery');
+assert.equal(run('state.editing.type'), 'scenery');
 assert(el('catalog-json').value.endsWith(' '));
 confirmations.push(true);
 el('catalog-type').value = 'bestiary';
 await el('catalog-type').onchange();
 await new Promise((r) => setImmediate(r));
-assert.equal(run('editing.type'), 'bestiary');
+assert.equal(run('state.editing.type'), 'bestiary');
 el('catalog-json').value += ' ';
 await el('catalog-next').onclick();
-assert.equal(run('catalogPage'), 1);
+assert.equal(run('state.catalogPage'), 1);
 assert(el('catalog-json').value.endsWith(' '));
 confirmations.push(false);
 el('catalog-editor-cancel').onclick();
@@ -192,20 +198,20 @@ const before = requests;
 const first = run('perform(reload)');
 await run('perform(reload)');
 assert.equal(requests, before + 1);
-assert.equal(run('busy'), true);
+assert.equal(run('state.busy'), true);
 el('catalog-type').value = 'scenery';
 el('catalog-type').onchange();
 assert.equal(el('catalog-type').value, 'bestiary');
 release();
 await first;
 slow = undefined;
-assert.equal(run('busy'), false);
+assert.equal(run('state.busy'), false);
 run('clearEditor()');
 run(
   `edit('bestiary',{id:'new-test',name:'New',description:'Draft',maxHp:2,combat:{attack:0,defense:0,damage:0}})`,
 );
 assert.equal(run('Boolean(isDirty())'), true);
-run('valid=true');
+run('state.valid=true');
 el('catalog-editor').onsubmit({ preventDefault() {} });
 await new Promise((r) => setImmediate(r));
 assert.equal(run('Boolean(isDirty())'), false);
@@ -218,7 +224,7 @@ await new Promise((r) => setImmediate(r));
 assert.equal(el('catalog-preview').hidden, false);
 assert.equal(el('catalog-install').textContent, 'Potvrdit instalaci');
 run(
-  `edit('bestiary',selected.bundle.entries.bestiary[0],selected.bundle.entries.bestiary[0].id)`,
+  `edit('bestiary',state.selected.bundle.entries.bestiary[0],state.selected.bundle.entries.bestiary[0].id)`,
 );
 el('catalog-json').value += ' ';
 confirmations.push(false);
@@ -233,7 +239,7 @@ await new Promise((r) => setImmediate(r));
 assert.equal(installs, 1);
 assert.equal(el('catalog-preview').hidden, true);
 run(
-  `showPreview({token:'update-token',manifest:{...selected.bundle.manifest,dependencies:[],version:'1.1.0'},currentVersion:'1.0.0',digest:'b'.repeat(64),counts:{bestiary:1},diff:{added:0,changed:1,removed:0}})`,
+  `showPreview({token:'update-token',manifest:{...state.selected.bundle.manifest,dependencies:[],version:'1.1.0'},currentVersion:'1.0.0',digest:'b'.repeat(64),counts:{bestiary:1},diff:{added:0,changed:1,removed:0}})`,
 );
 assert.equal(el('catalog-install').textContent, 'Aktualizovat katalog');
 selected.kind = 'community';
@@ -248,8 +254,8 @@ listeners.get('stul-admin-logout')();
 finish();
 await abandoned;
 slow = undefined;
-assert.equal(run('selected'), undefined);
-assert.equal(run('busy'), false);
+assert.equal(run('state.selected'), undefined);
+assert.equal(run('state.busy'), false);
 assert.equal(el('catalog-detail').hidden, true);
 console.log(
   'PASS: actual admin controller category/editor consistency, unsaved cancel/confirm, paging, cancel editing and double click during slow fetch.',
