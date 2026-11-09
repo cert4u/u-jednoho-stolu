@@ -1,15 +1,13 @@
 'use client';
 
-import { useCallback, useState, type RefObject } from 'react';
+import { useState, type RefObject } from 'react';
 import type { GameView } from '../../app/api/game/view';
 import type { MapNoteAlertView } from '../../lib/map-note-alerts';
 import type { MapNoteView, NoteAnchor } from '../../lib/map-notes';
 import type { DialogHandle } from '../guarded-dialog';
 import type { EncounterTarget } from '../map-note-notifications';
 import { requestGame } from './game-client';
-import type { ViewRequest } from './use-game-view';
-import type { SessionScope } from './types';
-import type { usePanelNavigation } from './use-panel-navigation';
+import type { Session, ViewRequest } from './types';
 
 type Options = {
   game: GameView | null;
@@ -18,19 +16,12 @@ type Options = {
   acceptGame: (view: ViewRequest, game: GameView) => void;
   setEditorLevel: (levelId: string) => ViewRequest;
   setError: (message: string) => void;
-  scope: SessionScope;
-  sessionCurrent: RefObject<SessionScope>;
+  session: Session;
+  isCurrentSession: () => boolean;
   dialog: RefObject<DialogHandle | null>;
-  navigation: Pick<
-    ReturnType<typeof usePanelNavigation>,
-    | 'modal'
-    | 'setModal'
-    | 'setChallengeId'
-    | 'setChallengeNoteId'
-    | 'setLootId'
-    | 'setLootNoteId'
-    | 'setSelectedMonster'
-  >;
+  noteDialogOpen: boolean;
+  showNote: () => void;
+  showEncounter: (target: EncounterTarget) => void;
 };
 
 export function useMapNoteNavigation({
@@ -40,20 +31,13 @@ export function useMapNoteNavigation({
   acceptGame,
   setEditorLevel,
   setError,
-  scope,
-  sessionCurrent,
+  session,
+  isCurrentSession,
   dialog,
-  navigation,
+  noteDialogOpen,
+  showNote,
+  showEncounter,
 }: Options) {
-  const {
-    modal,
-    setModal,
-    setChallengeId,
-    setChallengeNoteId,
-    setLootId,
-    setLootNoteId,
-    setSelectedMonster,
-  } = navigation;
   const [noteSnapshot, setNoteSnapshot] = useState<MapNoteView | undefined>(),
     [noteOpenKey, setNoteOpenKey] = useState(0),
     [noteLevelName, setNoteLevelName] = useState('Přízemí'),
@@ -68,20 +52,20 @@ export function useMapNoteNavigation({
             n.x === noteAnchor.x &&
             n.y === noteAnchor.y,
         )
-      : modal === 'map-note'
+      : noteDialogOpen
         ? noteSnapshot
         : undefined;
 
   function openMapNote(anchor: NoteAnchor, publicView: boolean) {
     const action = () => {
-      if (sessionCurrent.current !== scope) return;
+      if (!isCurrentSession()) return;
       setError('');
       setNoteSnapshot(undefined);
       setNoteOpenKey((k) => k + 1);
       setNoteLevelName(game?.exploration?.levelName || 'Přízemí');
       setNoteAnchor(anchor);
       setNotePublic(publicView);
-      setModal('map-note');
+      showNote();
     };
     if (dialog.current) dialog.current.run(action);
     else action();
@@ -93,17 +77,13 @@ export function useMapNoteNavigation({
     opened: () => void,
     target?: EncounterTarget,
   ) {
-    const isCurrent = () =>
-      sessionCurrent.current === scope && isCurrentView(view);
+    const isCurrent = () => isCurrentSession() && isCurrentView(view);
     const action = async () => {
-      if (!scope.session || !isCurrent()) return;
+      if (!isCurrent()) return;
       setOpeningNote(true);
       setError('');
       try {
-        const { response, data } = await requestGame(
-          scope.session,
-          alert.levelId,
-        );
+        const { response, data } = await requestGame(session, alert.levelId);
         if (!isCurrent()) return;
         if (!response.ok)
           throw new Error(data.error || 'Přípravu se nepodařilo načíst.');
@@ -123,33 +103,16 @@ export function useMapNoteNavigation({
             throw new Error('Tato část setkání už není dostupná.');
         }
         acceptGame(setEditorLevel(alert.levelId), data);
-        switch (target?.kind) {
-          case 'challenge':
-            setChallengeId(target.id);
-            setChallengeNoteId(undefined);
-            setModal('challenges');
-            break;
-          case 'loot':
-            setLootId(target.id);
-            setLootNoteId(undefined);
-            setModal('loot');
-            break;
-          case 'monster':
-            setSelectedMonster(target.id);
-            setModal('monsters');
-            break;
-          case 'combat':
-            setModal('initiative');
-            break;
-          default:
-            setNoteSnapshot(note);
-            setNoteOpenKey((key) => key + 1);
-            setNoteLevelName(alert.levelName);
-            setNoteAnchor({ levelId: alert.levelId, x: note.x, y: note.y });
-            setNotePublic(false);
-            setModal('map-note');
+        if (target) showEncounter(target);
+        else {
+          setNoteSnapshot(note);
+          setNoteOpenKey((key) => key + 1);
+          setNoteLevelName(alert.levelName);
+          setNoteAnchor({ levelId: alert.levelId, x: note.x, y: note.y });
+          setNotePublic(false);
+          showNote();
+          opened();
         }
-        if (!target) opened();
       } catch (error) {
         if (!isCurrent()) return;
         setError(
@@ -158,27 +121,17 @@ export function useMapNoteNavigation({
             : 'Přípravu se nepodařilo otevřít.',
         );
       } finally {
-        if (sessionCurrent.current === scope) setOpeningNote(false);
+        if (isCurrentSession()) setOpeningNote(false);
       }
     };
     if (dialog.current) dialog.current.run(() => void action());
     else void action();
   }
 
-  const resetNotes = useCallback(() => {
-    setNoteSnapshot(undefined);
-    setNoteOpenKey(0);
-    setNoteLevelName('Přízemí');
-    setOpeningNote(false);
-    setNoteAnchor(null);
-    setNotePublic(false);
-  }, []);
-
   return {
     selection: { noteAnchor, notePublic, noteOpenKey, mapNote, noteLevelName },
     openingNote,
     openMapNote,
     openNoteAlert,
-    resetNotes,
   };
 }

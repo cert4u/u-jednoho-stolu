@@ -31,6 +31,7 @@ await import('./test-hardening-unit.mjs');
 
 await import('./test-game-client.mjs');
 
+await import('./check-table-boundaries.mjs');
 await import('./test-table-session.mjs');
 
 await import('./test-action-dispatch.mjs');

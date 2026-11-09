@@ -1,6 +1,10 @@
 [
   ".prettierrc.json",
   "app/page.tsx",
+  "components/game-table/table-workspace.tsx",
+  "components/game-table/chat-panel.tsx",
+  "components/game-table/use-table-session.ts",
+  "scripts/check-table-boundaries.mjs",
   "components/dungeon-map.tsx",
   "components/dungeon-map/use-map-viewport.ts",
   "components/dungeon-map/use-map-scenery.ts",

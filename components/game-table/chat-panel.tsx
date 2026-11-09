@@ -1,23 +1,25 @@
 'use client';
-import { useEffect,useRef } from 'react';
+import { useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
 import {
-ArrowRight,
-ChevronDown,
-Dices,
-Flame,
-MessageSquare,
-Send,
-Shield,
-Star,
-Users,
+  ArrowRight,
+  ChevronDown,
+  Dices,
+  Flame,
+  MessageSquare,
+  Send,
+  Shield,
+  Star,
+  Users,
 } from 'lucide-react';
-import VoicePanel,{ type VoicePresence } from '../voice-panel';
+import VoicePanel, { type VoicePresence } from '../voice-panel';
 import { ChallengeCards } from '../challenges-panel';
 import PendingActions from '../pending-actions';
 import { SituationCard } from '../room-situation';
 import type { RollSetup } from '../mechanics-panel';
-import type { GameView,MemberView } from '../../app/api/game/view';
-import type { GameAction,Session,ChatTab } from './types';
+import type { GameView, MemberView } from '../../app/api/game/view';
+import type { GameAction, Session, ChatTab } from './types';
+type ChatDraft = { text: string };
+
 type Props = {
   game: GameView;
   me: MemberView;
@@ -27,8 +29,8 @@ type Props = {
   tab: ChatTab;
   setTab: (tab: ChatTab) => void;
   pendingSituationIds: ReadonlySet<string>;
-  text: string;
-  setText: (text: string) => void;
+  draft: ChatDraft;
+  setDraft: Dispatch<SetStateAction<ChatDraft>>;
   to: string;
   setTo: (to: string) => void;
   dice: string;
@@ -49,8 +51,8 @@ export default function ChatPanel({
   tab,
   setTab,
   pendingSituationIds,
-  text,
-  setText,
+  draft,
+  setDraft,
   to,
   setTo,
   dice,
@@ -61,6 +63,7 @@ export default function ChatPanel({
   openChallenges,
   openRoll,
 }: Props) {
+  const { text } = draft;
   const chatEnd = useRef<HTMLDivElement>(null);
   const chatMessages = game.messages.filter(
     (message) =>
@@ -253,13 +256,18 @@ export default function ChatPanel({
           className="message-input"
           onSubmit={async (e) => {
             e.preventDefault();
+            if (busy || !text.trim()) return;
             if (
               await act(text.startsWith('/hod ') ? 'roll' : 'chat', {
                 text: text.replace(/^\/hod /, ''),
                 to,
               })
-            )
-              setText('');
+            ) {
+              // Acknowledging this send can only clear the draft it submitted.
+              setDraft((current) =>
+                current === draft ? { text: '' } : current,
+              );
+            }
           }}
         >
           <input
@@ -268,7 +276,7 @@ export default function ChatPanel({
               to === 'all' ? 'Co se děje u stolu?' : 'Napiš tajnou zprávu…'
             }
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => setDraft({ text: e.target.value })}
             maxLength={2000}
           />
           <button aria-label="Odeslat zprávu" disabled={busy || !text.trim()}>

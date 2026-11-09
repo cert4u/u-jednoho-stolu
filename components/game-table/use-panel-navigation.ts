@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useState, type RefObject } from 'react';
+import { useState, type RefObject } from 'react';
 import type { InitiativeRef } from '../../lib/initiative';
 import type { DialogHandle } from '../guarded-dialog';
+import type { EncounterTarget } from '../map-note-notifications';
 import type { RollSetup } from '../mechanics-panel';
 import type { TablePanel } from './table-dialog';
 
@@ -10,8 +11,9 @@ import type { TablePanel } from './table-dialog';
 export function usePanelNavigation(
   dialog: RefObject<DialogHandle | null>,
   setError: (message: string) => void,
+  initialPanel: TablePanel | '' = '',
 ) {
-  const [modal, setModal] = useState<TablePanel | ''>('');
+  const [modal, setModal] = useState<TablePanel | ''>(initialPanel);
   const [recoveryMemberId, setRecoveryMemberId] = useState<string>();
   const [lifeMemberId, setLifeMemberId] = useState<string>();
   const [lootId, setLootId] = useState('');
@@ -22,20 +24,6 @@ export function usePanelNavigation(
   const [rollSetup, setRollSetup] = useState<RollSetup>({});
   const [selectedMonster, setSelectedMonster] = useState('');
   const [monsterPick, setMonsterPick] = useState(0);
-
-  const resetPanels = useCallback(() => {
-    setModal('');
-    setRecoveryMemberId(undefined);
-    setLifeMemberId(undefined);
-    setLootId('');
-    setLootNoteId(undefined);
-    setChallengeId('');
-    setChallengeNoteId(undefined);
-    setConditionTarget(undefined);
-    setRollSetup({});
-    setSelectedMonster('');
-    setMonsterPick(0);
-  }, []);
 
   function open(panel: TablePanel, prepare?: () => void) {
     const action = () => {
@@ -81,8 +69,29 @@ export function usePanelNavigation(
     setModal('monsters');
   }
 
+  // The note navigator has already passed the unsaved-draft guard.
+  function showEncounter(target: EncounterTarget) {
+    switch (target.kind) {
+      case 'challenge':
+        setChallengeId(target.id);
+        setChallengeNoteId(undefined);
+        setModal('challenges');
+        break;
+      case 'loot':
+        setLootId(target.id);
+        setLootNoteId(undefined);
+        setModal('loot');
+        break;
+      case 'monster':
+        inspectMonster(target.id);
+        break;
+      case 'combat':
+        setModal('initiative');
+        break;
+    }
+  }
+
   return {
-    resetPanels,
     modal,
     setModal,
     recoveryMemberId,
@@ -95,11 +104,7 @@ export function usePanelNavigation(
     rollSetup,
     selectedMonster,
     monsterPick,
-    setLootId,
-    setLootNoteId,
-    setChallengeId,
-    setChallengeNoteId,
-    setSelectedMonster,
+    showEncounter,
     openRecovery,
     openLife,
     openLoot,

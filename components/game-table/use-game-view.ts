@@ -2,15 +2,14 @@
 
 import { useCallback, useRef, useState } from 'react';
 import type { GameView } from '../../app/api/game/view';
-
-// Identity distinguishes A → B → A even when the room revision has not changed.
-export type ViewRequest = { readonly levelId: string };
+import type { ViewRequest } from './types';
 
 export function useGameView() {
   const [game, setGame] = useState<GameView | null>(null);
   const [view, setView] = useState<ViewRequest>(() => ({ levelId: '' }));
   const current = useRef(view);
 
+  // Identity distinguishes A → B → A at the same room revision.
   const isCurrentView = useCallback(
     (request: ViewRequest) => current.current === request,
     [],

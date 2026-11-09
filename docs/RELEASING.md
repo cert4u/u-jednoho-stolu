@@ -81,3 +81,7 @@ Rozdělení CSS, generátoru V2, hostingu a katalogové administrace nevyžaduje
 ## Vydání 1.2.6
 
 Při vydání ověř opožděné odpovědi při přepínání pater a přístupu do kampaně, shodu mapových příkazů z myši a klávesnice a opakování úpravy mapy se stejným ID. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-125-na-126).
+
+## Vydání 1.2.7
+
+Při ověřování podrž potvrzení odeslané zprávy, napiš druhou a zkontroluj, že po potvrzení zůstala v poli. Dvě souběžné operace musí držet ovládání ve stavu načítání až do dokončení poslední. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-126-na-127).

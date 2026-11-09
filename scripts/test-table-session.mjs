@@ -14,19 +14,23 @@ const noteB = { id: 'note-b', levelId: 'cellar-b', levelName: 'Nový sklep' };
 
 // Execute the actual table and its session hooks. Drive renders and network
 // completions independently so the expired requests cannot win by timing.
-const slots = [];
+const homeSlots = [];
+let workspaceSlots = [];
+let workspaceKey;
+let slots = homeSlots;
 let cursor = 0;
 let pollEffect;
 const react = {
   useState(initial) {
     const index = cursor++;
-    if (!(index in slots))
-      slots[index] = typeof initial === 'function' ? initial() : initial;
+    const state = slots;
+    if (!(index in state))
+      state[index] = typeof initial === 'function' ? initial() : initial;
     return [
-      slots[index],
+      state[index],
       (value) => {
-        slots[index] =
-          typeof value === 'function' ? value(slots[index]) : value;
+        state[index] =
+          typeof value === 'function' ? value(state[index]) : value;
       },
     ];
   },
@@ -39,11 +43,12 @@ const react = {
     pollEffect = effect;
   },
 };
-const jsx = (type, props) => ({ type, props });
+const jsx = (type, props, key) => ({ type, props, key });
 const requests = [];
 const storage = new Map([['stul-session', JSON.stringify(roomA)]]);
 const context = vm.createContext({
   URLSearchParams,
+  crypto,
   fetch(url, options) {
     return new Promise((finish, fail) => {
       requests.push({
@@ -66,6 +71,8 @@ const context = vm.createContext({
 const realModules = new Set(
   [
     'app/page.tsx',
+    'components/game-table/table-workspace.tsx',
+    'components/game-table/use-table-session.ts',
     'components/game-table/game-client.ts',
     'components/game-table/use-game-polling.ts',
     'components/game-table/use-game-view.ts',
@@ -95,7 +102,8 @@ function load(file) {
     if (id === 'react/jsx-runtime')
       return { jsx, jsxs: jsx, Fragment: 'fragment' };
     const path = resolve(dirname(file), id);
-    if (realModules.has(path + '.ts')) return load(path + '.ts');
+    for (const extension of ['.ts', '.tsx'])
+      if (realModules.has(path + extension)) return load(path + extension);
     if (id.endsWith('/use-browser-entry'))
       return {
         useBrowserEntry: () => ({
@@ -119,9 +127,25 @@ function load(file) {
 }
 
 const Home = load(resolve('app/page.tsx')).default;
+const Workspace = load(
+  resolve('components/game-table/table-workspace.tsx'),
+).default;
 function render() {
+  slots = homeSlots;
   cursor = 0;
-  return Home();
+  const root = Home();
+  if (root.type !== Workspace) {
+    workspaceSlots = [];
+    workspaceKey = undefined;
+    return root;
+  }
+  if (workspaceKey !== root.key) {
+    workspaceSlots = [];
+    workspaceKey = root.key;
+  }
+  slots = workspaceSlots;
+  cursor = 0;
+  return Workspace(root.props);
 }
 function find(tree, type) {
   if (Array.isArray(tree))
@@ -145,11 +169,11 @@ function take(room, level = '') {
 const flush = () => new Promise(setImmediate);
 const response = (data, status = 200) =>
   new Response(JSON.stringify(data), { status });
-const header = (tree) => find(tree, '../components/game-table/table-header');
-const sidebar = (tree) => find(tree, '../components/game-table/party-sidebar');
-const notifications = (tree) =>
-  find(tree, '../components/map-note-notifications');
-const dialog = (tree) => find(tree, '../components/game-table/table-dialog');
+const header = (tree) => find(tree, './table-header');
+const sidebar = (tree) => find(tree, './party-sidebar');
+const notifications = (tree) => find(tree, '../map-note-notifications');
+const dialog = (tree) => find(tree, './table-dialog');
+const chat = (tree) => find(tree, './chat-panel');
 
 render();
 let stopPolling = pollEffect();
@@ -159,6 +183,7 @@ stopPolling();
 
 let table = render();
 assert.equal(header(table).game.title, gameA.title);
+chat(table).setDraft({ text: 'Rozepsaná zpráva z A' });
 sidebar(table).onLevel('floor-a');
 table = render();
 header(table).onAccount();
@@ -198,6 +223,11 @@ assert.equal(
   'the old panel closes at the session boundary',
 );
 assert.equal(notifications(table).loading, false);
+assert.equal(
+  chat(table).draft.text,
+  '',
+  'a new workspace has no old chat draft',
+);
 assert.equal(await oldDialog.reloadEquipment(), false);
 assert.equal(
   requests.length,
@@ -339,4 +369,106 @@ stopPolling();
 
 console.log(
   'PASS: delayed equipment, action, polling and note replies cannot replace a newer floor selection, even across A → B → A.',
+);
+
+table = render();
+notifications(table).onOpen(
+  { ...noteB, id: 'encounter-b', noteId: noteB.id },
+  () => assert.fail('opening an encounter action must not dismiss the note'),
+  { kind: 'loot', id: 'loot-b' },
+);
+take(renewed, 'cellar-b').finish(
+  response({
+    ...floor('cellar-b', 4),
+    mapNotes: [{ id: noteB.id, levelId: noteB.levelId, x: 2, y: 3 }],
+    noteAlerts: [
+      { id: 'encounter-b', encounter: [{ kind: 'loot', id: 'loot-b' }] },
+    ],
+  }),
+);
+await flush();
+table = render();
+assert.equal(dialog(table).modal, 'loot');
+assert.equal(dialog(table).selection.lootId, 'loot-b');
+
+const slowAction = sidebar(table).act('notes', { notes: 'pomalý zápis' });
+const slowRequest = requests.shift();
+assert.equal(slowRequest.url, '/api/game');
+const fastReload = dialog(table).reloadEquipment();
+take(renewed, 'cellar-b').finish(response(floor('cellar-b', 4)));
+assert.equal(await fastReload, true);
+assert.equal(
+  sidebar(render()).busy,
+  true,
+  'the write is still outstanding after reload completes',
+);
+slowRequest.finish(response({ game: floor('cellar-b', 5) }));
+assert.equal(await slowAction, true);
+assert.equal(sidebar(render()).busy, false);
+
+const ChatPanel = load(resolve('components/game-table/chat-panel.tsx')).default;
+function findControl(node, predicate) {
+  if (Array.isArray(node))
+    return node.map((child) => findControl(child, predicate)).find(Boolean);
+  if (predicate(node)) return node.props;
+  return node?.props ? findControl(node.props.children, predicate) : undefined;
+}
+function composer() {
+  const props = chat(render());
+  slots = [];
+  cursor = 0;
+  const panel = ChatPanel({ ...props, game: { ...props.game, messages: [] } });
+  return {
+    form: findControl(
+      panel,
+      (node) =>
+        node?.type === 'form' && node.props.className === 'message-input',
+    ),
+    input: findControl(
+      panel,
+      (node) => node?.type === 'input' && node.props['aria-label'] === 'Zpráva',
+    ),
+  };
+}
+function typeMessage(text) {
+  composer().input.onChange({ target: { value: text } });
+}
+function sendDraft() {
+  const done = composer().form.onSubmit({ preventDefault() {} });
+  const request = requests.shift();
+  assert.equal(request.url, '/api/game');
+  return { done, request };
+}
+
+typeMessage('První zpráva');
+const firstMessage = sendDraft();
+typeMessage('Druhá zpráva');
+firstMessage.request.finish(response({ game: floor('cellar-b', 6) }));
+await firstMessage.done;
+assert.equal(composer().input.value, 'Druhá zpráva');
+
+const repeatedText = sendDraft();
+typeMessage('');
+typeMessage('Druhá zpráva');
+repeatedText.request.finish(response({ game: floor('cellar-b', 7) }));
+await repeatedText.done;
+assert.equal(
+  composer().input.value,
+  'Druhá zpráva',
+  'retyping identical text is still a new draft',
+);
+
+const rejected = sendDraft();
+rejected.request.finish(
+  response({ error: 'Zprávu se nepodařilo odeslat' }, 400),
+);
+await rejected.done;
+assert.equal(composer().input.value, 'Druhá zpráva');
+
+const accepted = sendDraft();
+accepted.request.finish(response({ game: floor('cellar-b', 8) }));
+await accepted.done;
+assert.equal(composer().input.value, '');
+console.log(
+  'PASS: the table stays busy until the last action finishes, and chat acknowledges only the submitted draft.',
 );

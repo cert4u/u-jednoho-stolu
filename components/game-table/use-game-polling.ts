@@ -2,8 +2,7 @@
 
 import { useEffect, type RefObject } from 'react';
 import type { GameView } from '../../app/api/game/view';
-import type { ViewRequest } from './use-game-view';
-import type { Session, SessionScope } from './types';
+import type { Session, SessionScope, ViewRequest } from './types';
 import { requestGame, sameSession, sessionStorageKey } from './game-client';
 
 type Options = {

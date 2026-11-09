@@ -1,5 +1,12 @@
 # Změny
 
+## 1.2.7 — 2026-11-09
+
+- Potvrzení odeslané zprávy v chatu ponechá rozepsanou další zprávu. Při chybě zůstane rozepsaný text k dispozici.
+- Ovládání stolu čeká na dokončení všech souběžných akcí v aktuální relaci. Pozdní odpověď z předchozí relace neovlivní ovládání nového stolu.
+- Vstupní stránka vybírá mezi lobby, načítáním a herním stolem. Relace a pracovní plocha mají vlastní moduly. Kontrola statických importů stolu a mapy běží v CI.
+- [Postup aktualizace z 1.2.6](docs/SELF_HOSTING.md#přechod-z-126-na-127).
+
 ## 1.2.6 — 2026-11-09
 
 - Při rychlém přepínání pater rozhoduje o přijetí herního pohledu aktuální relace, požadované patro a revize kampaně. Opožděná odpověď z jiného patra nepřepíše mapu ani znovu neotevře opuštěnou přípravu.
