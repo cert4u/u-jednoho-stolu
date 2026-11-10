@@ -11,12 +11,19 @@ export type Monster={templateId?:string;conditions?:Condition[];combat?:CombatSt
 export type MonsterView=Pick<Monster,'id'|'number'|'name'|'levelId'|'x'|'y'> & {templateId?:string;portrait?:string;conditions?:Condition[];combat?:CombatStats;defeated:boolean;visibleToPlayers?:boolean;hp?:number;maxHp?:number;stats?:string;notes?:string;hidden?:boolean;archived?:boolean};
 export function monsterVisible(g:Game,monster:Monster,levelId:string){if(monster.archived||monster.hidden||monster.levelId!==levelId||monster.x===null||monster.y===null)return false;const map=g.atlas?getLevel(g.atlas,levelId).map:dungeonFor(g);const key=cellKey(monster.x,monster.y);if(!map.floors.includes(key))return false;if(g.atlas?.location){if(g.atlas.location.levelId!==levelId)return false;return getLevel(g.atlas,levelId).visible.includes(key);}return map.revealed.includes(key);}
 export function monsterViews(g: Game, pj: boolean, levelId: string): MonsterView[] {
+  const snapshot = g.contentLibrary;
+  let catalog: CatalogResolver | undefined;
   return (g.monsters ?? []).flatMap<MonsterView>(monster => {
     if (monster.levelId !== levelId) return [];
     if (pj) {
-      const entry=g.contentLibrary?new CatalogResolver([],g.contentLibrary).get('bestiary',monster.templateId)?.data:findBestiaryEntry(monster.templateId);
-      const image=g.contentLibrary?.portraits[monster.templateId??''];
-      const embedded=image?g.contentLibrary?.images[image]:undefined;
+      const { templateId } = monster;
+      const entry = snapshot
+        ? templateId === undefined
+          ? undefined
+          : (catalog ??= new CatalogResolver([], snapshot)).get('bestiary', templateId)?.data
+        : findBestiaryEntry(templateId);
+      const image = snapshot?.portraits[templateId ?? ''];
+      const embedded = image ? snapshot?.images[image] : undefined;
       return [{
         ...monster,
         ...(entry && {portrait:embedded?`data:image/webp;base64,${embedded.data}`:(!monster.templateId?.includes(':')?bestiaryPortrait(entry):entry.portrait?.startsWith('builtin:')?entry.portrait.slice(8):undefined)}),

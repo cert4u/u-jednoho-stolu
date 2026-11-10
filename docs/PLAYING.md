@@ -96,6 +96,8 @@ Patra PJ připravuje nezávisle na poloze družiny. Pro funkční schodiště pr
 
 **Pohled družiny** je náhled pro PJ. Režimy kreslení a odkrývání hráči nemají. Bez společného průzkumu lze odhalovat obdélníky ručně; po jeho zahájení se aktuální výhled řídí polohou družiny. Příšery mimo aktuální dohled nezůstávají jako známé živé žetony v šedé paměti.
 
+Souřadnice a rozměry kreslicí plochy vidí PJ při práci s mapou. Hráčský pohled i náhled družiny zobrazují čtverečkovaný papír bez číselných okrajů.
+
 ### Ovládání mapy
 
 - **Ctrl + levé tažení**, **Mezerník + tažení** nebo **Ruka**: posun papíru.
@@ -197,6 +199,12 @@ Pro venkovní scénu nebo vlastní pravidla automatiku vypni a ulož nastavení;
 [Hlas družiny](VOICE.md) je volitelná služba správce instalace. Začíná s vypnutým mikrofonem, umožní ztlumit poslech a vybrat mikrofon. Chatové šeptání nepřepíná hlas do soukromého hovoru. Kamera ani sdílení obrazovky se nepoužívají.
 
 Běžné změny se ukládají na server. PJ navíc přes nabídku přístupu stáhne **úplnou zálohu kampaně**. Obnova vytvoří novou místnost, převezmeš PJ a hráčům vydáš nové klíče. Obnova nevrací původní přístupové tokeny. JSON je soukromý i bez tokenů, obsahuje tajnou přípravu a chat. Snapshot celé instalace je jiný druh zálohy; viz [hosting](SELF_HOSTING.md#data-a-zálohy).
+
+### Když vypadne spojení
+
+Stůl ponechá poslední načtenou mapu, deníky a chat. Hlavička ukáže **Připojování…**. Jakmile prohlížeč zaznamená návrat sítě, aplikace hned zkusí načíst aktuální stav. Pokud je síť dostupná, ale herní server stále neodpovídá, aplikace zkouší připojení v postupně delších odstupech až po 30 sekundách.
+
+U akce bez potvrzení po návratu spojení nejdřív zkontroluj stav hry nebo historii chatu. Server ji mohl uložit ještě před výpadkem.
 
 ## Co aplikace nevyhodnotí sama
 

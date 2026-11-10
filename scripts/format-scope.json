@@ -78,5 +78,7 @@
   "app/api/game/route.ts",
   "app/api/game/campaign.ts",
   "app/api/game/room-access.ts",
-  "app/api/game/room-store.ts"
+  "app/api/game/room-store.ts",
+  "app/api/game/conditional-view.ts",
+  "lib/game-view-wire.ts"
 ]

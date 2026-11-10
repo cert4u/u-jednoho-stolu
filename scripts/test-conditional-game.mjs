@@ -1,4 +1,16 @@
 import assert from 'node:assert/strict';
+await import('./generator-test-import.mjs');
+const {conditionalView}=await import('../app/api/game/conditional-view.ts');
+const snapshot={id:'restored-room',version:5,data:'first stored state'};
+const query=(tag)=>new Request('http://localhost/',{headers:tag?{'If-None-Match':tag}:{}});
+const initial=await conditionalView(query(),snapshot,'pj',()=>({notes:'old'}));
+const initialTag=initial.headers.get('etag');
+assert.equal((await conditionalView(query(initialTag),snapshot,'pj',()=>{
+ throw Error('Unchanged polling must skip the projection.');
+})).status,304);
+const restored=await conditionalView(query(initialTag),{...snapshot,data:'restored state'},'pj',()=>({notes:'restored'}));
+assert.equal(restored.status,200);
+assert.deepEqual(await restored.json(),{notes:'restored'});
 const base=process.argv[2];assert(base&&['localhost','127.0.0.1','[::1]'].includes(new URL(base).hostname));
 async function post(action,values={},session){const response=await fetch(base+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(session?{Authorization:'Bearer '+session.token}:{})},body:JSON.stringify({action,room:session?.room,...values})});assert.equal(response.status,200,await response.clone().text());return response.json();}
 const pj=await post('create',{name:'Conditional PJ'}),player=await post('join',{room:pj.room,name:'Player'});

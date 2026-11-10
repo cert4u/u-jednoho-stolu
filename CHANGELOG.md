@@ -1,5 +1,13 @@
 # Změny
 
+## 1.3.0 — 2026-11-10
+
+- **Spolehlivější synchronizace.** Po výpadku aplikace sama naváže na poslední načtený stav. Během režimu offline dotazy pozastaví a po návratu sítě se ozve hned. Zaseknutý dotaz ukončí po 30 sekundách a při opakovaných chybách postupně prodlouží čekání mezi pokusy.
+- **Menší odpovědi a méně práce na serveru.** Prohlížeč používá stejný katalogový portrét pro více příšer v jedné odpovědi. U nezměněného stolu může server po ověření přístupu přeskočit sestavení herního pohledu. API dál podporuje původní formát odpovědi.
+- **Méně práce při zobrazení mapy a příšer.** Pohled PJ sdílí index katalogu mezi příšerami. Kreslení plošných materiálů sdílí seznam podlahy a obsazených polí mezi jednotlivými oblastmi.
+- **Mapa očima družiny.** Hráči ani náhled družiny nezobrazují souřadnice a rozměry kreslicí plochy. V prezentaci lze posuvníky porovnat zarovnanou mapu i celé rozhraní PJ a hráče.
+- [Postup aktualizace z 1.2.8](docs/SELF_HOSTING.md#přechod-z-128-na-130).
+
 ## 1.2.8 — 2026-11-10
 
 - Zkušenosti pro celou družinu dostávají aktivní hráčské postavy. Historické odměny a jejich zápisy v chatu zůstávají přenositelné i v kampaních s dlouhým archivem.

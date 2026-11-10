@@ -46,14 +46,22 @@ const react = {
 const jsx = (type, props, key) => ({ type, props, key });
 const requests = [];
 const storage = new Map([['stul-session', JSON.stringify(roomA)]]);
+const pollTimers = new Map();
+const network = { onLine: true };
+let timerId = 0;
 const context = vm.createContext({
+  AbortController,
   URLSearchParams,
   crypto,
+  navigator: network,
+  window: new EventTarget(),
   fetch(url, options) {
     return new Promise((finish, fail) => {
       requests.push({
         url,
         token: options.headers.Authorization,
+        etag: options.headers['If-None-Match'],
+        signal: options.signal,
         finish,
         fail,
       });
@@ -64,8 +72,12 @@ const context = vm.createContext({
     setItem: (key, value) => storage.set(key, value),
     removeItem: (key) => storage.delete(key),
   },
-  setInterval: () => 1,
-  clearInterval: () => {},
+  setTimeout(callback, delay) {
+    const id = ++timerId;
+    pollTimers.set(id, { callback, delay });
+    return id;
+  },
+  clearTimeout: (id) => pollTimers.delete(id),
 });
 
 const realModules = new Set(
@@ -74,6 +86,7 @@ const realModules = new Set(
     'components/game-table/table-workspace.tsx',
     'components/game-table/use-table-session.ts',
     'components/game-table/game-client.ts',
+    'lib/game-view-wire.ts',
     'components/game-table/use-game-polling.ts',
     'components/game-table/use-game-view.ts',
     'components/game-table/use-map-note-navigation.ts',
@@ -471,4 +484,92 @@ await accepted.done;
 assert.equal(composer().input.value, '');
 console.log(
   'PASS: the table stays busy until the last action finishes, and chat acknowledges only the submitted draft.',
+);
+
+// Drive the real polling effect with a stalled transport and a network flap.
+context.window = new EventTarget();
+pollTimers.clear();
+assert.equal(requests.length, 0);
+const { useGamePolling } = load(
+  resolve('components/game-table/use-game-polling.ts'),
+);
+const scope = { session: roomA };
+const updates = [];
+let connection = '';
+function PollingHarness() {
+  useGamePolling({
+    scope,
+    sessionCurrent: { current: scope },
+    view: { levelId: 'ground' },
+    isCurrentView: () => true,
+    changeSession: () =>
+      assert.fail('a transport failure must preserve the session'),
+    acceptGame: (_, game) => updates.push(game.revision),
+    setConnectionError: (message) => {
+      connection = message;
+    },
+  });
+}
+PollingHarness();
+const stop = pollEffect();
+function runTimer(delay) {
+  assert.equal(pollTimers.size, 1);
+  const [[id, timer]] = pollTimers;
+  assert.equal(timer.delay, delay);
+  pollTimers.delete(id);
+  timer.callback();
+}
+const stalled = take(roomA, 'ground');
+stalled.signal.addEventListener(
+  'abort',
+  () => stalled.fail(stalled.signal.reason),
+  { once: true },
+);
+runTimer(30_000);
+await flush();
+assert.equal(stalled.signal.aborted, true);
+assert(connection);
+for (const delay of [2_000, 4_000, 8_000, 16_000, 30_000]) {
+  runTimer(delay);
+  take(roomA, 'ground').fail(new TypeError('lost network'));
+  await flush();
+}
+assert.equal([...pollTimers.values()][0].delay, 30_000);
+network.onLine = false;
+context.window.dispatchEvent(new Event('offline'));
+assert.equal(pollTimers.size, 0);
+assert.equal(requests.length, 0);
+network.onLine = true;
+context.window.dispatchEvent(new Event('online'));
+take(roomA, 'ground').finish(
+  new Response(JSON.stringify(gameA), { headers: { ETag: '"known"' } }),
+);
+await flush();
+assert.deepEqual(updates, [gameA.revision]);
+assert.equal(connection, '');
+runTimer(2_000);
+const interrupted = take(roomA, 'ground');
+assert.equal(interrupted.etag, '"known"');
+network.onLine = false;
+context.window.dispatchEvent(new Event('offline'));
+assert.equal(interrupted.signal.aborted, true);
+network.onLine = true;
+context.window.dispatchEvent(new Event('online'));
+const resumed = take(roomA, 'ground');
+assert.equal(resumed.etag, '"known"');
+resumed.finish(new Response(null, { status: 304 }));
+interrupted.finish(response({ ...gameA, revision: 99 }));
+await flush();
+assert.deepEqual(updates, [gameA.revision]);
+assert.equal(connection, '');
+runTimer(2_000);
+const obsolete = take(roomA, 'ground');
+stop();
+assert.equal(obsolete.signal.aborted, true);
+obsolete.finish(response(gameB));
+await flush();
+assert.equal(pollTimers.size, 0);
+assert.deepEqual(updates, [gameA.revision]);
+console.log(
+  'PASS: polling times out, backs off, waits offline, resumes immediately, reuses its ETag and ignores obsolete responses.',
 );

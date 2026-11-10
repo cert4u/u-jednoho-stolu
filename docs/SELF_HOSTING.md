@@ -4,7 +4,7 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Tato dokumentace odpovídá vydání 1.2.8; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
+Tato dokumentace odpovídá vydání 1.3.0. Pro stabilní instalaci zvol zdroje vybraného vydání a jeho dokumentaci. Po běžném klonování můžeš před sestavením přepnout na konkrétní tag příkazem `git switch --detach <tag-vydání>`. Kanál Stable v updateru vybírá stabilní GitHub Releases. U vývojových sestavení porovnávej kromě verze i commit a poznámky k vydání.
 
 ## Základní požadavky
 
@@ -15,7 +15,7 @@ Na stejném počítači můžeš začít přes `localhost`. Pro společnou hru p
 ## První spuštění
 
 ```sh
-git clone --branch v1.2.8 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.3.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -262,6 +262,12 @@ Podporovaný rollback vrací odpovídající image i databázový snapshot. Pře
 Vytvoř úplnou serverovou ZIP zálohu, uchovej konfiguraci a zachovej celý datový volume. Vyber stabilní vydání 1.2.4 v administraci updateru; při ručním sestavení použij tag `v1.2.4`. Přechod nevyžaduje SQL migraci, změnu konfigurace ani přestavbu updateru nebo LiveKitu. Formát záloh se nemění.
 
 Po aktualizaci obnov herní stránku i `/admin`. Ověř přihlášení, otevření mapy a posun obsahu v dialogu. Podporovaný rollback vrací image i databázový snapshot z doby před aktualizací. [Změny vydání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#124--2026-11-09).
+
+## Přechod z 1.2.8 na 1.3.0
+
+Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci vyber stabilní vydání 1.3.0 nebo při ruční aktualizaci sestav aplikaci z tagu `v1.3.0`. Zachovej celý datový volume. Stačí výměna aplikace se stávajícím updaterem, konfigurací a LiveKitem. Databáze a zálohy používají dosavadní formáty, takže přechod proběhne bez SQL migrace.
+
+Po aktualizaci obnov stránku u stolu, aby prohlížeč načetl klienta s rychlejší synchronizací. Ověř přístup PJ i hráče v kopii existující kampaně. Při návratu ke starší verzi updater obnoví i databázový snapshot před aktualizací. Před návratem si proto ulož aktuální zálohu s případnými novějšími tahy. [Změny vydání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#130--2026-11-10)
 
 ## Přechod z 1.2.7 na 1.2.8
 

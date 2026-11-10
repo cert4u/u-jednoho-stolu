@@ -12,17 +12,41 @@ export default function OrganicSurfaces({map,lit,revealed,visible,exploring}:{
 }){
   const {scenery}=useCatalog();
   const id=useId().replaceAll(':','');
-  const regions=useMemo(()=>surfaceRegions(map).map(region=>{
-    const profile=findSceneryEntry(region.kind,scenery)?.surface??{color:'#938571',roughness:.5,texture:'strokes'};
-    const floor=new Set(map.floors),own=new Set(region.cells.map(p=>p.join(',')));
-    const occupied=new Set((map.surfaces??[]).map(p=>`${p.x},${p.y}`));
-    const support=new Map(region.cells.map(p=>[p.join(','),p]));
-    for(const [x,y]of region.cells)for(const [nx,ny,edge]of [[x-1,y,`v:${x}:${y}`],[x+1,y,`v:${x+1}:${y}`],[x,y-1,`h:${x}:${y}`],[x,y+1,`h:${x}:${y+1}`]] as [number,number,string][]){
-      const k=`${nx},${ny}`;
-      if(floor.has(k)&&!map.edges[edge]&&(!occupied.has(k)||own.has(k)))support.set(k,[nx,ny]);
-    }
-    return {...region,support:[...support.values()],profile,marks:surfaceTextureMarks([...support.values()],region.kind,profile.texture),path:organicSurfacePath(region,profile.roughness)};
-  }),[map,scenery]);
+  const regions = useMemo(() => {
+    const regions = surfaceRegions(map);
+    if (!regions.length) return [];
+    const floor = new Set(map.floors);
+    const occupied = new Set((map.surfaces ?? []).map(p => `${p.x},${p.y}`));
+    return regions.map(region => {
+      const profile = findSceneryEntry(region.kind, scenery)?.surface ?? {
+        color: '#938571',
+        roughness: 0.5,
+        texture: 'strokes',
+      };
+      const support = new Map(region.cells.map(p => [p.join(','), p]));
+      const own = new Set(support.keys());
+      for (const [x, y] of region.cells) {
+        for (const [nx, ny, edge] of [
+          [x - 1, y, `v:${x}:${y}`],
+          [x + 1, y, `v:${x + 1}:${y}`],
+          [x, y - 1, `h:${x}:${y}`],
+          [x, y + 1, `h:${x}:${y + 1}`],
+        ] as [number, number, string][]) {
+          const k = `${nx},${ny}`;
+          if (floor.has(k) && !map.edges[edge] && (!occupied.has(k) || own.has(k)))
+            support.set(k, [nx, ny]);
+        }
+      }
+      const cells = [...support.values()];
+      return {
+        ...region,
+        support: cells,
+        profile,
+        marks: surfaceTextureMarks(cells, region.kind, profile.texture),
+        path: organicSurfacePath(region, profile.roughness),
+      };
+    });
+  }, [map, scenery]);
   return <g data-map-layer="surfaces" pointerEvents="none" transform={`translate(${PAD} ${PAD}) scale(${SIZE})`}>
     {regions.map((region,i)=>{
       const uid=`surface-${id}-${i}`;

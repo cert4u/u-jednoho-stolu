@@ -1,5 +1,11 @@
 import type { BestiaryEntry } from '../../lib/bestiary';
 import type { GameView } from '../../app/api/game/view';
+import {
+  expandGamePortraits,
+  sharedPortraitFormat,
+  sharedPortraitHeader,
+  type WireGameView,
+} from '../../lib/game-view-wire';
 import type { Session } from './types';
 
 export const sessionStorageKey = 'stul-session';
@@ -23,13 +29,23 @@ function authorization(session: Session) {
 
 type GameResponse = { response: Response; data: GameView & ErrorPayload; etag?: string };
 export function requestGame(session: Session, level: string): Promise<GameResponse>;
-export function requestGame(session: Session, level: string, etag: string | undefined): Promise<Omit<GameResponse, 'data'> & { data?: GameResponse['data'] }>;
-export async function requestGame(session: Session, level: string, etag?: string): Promise<Omit<GameResponse, 'data'> & { data?: GameResponse['data'] }> {
+export function requestGame(session: Session, level: string, etag: string | undefined, signal?: AbortSignal): Promise<Omit<GameResponse, 'data'> & { data?: GameResponse['data'] }>;
+export async function requestGame(session: Session, level: string, etag?: string, signal?: AbortSignal): Promise<Omit<GameResponse, 'data'> & { data?: GameResponse['data'] }> {
   const query = new URLSearchParams({ room: session.room, level });
   const response = await fetch(`/api/game?${query}`, {
-    headers: { ...authorization(session), ...(etag ? { 'If-None-Match': etag } : {}) },
+    signal,
+    headers: {
+      ...authorization(session),
+      [sharedPortraitHeader]: sharedPortraitFormat,
+      ...(etag ? { 'If-None-Match': etag } : {}),
+    },
   });
-  const data = response.status === 304 ? undefined : (await response.json()) as GameView & ErrorPayload;
+  const payload = response.status === 304
+    ? undefined
+    : (await response.json()) as WireGameView & ErrorPayload;
+  const data = payload && (response.ok
+    ? expandGamePortraits(payload)
+    : payload as GameView & ErrorPayload);
   return { response, data, etag: response.headers.get('etag') ?? undefined };
 }
 
@@ -47,12 +63,13 @@ export async function sendGameAction(
   const attempts = replayableMessage ? 2 : 1;
   for (let attempt = 0; attempt < attempts; attempt++) {
     let response: Response;
-    let data: ActionResult & ErrorPayload;
+    let data: Omit<ActionResult, 'game'> & { game: WireGameView } & ErrorPayload;
     try {
       response = await fetch('/api/game', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          [sharedPortraitHeader]: sharedPortraitFormat,
           ...(session ? authorization(session) : {}),
         },
         body,
@@ -64,7 +81,7 @@ export async function sendGameAction(
       throw error;
     }
     if (!response.ok) throw new Error(data.error || 'Požadavek se nepodařil.');
-    return data;
+    return { ...data, game: expandGamePortraits(data.game) };
   }
   throw new Error('Odpověď se nepodařilo potvrdit. Zkontroluj historii u stolu.');
 }

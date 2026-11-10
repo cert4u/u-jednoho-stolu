@@ -8,6 +8,8 @@ const {initialGame}=await import('../lib/game.ts');
 const {startAdventure}=await import('../lib/start-adventure.ts');
 const {editDungeon}=await import('../lib/dungeon.ts');
 const {makeBackup,readBackup}=await import('../lib/backup.ts');
+const {expandGamePortraits,sharedPortraitHeader,sharedPortraitFormat}=await import('../lib/game-view-wire.ts');
+const sharedHeaders={[sharedPortraitHeader]:sharedPortraitFormat};
 const base=process.argv[2]||'http://127.0.0.1:5173';
 assert(['localhost','127.0.0.1','[::1]'].includes(new URL(base).hostname));
 const {bundle,images,digest}=await unpackCatalog(writeZip(await demoFiles()),core);
@@ -22,15 +24,35 @@ const level=game.atlas.levels[0],[x,y]=level.map.floors[0].split(',').map(Number
 level.map=editDungeon(level.map,{tool:'scenery',op:'save',kind:ref+'broken-winch',x,y,size:'small',rotation:0,hidden:false,expectedRevision:null},definitions);
 level.map=editDungeon(level.map,{tool:'surface',op:'add',kind:ref+'ochre-seep',points:[[x,y]]},definitions);
 const backup=makeBackup(game);readBackup(backup);
-async function post(action,data={},session,expected=200){const response=await fetch(base+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(session?{Authorization:'Bearer '+session.token}:{})},body:JSON.stringify({action,room:session?.room,requestId:crypto.randomUUID(),...data})});const value=await response.json();assert.equal(response.status,expected,value.error);return value;}
+async function post(action,data={},session,expected=200,extraHeaders={}){const response=await fetch(base+'/api/game',{method:'POST',headers:{'Content-Type':'application/json',...(session?{Authorization:'Bearer '+session.token}:{}),...extraHeaders},body:JSON.stringify({action,room:session?.room,requestId:crypto.randomUUID(),...data})});const value=await response.json();assert.equal(response.status,expected,value.error);return value;}
 async function get(session,query=''){const response=await fetch(base+'/api/game?'+new URLSearchParams({room:session.room})+query,{headers:{Authorization:'Bearer '+session.token}});assert.equal(response.status,200);return response.json();}
 const restored=await post('restore',{backup});
 assert.equal(restored.game.monsters.length,3);assert(restored.game.monsters.every(m=>m.portrait.startsWith('data:image/webp;base64,')));
 assert.equal(restored.game.contentVisuals.length,2);assert.equal(Object.keys(restored.game.storyOutline.phases).length,5);
 assert.deepEqual((await get(restored,'&download=backup')).game.contentLibrary,backup.game.contentLibrary);
 assert((await get(restored,'&catalog=bestiary')).some(e=>e.id===ref+'slag-sentinel'));
-assert.equal((await post('monster',{op:'create',templateId:ref+'slag-sentinel',levelId:level.id},restored)).game.monsters.length,4);
+const added=await post('monster',{op:'create',templateId:ref+'slag-sentinel',levelId:level.id},restored,200,sharedHeaders);
+assert.equal(added.game.monsters.length,4);
+const repeated=added.game.monsters.filter(m=>m.templateId===ref+'slag-sentinel');
+assert.equal(repeated.length,2);
+assert.equal(typeof repeated[0].portrait,'number');
+assert.equal(repeated[0].portrait,repeated[1].portrait);
+const restoredPortraits=expandGamePortraits(added.game);
+assert.deepEqual(restoredPortraits,await get(restored));
+const url=base+'/api/game?room='+restored.room;
+const compact=await fetch(url,{headers:{Authorization:'Bearer '+restored.token,...sharedHeaders}});
+const compactTag=compact.headers.get('etag');
+assert(compactTag);
+assert.deepEqual(expandGamePortraits(await compact.json()),restoredPortraits);
+const legacy=await fetch(url,{headers:{Authorization:'Bearer '+restored.token,'If-None-Match':compactTag}});
+assert.equal(legacy.status,200);
+assert.notEqual(legacy.headers.get('etag'),compactTag);
+const unchanged=await fetch(url,{headers:{Authorization:'Bearer '+restored.token,'If-None-Match':compactTag,...sharedHeaders}});
+assert.equal(unchanged.status,304);
 const player=await post('join',{room:restored.room,name:'Přenesený hráč'}),visible=await get(player);
 assert(!('contentLibrary' in visible));assert(!JSON.stringify(visible).includes(bundle.entries.adventures[0].gmNotes));
+const compactPlayer=await fetch(url,{headers:{Authorization:'Bearer '+player.token,'If-None-Match':compactTag,...sharedHeaders}});
+assert.equal(compactPlayer.status,200);
+assert(!('sharedPortraits' in await compactPlayer.json()));
 const tampered=structuredClone(backup),key=Object.keys(tampered.game.contentLibrary.images)[0],bytes=Buffer.from(tampered.game.contentLibrary.images[key].data,'base64');bytes[64]^=1;tampered.game.contentLibrary.images[key].data=bytes.toString('base64');await post('restore',{backup:tampered},undefined,400);
 console.log('PASS: portable standalone catalog campaign without installed source: art, five phases, custom scenery/materials, pinned bestiary/actions, private views, re-export and tamper rejection.');

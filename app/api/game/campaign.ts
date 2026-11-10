@@ -6,12 +6,16 @@ import { startAdventure } from '../../../lib/start-adventure';
 import { issueRecovery } from '../../../lib/access';
 import { refreshSight } from '../../../lib/exploration';
 import { reconcileInitiative } from '../../../lib/initiative';
+import { packGameView } from '../../../lib/game-view-wire';
 import { admitRoom } from './admission';
 import { assertCampaignFits, serializeCampaign } from './room-store';
 import { fail, gameHeaders as headers } from './responses';
 import { gameView } from './view';
 
-export async function createRoom(body: Record<string, unknown>) {
+export async function createRoom(
+  body: Record<string, unknown>,
+  shared: boolean,
+) {
   const code = crypto
     .randomUUID()
     .replaceAll('-', '')
@@ -45,7 +49,7 @@ export async function createRoom(body: Record<string, unknown>) {
     room: code,
     token: owner.token,
     recoveryCode,
-    game: gameView(game, owner.id),
+    game: packGameView(gameView(game, owner.id), shared),
   });
   const denied = await admitRoom(code, serialized);
   return denied ?? response;

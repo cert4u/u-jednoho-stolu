@@ -99,7 +99,7 @@ Otevři `http://127.0.0.1:5173`. Cloudflare účet ani tajný `.env` pro tuto lo
 | [use-table-session.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/game-table/use-table-session.ts) | Spravuje relaci, herní pohled, pravidelné načítání a akce. Po změně relace zneplatní rozpracované požadavky. |
 | [table-workspace.tsx](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/game-table/table-workspace.tsx) | Skládá panely, mapu, chat a dialogy aktivního stolu. Vlastní stav rozhraní, který se při změně relace vytvoří znovu. |
 | [components/dungeon-map.tsx](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/dungeon-map.tsx) | Editor mapy: režimy, lišta nástrojů, posun, přiblížení a dialogy. [Plátno SVG](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/dungeon-map/canvas.tsx) vykresluje mapu a značky. [Obsluha vstupu](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/dungeon-map/use-map-input.ts) zpracovává myš a klávesnici, sestavuje tahy a spravuje jejich opakování. |
-| [components/game-table/](https://github.com/cert4u/u-jednoho-stolu/tree/main/components/game-table) | Lobby, chat, deník, odměny, registr dialogů a klientská komunikace. `game-client.ts` volá API a `use-game-polling.ts` načítá stav každé dvě sekundy. |
+| [components/game-table/](https://github.com/cert4u/u-jednoho-stolu/tree/main/components/game-table) | Lobby, chat, deník, odměny, registr dialogů a klientská komunikace. `game-client.ts` volá API a `use-game-polling.ts` načítá stav a obnovuje spojení. |
 | [app/api/game/route.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/route.ts) | HTTP vstup, složení odpovědi a opakování akce nad novější revizí při souběžném zápisu. |
 | [room-access.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/room-access.ts) a [campaign.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/campaign.ts) | Ověření aktivního člena, připojení a obnova přístupu; založení, obnova a export kampaně. |
 | [room-store.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/room-store.ts) a [admission.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/admission.ts) | Čtení a zápis místnosti s kontrolou revize a velikosti; atomické přijetí nové místnosti podle limitů instalace. |
@@ -287,6 +287,16 @@ Společné schéma a resolver jsou v `lib/catalogs/`, Node adaptéry v `server/c
 Databázové callbacky jsou synchronní. Import nejprve rezervuje místo a uloží neměnné soubory, potom v konečné transakci znovu kontroluje revizi, kampaně a závislosti. Nepřesouvej síťové či souborové `await` dovnitř databázové transakce. Náhledy ZIP a GitHubu používají stejný modul a tutéž procesovou mapu, nejde o dvě nezávislé fronty.
 
 Administrace používá společný `server/admin-dialog.js` a HTML `<dialog>` pro vstupy i potvrzení. Systémové `prompt()` a `confirm()` v zabudovaných prohlížečích nemusejí fungovat. Při změně klienta ověř kliknutí a zrušení v prohlížeči; samotný API test neověřuje dostupnost formuláře. `scripts/test-admin-client.mjs` navíc staticky odmítá návrat přímých volání nepodporovaných systémových dialogů a běží v administrační integrační sadě.
+
+## Synchronizace stolu a výpadky
+
+Klient čeká dvě sekundy po dokončení úspěšného dotazu. Jeden dotaz má limit 30 sekund. Při opakovaných chybách jsou odklady 2, 4, 8, 16 a nejvýš 30 sekund. Událost `offline` zruší čekající i běžící dotaz a `online` vyvolá nový pokus. Při změně relace nebo patra klient zruší starý dotaz a zahodí jeho případnou pozdní odpověď.
+
+Server ověří přístup a požadované patro před použitím `ETag`. Pro poslední načtené kampaně drží omezenou paměť otisků podle obsahu uloženého stavu, člena, patra a formátu odpovědi. Při shodě odešle `304` bez sestavení pohledu a výpočtu nového otisku. Porovnání uloženého obsahu chrání i při obnově databáze se stejnou revizí.
+
+Klient žádá hlavičkou `X-Stul-Portraits: shared` kompaktní herní pohled. Každý vložený portrét WebP je v poli `sharedPortraits` jednou a příšery se na něj odkazují indexem. Klient obnoví obvyklý tvar herního pohledu před vykreslením. Starší klienti bez této hlavičky používají původní odpovědi. Přenosné zálohy mají vlastní formát a přenášejí portréty se stavem kampaně.
+
+V místním zrychleném měření s osmi klienty a 20 příšerami trvalo 1 200 dotazů na nezměněný stůl 3,87 s před úpravou a 1,98 s po ní. Medián dotazu PJ po změně klesl z 20,8 ms na 9,0 ms. Odpověď měla přibližně 526 kB před změnou a 80 kB po ní. Zkušební komprese gzip dala 40,2 kB a 36,3 kB. Výsledky popisují místní zátěžový scénář.
 
 ## Stabilizační kontroly
 

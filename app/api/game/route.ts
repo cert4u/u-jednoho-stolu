@@ -15,6 +15,11 @@ import { pendingCombat } from '../../../lib/mechanics';
 import { refreshSight } from '../../../lib/exploration';
 import { reconcileInitiative } from '../../../lib/initiative';
 import { reconcileGenerationMetadata } from '../../../lib/generator-provenance';
+import {
+  packGameView,
+  sharedPortraitFormat,
+  sharedPortraitHeader,
+} from '../../../lib/game-view-wire';
 import { applyGameAction } from './actions';
 import { createRoom, downloadCampaign } from './campaign';
 import {
@@ -74,9 +79,15 @@ export async function GET(request: Request) {
     }
     const level = url.searchParams.get('level') || undefined;
     if (missingViewLevel(game, member, level)) return fail('Patro neexistuje.');
-    return conditionalView(
-      request,
-      gameView(game, member.id, row.version, level),
+    const shared =
+      request.headers.get(sharedPortraitHeader) === sharedPortraitFormat;
+    const viewKey = JSON.stringify([
+      member.id,
+      member.role === 'pj' ? level : undefined,
+      shared,
+    ]);
+    return conditionalView(request, row, viewKey, () =>
+      packGameView(gameView(game, member.id, row.version, level), shared),
     );
   } catch {
     return fail('Spojení se stolem se nepodařilo. Zkus to znovu.', 503);
@@ -95,8 +106,10 @@ export async function POST(request: Request) {
     }
     if (!body || typeof body !== 'object' || Array.isArray(body))
       return fail('Neplatný požadavek.');
+    const shared =
+      request.headers.get(sharedPortraitHeader) === sharedPortraitFormat;
     if (body.action === 'create' || body.action === 'restore')
-      return await createRoom(body);
+      return await createRoom(body, shared);
     const roomId = String(body.room || '');
     let preparedMessage: Msg | undefined;
     for (let attempt = 0; attempt < 6; attempt++) {
@@ -112,13 +125,16 @@ export async function POST(request: Request) {
         if (await messageReplay(game, member, body))
           return Response.json(
             {
-              game: gameView(
-                game,
-                member.id,
-                row.version,
-                missingViewLevel(game, member, requestedLevel)
-                  ? undefined
-                  : requestedLevel,
+              game: packGameView(
+                gameView(
+                  game,
+                  member.id,
+                  row.version,
+                  missingViewLevel(game, member, requestedLevel)
+                    ? undefined
+                    : requestedLevel,
+                ),
+                shared,
               ),
             },
             { headers },
@@ -165,7 +181,10 @@ export async function POST(request: Request) {
       const serialized = serializeCampaign(game);
       const response = Response.json(
         {
-          game: gameView(game, member.id, row.version + 1, level),
+          game: packGameView(
+            gameView(game, member.id, row.version + 1, level),
+            shared,
+          ),
           ...(generatedLevels ? { generatedLevels } : {}),
           ...(token ? { token, room: row.id } : {}),
           ...(recoveryCode ? { recoveryCode } : {}),

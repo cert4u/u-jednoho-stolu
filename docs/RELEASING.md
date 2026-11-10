@@ -89,3 +89,7 @@ Při ověřování podrž potvrzení odeslané zprávy, napiš druhou a zkontrol
 ## Vydání 1.2.8
 
 Ověř skupinovou odměnu s archivovanými postavami, obnovení postavy během boje a export s opětovnou obnovou obou kampaní. Integrační sada ověřuje také přenos historických odměn. Přechod nevyžaduje SQL migraci ani novou konfiguraci nebo updater. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-127-na-128).
+
+## Vydání 1.3.0
+
+Ověř obnovení spojení, oddělené pohledy podle rolí a pater, podmíněné odpovědi a přenos zálohy s katalogovými portréty. Testy pokrývají i obnovu odlišného obsahu se stejnou revizí a kompatibilitu původního formátu odpovědi. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Přechod z 1.2.8](SELF_HOSTING.md#přechod-z-128-na-130) · [Synchronizace a měření](DEVELOPMENT.md#synchronizace-stolu-a-výpadky).

@@ -58,3 +58,5 @@ Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [a
 Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-úklid-css) · [přechod z 1.2.3](SELF_HOSTING.md#přechod-z-123-na-124).
 
 Vydání **1.2.8** přináší [opravy zkušeností, bojového rozestavení a záloh](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#128--2026-11-10). [Přechod z 1.2.7](SELF_HOSTING.md#přechod-z-127-na-128).
+
+Vydání **1.3.0** zrychluje [synchronizaci stolu](DEVELOPMENT.md#synchronizace-stolu-a-výpadky) a [obnovuje spojení po výpadku](PLAYING.md#když-vypadne-spojení). [Přechod z 1.2.8](SELF_HOSTING.md#přechod-z-128-na-130).
