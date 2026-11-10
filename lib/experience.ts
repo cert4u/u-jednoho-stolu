@@ -8,7 +8,7 @@ export function awardExperience(game:Game,actor:Member,payload:Record<string,unk
   if(typeof id!=='string'||! /^[a-zA-Z0-9-]{16,80}$/.test(id))throw new Error('Neplatný identifikátor odměny. Zkus otevřít přidělení znovu.');
   // Keep request IDs so a retried award cannot be applied twice.
   if(game.experienceAwards?.some(award=>award.id===id))return;
-  const recipients=game.members.filter(m=>m.role==='player'&&(payload.target==='all'||payload.target===m.id));
+  const recipients=game.members.filter(m=>m.role==='player'&&!m.archived&&(payload.target==='all'||payload.target===m.id));
   if(!recipients.length)throw new Error('Vyber hráče, kterému chceš přidělit zkušenosti.');
   if(recipients.some(m=>!Number.isSafeInteger((m.experience??0)+amount)))throw new Error('Celkový počet zkušeností je příliš vysoký.');
   const reason=String(payload.reason||'').trim().slice(0,300);

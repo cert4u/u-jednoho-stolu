@@ -21,7 +21,8 @@ export const message = z.object({
   id,
   from: id,
   name: text(60),
-  text: text(4000),
+  // Old group awards could list all 199 players by name.
+  text: text(6800),
   to: id,
   time: z.number().finite(),
   roll: z.boolean().optional(),
@@ -34,7 +35,7 @@ export const message = z.object({
     .optional(),
   mechanics: mechanics.optional(),
   audience: z.array(id).max(12).optional(),
-});
+}).refine((entry) => entry.experience || entry.text.length <= 4000, { path: ['text'] });
 export const initiative = z
   .object({
     autoTick: z.boolean().optional(),

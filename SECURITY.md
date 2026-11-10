@@ -17,8 +17,10 @@ Zranitelnost oznam soukromě přes záložku Security, pokud je tato možnost v 
 - JSON export kampaně vynechává tokeny a otisky klíčů, ale obsahuje tajnou přípravu a chat. Snapshot celé databáze obsahuje i přístupy. Obě zálohy chraň jako soukromá data.
 - Pouze updater má Docker socket. Přístup k němu je oprávnění ovládat Docker hostitele; updater ani jeho token nepublikuj hráčům. App kontejner socket nemá.
 - Přehled, stažení a obnova snapshotů SQLite vyžadují relaci správce instalace. Obnova navíc vyžaduje potvrzení názvu zálohy a dostupný updater. Zálohy stahuj a ukládej jako citlivá data.
-- Admin změnové požadavky vyžadují cookie a správný `Origin`; relace po restartu zaniká. Interní endpointy vyžadují jiný Bearer token než hra.
+- Změnové požadavky administrace vyžadují cookie a správný `Origin`. Odhlášení zneplatní relaci na serveru. Všechny relace zanikají při restartu. Interní endpointy vyžadují vlastní Bearer token.
 - Hlasový JWT je krátkodobý a umožňuje publikovat pouze mikrofon konkrétní identity v jedné místnosti. Jeho vypršení neodpojí existující hovor; okamžité serverové vykázání po archivaci postavy není implementované. Dodatečné koncové E2EE se v aplikaci nezapíná. Viz [hlas](docs/VOICE.md).
+
+Workflow [Dependency audit](.github/workflows/dependency-audit.yml) kontroluje každý týden celý npm lockfile včetně nástrojů používaných při sestavení. Vypíše všechna hlášení a neprojde při vysoké nebo kritické závažnosti. Stejnou kontrolu lze spustit pomocí `npm audit --audit-level=high`.
 
 ## Provoz
 

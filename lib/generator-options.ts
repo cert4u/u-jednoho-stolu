@@ -13,32 +13,30 @@ export const generatorLimits = {
 function integer(min: number, max: number, label: string) {
   const message = `${label}: zadej celé číslo od ${min} do ${max}.`;
   return z
-    .number({ errorMap: () => ({ message }) })
+    .number({ error: message })
     .int(message)
     .min(min, message)
     .max(max, message);
 }
 
-const sizeOrCorridorsError = () => ({
-  message: 'Vyber velikost místností a podobu chodeb.',
-});
+const sizeOrCorridorsError = 'Vyber velikost místností a podobu chodeb.';
 const nameError = `Název jeskyně musí mít 1 až ${generatorLimits.maxNameLength} znaků.`;
 const seedError = `Semínko musí mít 1 až ${generatorLimits.maxSeedLength} znaků.`;
 
 // Store all fields explicitly. Only incoming generation requests get legacy defaults.
 const optionsFields = z.object({
   version: z.enum(['v1', 'v2'], {
-    errorMap: () => ({ message: 'Neznámá verze generátoru.' }),
+    error: 'Neznámá verze generátoru.',
   }),
   style: z.enum(['castle', 'mine', 'cave'], {
-    errorMap: () => ({ message: 'Vyber styl podzemí.' }),
+    error: 'Vyber styl podzemí.',
   }),
   variant: integer(0, 2, 'Varianta'),
   separateExit: z.boolean({
-    errorMap: () => ({ message: 'Vyber, zda vytvořit samostatný východ.' }),
+    error: 'Vyber, zda vytvořit samostatný východ.',
   }),
   name: z
-    .string({ errorMap: () => ({ message: nameError }) })
+    .string({ error: nameError })
     .trim()
     .min(1, nameError)
     .max(generatorLimits.maxNameLength, nameError),
@@ -49,12 +47,12 @@ const optionsFields = z.object({
     'Místností na patro',
   ),
   size: z.enum(['small', 'medium', 'large'], {
-    errorMap: sizeOrCorridorsError,
+    error: sizeOrCorridorsError,
   }),
-  corridors: z.enum(['direct', 'winding'], { errorMap: sizeOrCorridorsError }),
+  corridors: z.enum(['direct', 'winding'], { error: sizeOrCorridorsError }),
   connections: integer(0, generatorLimits.maxConnections, 'Další propojení'),
   seed: z
-    .string({ errorMap: () => ({ message: seedError }) })
+    .string({ error: seedError })
     .trim()
     .min(1, seedError)
     .max(generatorLimits.maxSeedLength, seedError),

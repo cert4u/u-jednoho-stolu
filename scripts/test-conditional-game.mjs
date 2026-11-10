@@ -4,7 +4,7 @@ async function post(action,values={},session){const response=await fetch(base+'/
 const pj=await post('create',{name:'Conditional PJ'}),player=await post('join',{room:pj.room,name:'Player'});
 const get=(session,etag)=>fetch(base+'/api/game?room='+session.room,{headers:{Authorization:'Bearer '+session.token,...(etag?{'If-None-Match':etag}:{})}});
 const first=await get(pj),etag=first.headers.get('etag');assert(etag);const original=await first.json();
-const unchanged=await get(pj,etag);assert.equal(unchanged.status,304);assert.equal(await unchanged.text(),'');assert.equal(unchanged.headers.get('vary'),'Authorization');assert.equal(unchanged.headers.get('cache-control'),'no-store');
+const unchanged=await get(pj,etag);assert.equal(unchanged.status,304);assert.equal(await unchanged.text(),'');assert(unchanged.headers.get('vary')?.split(',').some(field=>field.trim().toLowerCase()==='authorization'));assert.equal(unchanged.headers.get('cache-control'),'no-store');
 assert.equal((await get({...pj,token:'wrong'},etag)).status,401);
 const publicView=await get(player,etag);assert.equal(publicView.status,200);const publicGame=await publicView.json();assert.equal(publicGame.notes,'');assert(!('messageOperations' in publicGame));assert.notEqual(publicView.headers.get('etag'),etag);
 await post('notes',{notes:'Conditional private note',expected:{notes:original.notes}},pj);

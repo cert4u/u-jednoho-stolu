@@ -7,7 +7,7 @@ import { issueRecovery } from '../../../lib/access';
 import { refreshSight } from '../../../lib/exploration';
 import { reconcileInitiative } from '../../../lib/initiative';
 import { admitRoom } from './admission';
-import { assertCampaignFits } from './room-store';
+import { assertCampaignFits, serializeCampaign } from './room-store';
 import { fail, gameHeaders as headers } from './responses';
 import { gameView } from './view';
 
@@ -40,15 +40,15 @@ export async function createRoom(body: Record<string, unknown>) {
   if (game.atlas?.lighting?.enabled) refreshSight(game);
   const owner = game.members.find((m) => m.role === 'pj')!;
   const recoveryCode = await issueRecovery(owner, code);
-  assertCampaignFits(game);
-  const denied = await admitRoom(code, JSON.stringify(game));
-  if (denied) return denied;
-  return Response.json({
+  const serialized = serializeCampaign(game);
+  const response = Response.json({
     room: code,
     token: owner.token,
     recoveryCode,
     game: gameView(game, owner.id),
   });
+  const denied = await admitRoom(code, serialized);
+  return denied ?? response;
 }
 
 export async function downloadCampaign(game: Game) {

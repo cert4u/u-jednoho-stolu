@@ -27,7 +27,7 @@ export function saveStoryOutline(game: Game, actor: Member, input: Record<string
   if (previous?.operations?.includes(requestId)) return;
   if (input.expectedRevision !== (previous?.revision ?? null))
     throw new EditConflict('Osnova se mezitím změnila. Rozepsaný text zůstává zachovaný; otevři panel znovu pro poslední verzi.');
-  const parsed = z.record(storyPhaseSchema, storyBeatSchema).safeParse(input.phases);
+  const parsed = z.partialRecord(storyPhaseSchema, storyBeatSchema).safeParse(input.phases);
   if (!parsed.success || !Object.keys(parsed.data).length) throw new Error('Vyplň platnou fázi osnovy: nadpis nejvýše 100 a poznámka 3000 znaků.');
   const ids = new Set((game.mapNotes ?? []).map(note => note.id));
   if (Object.values(parsed.data).some(beat => beat.noteIds.some(id => !ids.has(id))))

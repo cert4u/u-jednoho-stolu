@@ -4,12 +4,12 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Počítej přibližně se 2 GB volné RAM a několika GB disku pro sestavení image. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Tato dokumentace odpovídá vydání 1.2.7; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
+Tato dokumentace odpovídá vydání 1.2.8; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
 
 ## První spuštění
 
 ```sh
-git clone --branch v1.2.7 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.2.8 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -57,7 +57,7 @@ Node server mimo Docker navíc čte `PORT`, `STUL_DATA_DIR` a případně `STUL_
 
 ## Aktualizace z administrace
 
-Otevři **`https://tvoje-adresa/admin`** a přihlas se vlastním `STUL_ADMIN_PASSWORD`. Neexistuje výchozí heslo. Toto heslo je oddělené od účtů PJ a hráčů.
+Otevři **`https://tvoje-adresa/admin`** a přihlas se vlastním `STUL_ADMIN_PASSWORD`. Neexistuje výchozí heslo. Toto heslo je oddělené od účtů PJ a hráčů. Odhlášení ihned zneplatní danou relaci na serveru. Restart aplikace ukončí všechny relace správce.
 
 Přehled ukazuje verzi, commit, režim údržby, velikost databáze včetně WAL, volné místo na jejím volume a poslední zálohu. Podrobnosti o updateru, konfiguraci hostingu a nastavení hlasu najdeš ve **Nastavení serveru**.
 
@@ -241,6 +241,12 @@ Podporovaný rollback vrací odpovídající image i databázový snapshot. Pře
 Vytvoř úplnou serverovou ZIP zálohu, uchovej konfiguraci a zachovej celý datový volume. Vyber stabilní vydání 1.2.4 v administraci updateru; při ručním sestavení použij tag `v1.2.4`. Přechod nevyžaduje SQL migraci, změnu konfigurace ani přestavbu updateru nebo LiveKitu. Formát záloh se nemění.
 
 Po aktualizaci obnov herní stránku i `/admin`. Ověř přihlášení, otevření mapy a posun obsahu v dialogu. Podporovaný rollback vrací image i databázový snapshot z doby před aktualizací. [Změny vydání](../CHANGELOG.md#124--2026-11-09).
+
+## Přechod z 1.2.7 na 1.2.8
+
+Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci zvol stabilní vydání 1.2.8 nebo při ruční aktualizaci sestav aplikaci ze značky `v1.2.8`. Ponech připojený celý datový volume. Stačí výměna aplikace, konfigurace i updater zůstávají kompatibilní a SQL migrace nejsou potřeba.
+
+Po výměně se znovu přihlas do administrace. Ověř export a obnovu kopie kampaně, zejména pokud má dlouhý archiv postav nebo rozpracovaný boj. Formát přenositelné zálohy zůstává 1. Nová verze zachová i rozsáhlejší historické odměny, které 1.2.7 při exportu odmítala. Při rollbacku použij předaktualizační snapshot databáze. [Změny vydání](../CHANGELOG.md#128--2026-11-10).
 
 ## Přechod z 1.2.6 na 1.2.7
 

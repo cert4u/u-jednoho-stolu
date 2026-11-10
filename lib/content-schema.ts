@@ -10,12 +10,12 @@ export function parseCatalog<T extends z.ZodType<{ id: string }>>(
 ): z.output<T>[] {
   const ids = new Set<string>();
   return sources.map(({ path, data }) => {
-    const result = schema.safeParse(data);
+    const result = schema.safeParse(data, { reportInput: true });
     if (!result.success) {
       const issues = result.error.issues.map(issue => {
         const field = issue.path.join('.') || 'položka';
         if (issue.code === 'invalid_type')
-          return issue.received === 'undefined'
+          return issue.input === undefined
             ? `chybí povinné pole ${field}`
             : `${field}: očekávaný typ ${issue.expected}`;
         if (issue.code === 'custom') return `${field}: ${issue.message}`;

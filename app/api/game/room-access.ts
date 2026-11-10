@@ -1,6 +1,54 @@
 import { claimRecovery, issueRecovery } from '../../../lib/access';
 import { initialGame, type Game } from '../../../lib/game';
+import { cellKey } from '../../../lib/dungeon';
+import { MAP_WIDTH } from '../../../lib/map-limits';
 import { fail } from './responses';
+
+const JOIN_START_Y = 6;
+
+function startingPosition(game: Game, activeBefore: number) {
+  const location = game.atlas?.location;
+  if (location) return { x: location.x, y: location.y };
+  return { x: 5 + activeBefore, y: JOIN_START_Y };
+}
+
+export function repairLegacyMemberPositions(game: Game) {
+  const battle = game.atlas?.battle;
+  const battleFloor =
+    battle &&
+    game.atlas?.levels.find((level) => level.id === battle.levelId)?.map.floors;
+  const battleCells = battleFloor && new Set(battleFloor);
+  const validBattleOrigin =
+    battle && battleCells?.has(cellKey(...battle.origin))
+      ? battle.origin
+      : undefined;
+
+  // Older rooms used 5 + the number of members, including archived characters.
+  const lastPossibleJoinX = 5 + game.members.length - 1;
+  let activeBefore = 0;
+  for (const member of game.members) {
+    if (
+      member.role === 'player' &&
+      member.y === JOIN_START_Y &&
+      Number.isInteger(member.x) &&
+      member.x >= MAP_WIDTH &&
+      member.x <= lastPossibleJoinX
+    ) {
+      Object.assign(member, startingPosition(game, activeBefore));
+    }
+    if (
+      validBattleOrigin &&
+      battleCells &&
+      member.role === 'player' &&
+      !member.archived &&
+      !battleCells.has(cellKey(member.x, member.y))
+    ) {
+      [member.x, member.y] = validBattleOrigin;
+    }
+    if (!member.archived) activeBefore++;
+  }
+  return game;
+}
 
 export function authenticatedMember(game: Game, request: Request) {
   const token = request.headers.get('Authorization')?.replace('Bearer ', '');
@@ -37,11 +85,12 @@ export async function resolveActionMember(
       return fail(
         'Místnost má příliš mnoho archivovaných postav. Založ další kampaň.',
       );
-    if (game.members.filter((member) => !member.archived).length >= 12)
-      return fail('Stůl už má 12 hráčů.');
+    const activeCount = game.members.filter(
+      (member) => !member.archived,
+    ).length;
+    if (activeCount >= 12) return fail('Stůl už má 12 hráčů.');
 
     const token = crypto.randomUUID();
-    const location = game.atlas?.location;
     const member = {
       ...initialGame(String(body.name || 'Dobrodruh').slice(0, 30), token)
         .members[0],
@@ -49,8 +98,7 @@ export async function resolveActionMember(
       color: ['#698675', '#7789a8', '#b28c47', '#a67887'][
         game.members.length % 4
       ],
-      x: location ? location.x : 5 + game.members.length,
-      y: location ? location.y : 6,
+      ...startingPosition(game, activeCount),
     };
     game.members.push(member);
     const recoveryCode = await issueRecovery(member, roomId);

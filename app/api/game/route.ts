@@ -17,9 +17,13 @@ import { reconcileInitiative } from '../../../lib/initiative';
 import { reconcileGenerationMetadata } from '../../../lib/generator-provenance';
 import { applyGameAction } from './actions';
 import { createRoom, downloadCampaign } from './campaign';
-import { authenticatedMember, resolveActionMember } from './room-access';
-import { readRoom, writeRoom } from './room-store';
-import { gameView } from './view';
+import {
+  authenticatedMember,
+  repairLegacyMemberPositions,
+  resolveActionMember,
+} from './room-access';
+import { readRoom, serializeCampaign, writeRoom } from './room-store';
+import { gameView, missingViewLevel } from './view';
 import { conditionalView } from './conditional-view';
 import { fail, gameHeaders as headers } from './responses';
 
@@ -28,7 +32,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const row = await readRoom(url.searchParams.get('room') || '');
     if (!row) return fail('Místnost neexistuje.', 404);
-    const game = JSON.parse(row.data) as Game;
+    const game = repairLegacyMemberPositions(JSON.parse(row.data) as Game);
     const member = authenticatedMember(game, request);
     if (!member) return fail('Připoj se k místnosti.', 401);
     const catalog = url.searchParams.get('catalog');
@@ -68,14 +72,11 @@ export async function GET(request: Request) {
       pendingCombat(game, member.id);
       return await downloadCampaign(game);
     }
+    const level = url.searchParams.get('level') || undefined;
+    if (missingViewLevel(game, member, level)) return fail('Patro neexistuje.');
     return conditionalView(
       request,
-      gameView(
-        game,
-        member.id,
-        row.version,
-        url.searchParams.get('level') || undefined,
-      ),
+      gameView(game, member.id, row.version, level),
     );
   } catch {
     return fail('Spojení se stolem se nepodařilo. Zkus to znovu.', 503);
@@ -101,10 +102,12 @@ export async function POST(request: Request) {
     for (let attempt = 0; attempt < 6; attempt++) {
       const row = await readRoom(roomId);
       if (!row) return fail('Tento kód místnosti neznáme.', 404);
-      const game = JSON.parse(row.data) as Game;
+      const game = repairLegacyMemberPositions(JSON.parse(row.data) as Game);
       const access = await resolveActionMember(game, row.id, request, body);
       if (access instanceof Response) return access;
       const { member, token } = access;
+      const requestedLevel =
+        typeof body.levelId === 'string' ? body.levelId : undefined;
       try {
         if (await messageReplay(game, member, body))
           return Response.json(
@@ -113,7 +116,9 @@ export async function POST(request: Request) {
                 game,
                 member.id,
                 row.version,
-                typeof body.levelId === 'string' ? body.levelId : undefined,
+                missingViewLevel(game, member, requestedLevel)
+                  ? undefined
+                  : requestedLevel,
               ),
             },
             { headers },
@@ -148,7 +153,26 @@ export async function POST(request: Request) {
       reconcileInitiative(game);
       if (game.atlas?.battle || game.atlas?.lighting?.enabled)
         refreshSight(game);
-      const write = await writeRoom(row, game);
+      const followsParty =
+        body.action === 'explore' &&
+        (body.op === 'travel' || body.op === 'place');
+      const level =
+        generatedLevels?.[0] ?? (followsParty ? undefined : requestedLevel);
+      if (missingViewLevel(game, member, level))
+        return fail('Patro neexistuje.');
+
+      // Capture stored data before projection normalizes its view, then prepare the response before writing.
+      const serialized = serializeCampaign(game);
+      const response = Response.json(
+        {
+          game: gameView(game, member.id, row.version + 1, level),
+          ...(generatedLevels ? { generatedLevels } : {}),
+          ...(token ? { token, room: row.id } : {}),
+          ...(recoveryCode ? { recoveryCode } : {}),
+        },
+        { headers },
+      );
+      const write = await writeRoom(row, serialized);
       if (write.status === 'capacity')
         return Response.json(
           {
@@ -157,26 +181,7 @@ export async function POST(request: Request) {
           { status: 503, headers: { ...headers, 'Retry-After': '60' } },
         );
       if (write.status === 'retry') continue; // Read the latest revision and reapply the action.
-      return Response.json(
-        {
-          game: gameView(
-            game,
-            member.id,
-            write.version,
-            generatedLevels?.[0] ||
-              (body.action === 'explore' &&
-              ['travel', 'place'].includes(String(body.op))
-                ? undefined
-                : typeof body.levelId === 'string'
-                  ? body.levelId
-                  : undefined),
-          ),
-          ...(generatedLevels ? { generatedLevels } : {}),
-          ...(token ? { token, room: row.id } : {}),
-          ...(recoveryCode ? { recoveryCode } : {}),
-        },
-        { headers },
-      );
+      return response;
     }
     return fail(
       'Stůl je zaneprázdněný nebo instalace nemá kapacitu pro další data. Zkus to znovu, případně kontaktuj správce.',

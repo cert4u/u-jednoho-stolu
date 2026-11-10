@@ -75,7 +75,7 @@ export function createAdminApi({ auth, origin, info, maintenance, updater }) {
       return;
     }
     if (pathname === '/admin/api/logout' && req.method === 'POST') {
-      auth.logout(res);
+      auth.logout(req, res);
       return;
     }
     if (pathname === '/admin/api/status' && req.method === 'GET') {

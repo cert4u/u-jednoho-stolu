@@ -7,10 +7,10 @@ Jde o limity aktuálního kódu v této větvi, nikoli o příslib vhodnosti pro
 | Oblast | Limit / chování |
 | --- | --- |
 | Mapa | 56 × 40 polí na patro, nejvýše 8 pater na místnost. Okolní papír není další kreslicí plocha. |
-| Souřadnice | API od nuly: x 0–27, y 0–19. Uživatelská mřížka je číslovaná od 1. |
+| Souřadnice | Políčka v API od nuly mají x 0–55 a y 0–39. Uživatelská mřížka je číslovaná od 1. |
 | Hráči | 12 aktivních účastníků včetně PJ, 200 postav včetně archivovaných. |
 | Příšery | 200 včetně archivovaných na dobrodružství. |
-| Generátor | 1–8 nových pater podle zbývající kapacity; 2–12 místností na patro, u velkých 2–6. Samostatná kapacita se počítá se znovuvyužitím skutečně prázdného výchozího patra. |
+| Generátor | Rozvržení 28 × 20 polí. 1–8 nových pater podle zbývající kapacity; 2–12 místností na patro, u velkých 2–6. Samostatná kapacita se počítá se znovuvyužitím skutečně prázdného výchozího patra. |
 | Dohled | Ruční maximum 1–12 polí. Volitelná automatika: dohled bez světla 0–12, omezený tímto maximem; nula znamená vlastní políčko. |
 | Poznámky a místnosti na mapě | 200 dohromady na dobrodružství včetně automatických značek generátoru, nejvýše jedna na políčko a patro. Volitelné číslo 1–999 je unikátní na patře; upozornění 1–6 polí, výchozí 2 (automatické značky je mají vypnuté). |
 | Inspekce mapy | Jen PJ. Platný V2 graf vymezuje logickou místnost; ruční/změněná mapa používá propojenou podlahu ohraničenou zdmi a dveřmi. Volná chodba může spojit více místností. Kořist a zkoušky se hledají podle vazby na poznámky v prostoru. |

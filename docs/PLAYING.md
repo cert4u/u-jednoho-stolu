@@ -40,7 +40,7 @@ V samotném generátoru volba **Použít předlohu jeskyně** vyplní parametry 
 
 ## Deník a soukromí
 
-V **Můj deník** zapisuj jméno, rasu, povolání, úroveň, pět vlastností a hotové bojové hodnoty ÚČ, OČ a útočnost. Změna povolání či výbavy je sama nepřepočítá. Úroveň se zkušenostmi automaticky nezvyšuje; zkušenosti přiděluje PJ.
+V **Můj deník** zapisuj jméno, rasu, povolání, úroveň, pět vlastností a hotové bojové hodnoty ÚČ, OČ a útočnost. Změna povolání či výbavy je sama nepřepočítá. Úroveň se zkušenostmi automaticky nezvyšuje. PJ přiděluje zkušenosti jednotlivé aktivní hráčské postavě nebo celé aktivní družině. Archivované postavy si ponechávají už získané zkušenosti.
 
 Nabídka **Povolání** vždy zobrazí celý seznam. Válečník, hraničář, alchymista, kouzelník a zloděj mají mužskou i ženskou ilustraci, která se zobrazí při výběru. Pro vlastní název zvol **Vlastní povolání…**.
 
@@ -183,6 +183,8 @@ PJ v **Čas a světlo** posouvá čas a spravuje zdroje světla. Ubývá pouze d
 2. Nastav **Dohled bez světla** (0–12 polí) a ulož řízení. Nula ponechá aktuálně viditelné jen vlastní políčko; dříve známá mapa zůstává šedá. Horní hranicí vidění je vždy maximální dohled nastavený u mapy.
 3. U každého světla zadej **Dosah světla** (1–12 polí) a případně **Nosiče světla**. Starší světla bez údaje mají při zapnutí automatiky dosah 4 pole.
 4. Zapálení, zhasnutí, dohoření, doplnění a odebrání světla přepočítají viditelnost. Vrácení posledního posunu času obnoví odpovídající světla a dohled, ale nevrací pohyb postav.
+
+Pokud PJ vrátí archivovanou postavu během boje, postava se objeví na výchozím políčku aktuálního rozestavení.
 
 Při společném průzkumu jsou světla u družiny. V bojovém rozestavení svítí od svého nosiče; **Společné světlo** nese vedoucí, případně první aktivní hráč. Světlo přiřazené archivované postavě se do dohledu nepočítá; PJ ho může přidělit jinému nosiči. Bez hráčů je společné světlo u bodu družiny.
 

@@ -73,7 +73,8 @@ export const backupSchema = z.object({
           id,
           by: id,
           amount: int(1, 1000000),
-          recipients: z.array(id).max(12),
+          // Old group awards included archived characters. Keep the recorded recipients.
+          recipients: z.array(id).max(199),
           reason: text(300),
           time: z.number().finite(),
         }),

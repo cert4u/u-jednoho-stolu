@@ -85,3 +85,7 @@ Při vydání ověř opožděné odpovědi při přepínání pater a přístupu
 ## Vydání 1.2.7
 
 Při ověřování podrž potvrzení odeslané zprávy, napiš druhou a zkontroluj, že po potvrzení zůstala v poli. Dvě souběžné operace musí držet ovládání ve stavu načítání až do dokončení poslední. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-126-na-127).
+
+## Vydání 1.2.8
+
+Ověř skupinovou odměnu s archivovanými postavami, obnovení postavy během boje a export s opětovnou obnovou obou kampaní. Integrační sada ověřuje také přenos historických odměn. Přechod nevyžaduje SQL migraci ani novou konfiguraci nebo updater. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-127-na-128).

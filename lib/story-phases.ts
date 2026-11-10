@@ -20,7 +20,7 @@ export const storyBeatSchema = z.object({
 }).strict();
 export const storyOutlineSchema = z.object({
   revision: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
-  phases: z.record(storyPhaseSchema, storyBeatSchema),
+  phases: z.partialRecord(storyPhaseSchema, storyBeatSchema),
   operations: z.array(z.string().regex(/^[a-zA-Z0-9-]{16,80}$/)).max(256).optional(),
 }).strict();
 export type StoryBeat = z.infer<typeof storyBeatSchema>;

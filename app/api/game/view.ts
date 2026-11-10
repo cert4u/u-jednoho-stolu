@@ -19,7 +19,14 @@ import {
   explorationView,
 } from '../../../lib/exploration';
 import { dungeonFor, playerDungeon, cellKey } from '../../../lib/dungeon';
-import type { Game } from '../../../lib/game';
+import type { Game, Member } from '../../../lib/game';
+
+export function missingViewLevel(game: Game, member: Member, level?: string) {
+  if (member.role !== 'pj' || !level) return false;
+  return game.atlas
+    ? !game.atlas.levels.some((entry) => entry.id === level)
+    : level !== 'ground';
+}
 
 export function gameView(
   g: Game,

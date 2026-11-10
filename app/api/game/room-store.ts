@@ -23,9 +23,12 @@ export function readRoom(id: string) {
 
 type RoomRow = NonNullable<Awaited<ReturnType<typeof readRoom>>>;
 
-export async function writeRoom(row: RoomRow, game: Game) {
+export function serializeCampaign(game: Game) {
   assertCampaignFits(game);
-  const serialized = JSON.stringify(game);
+  return JSON.stringify(game);
+}
+
+export async function writeRoom(row: RoomRow, serialized: string) {
   const dataBytes = encoder.encode(serialized).length;
   const storageLimit = roomBytesLimit();
   const db = getDb();
@@ -43,9 +46,8 @@ export async function writeRoom(row: RoomRow, game: Game) {
         (SELECT coalesce(sum(length(CAST(data AS BLOB))),0) FROM rooms WHERE id != ${row.id}) + ${dataBytes} <= ${storageLimit})`,
       ),
     )
-    .returning({ version: rooms.version });
-  if (updated.length)
-    return { status: 'saved', version: updated[0].version } as const;
+    .returning({ id: rooms.id });
+  if (updated.length) return { status: 'saved' } as const;
 
   const oldBytes = encoder.encode(row.data).length;
   if (dataBytes > oldBytes) {

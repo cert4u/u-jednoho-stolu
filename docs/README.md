@@ -57,4 +57,4 @@ Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [a
 
 Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-úklid-css) · [přechod z 1.2.3](SELF_HOSTING.md#přechod-z-123-na-124).
 
-Vydání **1.2.7** přináší [opravy chatu a souběžných akcí](../CHANGELOG.md#127--2026-11-09). [Přechod z 1.2.6](SELF_HOSTING.md#přechod-z-126-na-127).
+Vydání **1.2.8** přináší [opravy zkušeností, bojového rozestavení a záloh](../CHANGELOG.md#128--2026-11-10). [Přechod z 1.2.7](SELF_HOSTING.md#přechod-z-127-na-128).

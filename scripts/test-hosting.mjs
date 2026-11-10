@@ -34,6 +34,15 @@ assert.equal((await fetch(origin+'/admin')).status,200);for(const asset of ['cat
  assert.match(download.headers.get('content-disposition'),/attachment/);
  assert.equal(Buffer.from(await download.arrayBuffer()).subarray(0,15).toString(),'SQLite format 3');
  assert.equal((await fetch(origin+'/admin/api/backup?name=..%2Fgame.sqlite',{headers:adminHeaders})).status,404);
+ const otherLogin = await post('/admin/api/login', { password }, { Origin: origin });
+ assert.equal(otherLogin.status, 200);
+ const otherCookie = otherLogin.headers.get('set-cookie').split(';')[0];
+ assert.notEqual(otherCookie, cookie.split(';')[0]);
+ const loggedOut = await post('/admin/api/logout', {}, { Cookie: otherCookie, Origin: origin });
+ assert.equal(loggedOut.status, 200);
+ assert.match(loggedOut.headers.get('set-cookie'), /Max-Age=0/);
+ assert.equal((await fetch(origin + '/admin/api/status', { headers: { Cookie: otherCookie } })).status, 401);
+ assert.equal((await fetch(origin + '/admin/api/status', { headers: { Cookie: cookie } })).status, 200);
  const symlink='manual-1234567890123-1234567890abcdef.sqlite';
  symlinkSync(path.join(dir,'game.sqlite'),path.join(dir,'backups',symlink));
  assert.equal((await fetch(origin+'/admin/api/backup?name='+symlink,{headers:adminHeaders})).status,404);

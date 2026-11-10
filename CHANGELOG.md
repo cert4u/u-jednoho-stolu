@@ -1,5 +1,15 @@
 # Změny
 
+## 1.2.8 — 2026-11-10
+
+- Zkušenosti pro celou družinu dostávají aktivní hráčské postavy. Historické odměny a jejich zápisy v chatu zůstávají přenositelné i v kampaních s dlouhým archivem.
+- Postava vrácená z archivu během boje začíná na výchozím políčku rozestavení. Pokud starší chyba nechala aktivní postavu mimo podlahu, při načtení se vrátí na platný výchozí bod a kampaň lze opět exportovat.
+
+- Nový hráč začne u umístěné družiny nebo na výchozím políčku podle počtu aktivních účastníků. U existujících kampaní aplikace při čtení opraví pozici za hranicí mapy vzniklou započítáním archivovaných postav. Opravená pozice se zahrne do exportu a uloží při dalším úspěšném zápisu.
+- Nový požadavek PJ s neplatným patrem vrátí chybu bez změny kampaně a revize.
+- Odhlášení zneplatní relaci správce na serveru. Aktualizované ověřování záloh zamítne nadlimitní seznamy před zpracováním jejich položek. CI pravidelně kontroluje bezpečnost npm závislostí.
+- [Postup aktualizace z 1.2.7](docs/SELF_HOSTING.md#přechod-z-127-na-128).
+
 ## 1.2.7 — 2026-11-09
 
 - Potvrzení odeslané zprávy v chatu ponechá rozepsanou další zprávu. Při chybě zůstane rozepsaný text k dispozici.

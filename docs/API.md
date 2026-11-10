@@ -8,16 +8,18 @@ Toto je přehled aktuálního interního API pro přispěvatele, nikoli verzovan
 
 Herní požadavky používají `Authorization: Bearer <token-postavy>`. Nejde o heslo `/admin` ani o token updateru. Identifikátor místnosti má 10 velkých hexadecimálních znaků. Kód místnosti sám neopravňuje číst existující soukromý stav; akce `join` s ním ale umožňuje přidat novou postavu, dokud je kapacita.
 
-Mapové souřadnice jsou od nuly, x 0–27 a y 0–19. Hrany mají klíče `h:x:y` a `v:x:y`; vodorovná hrana spojuje `(x,y)` s `(x+1,y)`, svislá `(x,y)` s `(x,y+1)`. UI mřížka je číslovaná od 1. Výchozí patro má ID `ground`, další patra vlastní identifikátory.
+Mapová políčka mají souřadnice od nuly v rozsahu x 0–55 a y 0–39. Hrana na pravém okraji může mít x = 56 a hrana na spodním okraji y = 40. Hrany mají klíče `h:x:y` a `v:x:y`; vodorovná hrana spojuje `(x,y)` s `(x+1,y)`, svislá `(x,y)` s `(x,y+1)`. UI mřížka je číslovaná od 1. Výchozí patro má ID `ground`, další patra vlastní identifikátory.
 
 Při opakování podporované mutace zachovej její `requestId` (běžně UUID; validace přijímá 16–80 alfanumerických znaků a pomlček). Nový identifikátor znamená novou akci. Historie opakování je omezená a různě scoped podle modulu; `chat` a obyčejný `roll` nově přijímají volitelný `requestId` (1–100 znaků A–Z, a–z, 0–9, `_`, `-`), scoped na autora. Opakování se stejnými normalizovanými vstupy vrátí aktuální pohled bez dalšího zápisu; jiný obsah se stejným ID vrátí 409. Kampaň uchovává posledních 256 těchto operací (ID zprávy a SHA-256 normalizovaného vstupu, bez další kopie textu nebo obrázků) v soukromém poli `messageOperations`. Starší klient bez ID funguje bez deduplikace. `character`, `notes`, přidání hráče a archivace nejsou univerzálně idempotentní.
+
+Odměna `experience` přijímá ID aktivní hráčské postavy nebo `all` pro celou aktivní družinu. Obnovení archivované postavy během rozestavení ji umístí na jeho výchozí políčko. Záloha zachová historické odměny a jejich zprávy i tehdy, pokud dřívější verze zahrnula archivované postavy.
 
 ## Čtení a export
 
 | Požadavek | Výsledek |
 | --- | --- |
 | `GET /api/game?room=<code>` | Filtrovaný herní pohled pro držitele tokenu; `revision`, `me`, mapa, dostupní členové, chat a další panely. |
-| `GET /api/game?room=<code>&level=<id>` | PJ může číst připravované patro; hráčský průzkumný pohled se řídí družinou, ne libovolnou požadovanou úrovní. |
+| `GET /api/game?room=<code>&level=<id>` | PJ může číst připravované patro. Neznámé patro vrátí PJ chybu 400. Hráčský pohled se řídí polohou družiny. |
 | `GET /api/game?room=<code>&download=backup` | Jen PJ: úplný JSON export formátu 1. Vynechá herní tokeny/otisky klíčů, nikoli tajné herní texty. |
 
 Pohled **není** vnitřní `Game`: tajná data se filtrují, některé hodnoty se dopočítávají a operační historie je odstraněná. Nepoužívej filtrovanou odpověď jako úplnou zálohu nebo náhradu databázového řádku.
@@ -26,12 +28,12 @@ Běžné čtení vrací `ETag` z autorizovaného pohledu. Klient může poslat `
 
 ## Zápis hry
 
-`POST /api/game` přijímá JSON. Běžný požadavek obsahuje `action`, `room` a údaje akce, případně `levelId`. Úspěch většinou vrací `{game: <pohled>}`; přihlášení/obnova navíc `token`, `room` a nový `recoveryCode`. Vložení generované mapy vrací také `generatedLevels`.
+`POST /api/game` přijímá JSON. Běžný požadavek obsahuje `action`, `room` a údaje akce, případně `levelId`. Úspěch většinou vrací `{game: <pohled>}`; přihlášení/obnova navíc `token`, `room` a nový `recoveryCode`. Vložení generované mapy vrací také `generatedLevels`. Pokud zadané patro pro pohled PJ neexistuje, nový zápis vrátí 400 a stav ani revize se neuloží. Potvrzení už uloženého chatu nebo hodu se stejným `requestId` může při neplatném patře vrátit výchozí pohled.
 
 | `action` | Oprávnění a význam |
 | --- | --- |
 | `create` | Bez tokenu: vytvoření místnosti a PJ, pole `name`. |
-| `join` | Bez tokenu: `room`, `name`; vytvoří novou hráčskou postavu. |
+| `join` | Bez tokenu: `room`, `name`; vytvoří novou hráčskou postavu u umístěné družiny. Bez umístěné družiny se výchozí políčko určí podle aktivních účastníků. |
 | `recover` | Osobní `recoveryCode` a `requestId`; rotuje přístup ke stejné postavě. |
 | `restore` | Bez tokenu: úplný `backup`; založí novou místnost a přístup PJ. |
 | `chat`, `roll` | Člen: `text`, `to` (`all` nebo ID adresáta). `roll` přijímá např. `2k6+1`, ne klientský výsledek. |
@@ -108,7 +110,7 @@ JWT povoluje pouze publikaci zdroje `microphone`, odběr zvuku a vstup do `stul-
 | `POST /internal/maintenance` | Interní Bearer token updateru, `{enabled: boolean}`. |
 | `POST /internal/backup` | Interní token; klidový režim a dokončené požadavky, vrací jméno SQLite snapshotu. |
 
-Admin relace má nejvýše osm hodin a po restartu aplikace přestane platit. Interní endpointy slouží pouze provoznímu updateru; nepoužívej jeho token v herním klientu ani veřejných ukázkách.
+Admin relace má nejvýše osm hodin. Odhlášení zneplatní konkrétní relaci i na serveru a restart ukončí všechny. Interní endpointy slouží pouze provoznímu updateru; nepoužívej jeho token v herním klientu ani veřejných ukázkách.
 
 ## Chyby a přenos
 
