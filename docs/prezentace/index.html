@@ -29,8 +29,8 @@
       content="Družina při průzkumu ručně kreslené jeskyně z pohledu Pána jeskyně"
     />
     <title>U jednoho stolu — český online herní stůl</title>
-    <link rel="stylesheet" href="./style.css?v=zarovnana-mapa" />
-    <script src="./map-comparison.js" defer></script>
+    <link rel="stylesheet" href="./style.css?v=dva-posuvniky" />
+    <script src="./map-comparison.js?v=dva-posuvniky" defer></script>
   </head>
   <body>
     <a class="skip" href="#obsah">Přeskočit na obsah</a>
@@ -203,7 +203,7 @@
                 min="0"
                 max="100"
                 value="64"
-                aria-label="Poměr pohledů Pána jeskyně a hráče"
+                aria-label="Porovnat mapu Pána jeskyně a hráče"
                 aria-describedby="map-slider-hint"
                 hidden
               />
@@ -219,6 +219,56 @@
                 >
                 <a href="../images/prezentace/mapa-jeskyne-hrac.jpg"
                   >Zvětšit pohled hráče</a
+                >
+              </div>
+            </figcaption>
+          </figure>
+        </section>
+        <section class="map-comparison" aria-labelledby="rozhrani">
+          <h3 id="rozhrani">Jeden stůl, dvě rozhraní</h3>
+          <p>
+            PJ má nástroje pro kreslení a odkrývání mapy, zápisník a správu
+            příšer. Hráč má po ruce vlastní deník, společnou mapu a kostky.
+          </p>
+          <figure class="map-slider map-slider-wide">
+            <div class="map-slider-stage">
+              <img
+                src="../images/prezentace/rozhrani-pj.jpg"
+                width="1600"
+                height="960"
+                loading="lazy"
+                alt="Rozhraní Pána jeskyně. Nad mapou jsou nástroje pro přípravu a odkrývání, vlevo zápisník PJ a správa příšer."
+              />
+              <img
+                src="../images/prezentace/rozhrani-hrace.jpg"
+                width="1600"
+                height="960"
+                loading="lazy"
+                alt="Rozhraní hráčky Ely. U společné mapy jsou ovládání postav, vlastní deník, chat a kostky."
+              />
+              <span class="map-slider-handle" aria-hidden="true" hidden
+                >↔</span
+              >
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value="50"
+                aria-label="Porovnat rozhraní Pána jeskyně a hráče"
+                aria-describedby="interface-slider-hint"
+                hidden
+              />
+            </div>
+            <figcaption>
+              <p id="interface-slider-hint" hidden>
+                Tahem nebo šipkami odkryj ovládání PJ vlevo a hráče vpravo.
+              </p>
+              <div class="map-slider-links">
+                <a href="../images/prezentace/rozhrani-pj.jpg"
+                  >Zvětšit rozhraní PJ</a
+                >
+                <a href="../images/prezentace/rozhrani-hrace.jpg"
+                  >Zvětšit rozhraní hráče</a
                 >
               </div>
             </figcaption>
