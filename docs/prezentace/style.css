@@ -349,7 +349,7 @@ h3 {
   gap: 1.5rem 3rem;
   padding-block: clamp(2.7rem, 5.5vw, 5rem);
 }
-.invite h2 + p {
+.invite h2 ~ p {
   max-width: 50ch;
   margin-top: 0.9rem;
 }

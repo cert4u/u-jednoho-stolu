@@ -10,6 +10,8 @@
 
 **Český online herní stůl pro vlastní fantasy družinu.** PJ nakreslí mapu, pozve kamarády a odkrývá podzemí krok za krokem. Deníky, kostky a volitelný hlasový hovor máte po ruce přímo v prohlížeči.
 
+**[Otevřít prezentaci projektu →](https://cert4u.github.io/u-jednoho-stolu/prezentace/)**
+
 Vedle nástrojů jako Roll20 a Foundry má projekt užší cíl. Spojit dávné kamarády u jednoduchého stolu, který si jeden z nich spustí na vlastním počítači nebo serveru. Hra i data zůstávají u vás, bez cizího herního serveru.
 
 [Jak začít hrát](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Dokumentace](docs/README.md) · [Poslední vydání](https://github.com/cert4u/u-jednoho-stolu/releases/latest)
