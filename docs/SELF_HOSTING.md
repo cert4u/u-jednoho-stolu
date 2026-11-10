@@ -2,9 +2,15 @@
 
 [Dokumentace](README.md) · [Vývoj bez Dockeru](DEVELOPMENT.md#rychlý-start-node-bez-dockeru) · [Řešení problémů](TROUBLESHOOTING.md)
 
-Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Počítej přibližně se 2 GB volné RAM a několika GB disku pro sestavení image. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
+Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
 Tato dokumentace odpovídá vydání 1.2.8; vývojový `main` se může od stabilního vydání lišit. Pro stabilní instalaci zvol zdroje zamýšleného vydání a jeho dokumentaci; `git clone` bez přepnutí bere vývojový `main`. Po klonování můžeš před sestavením přepnout na konkrétní existující tag příkazem `git switch --detach <tag-vydání>`; zvolený tag nahraď označením z GitHub Release. Updater nabízí pouze stabilní GitHub Releases. Číslo verze samo nestačí k určení novosti vývojového buildu: porovnávej i commit a release notes.
+
+## Základní požadavky
+
+Pro jednu menší družinu je orientační výchozí konfigurace **2 jádra nebo vCPU, 2 GB volné RAM a 5 GB volného místa** pro aplikaci, sestavení Docker image a aktualizace. Jde o odhad pro plánování instalace. Kampaně, katalogové obrázky a zálohy potřebují další místo podle množství dat. Pro volitelný hlasový server počítej s rezervou podle počtu lidí v hovoru. [Hlas družiny](VOICE.md)
+
+Na stejném počítači můžeš začít přes `localhost`. Pro společnou hru použij adresu, na kterou se hráči ze své sítě skutečně dostanou. Přístup můžeš zpřístupnit po domácí síti, přes vlastní VPN nebo přes HTTPS reverzní proxy. `PUBLIC_ORIGIN` musí odpovídat adrese, kterou hráči otevírají.
 
 ## První spuštění
 

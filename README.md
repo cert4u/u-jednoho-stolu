@@ -4,252 +4,80 @@
 
 [![CI](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/cert4u/u-jednoho-stolu/actions/workflows/ci.yml)
 [![Stabilní vydání](https://img.shields.io/github/v/release/cert4u/u-jednoho-stolu?label=vyd%C3%A1n%C3%AD&color=2ea44f)](https://github.com/cert4u/u-jednoho-stolu/releases/latest)
-[![Licence MIT](https://img.shields.io/badge/licence-MIT-blue?style=flat)](LICENSE)
-[![Verze v main](https://img.shields.io/github/package-json/v/cert4u/u-jednoho-stolu/main?label=main&color=8b5cf6)](CHANGELOG.md)
-[![Node.js ≥ 22.15](https://img.shields.io/badge/Node.js-%E2%89%A5%2022.15-339933?logo=nodedotjs&logoColor=white)](docs/DEVELOPMENT.md)
+[![Licence MIT](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
 [![Docker · vlastní hosting](https://img.shields.io/badge/Docker-vlastn%C3%AD%20hosting-2496ED?logo=docker&logoColor=white)](docs/SELF_HOSTING.md)
 [![LiveKit · hlas družiny](https://img.shields.io/badge/LiveKit-hlas%20dru%C5%BEiny-f59e0b)](docs/VOICE.md)
 
-**Verze 1.2.8** · [Poznámky k vydání](https://github.com/cert4u/u-jednoho-stolu/releases/tag/v1.2.8)
+**Český online herní stůl pro vlastní fantasy družinu.** PJ nakreslí mapu, pozve kamarády a odkrývá podzemí krok za krokem. Deníky, kostky a volitelný hlasový hovor máte po ruce přímo v prohlížeči.
 
-**Český online herní stůl pro vlastní partu a společné fantasy dobrodružství.**
+Vedle nástrojů jako Roll20 a Foundry má projekt užší cíl. Spojit dávné kamarády u jednoduchého stolu, který si jeden z nich spustí na vlastním počítači nebo serveru. Hra i data zůstávají u vás, bez cizího herního serveru.
 
-Parta kamarádů, čtverečkovaný papír, tužka a kostky. „U jednoho stolu“ přenáší atmosféru večerního hraní do prohlížeče: PJ připraví jeskyni, družina ji společně prozkoumává a příběh vzniká při hře. Mapa, deníky, hody i hlasový hovor jsou po ruce.
+[Jak začít hrát](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Dokumentace](docs/README.md) · [Poslední vydání](https://github.com/cert4u/u-jednoho-stolu/releases/latest)
 
-> V jednoduchosti je síla. Příběh vedete vy, aplikace pomáhá s mapou, evidencí a hody.
+![Herní stůl s čtverečkovanou mapou podzemí, seznamem družiny a panelem chatu a hlasového hovoru](docs/images/herni-stul.jpg)
 
-[Kompletní dokumentace](docs/README.md) · [Přejít k první hře](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Hlasové volání](#hlas-družiny) · [Herní mechaniky a další kroky](docs/MECHANICS.md) · [Plán projektu](docs/ROADMAP.md) · [Licence MIT](LICENSE)
-
-![Ukázka herního stolu: čtverečkovaná mapa, družina v levém panelu a chat s hlasovým hovorem vpravo](docs/images/herni-stul.jpg)
-
-*Ukázka testovací družiny: PJ vidí celou připravenou mapu, hráči pouze objevená místa. Vpravo je hlasový hovor se zvýrazněným mluvčím.*
-
-**Řada 1.2 nabízí místní a komunitní knihovnu pro Node/Docker**: vlastní katalogy v administraci, přenos ZIP, potvrzená instalace a aktualizace z veřejného GitHubu a přenosné podklady kampaní. [Návod pro správce](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) · [GitHub distribuce](docs/CATALOG_GITHUB.md) · [Integrační audit a demo](docs/CATALOG_AUDIT.md). Katalogy po instalaci fungují offline; GitHub je pouze volitelný distribuční kanál. [Přechod z 1.1.0](docs/SELF_HOSTING.md#přechod-z-110-na-120).
-
-Verze **1.2.8** opravuje odměny pro družinu, návrat archivované postavy do boje a situace, které mohly zablokovat export kampaně. [Přehled změn](CHANGELOG.md#128--2026-11-10).
-
-## Pro koho je projekt určený
-
-Pro menší partu, která chce hrát současně po večerech a mít společné místo pro své dobrodružství. Jeden hráč vede hru jako **Pán jeskyně**, ostatní hrají své postavy. Každý se připojí přes prohlížeč pomocí pozvánky; přístup ke své postavě si může obnovit osobním klíčem.
-
-Výchozí inspirací projektu je hraní **Dračího doupěte 1.5**: kreslená mapa, postupné odhalování podzemí, pochodové pořadí a rozhodování PJ. Implementované mechaniky jsou vlastní zjednodušenou a místy upravenou adaptací klasického DrD. Konkrétní situace, následky kouzel a výjimky zůstávají na vaší domluvě a PJ; [herní příručka](docs/PLAYING.md#pravidlový-základ-a-úpravy) popisuje skutečné chování aplikace.
-
-Projekt je open source pod MIT a lze jej provozovat na vlastním serveru. Jde o aktivně vyvíjenou ranou verzi pro důvěryhodnou partu. Tento přehled popisuje hlavní vývojovou větev; změny ve stabilních vydáních najdeš v [historii verzí](CHANGELOG.md).
+*Skutečný herní stůl z pohledu PJ. Hráčům se mapa odkrývá podle toho, kam se družina vydá.*
 
 ## Jak vypadá jeden večer
 
-PJ připraví několik místností, poznámky, příšery a kořist. Hráči otevřou své deníky a připojí se k hovoru. Vedoucí družiny ukáže, kam skupina jde; za rohem se odkryje další část mapy a PJ dostane upozornění na připravené místo v blízkosti.
+**PJ připraví jeskyni.** Nakreslí si místnosti na čtverečkovaný papír nebo začne návrhem z generátoru. Přidá příšery, kořist a text Situace, který se družině rozvine nad mapou při vstupu do místnosti.
 
-U podezřelých dveří přijde zkouška, při střetu hody na útok a obranu. PJ potvrdí následky a družina si po boji rozdělí nález. Objevená mapa, deníky i příprava zůstanou uložené na příště.
+**Družina vyrazí.** Vedoucí ukáže, kam se jde. Zdi, zavřené dveře a volitelně i dosah pochodně určují, co je vidět. Prozkoumaná místa zůstanou zakreslená a zešednou, když se od nich družina vzdálí.
+
+**Kostky rozhodnou o hodu, PJ o následcích.** U podezřelých dveří přijde zkouška, při střetu útok a obrana. Po hře zůstanou uložené deníky, objevená mapa i shrnutí pro příští večer.
 
 ## Co už umí
 
-### Čtverečkovaná mapa a průzkum
+| U stolu | Při přípravě |
+| --- | --- |
+| Společný chat, soukromé šeptání a volitelné hlasové volání. | Ruční kreslení mapy, schodiště, více pater a generátor hradu, dolu či jeskyně. |
+| Deníky, vlastnosti, výbava, měšec, zkušenosti a vlastní kouzla. | Příběhová osnova, tajné poznámky PJ a připravené popisy místností. |
+| Hody, zkoušky, soubojové pořadí a rozestavení na mapě. | Ilustrovaný bestiář, kořist, nástrahy a stafáž mapy. |
+| Společný průzkum, pochodové pořadí a dohled podle světla. | Na Node/Dockeru vlastní i komunitní katalogy a úplné serverové zálohy. |
 
-- Kreslení místností, chodeb, příček, dveří a schodišť. Překrývající se místnosti se spojí a obvod se přizpůsobí.
-- [Stafáž mapy](docs/SCENERY.md): 18 tušových symbolů a čtyři organické plochy (voda, bláto, mech, suť), štětec se spojováním, ruční i střídmé náhodné rozmístění s náhledem, soukromá příprava PJ a rozšiřitelný komunitní katalog.
-- Až osm propojených pater, značky vchodu a východu a zahájení dobrodružství u vchodu.
-- Generátor V2 se styly hradního podzemí, dolu a přírodní jeskyně, logickým grafem místností, plánovanými průchody a automatickými dveřmi. Tři opakovatelné varianty, náhled a ruční úpravy; původní V1 je zachovaný pro staré seedy.
-- Společný pohyb družiny, vedoucí a pochodové pořadí. Dohled respektuje zdi a zavřené dveře; navštívená místa zůstávají v šedé paměti.
-- Posouvání papíru tažením, přibližování a přizpůsobení pohledu oknu.
-- [Klasický a ručně kreslený vzhled](docs/MAP_APPEARANCE.md) se stejným ovládáním: pergamen, inkoustové kontury a šrafy podle skutečných zdí. Volba se ukládá jen v prohlížeči.
-
-### Příprava Pána jeskyně
-
-- [Příběhová osnova](docs/STORY_OUTLINE.md): pět nepovinných fází s poznámkami PJ, vazbami na místa napříč patry a ručním označením odehrání. Podporuje vlastní mapy i komunitní předlohy.
-
-- Zámky a tajné dveře nastavované PJ přes **Prozkoumat**; neodhalené dveře hráči vidí jako zeď.
-- Příšery s číslovanými značkami, skrytými údaji, životy a vratnou archivací. PJ může vybírat ze třiceti ilustrovaných předloh v bestiáři s filtrem prostředí a náměty pro PJ.
-- Nástroj **(i) Prozkoumat** pro PJ: detail značky nebo souhrn obsahu místnosti včetně tajné přípravy a navázané kořisti/zkoušek.
-- Číslované místnosti s názvy přímo v mapě, přesouváním značek a seznamem pro rychlé hledání. Nově generovaná patra dostanou soukromá označení automaticky.
-- Poznámky ukotvené v mapě: tajná příprava PJ a samostatně zveřejňovaný popis pro družinu. PJ dostane soukromé upozornění při přiblížení k místu a může z něj otevřít připravenou zkoušku, příšeru, souboj nebo kořist.
-- Připravená **Situace** se při prvním vstupu družiny rozvine nad mapou. Po přečtení zůstane v chatu.
-- Zkoušky a pasti s výzvou konkrétnímu hráči, volitelně tajnou nebezpečností a ručním potvrzením následků.
-- Tajná příprava kořisti, zveřejnění nálezu, přidělení hráčům a rovné rozdělení mincí se zachováním zbytku.
-- Čas průzkumu, světla a odpočet doby svícení. Volitelný dohled podle světel, jejich dosahu a nosičů včetně dohoření, tmy a ručního přepsání PJ. Odpočinek a léčení s náhledem obnovovaných životů a magenergie.
-
-### Postavy, kostky a souboj
-
-- Deníky s pěti vlastnostmi, bojovými hodnotami, úrovní a zkušenostmi přidělovanými PJ. Pět povolání má mužskou i ženskou ilustraci.
-- Výbava a měšec: položky, spotřeba kusů, příjmy, platby, převzetí kořisti a přímé předávání předmětů/mincí mezi hráči.
-- Léčení předmětem s náhledem životů. PJ potvrdí obnovu a spotřebu jednoho kusu společně.
-- Vlastní kouzla a schopnosti, magenergie a její odečítání při použití. Účinky vyhodnocuje PJ.
-- Hody generované na serveru: běžné kostky, hody na vlastnosti, útok a navazující obrana. Návrh zranění potvrzuje PJ.
-- Samostatné bojové rozestavení hrdinů se sdíleným výhledem, pohybem po známých cestách a seskupením zpět do společného průzkumu.
-- Soubojové pořadí, aktuální účastník a číslo kola. Vlastní stavy postav a příšer s volitelným odpočtem po každém kole.
-- Upozornění při nule životů a rozhodnutí PJ o vyřazení, bezvědomí, smrti nebo návratu do hry.
-
-### Společný stůl a uložená hra
-
-- Společný chat, soukromé šeptání a volitelný hlasový hovor pro každou družinu.
-- **Kde jsme skončili** uchovává poslední shrnutí, otevřené stopy a volitelné místo na mapě pro celou družinu.
-- Osobní obnovovací klíče, archivace a návrat postav.
-- Úplná záloha kampaně včetně všech pater a tajné přípravy, s obnovou do nové místnosti.
-- Ochrana rozepsaných formulářů a souběžných změn; uložení poznámky nepřepíše mezitím odečtené životy.
-- Vlastní hosting přes Docker Compose, SQLite a správu instalace na `/admin`, včetně aktualizací ze stabilních vydání a návratu předchozí verze.
-
-## Jak začít hrát
-
-1. **Svolejte družinu.** PJ založí místnost a pošle pozvánku hráčům. Každý zadá jméno své postavy a přes avatar nahoře vpravo si uloží **obnovovací klíč**.
-2. **Vyplňte deníky.** Zapište vlastnosti, bojové hodnoty, životy, výbavu a vlastní kouzla či schopnosti. Jejich účinky řešte podle svých pravidel.
-3. **Připravte dobrodružství.** PJ mapu nakreslí nebo použije generátor, přidá příšery a poznámky. Nastaví vedoucího, dohled a umístí družinu, například tlačítkem **Umístit družinu u vchodu**.
-4. **Připojte se k hovoru.** Je-li služba zapnutá, v panelu **Hlas družiny** zvolte **Připojit k hovoru**. Mikrofon je zpočátku vypnutý a každý si ho zapne sám.
-5. **Prozkoumávejte.** Vedoucí kliknutím posouvá společnou družinu. **Ctrl + levé tažení** nebo nástroj **Ruka** posouvají papír; **Ctrl + kolečko** mění měřítko. Hráči uvidí postupně objevovaná místa a sdílené popisy.
-6. **Nechte promluvit kostky.** Nabídka **Hody a souboj** slouží k hodům na vlastnosti, útok a obranu. PJ připraví pořadí souboje a potvrdí zranění. Do chatu lze napsat i vlastní hod, například `/hod 2k6+1`.
-7. **Rozdělte nález a vraťte se příště.** Kořist převezměte do deníků. PJ může zapsat, kde družina skončila, obnovit životy či magenergii a stáhnout úplnou zálohu kampaně. Běžné změny se ukládají průběžně.
-
-Na mobilu najdeš společná nastavení v panelu **Družina, čas a patra**. Souboj má vlastní rozbalovací panel u mapy.
-
-<details>
-<summary>Další ovládání při hře</summary>
-
-- **Stavy:** PJ je spravuje přes **Spravovat stavy** v hlavičce souboje. Počet kol může odečítat ručně nebo zapnout odpočet v přípravě souboje. Při nule zůstane stav v přehledu k posouzení PJ.
-- **Kouzla a schopnosti:** v **Můj deník → Kouzla a schopnosti** nastav magenergii a vlastní záznamy s cenou. **Použít** odečte cenu a zaznamená použití pro hráče a PJ; oznámení celé družině je volitelné.
-- **Odpočinek a léčení:** PJ v **Hody a souboj → Odpočinek a léčení** vybere postavy, určí obnovu, zkontroluje náhled a potvrdí ji. Potvrzené vyřazení, stavy a kola souboje se tím samy nemění.
-- **Čas a světlo:** PJ eviduje světla a posouvá průzkumný čas. Odpočítávají se pouze rozsvícené zdroje se zadanou dobou. Poslední posun lze vrátit, dokud světla dál neupravíš. Dohled na mapě se nastavuje samostatně.
-- **Poznámky:** nástrojem **Poznámka** klikne PJ na podlahu. **Uložit přípravu** zachová vše u PJ; **Uložit a sdílet popis** zveřejní nadpis a popis po odhalení místa. Běžné pozdější úpravy nezmění již sdílenou verzi. Hráči otevřou popis přes značku „i“.
-- **Upozornění na místo:** výchozí dosah je 2 pole, nastavitelný na 1–6 nebo vypnutelný. Upozornění funguje i přes stěny, nic neodhaluje hráčům a během pobytu v okolí se neopakuje.
-- **Přístupy a zálohy:** PJ může vydat hráči nový obnovovací klíč a archivovat nebo vrátit postavu. Obnova klíče odvolá starý herní token a vydá nový klíč. Úplná záloha obsahuje také tajnou přípravu; stahuje ji jen PJ. Obnova vytvoří novou místnost a nové přístupy, původní kampaň nepřepíše.
-
-</details>
-
-## Hlas družiny
-
-Volitelný **LiveKit** přidává společné volání přímo k hernímu stolu. Každá družina má vlastní hlasovou místnost. K dispozici je mikrofon, ztlumení poslechu, výběr vstupního zařízení a označení účastníků i právě mluvícího.
-
-Připojení začíná s vypnutým mikrofonem. Aplikace používá pouze hlas: vstupenky vydávané serverem povolují publikovat jen mikrofon. Kamera, sdílení obrazovky, nahrávání ani přepis nejsou součástí tohoto řešení. Šeptání v chatu nemění, komu je slyšet hlas.
-
-Hovor zapíná správce instalace. Hra funguje i bez hlasové služby. Pro veřejné nasazení je potřeba HTTPS/WSS a síťové nastavení pro WebRTC; příslušný Docker profil a TURN popisuje [návod k hlasovému volání](docs/VOICE.md).
+[Herní příručka](docs/PLAYING.md) · [Herní mechaniky](docs/MECHANICS.md) · [Limity](docs/LIMITS.md)
 
 ## Generátor jeskyně
 
-PJ otevře **Generátor** nad mapou nebo **Generátor jeskyně** v zápisníku. Na mobilu je v panelu **Družina, čas a patra**.
+PJ si vybere prostředí, počet pater a místností. Prohlédne si varianty, vloží vybraný návrh a dokreslí ho na stejném papíru, který používá při hře. Výsledek lze zopakovat se stejným semínkem a nastavením. [Jak funguje generátor V2](docs/GENERATOR_V2.md)
 
-1. Nastav název, styl, počet pater a místností, velikost a složitost. Pokročilá část obsahuje verzi algoritmu, seed, chodby a dodatečná propojení.
-2. Zvol **Vytvořit náhled**; přepínačem prohlédni jednotlivá patra. **Varianta 1–3** vytvoří jiný reprodukovatelný návrh nad stejným seedem; nové semínko vytvoří novou sadu.
-3. Potvrď **Vložit tato patra do dobrodružství**. Při existující mapě se přidají nová patra; zcela prázdné výchozí patro se využije pro první vygenerované patro.
-4. V přípravě můžeš kresbu upravit. Pro zahájení průzkumu nastav vedoucího a umísti družinu; vygenerovaná kresba se hráčům sama neodhalí.
+![Ručně kreslený důl s číslovanými místnostmi, chodbami a dveřmi na čtverečkovaném papíru](docs/images/maps/mine-hand-drawn.jpg)
 
-Celkem lze mít 8 pater s kreslicí plochou 56 × 40 polí. Generátor nadále připravuje jeskyně v oblasti 28 × 20 polí, které lze ručně rozšířit. Na patro se vejde 2–12 místností, u velkých 2–6. Schodiště propojí nová sousední patra; případné propojení se starší mapou připraví PJ. Náhled obsahuje pouze mapu; příšery, pasti a kořist se připravují samostatně. Čísla místností a role pomáhají PJ v náhledu. V2 ukládá graf a původ generování soukromě; po strukturální ruční úpravě se graf označí jako neaktuální. Podrobnosti, audit a měření jsou v [technickém popisu generátoru](docs/GENERATOR_V2.md). První nové patro je přízemí s trvalou značkou vchodu; volba **Samostatný východ na přízemí** přidá druhou značku. Další patra vedou do hloubky.
+## Jak začít hrát
 
-V přípravě mapy nástroji **Vchod** a **Východ** klikni na podlahu. Na každém patře může být jedna značka každého druhu; dalším kliknutím ji přesuneš, gumou odstraníš. Tlačítko **Umístit družinu u vchodu** zahájí průzkum od vchodu zobrazeného patra. Samotné vložení značky družinu nepřesouvá. Východ je orientační značka, přechod do venkovní mapy zatím neprovádí. Hráči značky uvidí až po odkrytí; navštívená místa zůstávají v paměti mapy.
+1. **Svolejte družinu.** Jeden z vás založí stůl jako PJ a pošle pozvánku. Ostatní se připojí v prohlížeči a uloží si svůj obnovovací klíč.
+2. **Otevřete deníky.** Zapište vlastnosti a výbavu. PJ mezitím připraví mapu nebo vybere dobrodružství z předlohy.
+3. **Vyrazte od vchodu.** PJ umístí družinu a určí vedoucího. Ten kliknutím ukazuje, kam se skupina vydá.
+
+[První hra a role u stolu](docs/PLAYING.md#role-a-přístupy) · [Začátek z předlohy](docs/PLAYING.md#začátek-z-předlohy)
+
+### Hlas družiny
+
+Na vlastním serveru může správce zapnout volitelný LiveKit. Každá družina má vlastní hlasovou místnost a připojuje se s vypnutým mikrofonem. V panelu lze mikrofon zapnout, ztlumit poslech a vybrat vstupní zařízení. [Nastavení hlasového hovoru](docs/VOICE.md)
 
 ## Vlastní server s Dockerem
 
-**Stabilní vydání 1.2.8** zahrnuje místní a komunitní katalogy, jejich ZIP/GitHub distribuci a úplné serverové zálohy včetně obrázků. Přechod z 1.2.7 nevyžaduje migraci ani změnu konfigurace. Zachovej celý datový volume a před aktualizací vytvoř úplnou zálohu. [Postup přechodu](docs/SELF_HOSTING.md#přechod-z-127-na-128) · [Historie verzí](CHANGELOG.md#128--2026-11-10).
+Pro stabilní instalaci vyber tag z posledního vydání. Na Linuxu potřebuješ Docker Engine 28+, Compose v2, Git a OpenSSL. Návod tě provede nastavením `.env`, prvním spuštěním i HTTPS. Herní data a katalogové obrázky zůstávají v trvalém datovém volume. [Poslední stabilní vydání](https://github.com/cert4u/u-jednoho-stolu/releases/latest) · [První spuštění s Dockerem](docs/SELF_HOSTING.md#první-spuštění)
 
-Aplikace běží na Node.js 22 a ukládá SQLite i katalogové obrázky do trvalého Docker volume. Cloudflare účet není potřeba. Pro novou stabilní instalaci použij konkrétní tag vydání:
+Pro malou družinu ber jako orientační základ 2 jádra nebo vCPU, 2 GB volné RAM a 5 GB volného místa pro instalaci a aktualizace. Místo pro kampaně a zálohy počítej zvlášť. [Požadavky a přístup pro družinu](docs/SELF_HOSTING.md#základní-požadavky)
 
-Potřebuješ Linux s **Docker Engine 28+ a Compose v2**, Git a OpenSSL. Pro sestavení počítej přibližně se 2 GB volné RAM a několika GB místa na disku.
-
-```bash
-git clone --branch v1.2.8 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
-cd u-jednoho-stolu
-cp .env.example .env
-openssl rand -hex 32
-openssl rand -hex 32
-```
-
-Do `.env` vlož dvě různé vygenerované hodnoty jako `STUL_ADMIN_PASSWORD` a `STUL_UPDATER_TOKEN`. Nastav `PUBLIC_ORIGIN` na adresu své instalace; pro místní vyzkoušení použij `http://localhost:8080`.
-
-```bash
-chmod 600 .env
-./deploy/stul.sh up -d --build
-./deploy/stul.sh logs --tail=50
-```
-
-Pro místní vyzkoušení otevři [http://localhost:8080](http://localhost:8080). Na veřejném serveru nastav HTTPS reverzní proxy před výchozí adresu `127.0.0.1:8080`.
-
-**[Podrobný návod pro Docker, HTTPS, zálohování a obnovu](docs/SELF_HOSTING.md)** popisuje také podporované prostředí a údržbu instalace.
-
-### Aktualizace z administrace
-
-Na adrese **`/admin`** se přihlas heslem správce instalace. Tento přístup je oddělený od role PJ a hráčů.
-
-- Administrace nabídne poslední stabilní GitHub Release a odkaz na poznámky k vydání.
-- Po potvrzení se sestaví image z přesného commitu vydání. Během sestavování lze dál hrát.
-- Před výměnou se pozastaví změny a uloží snapshot databáze s katalogovými přílohami. Pokud nová verze nenastartuje, updater se pokusí obnovit původní verzi i databázi.
-- Ruční návrat předchozí verze obnovuje také její databázi; novější změny se před návratem uloží do další zálohy.
-
-V části **Katalogy** může správce vytvářet vlastní obsah a potvrzovat importy i GitHub aktualizace. Po instalaci je obsah místní a funguje bez GitHubu. Pro přenos knihovny stahuj **Úplná záloha ZIP**; samotný SQLite export obrázky neobsahuje. [Správa katalogů](docs/CATALOG_LIBRARY.md).
-
-Pro další spouštění používej `./deploy/stul.sh up -d` nebo `./deploy/stul.sh restart`. Wrapper zachovává aktivní image po aktualizaci. Ze starého checkoutu znovu nespouštěj `up --build`. Samotný updater a zdrojový checkout se udržují ručně podle [návodu](docs/SELF_HOSTING.md#další-spouštění-compose).
-
-## Lokální vývoj s Cloudflare
-
-Vývojová varianta používá Workers a D1 emulované Wranglerem. Potřebuješ Git, npm a **Node.js 22.15 nebo novější**; Cloudflare účet pro místní vývoj není nutný.
-
-```bash
-git clone https://github.com/cert4u/u-jednoho-stolu.git
-cd u-jednoho-stolu
-npm run install:ci
-npm run build
-npm run db:init
-npm run dev
-```
-
-Otevři [http://127.0.0.1:5173](http://127.0.0.1:5173). Databázové migrace se aplikují pouze na místní databázi a `db:init` lze opakovat. Data se ukládají do ignorovaného adresáře `.wrangler/state`.
-
-Sestavenou verzi lze lokálně spustit přes `npm start` na portu 8787. Pro vývoj a integrační testy používáme `npm run dev` na portu 5173.
+V administraci na `/admin` můžeš zkontrolovat vydání, spustit aktualizaci a stáhnout úplnou serverovou ZIP zálohu. Přenosný export jednotlivé kampaně stahuje PJ přímo u stolu. [Aktualizace z administrace](docs/SELF_HOSTING.md#aktualizace-z-administrace) · [Dvě různé zálohy](docs/SELF_HOSTING.md#dvě-různé-zálohy)
 
 ## Dokumentace a zapojení do projektu
 
 | Chci… | Kde začít |
 | --- | --- |
-| Najít správnou příručku | [Rozcestník dokumentace](docs/README.md) |
-| Hrát a připravovat dobrodružství | [Herní příručka pro hráče a PJ](docs/PLAYING.md) |
-| Vyřešit problém nebo ověřit limit | [Řešení problémů](docs/TROUBLESHOOTING.md) a [limity](docs/LIMITS.md) |
-| Provozovat vlastní herní stůl | [Vlastní hosting, HTTPS, zálohy a obnova](docs/SELF_HOSTING.md) |
-| Zapnout hlasový hovor | [LiveKit a hlas družiny](docs/VOICE.md) |
-| Podívat se na změny a další plány | [Historie verzí](CHANGELOG.md) a [plán práce](docs/ROADMAP.md) |
-| Spustit vývojový stůl | [Rychlý start bez Dockeru](docs/DEVELOPMENT.md#první-změna-na-místním-stole) |
-| Porozumět kódu | [Vývoj a architektura](docs/DEVELOPMENT.md) a [interní API](docs/API.md) |
-| Přidat předlohu příšery, jeskyně nebo dobrodružství | [Herní obsah](docs/OBSAH.md) |
-| Přidat ilustrace do projektu | [Styl, reference a prompty](docs/ILUSTRACE.md) |
-| Připravit nové vydání | [Postup pro správce vydání](docs/RELEASING.md) |
-| Přispět opravou nebo nápadem | [Pravidla přispívání](CONTRIBUTING.md) a [issues](https://github.com/cert4u/u-jednoho-stolu/issues) |
+| Hrát nebo vést dobrodružství | [Herní příručka](docs/PLAYING.md) |
+| Spravovat katalogy nebo přidat vlastní obsah | [Správa katalogů](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) |
+| Spustit projekt pro vývoj | [Node bez Dockeru](docs/DEVELOPMENT.md#rychlý-start-node-bez-dockeru) · [Lokální Cloudflare](docs/DEVELOPMENT.md#lokální-cloudflare-vývoj) |
+| Přispět změnou nebo nápadem | [Pravidla přispívání](CONTRIBUTING.md) · [Issues](https://github.com/cert4u/u-jednoho-stolu/issues) |
+| Najít všechny návody a technické podrobnosti | [Rozcestník dokumentace](docs/README.md) |
+| Projít změny a další plány | [Historie verzí](CHANGELOG.md) · [Plán projektu](docs/ROADMAP.md) |
 
-## Testování
-
-```bash
-npm run verify
-```
-
-Pro všechny integrační testy spusť nejprve místní server:
-
-```bash
-npm run test:integration
-# Pro místní vývojový stůl na portu 5174
-npm run test:integration -- http://127.0.0.1:5174
-```
-
-Testy vytvářejí vlastní testovací místnosti. Míří na lokální testovací instanci; nepouštěj je proti své rozehrané produkční kampani. `npm run test:ci` vyžaduje Cloudflare build. Samo aplikuje migrace do dočasné databáze D1 a po testech ukončí svůj server a odstraní testovací data. GitHub Actions navíc ověřuje Node/SQLite variantu, přihlášení do administrace a skutečnou výměnu Docker kontejnerů včetně obnovy kampaně. Samostatné testy aktualizační logiky spustíš pomocí `npm run test:updater`; testy Node serveru a administrace pomocí `npm run build:node` a `npm run test:hosting`.
-
-## Současná omezení
-
-Úplný přehled technických i herních hranic je v [limitech](docs/LIMITS.md); při potížích začni [řešením problémů](docs/TROUBLESHOOTING.md).
-
-- Mapa jednoho patra má 56 × 40 polí; okolní papír je prostor pro posouvání pohledu.
-- Nejvýše 8 pater, 12 aktivních účastníků, 200 postav a 200 příšer včetně archivovaných.
-- Nejvýše 200 poznámek na mapě v celém dobrodružství; jedna poznámka na políčko a patro.
-- Nejvýše 50 připravených/otevřených nálezů a 100 uzavřených, po 24 položkách a 200 záznamech převzetí. Získaná výbava má nejvýše 200 názvů na postavu.
-- Nejvýše 50 rozpracovaných zkoušek a historie posledních 100 uzavřených.
-- Chat uchovává posledních 500 zpráv. Soubojové akce se ukládají samostatně.
-- Synchronizace probíhá přibližně každé dvě sekundy.
-- Bojové hodnoty se zapisují ručně. Automatické určování iniciativy podle pravidel, vyhodnocování účinků kouzel a schopností povolání ani individuální světelné zdroje zatím nejsou implementované.
-- Úplná záloha verze 1 dovoluje nejvýše 3 MB serializovaných dat. Starý částečný zápis chatu nenahrazuje plnou zálohu.
-- Obnovovací klíč je přístup k postavě. Nepřidávej klíče, herní zálohy ani databáze do repozitáře či veřejného issue.
+Pro základní kontrolu projektu spusť `npm run verify`. Pokyny pro integraci, Node hosting a Docker scénáře jsou ve vývojovém návodu. [Ověření a CI](docs/DEVELOPMENT.md#ověření-a-ci)
 
 ## Licence a původ
 
-Vlastní kód a dokumentace projektu jsou pod [licencí MIT](LICENSE). Pro nové herní texty a ilustrace uveď původ a podmínky podle [pravidel přispívání](CONTRIBUTING.md#licence-a-původ-obsahu). Převzaté součásti si zachovávají původní licence a oznámení. [Oznámení třetích stran](THIRD_PARTY_NOTICES.md)
+Vlastní kód a dokumentace jsou pod [licencí MIT](LICENSE). Převzaté součásti si zachovávají původní licence a oznámení. [Oznámení třetích stran](THIRD_PARTY_NOTICES.md)
 
-Projekt vznikl jako neoficiální pomůcka inspirovaná původním českým hraním DrD. Nejde o produkt ani schválenou aplikaci nakladatelství ALTAR. Repozitář neobsahuje text pravidlových příruček, bestiář ani převzaté ilustrace. Licence k aplikaci neuděluje práva k cizím značkám nebo pravidlovým textům.
-
-Projekt čerpá inspiraci z DrD 1.5, referencí pro dosavadní základ hodů jsou však veřejná [zjednodušená pravidla ALTAR](https://www.tpro.cz/ppk/DrD_Lite-PH.pdf), odvozená podle jejich tiráže od verze 1.6, edice E. Nejde tedy o přesný přepis ani úplnou implementaci DrD 1.5 či 1.6. Mechaniky jsou místy zjednodušené nebo upravené pro online hraní; rozhodující je popsané chování aplikace a domluva s PJ.
-
-Finální kontrola před vydáním: [výsledky, omezení a připravenost](docs/FINAL_STABILIZATION.md).
-
-Podklady vydání 1.2.2: [ověřené opravy, měření a provozní omezení](docs/STABILIZATION_AUDIT.md). Při nasazení se řiď dokumentací konkrétního tagu.
-
-Pro úpravy kódu: [odpovědnosti modulů a pravidla refaktoru](docs/DEVELOPMENT.md#hranice-odpovědností-při-údržbě) popisují směrování akcí, oprávnění, složení stolu, editor mapy, průzkum a oddělení katalogové projekce od databáze. Pro vybrané moduly používej `npm run format` a `npm run format:check`. CI vyžaduje také `npm run lint` bez chyb a varování.
+Projekt je neoficiální česká pomůcka inspirovaná hraním Dračího doupěte 1.5. Dosavadní hody vycházejí ze zjednodušených pravidel ALTAR odvozených od DrD 1.6, edice E. Některé postupy jsou upravené pro online hru. O výjimkách a následcích při hře rozhoduje PJ. [Pravidlový základ a úpravy](docs/PLAYING.md#pravidlový-základ-a-úpravy)
