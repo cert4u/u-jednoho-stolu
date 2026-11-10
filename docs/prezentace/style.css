@@ -213,6 +213,7 @@ h1 em {
   transform: rotate(3deg);
 }
 .hero-map img,
+.map-slider img,
 .screenshot-grid img {
   display: block;
   width: 100%;
@@ -332,6 +333,92 @@ h3 {
 }
 .map-comparison > p {
   color: var(--muted);
+}
+.map-slider {
+  max-width: 60rem;
+  margin: 1.15rem auto 0;
+  padding: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  background: var(--sheet);
+}
+.map-slider-stage {
+  position: relative;
+  display: grid;
+  gap: 0.6rem;
+  border: 1px solid var(--line);
+}
+.map-slider-stage[data-active] img:first-child {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--split)) 0 0);
+}
+.map-slider-stage[data-active]::after {
+  position: absolute;
+  inset-block: 0;
+  left: var(--split);
+  width: 2px;
+  background: var(--forest);
+  box-shadow: 0 0 0 1px var(--sheet);
+  transform: translateX(-50%);
+  pointer-events: none;
+  content: '';
+}
+.map-slider-handle {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: clamp(1.375rem, var(--split), 100% - 1.375rem);
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 2px solid var(--sheet);
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--sheet);
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 2.5rem;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.map-slider-stage input {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  appearance: none;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+.map-slider-stage input::-webkit-slider-thumb {
+  appearance: none;
+  width: 1px;
+  height: 1px;
+}
+.map-slider-stage input::-moz-range-thumb {
+  width: 1px;
+  height: 1px;
+  border: 0;
+}
+.map-slider-stage:focus-within {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
+}
+.map-slider figcaption {
+  padding: 0.6rem 0.2rem 0;
+}
+.map-slider-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+.map-slider-links a {
+  color: var(--rust);
+  font-weight: 650;
 }
 .screenshot-grid {
   display: grid;

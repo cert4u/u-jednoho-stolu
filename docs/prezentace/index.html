@@ -29,7 +29,8 @@
       content="Družina při průzkumu ručně kreslené jeskyně z pohledu Pána jeskyně"
     />
     <title>U jednoho stolu — český online herní stůl</title>
-    <link rel="stylesheet" href="./style.css?v=snimky-rozhrani" />
+    <link rel="stylesheet" href="./style.css?v=porovnani-mapy" />
+    <script src="./map-comparison.js" defer></script>
   </head>
   <body>
     <a class="skip" href="#obsah">Přeskočit na obsah</a>
@@ -178,8 +179,8 @@
             zakreslenou i tůň a mech za dveřmi. Hráči zatím vidí jen to, co
             družina objevila.
           </p>
-          <div class="screenshot-grid">
-            <figure>
+          <figure class="map-slider">
+            <div class="map-slider-stage">
               <img
                 src="../images/prezentace/jeskyne-pj.jpg"
                 width="1600"
@@ -187,16 +188,6 @@
                 loading="lazy"
                 alt="Herní stůl Pána jeskyně s ručně kreslenou mapou. Tři postavy jsou ve vstupní jeskyni. Za dveřmi pokračuje chodba ke skalním komorám s tůní a mechem."
               />
-              <figcaption>
-                Pohled Pána jeskyně
-                <a
-                  href="../images/prezentace/jeskyne-pj.jpg"
-                  aria-label="Zvětšit snímek: Pohled Pána jeskyně"
-                  >Zvětšit snímek</a
-                >
-              </figcaption>
-            </figure>
-            <figure>
               <img
                 src="../images/prezentace/jeskyne-hrac.jpg"
                 width="1600"
@@ -204,16 +195,34 @@
                 loading="lazy"
                 alt="Herní stůl hráčky Ely se stejnou mapou. Vidí tři postavy, houby a vodu ve vstupní jeskyni. Prostor za dveřmi je na mapě prázdný."
               />
-              <figcaption>
-                Pohled hráče
-                <a
-                  href="../images/prezentace/jeskyne-hrac.jpg"
-                  aria-label="Zvětšit snímek: Pohled hráče"
-                  >Zvětšit snímek</a
+              <span class="map-slider-handle" aria-hidden="true" hidden
+                >↔</span
+              >
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value="64"
+                aria-label="Poměr pohledů Pána jeskyně a hráče"
+                aria-describedby="map-slider-hint"
+                hidden
+              />
+            </div>
+            <figcaption>
+              <p id="map-slider-hint" hidden>
+                Posuň jezdec tahem nebo šipkami. Vlevo je pohled PJ, vpravo
+                pohled hráče.
+              </p>
+              <div class="map-slider-links">
+                <a href="../images/prezentace/jeskyne-pj.jpg"
+                  >Zvětšit pohled PJ</a
                 >
-              </figcaption>
-            </figure>
-          </div>
+                <a href="../images/prezentace/jeskyne-hrac.jpg"
+                  >Zvětšit pohled hráče</a
+                >
+              </div>
+            </figcaption>
+          </figure>
         </section>
       </section>
 
