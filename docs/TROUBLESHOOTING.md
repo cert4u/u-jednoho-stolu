@@ -76,4 +76,4 @@ Ve vývojové verzi po 0.3.0 mohl běžný skupinový přesun zapsat do paměti 
 
 ## Co uvést do hlášení
 
-Verzi nebo commit, způsob spuštění, prohlížeč, roli, očekávaný a skutečný výsledek a krátké opakovatelné kroky na smyšlené hře. U hovoru doplň lokální/veřejný profil a typ sítě bez citlivých adres. Screenshot nejprve zbav tajné přípravy a osobních údajů. [Bezpečnostní problémy](../SECURITY.md) nepatří s podrobnostmi do veřejných issues.
+Verzi nebo commit, způsob spuštění, prohlížeč, roli, očekávaný a skutečný výsledek a krátké opakovatelné kroky na smyšlené hře. U hovoru doplň lokální/veřejný profil a typ sítě bez citlivých adres. Screenshot nejprve zbav tajné přípravy a osobních údajů. [Bezpečnostní problémy](https://github.com/cert4u/u-jednoho-stolu/blob/main/SECURITY.md) nepatří s podrobnostmi do veřejných issues.

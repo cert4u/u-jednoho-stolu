@@ -4,7 +4,7 @@
 
 Katalog je čistě datový balíček, nikoli plugin. Nemá instalační skript a nespouští JavaScript. Nejjednodušší postup je vytvořit vlastní katalog v administraci, ověřit jeho obsah ve zkušební kampani a použít **Exportovat ZIP**.
 
-Kompletní původní příklad je [Opuštěný trpasličí důl](../examples/catalogs/abandoned-dwarf-mine/README.md). Obsah jeho adresáře lze vložit přímo do kořene samostatného repozitáře. ZIP vytvoří `npm run catalog:demo -- /tmp/opusteny-trpaslici-dul.zip`; výstupní soubor nesmí již existovat. [Integrační audit](CATALOG_AUDIT.md) ověřuje i jeho přenos do nové instalace.
+Kompletní původní příklad je [Opuštěný trpasličí důl](https://github.com/cert4u/u-jednoho-stolu/blob/main/examples/catalogs/abandoned-dwarf-mine/README.md). Obsah jeho adresáře lze vložit přímo do kořene samostatného repozitáře. ZIP vytvoří `npm run catalog:demo -- /tmp/opusteny-trpaslici-dul.zip`; výstupní soubor nesmí již existovat. [Integrační audit](CATALOG_AUDIT.md) ověřuje i jeho přenos do nové instalace.
 
 ## Adresářový formát
 
@@ -61,7 +61,7 @@ Licenční a autorské údaje jsou povinné. Případné odlišné licence soubo
 
 ## Položky a odkazy
 
-Položky používají stejná schémata jako [vestavěný obsah](../content). Příšera má jméno, popis, větu pro PJ `gmHint`, prostředí, životy a bojové hodnoty. `portrait` je ID lokálního obrázku bez přípony; pokud chybí, lze použít obrázek se jménem ID příšery nebo bezpečný náhradní vzhled. Výslovné `builtin:kobold` použije distribuovaný portrét bez jeho kopírování do archivu.
+Položky používají stejná schémata jako [vestavěný obsah](https://github.com/cert4u/u-jednoho-stolu/tree/main/content). Příšera má jméno, popis, větu pro PJ `gmHint`, prostředí, životy a bojové hodnoty. `portrait` je ID lokálního obrázku bez přípony; pokud chybí, lze použít obrázek se jménem ID příšery nebo bezpečný náhradní vzhled. Výslovné `builtin:kobold` použije distribuovaný portrét bez jeho kopírování do archivu.
 
 Předloha dobrodružství může odkazovat na předlohu jeskyně a příšery. Neoznačené ID znamená **položku stejného katalogu**. Cizí odkazy jsou výslovné:
 

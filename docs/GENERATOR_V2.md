@@ -22,7 +22,7 @@ Vývojové ověření proběhlo před nasazením a bez nového vydání. V2 je n
 
 `lib/generator-types.ts` je společný kontrakt. `GeneratorOptions` má explicitní `version`, `style` a `variant` (0–2) vedle původních parametrů. Pouze chybějící verze znamená V1; neznámá verze nebo explicitní `null` je chyba. V1 dovoluje původní styl a variantu 0. Jeho jádro je zmrazené v `lib/dungeon-generator-v1.ts`; normalizace nových parametrů nezasahuje do staré geometrie.
 
-Definice polí, mezí a kombinací je v [generator-options.ts](../lib/generator-options.ts). Požadavek na generování doplní při vynechání hodnoty `version: v1`, `style: castle`, `variant: 0` a `separateExit: false`. Katalog předloh a obnova zálohy vyžadují úplné nastavení se stejnými mezemi.
+Definice polí, mezí a kombinací je v [generator-options.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/generator-options.ts). Požadavek na generování doplní při vynechání hodnoty `version: v1`, `style: castle`, `variant: 0` a `separateExit: false`. Katalog předloh a obnova zálohy vyžadují úplné nastavení se stejnými mezemi.
 
 
 `Dungeon.generation` obsahuje pro V2:

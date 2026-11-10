@@ -1,6 +1,6 @@
 # Integrační audit katalogů před prvním vydáním
 
-[Správa knihovny](CATALOG_LIBRARY.md) · [Distribuce GitHub](CATALOG_GITHUB.md) · [Demonstrační důl](../examples/catalogs/abandoned-dwarf-mine/README.md) · [Postup vydání](RELEASING.md)
+[Správa knihovny](CATALOG_LIBRARY.md) · [Distribuce GitHub](CATALOG_GITHUB.md) · [Demonstrační důl](https://github.com/cert4u/u-jednoho-stolu/blob/main/examples/catalogs/abandoned-dwarf-mine/README.md) · [Postup vydání](RELEASING.md)
 
 ## Závěr
 
@@ -25,7 +25,7 @@ Node implementace prošla níže uvedenými integračními scénáři včetně s
 
 ## Demonstrační balíček
 
-[Adresář Opuštěného trpasličího dolu](../examples/catalogs/abandoned-dwarf-mine) lze samostatně vložit do kořene veřejného repozitáře. Má vlastní manifest a MIT licenci, tři původní příšery s jednoduchými schematickými portréty, pět značek, dvě plochy, jednu předlohu V2 a krátké dobrodružství se všemi pěti dramaturgickými fázemi. Nemá obsahové závislosti. Příšery i místa mají původní texty; nepřebírá pravidlové tabulky. Polohy stafáže připravuje PJ, formát dobrodružství je automaticky neumisťuje.
+[Adresář Opuštěného trpasličího dolu](https://github.com/cert4u/u-jednoho-stolu/tree/main/examples/catalogs/abandoned-dwarf-mine) lze samostatně vložit do kořene veřejného repozitáře. Má vlastní manifest a MIT licenci, tři původní příšery s jednoduchými schematickými portréty, pět značek, dvě plochy, jednu předlohu V2 a krátké dobrodružství se všemi pěti dramaturgickými fázemi. Nemá obsahové závislosti. Příšery i místa mají původní texty; nepřebírá pravidlové tabulky. Polohy stafáže připravuje PJ, formát dobrodružství je automaticky neumisťuje.
 
 ```bash
 npm run catalog:demo -- /tmp/opusteny-trpaslici-dul.zip
@@ -35,7 +35,7 @@ Výstupní soubor musí být nový. Generátor ZIP obsah adresáře jen zabalí;
 
 ## Integrační scénáře
 
-Nový [auditní test](../scripts/test-catalog-audit.mjs) běží nad dvěma oddělenými dočasnými instalacemi. Node server má při celém scénáři blokované `fetch` mimo loopback; případný pokus se zaznamená a test jej odmítne. Simulovaný GitHub transport je předán pouze distribuční funkci testovacího procesu. Není to nová volba produkčního serveru.
+Nový [auditní test](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-catalog-audit.mjs) běží nad dvěma oddělenými dočasnými instalacemi. Node server má při celém scénáři blokované `fetch` mimo loopback; případný pokus se zaznamená a test jej odmítne. Simulovaný GitHub transport je předán pouze distribuční funkci testovacího procesu. Není to nová volba produkčního serveru.
 
 | Scénář | Výsledek |
 | --- | --- |
@@ -56,7 +56,7 @@ Stávající sady dále skutečně spouštějí CRC a deflate kontroly, poškoze
 
 **CAT-AUDIT-01 — neúplná záloha označená jako úplná.** Po odstranění `<snapshot>.sqlite.assets.zip` vracel endpoint plné zálohy úspěšný ZIP jen s databází. Nový regresní test před opravou selhal na `200 !== 503`. Taková záloha by při obnově nemusela obsahovat ilustrace instalovaných katalogů a jejich historie.
 
-Oprava v [server/snapshots.mjs](../server/snapshots.mjs) zjistí požadované přílohy z databáze konkrétního snapshotu, včetně historie, a ověří jejich existenci, délku a SHA-256. Provádí se při tvorbě snapshotu i před exportem plného ZIP. Chybějící živý obrázek tedy také zablokuje vytvoření vadného nového snapshotu. Potřebné jsou skutečně používané soubory, ne nevyužité rezervace v tabulce příloh.
+Oprava v [server/snapshots.mjs](https://github.com/cert4u/u-jednoho-stolu/blob/main/server/snapshots.mjs) zjistí požadované přílohy z databáze konkrétního snapshotu, včetně historie, a ověří jejich existenci, délku a SHA-256. Provádí se při tvorbě snapshotu i před exportem plného ZIP. Chybějící živý obrázek tedy také zablokuje vytvoření vadného nového snapshotu. Potřebné jsou skutečně používané soubory, ne nevyužité rezervace v tabulce příloh.
 
 Regrese ověřuje chybějící sidecar, sidecar bez jedné přílohy, pozměněné bajty s jinak platným ZIP/CRC a ztrátu potřebného živého souboru. Zároveň ověřuje, že úplný starší snapshot lze stáhnout i při chybě v současném živém adresáři a že snapshot prázdné knihovny nepotřebuje obrázkový sidecar. Starší přímý SQLite download zůstává zachovaný.
 

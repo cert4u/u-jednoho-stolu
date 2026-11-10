@@ -2,11 +2,11 @@
 
 > „U jednoho stolu vzniklo pro všechny, kteří kdysi sedávali s kamarády nad čtverečkovaným papírem, házeli kostkami a společně prožívali dobrodružství. Dnes nás možná dělí stovky kilometrů, ale příběhy mohou pokračovat. Nechceme nahradit Pána jeskyně ani představivost hráčů. Chceme jim jen vrátit společný stůl.“
 
-Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde nemusí být ve starším stabilním vydání. Při provozu vydané verze používej dokumentaci z jejího tagu; rozdíly popisuje [CHANGELOG](../CHANGELOG.md). Automatická aktualizace instalace vybírá stabilní GitHub Release, nikoli větev `main`.
+Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde nemusí být ve starším stabilním vydání. Při provozu vydané verze používej dokumentaci z jejího tagu; rozdíly popisuje [CHANGELOG](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md). Automatická aktualizace instalace vybírá stabilní GitHub Release, nikoli větev `main`.
 
 | Pro koho | Návod |
 | --- | --- |
-| Zájemce o projekt | [Představení a první hra](../README.md) |
+| Zájemce o projekt | [Prezentace projektu](https://cert4u.github.io/u-jednoho-stolu/prezentace/) · [První hra](PLAYING.md#role-a-přístupy) |
 | Hráč a Pán jeskyně | [Herní příručka](PLAYING.md) |
 | Výzdoba mapy | [Stafáž: paleta, úpravy a viditelnost](SCENERY.md) |
 | Příprava příběhu | [Příběhová osnova a komunitní ukázka](STORY_OUTLINE.md) |
@@ -19,12 +19,12 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | Autor vzhledu mapy | [Renderery, deterministická kresba a srovnání](MAP_APPEARANCE.md) |
 | Autor integrace | [Interní HTTP API a oprávnění](API.md) |
 | Správce projektu | [Audit komunitní připravenosti](COMMUNITY_AUDIT.md) |
-| Přispěvatel | [Jak přispívat](../CONTRIBUTING.md) |
+| Přispěvatel | [Jak přispívat](https://github.com/cert4u/u-jednoho-stolu/blob/main/CONTRIBUTING.md) |
 | Autor dobrodružství a příšer | [Přidávání herního obsahu](OBSAH.md) |
 | Autor ilustrací | [Postavy a bestiář](ILUSTRACE.md) |
 | Správce vydání | [Příprava a ověření vydání](RELEASING.md) |
 
-[Omezení současné verze](LIMITS.md) · [Plán projektu](ROADMAP.md) · [Bezpečnostní hlášení](../SECURITY.md) · [Licence](../LICENSE) · [Převzaté součásti](../THIRD_PARTY_NOTICES.md)
+[Omezení současné verze](LIMITS.md) · [Plán projektu](ROADMAP.md) · [Bezpečnostní hlášení](https://github.com/cert4u/u-jednoho-stolu/blob/main/SECURITY.md) · [Licence](https://github.com/cert4u/u-jednoho-stolu/blob/main/LICENSE) · [Převzaté součásti](https://github.com/cert4u/u-jednoho-stolu/blob/main/THIRD_PARTY_NOTICES.md)
 
 ## Rychlá orientace
 
@@ -57,4 +57,4 @@ Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [a
 
 Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-úklid-css) · [přechod z 1.2.3](SELF_HOSTING.md#přechod-z-123-na-124).
 
-Vydání **1.2.8** přináší [opravy zkušeností, bojového rozestavení a záloh](../CHANGELOG.md#128--2026-11-10). [Přechod z 1.2.7](SELF_HOSTING.md#přechod-z-127-na-128).
+Vydání **1.2.8** přináší [opravy zkušeností, bojového rozestavení a záloh](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#128--2026-11-10). [Přechod z 1.2.7](SELF_HOSTING.md#přechod-z-127-na-128).

@@ -213,13 +213,12 @@ h1 em {
   transform: rotate(3deg);
 }
 .hero-map img,
-.detail img {
+.map-views img {
   display: block;
   width: 100%;
   height: auto;
 }
-.hero-map figcaption,
-.detail figcaption {
+.hero-map figcaption {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem 1rem;
@@ -328,14 +327,30 @@ h3 {
 .invite p:last-child {
   color: var(--muted);
 }
-.detail {
-  max-width: 62rem;
+.map-comparison h3 {
+  scroll-margin-top: 1.25rem;
+}
+.map-comparison > p {
+  color: var(--muted);
+}
+.map-views {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem;
+  margin-top: 1.15rem;
+}
+.map-views figure {
   padding: 0.6rem 0.6rem 0;
   border: 1px solid var(--line);
+  border-radius: 0.25rem;
   background: var(--sheet);
 }
-.detail figcaption {
-  color: var(--muted);
+.map-views figcaption {
+  padding: 0.6rem 0.2rem;
+  font-weight: 650;
+}
+.map-views img {
+  border: 1px solid var(--line);
 }
 
 .invite {
@@ -420,6 +435,9 @@ h3 {
   }
   .hero {
     padding-block: 2.8rem;
+  }
+  .map-views {
+    grid-template-columns: 1fr;
   }
   .steps {
     grid-template-columns: 1fr;

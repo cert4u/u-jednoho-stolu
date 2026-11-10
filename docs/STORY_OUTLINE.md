@@ -16,7 +16,7 @@ Vazba vede na stabilní `MapNote.id`, nikoli na číslo místnosti nebo index ge
 
 Pole `rooms[].phase` v současném JSON formátu zůstává nepovinné. Při založení hry se příslušné fáze propojí s nově vytvořenými poznámkami. Nadpis se převezme z prvního místa dané fáze; při opakování fáze se zachovají všechny odkazy. Plné texty všech událostí zůstávají v jejich poznámkách, nic se neslučuje ani nekrátí. Předlohy bez `phase` vytvoří běžnou hru bez uložené osnovy.
 
-Původní ukázka [Dům vypůjčeného světla](../content/adventures/dum-svetla.json) používá [osm komnat](../content/dungeon-presets/lucerna.json) a všech pět fází, některé opakovaně. Problém světla a zapůjčených vzpomínek lze řešit opravou, dohodou nebo jinou cestou, kterou navrhne družina. Vyvrcholení nemusí být soubojem a další výprava není povinná.
+Původní ukázka [Dům vypůjčeného světla](https://github.com/cert4u/u-jednoho-stolu/blob/main/content/adventures/dum-svetla.json) používá [osm komnat](https://github.com/cert4u/u-jednoho-stolu/blob/main/content/dungeon-presets/lucerna.json) a všech pět fází, některé opakovaně. Problém světla a zapůjčených vzpomínek lze řešit opravou, dohodou nebo jinou cestou, kterou navrhne družina. Vyvrcholení nemusí být soubojem a další výprava není povinná.
 
 ## Data, soukromí a rozšiřování
 
@@ -35,7 +35,7 @@ Jedno volitelné pole `Game.storyOutline` obsahuje:
 }
 ```
 
-[story-phases.ts](../lib/story-phases.ts) definuje společný typ a schéma fází pro komunitní předlohy, editor i zálohu. [story-outline.ts](../lib/story-outline.ts) spravuje uložení, projekci a odstranění zaniklých vazeb. [Editor](../components/story-outline-panel.tsx) používá existující registr dialogů a běžné herní API.
+[story-phases.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/story-phases.ts) definuje společný typ a schéma fází pro komunitní předlohy, editor i zálohu. [story-outline.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/story-outline.ts) spravuje uložení, projekci a odstranění zaniklých vazeb. [Editor](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/story-outline-panel.tsx) používá existující registr dialogů a běžné herní API.
 
 Akce `story-outline` je povolená pouze PJ. Vyžaduje `requestId`, `expectedRevision` (`null` před prvním uložením) a neprázdný objekt `phases`. Dodané fáze nahrazují své předchozí hodnoty, ostatní zůstanou. Chybějící pole fáze dostanou prázdné výchozí hodnoty. Konflikt revize nebo zaniklý odkaz vrací 409, neplatný vstup 400, hráčský zápis 403. Revize chrání celou osnovu: i dvě současné úpravy různých fází vyžadují vědomé sladění.
 
@@ -45,7 +45,7 @@ Záloha verze 1 má kompatibilně rozšířené validační schéma; chybějíc�
 
 ## Ověření a hranice
 
-[Integrační sada](../scripts/test-story-outline.mjs) pokrývá vlastní kampaň, jednotlivé i současné úpravy, opakování požadavku, mnohočetné vazby napříč patry, přesun/přečíslování/odstranění poznámky, staré kampaně a předlohy, opakované fáze, soukromí, úplné zálohy a zachování přípravy po změně geometrie. Spouští se v `npm run test:hosting` a `npm run test:ci` jako součást herní integrační sady.
+[Integrační sada](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-story-outline.mjs) pokrývá vlastní kampaň, jednotlivé i současné úpravy, opakování požadavku, mnohočetné vazby napříč patry, přesun/přečíslování/odstranění poznámky, staré kampaně a předlohy, opakované fáze, soukromí, úplné zálohy a zachování přípravy po změně geometrie. Spouští se v `npm run test:hosting` a `npm run test:ci` jako součást herní integrační sady.
 
 Osnova nemění průchodnost, generování, světlo ani pohyb družiny. Odehrání se označuje ručně, nic se automaticky neodemyká. Nemá AI, podmínky úkolů ani automatický postup. V této etapě se fáze neznačí přímo v mapě: čísla místností a herní značky zůstávají přehledné.
 

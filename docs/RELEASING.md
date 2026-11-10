@@ -1,6 +1,6 @@
 # Příprava vydání
 
-[Dokumentace](README.md) · [Vývoj](DEVELOPMENT.md) · [CHANGELOG](../CHANGELOG.md)
+[Dokumentace](README.md) · [Vývoj](DEVELOPMENT.md) · [CHANGELOG](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md)
 
 Tento postup je pro správce projektu. Repozitář má CI, ale nemá automatický release workflow. Publikace stabilního vydání je ruční krok.
 

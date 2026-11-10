@@ -10,7 +10,7 @@ Tato dokumentace odpovídá vydání 1.2.8; vývojový `main` se může od stabi
 
 Pro jednu menší družinu je orientační výchozí konfigurace **2 jádra nebo vCPU, 2 GB volné RAM a 5 GB volného místa** pro aplikaci, sestavení Docker image a aktualizace. Jde o odhad pro plánování instalace. Kampaně, katalogové obrázky a zálohy potřebují další místo podle množství dat. Pro volitelný hlasový server počítej s rezervou podle počtu lidí v hovoru. [Hlas družiny](VOICE.md)
 
-Na stejném počítači můžeš začít přes `localhost`. Pro společnou hru použij adresu, na kterou se hráči ze své sítě skutečně dostanou. Přístup můžeš zpřístupnit po domácí síti, přes vlastní VPN nebo přes HTTPS reverzní proxy. `PUBLIC_ORIGIN` musí odpovídat adrese, kterou hráči otevírají.
+Na stejném počítači můžeš začít přes `localhost`. Pro společnou hru použij adresu, na kterou se hráči ze své sítě skutečně dostanou. Pro přístup z dalších zařízení použij HTTPS adresu stolu, dostupnou třeba po domácí síti nebo přes vlastní VPN. `PUBLIC_ORIGIN` musí odpovídat adrese, kterou hráči otevírají.
 
 ## První spuštění
 
@@ -39,9 +39,24 @@ stul.example.cz {
 
 Port aplikace se standardně váže pouze na localhost. Aplikaci a správu publikuj přes HTTPS. Pokud proxy běží v jiném kontejneru, uprav síť podle svého hostingu. Cesty `/internal/*` může proxy navíc blokovat; interní updater komunikuje přímo přes Docker síť. `/admin` lze omezit i na VPN.
 
+## První pozvánka v domácí síti
+
+1. Zvol HTTPS jméno pro stůl, například `stul.example.cz`. V domácím DNS ho nasměruj na místní adresu počítače s Dockerem, třeba `192.168.1.50`. Na tomto počítači nastav HTTPS reverzní proxy podle příkladu výše a použij certifikát, kterému prohlížeče hráčů důvěřují.
+2. V `.env` nastav adresu, kterou budou všichni otevírat. Port aplikace zůstane dostupný místní proxy.
+
+   ```dotenv
+   PUBLIC_ORIGIN=https://stul.example.cz
+   STUL_BIND=127.0.0.1
+   ```
+
+3. Spusť `./deploy/stul.sh up -d --force-recreate app`, aby se načetla nová adresa. Na druhém počítači nebo telefonu ve stejné síti otevři `https://stul.example.cz` a zkontroluj, že se úvodní stránka načte bez varování o certifikátu. Stejnou adresu použij i na počítači PJ.
+4. Jako PJ založ stůl a přes **Pozvat družinu** zkopíruj celý odkaz. Začíná adresou ověřenou v předchozím kroku a obsahuje kód stolu, například `https://stul.example.cz/?room=AB12CD34EF`. Pošli hráčům právě tento odkaz. [Role a přístupy](PLAYING.md#role-a-přístupy)
+
+Pro první zkoušku na stejném počítači stačí `http://localhost:8080`. Pro sdílenou hru použij HTTPS i v domácí síti nebo přes VPN. Kreslení mapy a další akce používají prohlížečové funkce dostupné v zabezpečeném kontextu. [Web Crypto](https://www.w3.org/TR/webcrypto/#crypto-interface) · [Nastavení hlasu](VOICE.md)
+
 ## Konfigurace
 
-Soubor `.env` připrav podle [příkladu](../.env.example). Změnu proměnných promítne **znovuvytvoření** kontejneru, nikoli samotný `restart`: `./deploy/stul.sh up -d --force-recreate app`. U hlasu vždy přidej oba soubory Compose podle [VOICE.md](VOICE.md).
+Soubor `.env` připrav podle [příkladu](https://github.com/cert4u/u-jednoho-stolu/blob/main/.env.example). Změnu proměnných promítne **znovuvytvoření** kontejneru, nikoli samotný `restart`: `./deploy/stul.sh up -d --force-recreate app`. U hlasu vždy přidej oba soubory Compose podle [VOICE.md](VOICE.md).
 
 | Proměnná | Účel / výchozí stav |
 | --- | --- |
@@ -232,7 +247,7 @@ Heslo správce je nadále hodnota `STUL_ADMIN_PASSWORD` tvé instalace; projekt 
 
 Nové proměnné `STUL_ROOM_CREATE_RATE`, `STUL_ROOM_LIMIT` a `STUL_ROOM_BYTES_LIMIT` jsou volitelné. Bez jejich nastavení platí níže uvedené výchozí hodnoty. Není nutná přestavba updateru ani nová služba. Aktualizace aplikace přes updater sama nepřepisuje checkout, `.env` ani Compose soubor. Chceš-li vlastní kvóty nastavovat přes `.env`, převezmi také odpovídající předání proměnných z Compose vydání 1.2.2 a znovu vytvoř kontejner aplikace při zachování datového volume.
 
-[Změny vydání](../CHANGELOG.md#122--2026-11-08) · [Výsledky a omezení ověření](FINAL_STABILIZATION.md).
+[Změny vydání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#122--2026-11-08) · [Výsledky a omezení ověření](FINAL_STABILIZATION.md).
 
 ## Přechod z 1.2.2 na 1.2.3
 
@@ -246,13 +261,13 @@ Podporovaný rollback vrací odpovídající image i databázový snapshot. Pře
 
 Vytvoř úplnou serverovou ZIP zálohu, uchovej konfiguraci a zachovej celý datový volume. Vyber stabilní vydání 1.2.4 v administraci updateru; při ručním sestavení použij tag `v1.2.4`. Přechod nevyžaduje SQL migraci, změnu konfigurace ani přestavbu updateru nebo LiveKitu. Formát záloh se nemění.
 
-Po aktualizaci obnov herní stránku i `/admin`. Ověř přihlášení, otevření mapy a posun obsahu v dialogu. Podporovaný rollback vrací image i databázový snapshot z doby před aktualizací. [Změny vydání](../CHANGELOG.md#124--2026-11-09).
+Po aktualizaci obnov herní stránku i `/admin`. Ověř přihlášení, otevření mapy a posun obsahu v dialogu. Podporovaný rollback vrací image i databázový snapshot z doby před aktualizací. [Změny vydání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#124--2026-11-09).
 
 ## Přechod z 1.2.7 na 1.2.8
 
 Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci zvol stabilní vydání 1.2.8 nebo při ruční aktualizaci sestav aplikaci ze značky `v1.2.8`. Ponech připojený celý datový volume. Stačí výměna aplikace, konfigurace i updater zůstávají kompatibilní a SQL migrace nejsou potřeba.
 
-Po výměně se znovu přihlas do administrace. Ověř export a obnovu kopie kampaně, zejména pokud má dlouhý archiv postav nebo rozpracovaný boj. Formát přenositelné zálohy zůstává 1. Nová verze zachová i rozsáhlejší historické odměny, které 1.2.7 při exportu odmítala. Při rollbacku použij předaktualizační snapshot databáze. [Změny vydání](../CHANGELOG.md#128--2026-11-10).
+Po výměně se znovu přihlas do administrace. Ověř export a obnovu kopie kampaně, zejména pokud má dlouhý archiv postav nebo rozpracovaný boj. Formát přenositelné zálohy zůstává 1. Nová verze zachová i rozsáhlejší historické odměny, které 1.2.7 při exportu odmítala. Při rollbacku použij předaktualizační snapshot databáze. [Změny vydání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#128--2026-11-10).
 
 ## Přechod z 1.2.6 na 1.2.7
 
@@ -266,7 +281,7 @@ Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci.
 
 Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. Vyber stabilní vydání 1.2.5 v administraci updateru nebo při ručním sestavení použij tag `v1.2.5`. Zachovej celý datový volume. Přechod nevyžaduje SQL migraci, změnu Compose ani přestavbu updateru nebo LiveKitu. Formát záloh zůstává stejný.
 
-Po aktualizaci obnov aplikaci i `/admin` a zkontroluj, že jde otevřít existující kampaň a detail katalogu. Podporovaný rollback vrací také databázi ze snapshotu před aktualizací. [Změny vydání](../CHANGELOG.md#125--2026-11-09).
+Po aktualizaci obnov aplikaci i `/admin` a zkontroluj, že jde otevřít existující kampaň a detail katalogu. Podporovaný rollback vrací také databázi ze snapshotu před aktualizací. [Změny vydání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#125--2026-11-09).
 
 ## Ochrany stabilizační větve
 

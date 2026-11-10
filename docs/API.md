@@ -2,7 +2,7 @@
 
 [Dokumentace](README.md) · [Architektura](DEVELOPMENT.md)
 
-Toto je přehled aktuálního interního API pro přispěvatele, nikoli verzované veřejné integrační rozhraní se zaručenou stabilitou. Vstupní bod je [herní route](../app/api/game/route.ts). Ověření člena, připojení a obnova přístupu jsou v [room-access.ts](../app/api/game/room-access.ts). Oprávnění a směrování jednotlivých akcí najdeš v [actions.ts](../app/api/game/actions.ts), validaci hodnot v odpovídajících modulech `lib/` a tvar odpovědi v [herním pohledu](../app/api/game/view.ts). Příklady požadavků jsou v integračních testech.
+Toto je přehled aktuálního interního API pro přispěvatele, nikoli verzované veřejné integrační rozhraní se zaručenou stabilitou. Vstupní bod je [herní route](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/route.ts). Ověření člena, připojení a obnova přístupu jsou v [room-access.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/room-access.ts). Oprávnění a směrování jednotlivých akcí najdeš v [actions.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/actions.ts), validaci hodnot v odpovídajících modulech `lib/` a tvar odpovědi v [herním pohledu](https://github.com/cert4u/u-jednoho-stolu/blob/main/app/api/game/view.ts). Příklady požadavků jsou v integračních testech.
 
 ## Přístupy a společné konvence
 
@@ -82,12 +82,12 @@ Inspekce **Prozkoumat** je klientské čtení již filtrovaného pohledu PJ. Nee
 - Hromadné léčení ověřuje náhled všech zvolených postav před změnou; vyřazení navíc očekávané životy. Nepřepisuj nový stav starým náhledem.
 - `generate.expectedState` je serverový stamp aktuálního seznamu pater a možnosti využít prázdné patro, ne libovolný klientský JSON.
 
-Zdrojové příklady najdeš například v [testu mapy](../scripts/test-map.mjs), [výbavy](../scripts/test-equipment.mjs), [generátoru](../scripts/test-generator.mjs) a [obnovy](../scripts/test-repairs.mjs).
+Zdrojové příklady najdeš například v [testu mapy](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-map.mjs), [výbavy](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-equipment.mjs), [generátoru](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-generator.mjs) a [obnovy](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-repairs.mjs).
 
 
 PJ načte bestiář pomocí `GET /api/game?room=KÓD&catalog=bestiary` s herním tokenem. Server vrací katalog pouze aktivnímu PJ. Požadavek hráče dostane 403, požadavek bez platného tokenu 401. Údaje o instanci příšery včetně jména a životů se nadále čtou z kampaně. Ilustrace jsou veřejné.
 
-Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiáře](../content/bestiary). Server podle něj doplní výchozí jméno, životy, popis, bojové hodnoty a soukromou poznámku pro PJ. Vazbu na ilustraci zachovává kopie i úplná záloha. Identifikátor předlohy se posílá pouze v pohledu PJ.
+Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiáře](https://github.com/cert4u/u-jednoho-stolu/tree/main/content/bestiary). Server podle něj doplní výchozí jméno, životy, popis, bojové hodnoty a soukromou poznámku pro PJ. Vazbu na ilustraci zachovává kopie i úplná záloha. Identifikátor předlohy se posílá pouze v pohledu PJ.
 
 
 `GET /api/adventures` vrací jen `id`, `title` a `summary` vestavěných dobrodružství. Volitelný `adventureId` při `create` vytvoří novou kampaň s mapou, přípravou místností a příšerami z předlohy. Při neplatném ID se kampaň neuloží. Bez `adventureId` vznikne vlastní kampaň s prázdnou mapou.
@@ -96,7 +96,7 @@ Při akci `monster` s `op: "create"` lze poslat `templateId` z [katalogu bestiá
 
 `GET /api/voice?room=<code>` vyžaduje herní token a vrací `{enabled: boolean}`. `POST /api/voice` se stejným přístupem a `{room}` vrací `{url, token}` nebo 503, není-li služba nastavená. Klient nesmí určovat identitu, jméno, cílový hlasový prostor ani práva; route je odvodí z ověřeného členství.
 
-JWT povoluje pouze publikaci zdroje `microphone`, odběr zvuku a vstup do `stul-<code>`. Nepovoluje kameru, screen share, data, správu ani nahrávání. Platnost pro nové připojení je 120 sekund, odpovědi jsou `no-store`. Vypršení tokenu neruší již navázaný hovor. Viz [zdroj](../lib/voice.ts) a [provozní omezení](VOICE.md).
+JWT povoluje pouze publikaci zdroje `microphone`, odběr zvuku a vstup do `stul-<code>`. Nepovoluje kameru, screen share, data, správu ani nahrávání. Platnost pro nové připojení je 120 sekund, odpovědi jsou `no-store`. Vypršení tokenu neruší již navázaný hovor. Viz [zdroj](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/voice.ts) a [provozní omezení](VOICE.md).
 
 ## Správa instalace (pouze Node)
 

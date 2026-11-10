@@ -59,7 +59,7 @@ Na vlastním serveru může správce zapnout volitelný LiveKit. Každá družin
 
 ## Vlastní server s Dockerem
 
-Pro stabilní instalaci vyber tag z posledního vydání. Na Linuxu potřebuješ Docker Engine 28+, Compose v2, Git a OpenSSL. Návod tě provede nastavením `.env`, prvním spuštěním i HTTPS. Herní data a katalogové obrázky zůstávají v trvalém datovém volume. [Poslední stabilní vydání](https://github.com/cert4u/u-jednoho-stolu/releases/latest) · [První spuštění s Dockerem](docs/SELF_HOSTING.md#první-spuštění)
+Pro stabilní instalaci vyber tag z posledního vydání. Na Linuxu potřebuješ Docker Engine 28+, Compose v2, Git a OpenSSL. Návod tě provede nastavením `.env`, prvním spuštěním i HTTPS. Herní data a katalogové obrázky zůstávají v trvalém datovém volume. [Poslední stabilní vydání](https://github.com/cert4u/u-jednoho-stolu/releases/latest) · [První spuštění s Dockerem](docs/SELF_HOSTING.md#první-spuštění) · [První pozvánka v domácí síti](docs/SELF_HOSTING.md#první-pozvánka-v-domácí-síti)
 
 Pro malou družinu ber jako orientační základ 2 jádra nebo vCPU, 2 GB volné RAM a 5 GB volného místa pro instalaci a aktualizace. Místo pro kampaně a zálohy počítej zvlášť. [Požadavky a přístup pro družinu](docs/SELF_HOSTING.md#základní-požadavky)
 

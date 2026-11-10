@@ -170,23 +170,35 @@
             </p>
           </article>
         </div>
-        <figure class="detail">
-          <a
-            href="../images/maps/mine-hand-drawn.jpg"
-            aria-label="Otevřít ručně kreslenou mapu dolu v plné velikosti"
-          >
-            <img
-              src="../images/maps/mine-hand-drawn.jpg"
-              width="1280"
-              height="720"
-              loading="lazy"
-              alt="Ručně kreslený důl s úzkými chodbami a očíslovanými místnostmi"
-            />
-          </a>
-          <figcaption>
-            <span>List 02 · Důl</span> <span>Ručně kreslená mapa</span>
-          </figcaption>
-        </figure>
+        <section class="map-comparison" aria-labelledby="pohledy">
+          <h3 id="pohledy">Stejné dveře, dva pohledy</h3>
+          <p>
+            Družina stojí před zavřenými dveřmi. PJ vidí i chodbu a místnosti za
+            nimi. Hráči zatím znají jen vstupní síň.
+          </p>
+          <div class="map-views">
+            <figure>
+              <img
+                src="../images/maps/pohled-pj.svg"
+                width="612"
+                height="468"
+                loading="lazy"
+                alt="Pohled PJ. Za dveřmi první místnosti pokračuje chodba do dvou dalších místností."
+              />
+              <figcaption>Pohled Pána jeskyně</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../images/maps/pohled-hrace.svg"
+                width="612"
+                height="468"
+                loading="lazy"
+                alt="Pohled hráče. Družina vidí první místnost a zavřené dveře. Prostor za nimi je na mapě prázdný."
+              />
+              <figcaption>Pohled hráče</figcaption>
+            </figure>
+          </div>
+        </section>
       </section>
 
       <section class="invite" id="instalace" aria-labelledby="zaloz">
@@ -202,14 +214,19 @@
             </p>
             <p>
               Správce spustí stůl na vlastním počítači s Linuxem a Dockerem.
-              Doma můžete hrát po místní síti, na dálku přes vlastní VPN nebo
-              přes HTTPS adresu svého serveru. Kampaň se ukládá u vás.
+              Hráči otevřou HTTPS adresu stolu, třeba po domácí síti nebo přes
+              vlastní VPN. Kampaň se ukládá u vás.
             </p>
             <div class="actions">
               <a
                 class="button"
                 href="https://github.com/cert4u/u-jednoho-stolu/blob/main/docs/SELF_HOSTING.md#první-spuštění"
                 >Návod k instalaci <span aria-hidden="true">↗</span></a
+              >
+              <a
+                class="underlink"
+                href="https://github.com/cert4u/u-jednoho-stolu/blob/main/docs/SELF_HOSTING.md#první-pozvánka-v-domácí-síti"
+                >První pozvánka <span aria-hidden="true">↗</span></a
               >
               <a
                 class="underlink"
@@ -245,7 +262,7 @@
 
     <footer class="wrap footer">
       <p>U jednoho stolu · Open source pod licencí MIT</p>
-      <a href="https://github.com/cert4u/u-jednoho-stolu/tree/main/docs"
+      <a href="https://cert4u.github.io/u-jednoho-stolu/"
         >Dokumentace <span aria-hidden="true">↗</span></a
       >
     </footer>

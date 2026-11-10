@@ -76,7 +76,7 @@ Při této zkoušce zapisovat konkrétní ruční úkony, které ruší hraní. 
 
 ## Podklady v kódu
 
-- [Hody a zranění](../lib/mechanics.ts), [iniciativa](../lib/initiative.ts), [deníky](../lib/character.ts), [zkušenosti](../lib/experience.ts).
-- [Průzkum](../lib/exploration.ts), [inspekce](../lib/map-inspection.ts), [příprava míst](../lib/map-notes.ts).
-- [Výbava](../lib/equipment.ts), [kořist](../lib/loot.ts), [čas a světlo](../lib/journey.ts).
-- [Kouzla](../lib/powers.ts), [stavy](../lib/conditions.ts), [vyřazení](../lib/life.ts), [léčení](../lib/recovery.ts), [zkoušky](../lib/challenges.ts).
+- [Hody a zranění](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/mechanics.ts), [iniciativa](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/initiative.ts), [deníky](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/character.ts), [zkušenosti](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/experience.ts).
+- [Průzkum](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/exploration.ts), [inspekce](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/map-inspection.ts), [příprava míst](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/map-notes.ts).
+- [Výbava](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/equipment.ts), [kořist](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/loot.ts), [čas a světlo](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/journey.ts).
+- [Kouzla](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/powers.ts), [stavy](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/conditions.ts), [vyřazení](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/life.ts), [léčení](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/recovery.ts), [zkoušky](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/challenges.ts).

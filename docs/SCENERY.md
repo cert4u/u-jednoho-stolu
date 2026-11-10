@@ -54,7 +54,7 @@ Server návrh znovu vypočítá z aktuálních dat. Změna kresby, stafáže neb
 
 ## Komunitní katalog
 
-Všech 22 definic (18 symbolů a 4 plošné materiály) má vlastní JSON v [content/scenery](../content/scenery). Přidání nevyžaduje úpravu komponent ani seznamu typů. Zkopíruj například [moss.json](../content/scenery/moss.json), zvol nové stabilní ID a stejné jméno souboru:
+Všech 22 definic (18 symbolů a 4 plošné materiály) má vlastní JSON v [content/scenery](https://github.com/cert4u/u-jednoho-stolu/tree/main/content/scenery). Přidání nevyžaduje úpravu komponent ani seznamu typů. Zkopíruj například [moss.json](https://github.com/cert4u/u-jednoho-stolu/blob/main/content/scenery/moss.json), zvol nové stabilní ID a stejné jméno souboru:
 
 ```json
 {
@@ -70,11 +70,11 @@ Všech 22 definic (18 symbolů a 4 plošné materiály) má vlastní JSON v [con
 - `category` je `object` nebo `floor`. Prostředí jsou `castle`, `mine`, `cave`, alespoň jedno a bez opakování.
 - `automatic` je výslovný souhlas s náhodným rozmístěním; výchozí hodnota je `false`. `true` je povoleno jen pro podlahu. Nové definice se do příslušných filtrů i automatického návrhu zařadí samy.
 - `path` obsahuje pouze SVG příkazy a číselné souřadnice pro plátno **32 × 32**. Symbol je tvořen nevyplněnými tahy, barvu, průhlednost a tloušťku řídí společná vrstva. Nekopíruj celé SVG, HTML, skripty, styly, odkazy ani externí obrázky. Validace je odmítne. Limit je 6000 znaků; pro čitelnost doporučujeme několik jednoduchých tahů uvnitř okraje 2–30.
-- Zachovej tichý tušový vzhled bez barevného pozadí. Ověř symbol v malé velikosti, v obou vzhledech mapy a v šedé paměti. Uveď původ kresby a licenci v PR podle [pravidel přispívání](../CONTRIBUTING.md#licence-a-původ-obsahu).
+- Zachovej tichý tušový vzhled bez barevného pozadí. Ověř symbol v malé velikosti, v obou vzhledech mapy a v šedé paměti. Uveď původ kresby a licenci v PR podle [pravidel přispívání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CONTRIBUTING.md#licence-a-původ-obsahu).
 
 ### Vlastní plošný materiál
 
-Zkopíruj [water-area.json](../content/scenery/water-area.json). Vedle běžných polí definuj:
+Zkopíruj [water-area.json](https://github.com/cert4u/u-jednoho-stolu/blob/main/content/scenery/water-area.json). Vedle běžných polí definuj:
 
 ```json
 "surface": {
@@ -98,16 +98,16 @@ Volitelné `Dungeon.surfaces` obsahuje `{kind, x, y, hidden?}` po jednom materi�
 
 Volitelné `Dungeon.scenery` obsahuje `{id, kind, x, y, rotation, size, hidden?, note?, revision?}`. Uložení používá existující akci `map`, nástroj `scenery`, operaci `save` nebo `remove`, `requestId`, a při úpravě `sceneryId` a `expectedRevision`. První vložení používá `expectedRevision: null`. Bezpečné opakování a historii zajišťuje běžná mapová transakce; hráčský zápis server odmítá.
 
-- [lib/scenery-catalog.ts](../lib/scenery-catalog.ts): validovaný komunitní katalog.
-- [lib/scenery.ts](../lib/scenery.ts): validace uložených prvků, úpravy a projekce do paměti.
-- [lib/surfaces.ts](../lib/surfaces.ts), [lib/surface-drawing.ts](../lib/surface-drawing.ts): štětec, paměť, spojování a stabilní organický obrys.
-- [lib/scenery-fill.ts](../lib/scenery-fill.ts): deterministický návrh, obsazenost a kontrola změn.
-- [glyph.tsx](../components/scenery/glyph.tsx): vykreslení ověřené cesty z katalogu, sdílené mapou a paletou.
-- [layer.tsx](../components/scenery/layer.tsx): neinteraktivní dekorativní vrstva a útlum podle dohledu.
-- [palette.tsx](../components/scenery/palette.tsx), [editor.tsx](../components/scenery/editor.tsx): výběr a soukromé úpravy PJ.
-- [test-surfaces.mjs](../scripts/test-surfaces.mjs), [test-surfaces-api.mjs](../scripts/test-surfaces-api.mjs): organický štětec, souběžně navazující tahy, skrytí, paměť a zálohy.
-- [test-scenery-core.mjs](../scripts/test-scenery-core.mjs): typy, geometrická nezávislost, paměť, Zpět a kompatibilita generování v `npm test`.
-- [test-scenery-fill.mjs](../scripts/test-scenery-fill.mjs): automatický návrh, komunitní definice, limity a hromadné Zpět.
-- [test-scenery.mjs](../scripts/test-scenery.mjs): oprávnění, souběh, opakování, skrytí, paměť a úplné zálohy v obou integračních sadách.
+- [lib/scenery-catalog.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/scenery-catalog.ts): validovaný komunitní katalog.
+- [lib/scenery.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/scenery.ts): validace uložených prvků, úpravy a projekce do paměti.
+- [lib/surfaces.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/surfaces.ts), [lib/surface-drawing.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/surface-drawing.ts): štětec, paměť, spojování a stabilní organický obrys.
+- [lib/scenery-fill.ts](https://github.com/cert4u/u-jednoho-stolu/blob/main/lib/scenery-fill.ts): deterministický návrh, obsazenost a kontrola změn.
+- [glyph.tsx](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/scenery/glyph.tsx): vykreslení ověřené cesty z katalogu, sdílené mapou a paletou.
+- [layer.tsx](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/scenery/layer.tsx): neinteraktivní dekorativní vrstva a útlum podle dohledu.
+- [palette.tsx](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/scenery/palette.tsx), [editor.tsx](https://github.com/cert4u/u-jednoho-stolu/blob/main/components/scenery/editor.tsx): výběr a soukromé úpravy PJ.
+- [test-surfaces.mjs](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-surfaces.mjs), [test-surfaces-api.mjs](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-surfaces-api.mjs): organický štětec, souběžně navazující tahy, skrytí, paměť a zálohy.
+- [test-scenery-core.mjs](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-scenery-core.mjs): typy, geometrická nezávislost, paměť, Zpět a kompatibilita generování v `npm test`.
+- [test-scenery-fill.mjs](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-scenery-fill.mjs): automatický návrh, komunitní definice, limity a hromadné Zpět.
+- [test-scenery.mjs](https://github.com/cert4u/u-jednoho-stolu/blob/main/scripts/test-scenery.mjs): oprávnění, souběh, opakování, skrytí, paměť a úplné zálohy v obou integračních sadách.
 
 Paměť ukládá jen veřejná vizuální pole; soukromé údaje se neskrývají pouze CSS. Může uchovat až 560 historických značek po jedné na políčko. Validační schéma odmítne tajné údaje v paměti. Záloha formátu 1 podporuje nová volitelná pole ve všech mapách a jejich historiích. Staré zálohy bez stafáže zůstávají platné, SQL migrace se nemění. Pro zachování nové stafáže při obnově používej verzi aplikace, která ji podporuje.

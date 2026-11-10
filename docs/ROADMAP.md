@@ -1,6 +1,6 @@
 # Plán další práce
 
-[Dokumentace](README.md) · [Historie změn](../CHANGELOG.md)
+[Dokumentace](README.md) · [Historie změn](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md)
 
 Zaškrtnuté položky jsou implementované v hlavní větvi `main`, ne nutně součástí posledního stabilního vydání. Generátor V2, číslované místnosti a inspekce PJ jsou zahrnuté ve vydání 0.3.0. Nezaškrtnuté položky nemají slíbený termín.
 
