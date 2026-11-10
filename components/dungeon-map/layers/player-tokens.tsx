@@ -37,7 +37,9 @@ export default function PlayerTokens({
                 key={m.id}
                 data-token={m.id}
                 role="button"
-                aria-label={`${m.name}, políčko ${x + 1}, ${y + 1}`}
+                aria-label={
+                  visible ? m.name : `${m.name}, políčko ${x + 1}, ${y + 1}`
+                }
                 transform={`translate(${PAD + x * SIZE + SIZE / 2},${PAD + y * SIZE + SIZE / 2})`}
                 opacity={!visible && !revealed.has(cellKey(x, y)) ? 0.4 : 1}
                 style={{

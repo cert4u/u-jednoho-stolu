@@ -39,6 +39,11 @@ export default function MapNotes({
           const title =
             pj && visible ? n.published?.title || 'Popis místa' : n.title;
           const number = pj && visible ? n.published?.roomNumber : n.roomNumber;
+          const label = number
+            ? `Místnost ${number}`
+            : visible
+              ? 'Popis místa'
+              : 'Poznámka PJ';
           const dragged = stroke?.note === n.id;
           const x = dragged ? stroke!.end[0] : n.x,
             y = dragged ? stroke!.end[1] : n.y;
@@ -54,7 +59,7 @@ export default function MapNotes({
               data-map-note={n.id}
               role="button"
               tabIndex={0}
-              aria-label={`${number ? `Místnost ${number}` : visible ? 'Popis místa' : 'Poznámka PJ'}: ${title} · políčko ${n.x + 1}, ${n.y + 1}`}
+              aria-label={`${label}: ${title}${visible ? '' : ` · políčko ${n.x + 1}, ${n.y + 1}`}`}
               transform={
                 number
                   ? `translate(${PAD + (x + 0.5) * SIZE},${PAD + (y + 0.5) * SIZE})`

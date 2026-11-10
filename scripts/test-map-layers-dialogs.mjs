@@ -138,6 +138,9 @@ try {
       createElement(Canvas, { ...props, appearance }),
     );
     assert(html.includes('data-token="hero"'));
+    assert(html.includes('aria-label="Borin"'));
+    assert(!html.includes('paper-ruler'));
+    assert(!html.includes('· políčko'));
     assert(html.includes('data-monster="visible"'));
     assert(html.includes('Veřejná síň'));
     assert(html.includes('data-map-note="note"'));
@@ -162,10 +165,12 @@ try {
     createElement(Canvas, {
       ...props,
       preview: false,
+      map: { ...props.map, visible: false },
       input: { ...input, stroke: { token: 'hero', end: [4, 5] } },
     }),
   );
   assert(markup.includes('Borin, políčko 5, 6'));
+  assert(markup.includes('paper-ruler'));
   const notesProps = {
     notes: [note],
     appearance: 'classic',

@@ -335,7 +335,7 @@ h3 {
   color: var(--muted);
 }
 .map-slider {
-  max-width: 60rem;
+  max-width: 46rem;
   margin: 1.15rem auto 0;
   padding: 0.6rem;
   border: 1px solid var(--line);

@@ -332,10 +332,9 @@ export default function DungeonMap({
             {preview ? 'POHLED DRUŽINY' : 'ČTVEREČKOVANÝ PAPÍR'}
           </span>
           <small>
-            {W} × {H} polí ·{' '}
-            {pj && !preview
-              ? 'skrytá kresba je zesvětlená'
-              : 'vidíte odhalené části'}
+            {visible
+              ? 'vidíte odhalené části'
+              : `${W} × ${H} polí · skrytá kresba je zesvětlená`}
           </small>
         </div>
         <div

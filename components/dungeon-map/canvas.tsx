@@ -132,28 +132,30 @@ export default function MapCanvas({
         fill="none"
         stroke="none"
       />
-      {Array.from({ length: W }, (_, x) => (
-        <text
-          key={'x' + x}
-          x={PAD + x * SIZE + SIZE / 2}
-          y={16}
-          textAnchor="middle"
-          className="paper-ruler"
-        >
-          {x + 1}
-        </text>
-      ))}
-      {Array.from({ length: H }, (_, y) => (
-        <text
-          key={'y' + y}
-          x={12}
-          y={PAD + y * SIZE + SIZE / 2 + 3}
-          textAnchor="middle"
-          className="paper-ruler"
-        >
-          {y + 1}
-        </text>
-      ))}
+      {!visible &&
+        Array.from({ length: W }, (_, x) => (
+          <text
+            key={'x' + x}
+            x={PAD + x * SIZE + SIZE / 2}
+            y={16}
+            textAnchor="middle"
+            className="paper-ruler"
+          >
+            {x + 1}
+          </text>
+        ))}
+      {!visible &&
+        Array.from({ length: H }, (_, y) => (
+          <text
+            key={'y' + y}
+            x={12}
+            y={PAD + y * SIZE + SIZE / 2 + 3}
+            textAnchor="middle"
+            className="paper-ruler"
+          >
+            {y + 1}
+          </text>
+        ))}
       {drawing ? (
         <HandDrawnSurface
           drawing={drawing}
@@ -285,7 +287,9 @@ export default function MapCanvas({
           <text y="5" textAnchor="middle" fontSize="15" fill="#fffbed">
             ♟
           </text>
-          <title>{`Družina · ${party.x + 1}, ${party.y + 1}`}</title>
+          <title>
+            {visible ? 'Družina' : `Družina · ${party.x + 1}, ${party.y + 1}`}
+          </title>
         </g>
       )}
       {Object.entries(shown.access || {}).map(
