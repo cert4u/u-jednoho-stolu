@@ -2,7 +2,7 @@
 
 Cílem U jednoho stolu je malý a přehledný nástroj pro vlastní partu. Nová funkce má usnadnit konkrétní situaci při hraní a zachovat jednoduchost. Vítáme také opravy návodů, přístupnosti a chybových zpráv.
 
-[Dokumentace](docs/README.md) · [Vývoj a testy](docs/DEVELOPMENT.md) · [Plán](docs/ROADMAP.md) · [Bezpečnost](SECURITY.md)
+[Dokumentace](docs/README.md) · [Vývoj a testy](docs/DEVELOPMENT.md) · [Plán](docs/ROADMAP.md) · [Bezpečnost](SECURITY.md) · [Kodex chování](CODE_OF_CONDUCT.md) · [Přístupnost](ACCESSIBILITY.md)
 
 ## Hlášení chyby a návrh funkce
 

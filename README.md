@@ -75,6 +75,7 @@ V administraci na `/admin` můžeš zkontrolovat vydání, spustit aktualizaci a
 | Spravovat katalogy nebo přidat vlastní obsah | [Správa katalogů](docs/CATALOG_LIBRARY.md) · [Návod pro autora](docs/CATALOG_AUTHOR.md) |
 | Spustit projekt pro vývoj | [Node bez Dockeru](docs/DEVELOPMENT.md#rychlý-start-node-bez-dockeru) · [Lokální Cloudflare](docs/DEVELOPMENT.md#lokální-cloudflare-vývoj) |
 | Přispět změnou nebo nápadem | [Pravidla přispívání](CONTRIBUTING.md) · [Issues](https://github.com/cert4u/u-jednoho-stolu/issues) |
+| Najít pravidla diskuse nebo nahlásit bariéru | [Kodex chování](CODE_OF_CONDUCT.md) · [Přístupnost](ACCESSIBILITY.md) |
 | Najít všechny návody a technické podrobnosti | [Rozcestník dokumentace](docs/README.md) |
 | Projít změny a další plány | [Historie verzí](CHANGELOG.md) · [Plán projektu](docs/ROADMAP.md) |
 
