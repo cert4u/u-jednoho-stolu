@@ -6,6 +6,7 @@ Licence MIT v kořeni se vztahuje na vlastní práci tohoto projektu. Existujíc
 | --- | --- | --- |
 | Vendorizovaný Sites Vite plugin | `@openai/sites-vite-plugin` 0.2.0, OpenAI | MIT, [scripts/vite/sites-vite-plugin.LICENSE](scripts/vite/sites-vite-plugin.LICENSE) |
 | Zachovaná komponenta tlačítka shadcn | shadcn | MIT, [vendor/shadcn-tailwind-4.13.0.LICENSE.md](vendor/shadcn-tailwind-4.13.0.LICENSE.md) |
+| Nodemailer pro SMTP | `nodemailer` 10.6.0 | MIT-0, oznámení v distribuovaném npm balíčku. |
 | LiveKit klient | `livekit-client` 2.23.0 | Apache-2.0; soubor `LICENSE` v distribuovaném npm balíčku. |
 | LiveKit server SDK | `livekit-server-sdk` 2.19.2 | Apache-2.0; soubor `LICENSE` v distribuovaném npm balíčku. |
 | Volitelný LiveKit server | `livekit/livekit-server:v1.13.11` | Apache-2.0; samostatná služba a její distribuovaná oznámení. |

@@ -1,10 +1,12 @@
 'use client';
+import Link from 'next/link';
+import { usePublicPj } from './use-public-pj';
 
 import { Swords, PenTool, Star, Check, Plus } from 'lucide-react';
 import type { GameView, MemberView } from '../../app/api/game/view';
 
 type Props = {
-  game: Pick<GameView, 'title' | 'scene'>;
+  game: Pick<GameView, 'title' | 'scene' | 'managedInvites'>;
   me: MemberView;
   pj: boolean;
   connectionError: string;
@@ -26,6 +28,7 @@ export default function TableHeader({
   onAccount,
   onInvite,
 }: Props) {
+  const publicMode = usePublicPj() === 'enabled';
   return (
     <header className="topbar">
       <a className="brand" href="#">
@@ -55,25 +58,25 @@ export default function TableHeader({
         {connectionError ? 'Připojování…' : 'Stůl je připraven'}
       </span>
       {pj && (
-        <button
-          className="invite award-open"
-          onClick={onAward}
-        >
+        <button className="invite award-open" onClick={onAward}>
           <Star size={15} />
           <span>Přidělit zkušenosti</span>
         </button>
       )}
-      <button onClick={onInvite} className="invite">
-        {copied ? <Check size={15} /> : <Plus size={15} />}{' '}
-        {copied ? 'Odkaz zkopírován' : 'Pozvat družinu'}
-      </button>
-      <button
-        className="avatar"
-        onClick={onAccount}
-        title="Tvůj přístup"
-      >
+      {(!game.managedInvites || pj) && (
+        <button onClick={onInvite} className="invite">
+          {copied ? <Check size={15} /> : <Plus size={15} />}{' '}
+          {copied ? 'Odkaz zkopírován' : 'Pozvat družinu'}
+        </button>
+      )}
+      <button className="avatar" onClick={onAccount} title="Tvůj přístup">
         {me.name[0]}
       </button>
+      {publicMode && pj && (
+        <Link href="/pj" className="text-button pj-tables-link">
+          Moje stoly
+        </Link>
+      )}
     </header>
   );
 }

@@ -93,6 +93,7 @@ export default function DungeonMap({
 }: Props) {
   const [appearance, setAppearance] = useMapAppearance();
   const [showRooms, setShowRooms] = useState(false);
+  const [clearLevel, setClearLevel] = useState<string | null>(null);
   const {
     mode,
     tool,
@@ -284,6 +285,7 @@ export default function DungeonMap({
           onGenerate={onGenerate}
           onCenterParty={centerParty}
           onUndo={() => void sendMap({ tool: 'undo' })}
+          onClear={() => setClearLevel(exploration?.levelId ?? 'ground')}
           onZoomOut={() => setZoom((z) => Math.max(0.4, z - 0.1))}
           onZoomIn={() => setZoom((z) => Math.min(1.6, z + 0.1))}
           onFit={() => fitPaper()}
@@ -407,6 +409,45 @@ export default function DungeonMap({
           </div>
         </div>
       </div>
+      {pj &&
+        !preview &&
+        mode === 'prepare' &&
+        clearLevel === (exploration?.levelId ?? 'ground') &&
+        createPortal(
+          <GuardedDialog
+            label="Smazat kresbu patra"
+            className="modal"
+            onClose={() => setClearLevel(null)}
+          >
+            <div className="draft-warning">
+              <h2>
+                Smazat kresbu patra „{exploration?.levelName ?? 'Přízemí'}“?
+              </h2>
+              <p>
+                Zmizí půdorys, dveře, stafáž i objevená kresba tohoto patra.
+                Poznámky, příšery a propojení schodišť zůstanou.
+              </p>
+              <p>
+                Kresbu můžeš vrátit šipkou Zpět. Družina pak patro prozkoumá
+                znovu.
+              </p>
+              <button className="secondary" onClick={() => setClearLevel(null)}>
+                Zrušit
+              </button>
+              <button
+                className="primary"
+                disabled={busy || !!stroke || !!retry}
+                onClick={() => {
+                  setClearLevel(null);
+                  void sendMap({ tool: 'clear', levelId: clearLevel });
+                }}
+              >
+                Smazat kresbu
+              </button>
+            </div>
+          </GuardedDialog>,
+          document.body,
+        )}
       {pj &&
         !visible &&
         inspection &&

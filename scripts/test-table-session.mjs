@@ -86,6 +86,7 @@ const realModules = new Set(
     'components/game-table/table-workspace.tsx',
     'components/game-table/use-table-session.ts',
     'components/game-table/game-client.ts',
+    'lib/game-invitation.ts',
     'lib/game-view-wire.ts',
     'components/game-table/use-game-polling.ts',
     'components/game-table/use-game-view.ts',

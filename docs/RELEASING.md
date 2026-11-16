@@ -105,3 +105,7 @@ Z ověřeného commitu sestav `npm run build:windows` a k vydání přilož pře
 ## Vydání 1.4.1
 
 V přenosném Windows `.exe` ověř spuštění, přístup ke stávající kampani, kopírování hesla a pozvánky. Veřejný port musí přijmout hráče do existující kampaně a odmítnout správu, interní cesty i založení a obnovu kampaně. Test místního portu se simuluje s veřejnou adresou. Skutečnou dostupnost přes Tailscale zaznamenej až po zkoušce ze druhé sítě. Odkaz na Windows přílohu ověř také z veřejné prezentace. [Návod pro Windows](WINDOWS.md) · [Přechod pro Docker](SELF_HOSTING.md#přechod-z-140-na-141)
+
+## Vydání 1.5.0
+
+Ověř schvalování PJ, řízené pozvánky, statistiky, kvóty a archivaci v testovací instalaci. Stáhni ZIP ze snapshotu vytvořeného před smazáním stolu. Při obnově do prázdné instalace musí stůl zůstat smazaný. Při obnově na existující instalaci ověř i sloučení evidence. Windows sestavení ověř s běžným soukromým stolem. Marker vydání uvádí `migrations: true`, `updater: false`, `config: true`. Nový Compose je potřeba pro nastavení veřejného režimu. [Přechod pro Docker](SELF_HOSTING.md#přechod-z-141-na-150)

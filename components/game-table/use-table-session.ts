@@ -1,12 +1,14 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import { gameInvitationUrl } from '../../lib/game-invitation';
 import type { GameView } from '../../app/api/game/view';
 import { downloadText } from '../campaign-access';
 import {
   actionValues,
   requestBackup,
   requestGame,
+  requestInvitation,
   sendGameAction,
   sessionStorageKey,
 } from './game-client';
@@ -175,20 +177,34 @@ export function useTableSession(initialSession: Session | null) {
   }
   async function copyInvite() {
     if (!session || !isCurrentSession()) return;
+    const managed = game?.managedInvites;
+    if (managed && me?.role !== 'pj') return;
     try {
       const origin = await inviteOrigin();
       if (!isCurrentSession()) return;
-      const invitation = new URL('/', origin);
-      invitation.searchParams.set('room', session.room);
-      await navigator.clipboard.writeText(invitation.href);
+      const settings = managed ? await requestInvitation(session) : null;
+      if (!isCurrentSession()) return;
+      if (settings?.paused)
+        throw new Error(
+          'Vstup nových hráčů je pozastavený. Povol ho v přehledu Moje stoly.',
+        );
+      await navigator.clipboard.writeText(
+        gameInvitationUrl(origin, session.room, settings?.token),
+      );
       if (!isCurrentSession()) return;
       setCopied(true);
       setTimeout(() => {
         if (isCurrentSession()) setCopied(false);
       }, 2500);
-    } catch {
+    } catch (reason) {
       if (isCurrentSession()) {
-        setError('Odkaz nelze zkopírovat. Kód místnosti: ' + session.room);
+        setError(
+          managed
+            ? reason instanceof Error
+              ? reason.message
+              : 'Pozvánku se nepodařilo zkopírovat.'
+            : 'Odkaz nelze zkopírovat. Kód místnosti: ' + session.room,
+        );
       }
     }
   }

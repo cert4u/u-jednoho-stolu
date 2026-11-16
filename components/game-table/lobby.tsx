@@ -1,4 +1,6 @@
 'use client';
+import Link from 'next/link';
+import { usePublicPj } from './use-public-pj';
 import { useEffect, useState } from 'react';
 import type { AdventureSummary } from '../../lib/adventure-templates';
 import {
@@ -10,11 +12,13 @@ import {
   Swords,
 } from 'lucide-react';
 import { RestoreForms } from '../campaign-access';
+import type { GameInvitation } from '../../lib/game-invitation';
 import type { GameAction } from './types';
 type Props = {
   name: string;
   code: string;
   joining: boolean;
+  invitation?: GameInvitation;
   busy: boolean;
   error: string;
   setName: (name: string) => void;
@@ -28,6 +32,7 @@ export default function Lobby({
   name,
   code,
   joining,
+  invitation,
   busy,
   error,
   setName,
@@ -36,12 +41,14 @@ export default function Lobby({
   setError,
   act,
 }: Props) {
+  const mode = usePublicPj();
+  const publicMode = mode === 'enabled';
   const [adventures, setAdventures] = useState<AdventureSummary[]>([]);
   const [adventureId, setAdventureId] = useState('');
   const chosen = adventures.find((adventure) => adventure.id === adventureId);
 
   useEffect(() => {
-    if (joining) return;
+    if (joining || mode !== 'local') return;
     const controller = new AbortController();
     void fetch('/api/adventures', { signal: controller.signal })
       .then((response) => (response.ok ? response.json() : []))
@@ -53,7 +60,7 @@ export default function Lobby({
         // A fresh campaign is available even when the catalog cannot be loaded.
       });
     return () => controller.abort();
-  }, [joining]);
+  }, [joining, mode]);
 
   return (
     <main className="lobby">
@@ -97,73 +104,89 @@ export default function Lobby({
           <h2>{joining ? 'Tvoje místo u stolu' : 'Začneme dobrodružství?'}</h2>
           <p>
             {joining
-              ? 'Zadej kód od Pána jeskyně a přisedni si.'
+              ? invitation
+                ? 'Zadej jméno postavy a přisedni si.'
+                : publicMode
+                  ? 'Pro stůl s chráněným vstupem otevři celý odkaz od PJ.'
+                  : 'Zadej kód od Pána jeskyně a přisedni si.'
               : 'Založ stůl pro svou družinu. Příběh je na tobě.'}
           </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              act(joining ? 'join' : 'create', {
-                name,
-                room: code.trim().toUpperCase(),
-                ...(!joining && chosen ? { adventureId: chosen.id } : {}),
-              });
-            }}
-          >
-            <label>
-              {joining ? 'Jméno postavy' : 'Jak ti máme říkat?'}
-              <input
-                required
-                maxLength={30}
-                placeholder={
-                  joining ? 'Třeba Borin Železný' : 'Třeba Pán jeskyně'
-                }
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </label>
-            {joining && (
+          {mode === 'loading' && !joining ? (
+            <p>Načítám možnosti stolu…</p>
+          ) : publicMode && !joining ? (
+            <Link href="/pj" className="primary">
+              Účet PJ a moje stoly
+            </Link>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const room = code.trim().toUpperCase();
+                act(joining ? 'join' : 'create', {
+                  name,
+                  room,
+                  ...(joining && invitation?.room === room
+                    ? { invite: invitation.token }
+                    : {}),
+                  ...(!joining && chosen ? { adventureId: chosen.id } : {}),
+                });
+              }}
+            >
               <label>
-                Kód místnosti
+                {joining ? 'Jméno postavy' : 'Jak ti máme říkat?'}
                 <input
                   required
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="Kód od vašeho PJ"
+                  maxLength={30}
+                  placeholder={
+                    joining ? 'Třeba Borin Železný' : 'Třeba Pán jeskyně'
+                  }
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </label>
-            )}
-            {!joining && adventures.length > 0 && (
-              <label className="adventure-template-field">
-                Předloha dobrodružství
-                <select
-                  value={adventureId}
-                  onChange={(event) => setAdventureId(event.target.value)}
-                >
-                  <option value="">Vlastní dobrodružství</option>
-                  {adventures.map((adventure) => (
-                    <option key={adventure.id} value={adventure.id}>
-                      {adventure.title}
-                    </option>
-                  ))}
-                </select>
-                {chosen && <small>{chosen.summary}</small>}
-              </label>
-            )}
-            {error && (
-              <p className="error" role="alert">
-                {error}
-              </p>
-            )}
-            <button className="primary" disabled={busy}>
-              {busy
-                ? 'Chystáme stůl…'
-                : joining
-                  ? 'Přisednout ke stolu'
-                  : 'Založit nový stůl'}
-              <ArrowRight size={18} />
-            </button>
-          </form>
+              {joining && (
+                <label>
+                  Kód místnosti
+                  <input
+                    required
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    placeholder="Kód od vašeho PJ"
+                  />
+                </label>
+              )}
+              {!joining && adventures.length > 0 && (
+                <label className="adventure-template-field">
+                  Předloha dobrodružství
+                  <select
+                    value={adventureId}
+                    onChange={(event) => setAdventureId(event.target.value)}
+                  >
+                    <option value="">Vlastní dobrodružství</option>
+                    {adventures.map((adventure) => (
+                      <option key={adventure.id} value={adventure.id}>
+                        {adventure.title}
+                      </option>
+                    ))}
+                  </select>
+                  {chosen && <small>{chosen.summary}</small>}
+                </label>
+              )}
+              {error && (
+                <p className="error" role="alert">
+                  {error}
+                </p>
+              )}
+              <button className="primary" disabled={busy}>
+                {busy
+                  ? 'Chystáme stůl…'
+                  : joining
+                    ? 'Přisednout ke stolu'
+                    : 'Založit nový stůl'}
+                <ArrowRight size={18} />
+              </button>
+            </form>
+          )}
           <div className="divider">nebo</div>
           <button
             className="text-button"
@@ -173,10 +196,16 @@ export default function Lobby({
             }}
           >
             {joining
-              ? 'Založit vlastní dobrodružství'
+              ? publicMode
+                ? 'Vstup pro Pána jeskyně'
+                : 'Založit vlastní dobrodružství'
               : 'Už máš pozvánku? Připojit se'}
           </button>
-          <RestoreForms busy={busy} onAction={act} />
+          <RestoreForms
+            busy={busy}
+            onAction={act}
+            allowImport={mode === 'local'}
+          />
           <small>
             Bez složitých pravidel. Hrajte po svém.
             <br />

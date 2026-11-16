@@ -6,6 +6,7 @@ import { randomBytes } from 'node:crypto';
 import path from 'node:path';
 import { backupDatabase, dataDirectory } from './database.mjs';
 import {DatabaseSync} from 'node:sqlite';
+import { pjDeletionsFilename, snapshotPjDeletions } from './hosting/pj-deletions.mjs';
 
 
 const snapshotZipLimits={archive:280_000_000,total:256_000_000,file:128_000_000,files:4098};
@@ -107,6 +108,9 @@ export async function downloadSnapshot(name, res, bundle = false) {
         for(const [key,value]of readZip(await assets.readFile(),snapshotZipLimits))files.set(key,value);
       }catch(error){if(error.code!=='ENOENT')throw error;}finally{await assets?.close();}
       verifySnapshotAssets(requiredSnapshotAssets(path.join(dataDirectory(),'backups',name)),files);
+      // An earlier game snapshot must carry deletion records up to the ZIP download.
+      const deletions = snapshotPjDeletions(dataDirectory(), snapshotZipLimits.file);
+      if (deletions) files.set(pjDeletionsFilename, deletions);
       const data=writeZip(files,snapshotZipLimits);
       res.writeHead(200,{'Content-Type':'application/zip','Content-Length':data.length,'Content-Disposition':`attachment; filename="${name.replace('.sqlite','.zip')}"`,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(data);return true;
     }

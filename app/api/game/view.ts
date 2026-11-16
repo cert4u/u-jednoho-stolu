@@ -33,6 +33,7 @@ export function gameView(
   id: string,
   revision = 0,
   requested?: string,
+  managedInvites = false,
 ) {
   const me = g.members.find((m) => m.id === id)!;
   const pj = me.role === 'pj';
@@ -62,6 +63,7 @@ export function gameView(
     journey: journeyView(g, pj),
     initiative: initiativeView(g, pj),
     revision,
+    managedInvites,
     pendingActions,
     archivedMembers: pj
       ? g.members

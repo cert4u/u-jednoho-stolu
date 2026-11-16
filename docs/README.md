@@ -12,7 +12,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | Příprava příběhu | [Příběhová osnova a komunitní ukázka](STORY_OUTLINE.md) |
 | Návrh dalších mechanik | [Audit herního základu a priority](MECHANICS.md) |
 | Hostitel na Windows | [Přenosná aplikace, první společná hra a zálohy](WINDOWS.md) |
-| Správce serveru | [Docker, konfigurace, zálohy a aktualizace](SELF_HOSTING.md) |
+| Správce serveru | [Docker, konfigurace, zálohy a aktualizace](SELF_HOSTING.md) · [Veřejná instance se schvalováním PJ](SELF_HOSTING.md#veřejná-instance-se-schvalováním-pj) |
 | Správce hlasového hovoru | [LiveKit: lokální a veřejné nasazení](VOICE.md) |
 | Uživatel, kterému něco nefunguje | [Řešení problémů](TROUBLESHOOTING.md) |
 | Vývojář | [Runtime, architektura, data a testy](DEVELOPMENT.md) |
@@ -59,6 +59,8 @@ Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [a
 Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-úklid-css) · [přechod z 1.2.3](SELF_HOSTING.md#přechod-z-123-na-124).
 
 Vydání **1.2.8** přináší [opravy zkušeností, bojového rozestavení a záloh](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#128--2026-11-10). [Přechod z 1.2.7](SELF_HOSTING.md#přechod-z-127-na-128).
+
+Vydání **1.5.0** přidává volitelný veřejný režim, statistiky PJ a evidenci smazaných stolů v úplné ZIP záloze. [Přechod pro Docker](SELF_HOSTING.md#přechod-z-141-na-150) · [Úplná ZIP záloha a obnova](SELF_HOSTING.md#úplná-záloha-zip)
 
 Vydání **1.4.1** zrychluje start Windows aplikace a odděluje její místní správu od veřejné hry. [Přechod pro Windows](WINDOWS.md#přechod-z-140) · [Přechod pro Docker](SELF_HOSTING.md#přechod-z-140-na-141)
 

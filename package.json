@@ -1,6 +1,6 @@
 {
   "name": "u-jednoho-stolu",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "private": true,
   "engines": {
     "node": ">=22.15.0"
@@ -29,7 +29,7 @@
     "start:node": "node server/start.mjs",
     "benchmark:generator": "node --experimental-strip-types scripts/benchmark-generator.mjs",
     "test:updater": "node scripts/test-updater.mjs",
-    "test:hosting": "node scripts/test-hosting.mjs",
+    "test:hosting": "node scripts/test-hosting.mjs && npm run test:public-pj",
     "catalog:demo": "node scripts/catalog-demo.mjs",
     "test:catalog-audit": "node scripts/test-catalog-audit.mjs",
     "test:catalogs": "node scripts/test-catalog-migration.mjs && node scripts/test-catalog-zip.mjs && node scripts/test-catalog-store.mjs && node scripts/test-catalog-github.mjs && node scripts/test-catalog-admin.mjs && node scripts/test-catalog-audit.mjs",
@@ -38,7 +38,8 @@
     "benchmark:polling": "node scripts/benchmark-polling.mjs",
     "format": "node scripts/format.mjs --write",
     "format:check": "node scripts/format.mjs",
-    "build:windows": "node scripts/build-node.mjs && node scripts/package-windows.mjs"
+    "build:windows": "node scripts/build-node.mjs && node scripts/package-windows.mjs",
+    "test:public-pj": "node scripts/test-public-pj.mjs"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",
@@ -48,6 +49,7 @@
     "livekit-server-sdk": "2.19.2",
     "lucide-react": "^1.31.0",
     "next": "16.4.6",
+    "nodemailer": "10.6.0",
     "radix-ui": "^1.6.7",
     "react": "19.3.1",
     "react-dom": "19.3.1",

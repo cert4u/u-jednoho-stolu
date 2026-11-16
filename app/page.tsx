@@ -22,6 +22,7 @@ export default function Home() {
         name={name}
         code={code}
         joining={joining}
+        invitation={initial.invitation}
         busy={busy}
         error={error}
         setName={setName}

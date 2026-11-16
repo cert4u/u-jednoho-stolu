@@ -29,17 +29,47 @@ import {
 } from './room-access';
 import { readRoom, serializeCampaign, writeRoom } from './room-store';
 import { gameView, missingViewLevel } from './view';
+import { publicAccounts, pjAccount } from './public-accounts';
+import { playDate } from '../../../server/play-calendar.mjs';
+import { playMarker } from './play-activity';
 import { conditionalView } from './conditional-view';
 import { fail, gameHeaders as headers } from './responses';
 
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
-    const row = await readRoom(url.searchParams.get('room') || '');
+    const wantsBackup = url.searchParams.get('download') === 'backup';
+    const row = await readRoom(
+      url.searchParams.get('room') || '',
+      wantsBackup && publicAccounts(),
+    );
     if (!row) return fail('Místnost neexistuje.', 404);
     const game = repairLegacyMemberPositions(JSON.parse(row.data) as Game);
     const member = authenticatedMember(game, request);
     if (!member) return fail('Připoj se k místnosti.', 401);
+    if (
+      publicAccounts() &&
+      member.role === 'pj' &&
+      row.ownerId &&
+      pjAccount(request) !== row.ownerId
+    )
+      return fail('Přihlas se ke svému účtu PJ.', 401);
+    if (
+      row.archivedAt !== null &&
+      (member.role !== 'pj' ||
+        !row.ownerId ||
+        pjAccount(request) !== row.ownerId)
+    )
+      return fail('Místnost neexistuje.', 404);
+    const managedInvites = publicAccounts() && Boolean(row.ownerId);
+    if (url.searchParams.get('invite') === 'settings') {
+      if (!managedInvites || member.role !== 'pj')
+        return fail('Pozvánku spravuje pouze PJ.', 403);
+      return Response.json(
+        { token: row.inviteToken, paused: row.invitesPaused },
+        { headers },
+      );
+    }
     const catalog = url.searchParams.get('catalog');
     if (catalog === 'bestiary') {
       if (member.role !== 'pj')
@@ -71,7 +101,7 @@ export async function GET(request: Request) {
         { headers },
       );
     }
-    if (url.searchParams.get('download') === 'backup') {
+    if (wantsBackup) {
       if (member.role !== 'pj')
         return fail('Úplnou zálohu stahuje pouze PJ.', 403);
       pendingCombat(game, member.id);
@@ -87,7 +117,10 @@ export async function GET(request: Request) {
       shared,
     ]);
     return conditionalView(request, row, viewKey, () =>
-      packGameView(gameView(game, member.id, row.version, level), shared),
+      packGameView(
+        gameView(game, member.id, row.version, level, managedInvites),
+        shared,
+      ),
     );
   } catch {
     return fail('Spojení se stolem se nepodařilo. Zkus to znovu.', 503);
@@ -108,17 +141,44 @@ export async function POST(request: Request) {
       return fail('Neplatný požadavek.');
     const shared =
       request.headers.get(sharedPortraitHeader) === sharedPortraitFormat;
-    if (body.action === 'create' || body.action === 'restore')
-      return await createRoom(body, shared);
+    const owner = pjAccount(request);
+    if (body.action === 'create' || body.action === 'restore') {
+      if (publicAccounts() && !owner)
+        return fail(
+          'Stůl může založit nebo importovat pouze schválený PJ.',
+          403,
+        );
+      return await createRoom(body, shared, owner);
+    }
     const roomId = String(body.room || '');
+    const receivedAt = Date.now();
     let preparedMessage: Msg | undefined;
     for (let attempt = 0; attempt < 6; attempt++) {
       const row = await readRoom(roomId);
       if (!row) return fail('Tento kód místnosti neznáme.', 404);
+      const managedInvites = publicAccounts() && Boolean(row.ownerId);
+      if (body.action === 'join' && managedInvites) {
+        if (row.invitesPaused)
+          return fail('PJ pozastavil vstup nových hráčů.', 403);
+        if (row.inviteToken && body.invite !== row.inviteToken)
+          return fail(
+            body.invite
+              ? 'Pozvánka už neplatí. Požádej PJ o nový odkaz.'
+              : 'K tomuto stolu potřebuješ celý odkaz od PJ.',
+            403,
+          );
+      }
       const game = repairLegacyMemberPositions(JSON.parse(row.data) as Game);
       const access = await resolveActionMember(game, row.id, request, body);
       if (access instanceof Response) return access;
       const { member, token } = access;
+      if (
+        publicAccounts() &&
+        member.role === 'pj' &&
+        row.ownerId &&
+        owner !== row.ownerId
+      )
+        return fail('Přihlas se ke svému účtu PJ.', 401);
       const requestedLevel =
         typeof body.levelId === 'string' ? body.levelId : undefined;
       try {
@@ -133,6 +193,7 @@ export async function POST(request: Request) {
                   missingViewLevel(game, member, requestedLevel)
                     ? undefined
                     : requestedLevel,
+                  managedInvites,
                 ),
                 shared,
               ),
@@ -145,6 +206,10 @@ export async function POST(request: Request) {
           error instanceof MessageReplayError ? 409 : 400,
         );
       }
+      const playBefore =
+        row.ownerId && publicAccounts()
+          ? playMarker(game, member, body)
+          : undefined;
       member.seen = Date.now();
       let library;
       try {
@@ -182,7 +247,7 @@ export async function POST(request: Request) {
       const response = Response.json(
         {
           game: packGameView(
-            gameView(game, member.id, row.version + 1, level),
+            gameView(game, member.id, row.version + 1, level, managedInvites),
             shared,
           ),
           ...(generatedLevels ? { generatedLevels } : {}),
@@ -191,7 +256,26 @@ export async function POST(request: Request) {
         },
         { headers },
       );
-      const write = await writeRoom(row, serialized);
+      const activity = !['join', 'recover', 'access-key'].includes(
+        String(body.action),
+      );
+      const playedOn =
+        playBefore !== undefined &&
+        playBefore !== playMarker(game, member, body)
+          ? playDate(receivedAt)
+          : undefined;
+      const write = await writeRoom(
+        row,
+        serialized,
+        activity,
+        member.role === 'pj' ? owner : undefined,
+        playedOn,
+      );
+      if (write.status === 'owner-capacity')
+        return fail(
+          'Kampaně dosáhly limitu dat pro účet PJ. Uvolni místo nebo požádej správce o navýšení.',
+          409,
+        );
       if (write.status === 'capacity')
         return Response.json(
           {

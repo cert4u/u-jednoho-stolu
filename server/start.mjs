@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { startProdServer } from 'vinext/server/prod-server';
 import { catalogAsset } from './catalog-api.mjs';
-import { openDatabase } from './database.mjs';
+import { dataDirectory, openDatabase } from './database.mjs';
 import { json } from './http.mjs';
 import { createAdminAuth } from './hosting/admin-auth.mjs';
 import {
@@ -14,6 +14,8 @@ import {
 import { createDesktopSharing } from './hosting/desktop-sharing.mjs';
 import { proxyGame, rejectLowDiskWrite } from './hosting/game-proxy.mjs';
 import { createMaintenance } from './hosting/maintenance.mjs';
+import { openPjDeletions } from './hosting/pj-deletions.mjs';
+import { createPublicPj } from './hosting/public-pj.mjs';
 import { createUpdaterClient } from './hosting/updater-client.mjs';
 
 const password = process.env.STUL_ADMIN_PASSWORD || '',
@@ -47,14 +49,26 @@ if (
 )
   throw new Error('Neplatné nastavení sdílení stolu.');
 const info = JSON.parse(readFileSync('dist/stul-build.json', 'utf8'));
-openDatabase();
+const db = openDatabase();
+const maintenance = createMaintenance({ token, info });
+const publicMode = !desktop && process.env.STUL_PUBLIC_ACCOUNTS === '1';
+const deletions = openPjDeletions(dataDirectory(), publicMode);
+deletions?.removeRecordedRooms(db);
+const publicPj = publicMode
+  ? await createPublicPj({ db, origin, maintenance, deletions })
+  : null;
+if (publicPj) {
+  const sweep = () =>
+    publicPj.sweep().catch(() => console.warn('pj_cleanup_failed'));
+  setInterval(sweep, 15 * 60_000).unref();
+}
 const internal = await startProdServer({
   host: '127.0.0.1',
   port: 0,
   silent: true,
 });
-const maintenance = createMaintenance({ token, info });
 const adminApi = createAdminApi({
+  publicPj,
   auth: createAdminAuth(password, origin),
   origin,
   info,
@@ -113,6 +127,24 @@ export const server = createServer(async (req, res) => {
     if (pathname.startsWith('/admin/api/')) {
       await adminApi(req, res, url);
       return;
+    }
+    if (pathname.startsWith('/pj/api/')) {
+      if (publicPj) await publicPj.handle(req, res, url);
+      else json(res, 404, { error: 'Správa účtů PJ není zapnutá.' });
+      return;
+    }
+    delete req.headers['x-stul-pj-account'];
+    if (publicPj && (pathname === '/api/game' || pathname === '/api/voice')) {
+      const trusted = publicPj.authHeaders(req);
+      if (
+        trusted['x-stul-pj-account'] &&
+        req.method === 'POST' &&
+        req.headers.origin !== origin.origin
+      ) {
+        json(res, 403, { error: 'Neplatný původ požadavku.' });
+        return;
+      }
+      Object.assign(req.headers, trusted);
     }
     proxyGame(req, res, internal.port, maintenance);
   } catch (error) {

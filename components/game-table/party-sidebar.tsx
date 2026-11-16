@@ -91,9 +91,7 @@ export default function PartySidebar({
                           : 'V hovoru'
                     }
                     aria-label={
-                      voicePresence[m.id].speaking
-                        ? 'Právě mluví'
-                        : 'V hovoru'
+                      voicePresence[m.id].speaking ? 'Právě mluví' : 'V hovoru'
                     }
                   >
                     ●{' '}
@@ -123,9 +121,11 @@ export default function PartySidebar({
           </button>
         ))}
       </div>
-      <button className="add-party" onClick={onInvite}>
-        <Plus size={16} /> Pozvat dalšího hráče
-      </button>
+      {(!game.managedInvites || pj) && (
+        <button className="add-party" onClick={onInvite}>
+          <Plus size={16} /> Pozvat dalšího hráče
+        </button>
+      )}
       {game.exploration && (
         <PartyOrder
           data={game.exploration}
@@ -138,10 +138,7 @@ export default function PartySidebar({
         />
       )}
       <div className="sidebar-bottom">
-        <JourneySummary
-          data={game.journey}
-          onOpen={() => onOpen('journey')}
-        />
+        <JourneySummary data={game.journey} onOpen={() => onOpen('journey')} />
         {game.exploration && (
           <SidebarLevels
             data={game.exploration}
@@ -189,9 +186,7 @@ export function MobilePartyPanels({
       >
         <summary>
           Souboj
-          {game.initiative?.active
-            ? ` · kolo ${game.initiative.round}`
-            : ''}
+          {game.initiative?.active ? ` · kolo ${game.initiative.round}` : ''}
         </summary>
         <InitiativeTracker
           data={game.initiative}
@@ -205,18 +200,12 @@ export function MobilePartyPanels({
       <details className="mobile-party-panel">
         <summary>Družina, čas a patra</summary>
         {pj && (
-          <button
-            className="secondary"
-            onClick={() => onOpen('generator')}
-          >
+          <button className="secondary" onClick={() => onOpen('generator')}>
             Generátor jeskyně
           </button>
         )}
         <LifeSummary members={game.members} pj={!!pj} onOpen={onLife} />
-        <JourneySummary
-          data={game.journey}
-          onOpen={() => onOpen('journey')}
-        />
+        <JourneySummary data={game.journey} onOpen={() => onOpen('journey')} />
         {game.exploration && (
           <>
             <PartyOrder
@@ -238,10 +227,9 @@ export function MobilePartyPanels({
               onAction={(op, values) => act('explore', { op, ...values })}
               onLevel={onLevel}
             />
-
-    </>
-            )}
-          </details>
+          </>
+        )}
+      </details>
     </>
   );
 }

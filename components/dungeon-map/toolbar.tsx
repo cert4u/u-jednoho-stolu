@@ -6,6 +6,7 @@ import {
   PenTool,
   Plus,
   StickyNote,
+  Trash2,
   Undo2,
 } from 'lucide-react';
 import type { ExplorationView } from '../../lib/exploration';
@@ -66,6 +67,7 @@ type Props = {
   onGenerate: () => void;
   onCenterParty: () => void;
   onUndo: () => void;
+  onClear: () => void;
   onZoomOut: () => void;
   onZoomIn: () => void;
   onFit: () => void;
@@ -93,6 +95,7 @@ export default function MapToolbar({
   onGenerate,
   onCenterParty,
   onUndo,
+  onClear,
   onZoomOut,
   onZoomIn,
   onFit,
@@ -179,6 +182,16 @@ export default function MapToolbar({
             onClick={onUndo}
           >
             <Undo2 size={17} />
+          </button>
+        )}
+        {pj && mode === 'prepare' && !preview && (
+          <button
+            title="Smazat kresbu tohoto patra"
+            aria-label="Smazat kresbu tohoto patra"
+            disabled={toolsLocked}
+            onClick={onClear}
+          >
+            <Trash2 size={16} />
           </button>
         )}
         <button

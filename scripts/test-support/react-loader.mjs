@@ -6,6 +6,7 @@ export function registerReactTestLoader() {
   return registerHooks({
     resolve(specifier, context, next) {
       if (specifier === 'next/image') return next('vinext/shims/image', context);
+      if (specifier === 'next/link') return next('vinext/shims/link', context);
       try { return next(specifier, context); }
       catch (error) {
         if (error.code === 'ERR_MODULE_NOT_FOUND' && specifier.startsWith('.') && !/\.[a-z]+$/i.test(specifier))

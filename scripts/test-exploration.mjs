@@ -18,4 +18,18 @@ assert.equal((await explore(pj,'stairs-add',{levelId:'ground',x:6,y:3,destinatio
 const travelId=crypto.randomUUID();assert.equal((await explore(a,'travel',{stairId:stair.id},travelId)).status,200);assert.equal((await explore(a,'travel',{stairId:stair.id},travelId)).status,200);player=await get(a);assert.equal(player.exploration.levelId,basement);assert.equal(player.exploration.location.x,3);assert(player.exploration.visible.includes('3,3'));assert.equal((await get(pj,'ground')).exploration.visible.length,0);assert.equal((await explore(a,'travel',{stairId:stair.id})).status,200);assert.equal((await get(a)).exploration.levelId,'ground');
 await explore(a,'move',{x:7,y:3});assert.equal((await explore(a,'travel',{stairId:stair.id})).status,400);assert.equal((await explore(pj,'settings',{leaderId:a.game.me,radius:13})).status,400);assert.equal((await explore(a,'place',{levelId:'ground',x:1,y:1})).status,403);
 assert.equal((await draw(pj,'subtract',{levelId:'ground',points:[[7,3]]})).status,400);assert((await get(pj)).dungeon.floors.includes('7,3'));
+const beforeClear = await get(pj, basement);
+assert.equal((await draw(a, 'clear', {levelId: basement})).status, 403);
+assert.equal((await draw(pj, 'clear', {levelId: 'ground'})).status, 400);
+const clear = {tool: 'clear', levelId: basement, requestId: crypto.randomUUID()};
+assert.equal((await post(pj, 'map', clear)).status, 200);
+const cleared = await get(pj, basement);
+assert.deepEqual(cleared.dungeon, {edges: {}, floors: [], revealed: []});
+assert.deepEqual(cleared.exploration.playerMap, {edges: {}, floors: [], revealed: []});
+assert.deepEqual(cleared.exploration.stairs, beforeClear.exploration.stairs);
+assert((await get(pj, 'ground')).dungeon.floors.includes('7,3'));
+assert.equal((await draw(pj, 'undo', {levelId: basement})).status, 200);
+assert.deepEqual((await get(pj, basement)).dungeon, beforeClear.dungeon);
+assert.equal((await post(pj, 'map', clear)).status, 200);
+assert.deepEqual((await get(pj, basement)).dungeon, beforeClear.dungeon);
 console.log('PASS: vedoucí a oprávnění, průchodná cesta, dohled a zavřené dveře, šedá paměť bez úniku změn, pořadí, patra, skryté cíle schodišť, obousměrný přechod, opakování akcí a ochrana polohy družiny.');

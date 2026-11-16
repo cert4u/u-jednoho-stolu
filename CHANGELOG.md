@@ -1,5 +1,15 @@
 # Změny
 
+## 1.5.0 — 2026-11-16
+
+- Volitelný režim pro veřejné nasazení v Dockeru. Ověření e-mailu a schvalování PJ, pozvánky od správce a vlastní přehled kampaní.
+- Statistiky účtů a využití v administraci. Ruční archivace, obnova a trvalé smazání kampaně. Automatický úklid je ve výchozím nastavení v náhledu. [Návod pro správce](docs/SELF_HOSTING.md#veřejná-instance-se-schvalováním-pj)
+- PJ může u veřejného stolu pozastavit nové vstupy a vydat nový hráčský odkaz. Stávající přihlášení a obnovovací klíče se dál používají.
+- PJ může změnit přihlašovací e-mail s potvrzením v obou schránkách. Správce může ověřit novou adresu při obnově účtu se zachováním kampaní.
+- Ve veřejném režimu může správce omezit počet stolů i objem dat na účet PJ. Využití limitu vidí správce v detailu účtu a PJ v přehledu svých stolů.
+- Úplná serverová záloha ZIP přenáší evidenci trvale smazaných stolů. Při obnově lze evidenci z archivu sloučit s aktuální evidencí cílové instalace. [Postup obnovení](docs/SELF_HOSTING.md#úplná-záloha-zip)
+- PJ může smazat kresbu vybraného patra. Před smazáním přesune družinu jinam a kresbu může vrátit pomocí **Zpět**.
+
 ## 1.4.1 — 2026-11-16
 
 - Přenosný soubor Windows se rychleji rozbaluje. Balení používá rychlejší kompresi a přikládá jen provozní závislosti.

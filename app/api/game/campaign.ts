@@ -15,6 +15,7 @@ import { gameView } from './view';
 export async function createRoom(
   body: Record<string, unknown>,
   shared: boolean,
+  ownerId?: string,
 ) {
   const code = crypto
     .randomUUID()
@@ -49,9 +50,12 @@ export async function createRoom(
     room: code,
     token: owner.token,
     recoveryCode,
-    game: packGameView(gameView(game, owner.id), shared),
+    game: packGameView(
+      gameView(game, owner.id, 0, undefined, Boolean(ownerId)),
+      shared,
+    ),
   });
-  const denied = await admitRoom(code, serialized);
+  const denied = await admitRoom(code, serialized, ownerId);
   return denied ?? response;
 }
 

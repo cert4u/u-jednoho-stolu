@@ -4,7 +4,7 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Tato dokumentace odpovídá vydání 1.4.1. Pro počítač s Windows je k dispozici [přenosná aplikace](WINDOWS.md). Pro stabilní instalaci zvol zdroje vybraného vydání a jeho dokumentaci. Po běžném klonování můžeš před sestavením přepnout na konkrétní tag příkazem `git switch --detach <tag-vydání>`. Kanál Stable v updateru vybírá stabilní GitHub Releases. U vývojových sestavení porovnávej kromě verze i commit a poznámky k vydání.
+Tato dokumentace odpovídá vydání 1.5.0. Pro počítač s Windows je k dispozici [přenosná aplikace](WINDOWS.md). Pro stabilní instalaci zvol zdroje vybraného vydání a jeho dokumentaci. Po běžném klonování můžeš před sestavením přepnout na konkrétní tag příkazem `git switch --detach <tag-vydání>`. Kanál Stable v updateru vybírá stabilní GitHub Releases. U vývojových sestavení porovnávej kromě verze i commit a poznámky k vydání.
 
 ## Základní požadavky
 
@@ -15,7 +15,7 @@ Na stejném počítači můžeš začít přes `localhost`. Pro společnou hru p
 ## První spuštění
 
 ```sh
-git clone --branch v1.4.1 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.5.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -144,7 +144,7 @@ Provozní SQLite formát i export kampaně verze 1 lze použít dál. **Vrátit 
 
 ## Data a zálohy
 
-- Docker volume `stul_data`: `game.sqlite`, WAL a `backups/*.sqlite`.
+- Docker volume `stul_data`: `game.sqlite`, WAL, `backups/*.sqlite`, katalogové přílohy a ve veřejném režimu také `pj-deletions.sqlite`.
 - `.stul-state/`: průběh aktualizace a aktivní image; adresář je chráněný režimem 700.
 - `.env`: heslo správce, interní token, adresa instalace a případné hlasové klíče.
 
@@ -166,6 +166,25 @@ Při `STUL_BACKUP_KEEP=5` updater po dokončené operaci ponechá pět nejnověj
 | Přenos mezi runtime | JSON lze přenést mezi podporovanými instalacemi. | SQLite soubory z Node nejsou přímý import Cloudflare D1. |
 
 Oba typy obsahují soukromý obsah. Snapshot databáze nenahrazuje kopii `.env`, `.stul-state` a připnutých konfigurací pro obnovu celého serveru. Aktivní hlasová spojení nejsou součástí ani jedné zálohy.
+
+### Úplná záloha ZIP
+
+V administraci v části **Zálohy databáze** vytvoř ruční zálohu a stáhni **Úplná záloha ZIP**. Archiv spojuje vybraný snapshot `game.sqlite`, jeho katalogové obrázky a dostupnou evidenci trvale smazaných stolů `pj-deletions.sqlite`. Evidence se do archivu přidává při stažení. I starší snapshot tak při novém stažení získá záznamy o smazání, které na serveru mezitím přibyly.
+
+1. Zastav aplikaci i updater. Uschovej celý aktuální datový adresář, konfiguraci a přístupové údaje. Vlastní důvěryhodný ZIP rozbal do samostatného adresáře.
+2. Při obnově do prázdného datového adresáře přenes `game.sqlite`, případný `catalog-assets/` a případný `pj-deletions.sqlite`. Pro obnovu na existující instalaci nejdřív sluč evidenci z archivu s evidencí v cílových datech. Pokud starší ZIP evidenci vůbec neobsahuje, ponech cílový soubor na místě.
+3. Na existující instalaci nahraď `game.sqlite` a odstraň jeho staré soubory `game.sqlite-wal` a `game.sqlite-shm`. Zkopíruj případné `catalog-assets/` z archivu. Ověř práva zápisu pro uživatele aplikace (v Dockeru UID/GID 1000).
+4. Spusť odpovídající verzi aplikace. Při startu vyřadí stoly zapsané v evidenci smazání. Ověř přihlášení, kampaně a katalogovou knihovnu.
+
+Sloučení existující evidence proveď z kořene repozitáře s Node.js 22 nebo novějším. Cílový adresář musí existovat. U Dockeru můžeš sloučit evidenci v pracovní kopii dat a výsledný soubor vrátit do zastaveného volume.
+
+```sh
+node scripts/merge-pj-deletions.mjs /cesta/rozbaleny-zip/pj-deletions.sqlite /cesta/cilova-data
+```
+
+Pokud obnovuješ starý ZIP do prázdné instalace, záznamy o pozdějším smazání dodá novější evidence z původního serveru nebo z novějšího ZIP. Ukládej proto novou úplnou zálohu mimo server pravidelně.
+
+### Úplná kopie Docker instalace
 
 Pro obnovu po ztrátě serveru ulož celý volume, konfiguraci a aktivní image. Zálohuj mimo probíhající aktualizaci, obnovu nebo údržbu. Příklad pro základní Compose instalaci.
 
@@ -249,6 +268,40 @@ Nové proměnné `STUL_ROOM_CREATE_RATE`, `STUL_ROOM_LIMIT` a `STUL_ROOM_BYTES_L
 
 [Změny vydání](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#122--2026-11-08) · [Výsledky a omezení ověření](FINAL_STABILIZATION.md).
 
+## Veřejná instance se schvalováním PJ
+
+Volitelný režim je určený pro Node/Docker. Hráči přicházejí pozvánkou. Účet potřebuje PJ pro založení, import a správu vlastních stolů.
+
+1. Nasaď instanci na správné `PUBLIC_ORIGIN` s HTTPS a ulož úplnou zálohu. Převezmi aktuální `compose.yaml`, aby kontejnery dostaly nové proměnné z `.env`. Node při startu aplikuje migrace `0004` až `0009`. Pro Cloudflare postupuj podle pokynů k přechodu níže.
+2. Nastav `STUL_PUBLIC_ACCOUNTS=1`, `STUL_SMTP_FROM` a `STUL_SMTP_URL`. Příklad serveru s povinným STARTTLS je `smtp://uzivatel:heslo@smtp.example.cz:587`. Pro implicitní TLS použij `smtps://uzivatel:heslo@smtp.example.cz:465`. Speciální znaky v přihlašovacích údajích v URL zakóduj. Přístupové údaje ulož mimo repozitář.
+3. V `/admin` v sekci **Páni jeskyně** pozvi zkušebního PJ. Ověř doručení odkazu, vstup do **Moje stoly**, založení, připojení hráče z jiné sítě, archivaci a stažení zálohy z archivu. Příchozí samoobslužné žádosti se zobrazí správci po ověření e-mailu.
+4. Úklid je nejdřív pouze v náhledu. Po kontrole kandidátů a vyzkoušení obnovy můžeš nastavit `STUL_PJ_CLEANUP=1`. Při zapnutém úklidu systém zkouší poslat upozornění během posledních sedmi dní před archivací. Neplatí-li doručování, správce může úklid přepnout zpět na náhled.
+
+| Nastavení | Výchozí hodnota | Účel |
+| --- | --- | --- |
+| `STUL_PUBLIC_ACCOUNTS` | `0` | Hodnota `1` vyžaduje schválený účet pro založení a import ze zálohy. |
+| `STUL_SMTP_URL`, `STUL_SMTP_FROM` | Prázdné | Připojení k poště a ověřená adresa odesílatele. Vyžadují se ve veřejném režimu. |
+| `STUL_PJ_INACTIVE_DAYS` | `90` | Po této době bez herní akce nebo přípravy je přiřazený stůl kandidátem k archivaci. |
+| `STUL_PJ_ARCHIVE_DAYS` | `30` | Doba od ruční nebo automatické archivace do odstranění z databáze. |
+| `STUL_PJ_CLEANUP` | `0` | Hodnota `1` zapne archivaci, upozornění a mazání. Úklid běží každých 15 minut. |
+
+V administraci najdeš **Přehled** s kapacitou a rozdělením otevřených stolů podle poslední uložené aktivity. **Páni jeskyně** nabízí vyhledávání, řazení a detail kampaní účtu včetně počtu hráčských postav. V **Stoly a úklid** lze filtrovat všechny stoly včetně kampaní bez přiřazeného PJ a zobrazit kandidáty k úklidu.
+
+Při ztrátě přístupu ke schránce ověř správce totožnost PJ mimo aplikaci. V detailu účtu zvol **Obnovit účet na nový e-mail** a potvrď původní adresu. Zahájení obnovy odvolá dosavadní relace a přihlašovací odkazy PJ. Na novou adresu přijde potvrzovací odkaz s platností 30 minut a na původní adresu se odešle upozornění, pokud je doručitelné. Po ověření nové adresy PJ použije stejný účet a kampaně. Probíhající ověření lze zrušit v detailu účtu. Migrace `0008_pj_email_changes.sql` přidává dočasné záznamy na ověření.
+
+Migrace `0007_pj_invites.sql` přidává řízené hráčské pozvánky. Nové i importované stoly se schváleným PJ používají chráněný odkaz. Dříve vytvořený stůl přijímá původní kód do chvíle, kdy jeho PJ vystaví novou pozvánku nebo vstup pozastaví a znovu povolí. Obnovení vstupu u chráněného stolu použije poslední vydaný odkaz. Výměna odkazu při pozastavení ponechá nové vstupy pozastavené. Lokální režim používá původní kód místnosti.
+
+Herní statistika PJ začíná nasazením migrace `0005_pj_play_days.sql`. Hraný stůl má alespoň jeden kalendářní den s úspěšnou herní akcí hráče, například chatem, hodem nebo pohybem. Dny se počítají podle času v Praze. Období posledních 30 nebo 90 dní zahrnuje dnešek a vztahuje se na souhrny PJ i detail stolů. Přehled kapacity používá aktuální stav serveru. V součtu PJ se stejný den započítá jednou i při hře u více stolů. Průměr je součet herních dní jednotlivých stolů dělený počtem hraných stolů. Denní záznam obsahuje jen ID účtu, ID stolu a datum a pro souhrn zůstává dostupný i po smazání kampaně. Hraní před nasazením se nedopočítává. Dohrání označuje PJ v přehledu **Moje stoly**. Statistiky jej počítají podle dne označení. Zrušení označení jej ze statistiky odebere. Záznam potvrzeného dohrání zůstává započtený po archivaci či smazání kampaně.
+
+V detailu účtu PJ může správce zvolit **Nastavit limity**. Kvóta počítá i uložené archivy. Použije se při vytvoření stolu, importu zálohy, přiřazení původního stolu i při růstu herních dat. Pokud správce sníží limit pod současné využití, PJ může pořád exportovat stůl a ukládat změny, které objem dat nezvyšují. Archiv lze také trvale smazat a uvolnit tak kapacitu. Migrace `0009_pj_quotas.sql` přidává individuální nastavení.
+
+Pomocí `STUL_PJ_ROOM_LIMIT` a `STUL_PJ_ROOM_BYTES_LIMIT` se v Compose nastavují výchozí limity pro účty PJ. Hodnota je počet stolů nebo bajtů dat. Prázdná hodnota používá jen limity celé instance. Prázdné pole v detailu konkrétního účtu převezme výchozí nastavení. Limity celé instance platí souběžně.
+
+Automatické načítání mapy a přístupy k postavám neposouvají aktivitu. Volba **Ponechat stůl** ji obnoví. Archivované stoly dál zabírají kapacitu až do smazání. Starší stůl bez vlastníka PJ přiřadí k účtu z prohlížeče, v němž je ke stolu přihlášený jako PJ. Lhůta úklidu takového stolu začne při přiřazení. Pozastavení účtu odvolá jeho relace PJ. Chceš-li uzavřít i hraní konkrétní kampaně, stůl musí přejít do archivu.
+
+Přenosný JSON export obsahuje kampaň. Účty, schválení a přiřazení k vlastníkovi uchovává serverová SQLite databáze. Plnou zálohu ukládej mimo server a před veřejným provozem nastav retenci provozních záloh. Při přesunu na nový server použij [úplnou zálohu ZIP](#úplná-záloha-zip) včetně evidence smazaných stolů. Obnova snapshotu přes updater ve stejném volume používá evidenci na místě. Při návratu k aplikaci starší než tento režim nech instanci mimo veřejný přístup, dokud nezkontroluješ vrácená data a pravidla zakládání stolů.
+
+
 ## Přechod z 1.2.2 na 1.2.3
 
 Vytvoř úplnou serverovou ZIP zálohu včetně katalogových obrázků, uchovej konfiguraci a odpovídající image. Potom vyber stabilní vydání 1.2.3 a jeho ověřený commit v administraci updateru; při ručním sestavení použij tag `v1.2.3`. Zachovej celý datový volume. Nejsou potřeba nové SQL migrace, proměnné prostředí, změna Compose, LiveKitu ani přestavba updateru. Z 1.2.1 nebo starší verze nadále platí dřívější migrační kroky popsané výše.
@@ -330,3 +383,12 @@ Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci.
 ## Přechod z 1.4.0 na 1.4.1
 
 Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci zvol vydání 1.4.1 nebo při ruční aktualizaci sestav aplikaci z tagu `v1.4.1`. Použij stávající datový volume. Docker aktualizace nevyžaduje SQL migraci, novou konfiguraci ani výměnu updateru nebo LiveKitu. Pokud používáš samostatné `.exe`, řiď se [postupem pro Windows](WINDOWS.md#přechod-z-140).
+
+## Přechod z 1.4.1 na 1.5.0
+
+1. Stáhni úplnou ZIP zálohu a ulož konfiguraci hostingu mimo server. Zachovej datový volume.
+2. V administraci vyber vydání 1.5.0 nebo ručně sestav tag `v1.5.0`. Node při startu provede aditivní migrace `0004` až `0009`. Updater a LiveKit mohou zůstat ve stávající verzi.
+3. Pro běžný soukromý stůl ponech výchozí nastavení. Pro veřejný režim převezmi nový `compose.yaml`, nastav HTTPS a SMTP a znovu vytvoř app kontejner podle postupu k aktualizaci hostingu. Úklid můžeš nejdřív vyzkoušet v náhledu. [Nastavení veřejného režimu](#veřejná-instance-se-schvalováním-pj)
+4. Ověř přístup PJ i hráče do zkušební kampaně. Pokud zapneš veřejný režim, ověř také schválení účtu, doručení e-mailu a obnovu úplné ZIP zálohy.
+
+Při vlastním nasazení na Cloudflare aplikuj před nasazením nového buildu všechny dosud nepoužité D1 migrace. Správa účtů PJ, SMTP a serverové ZIP zálohy jsou funkce Node/Docker. [Lokální Cloudflare vývoj](DEVELOPMENT.md#lokální-cloudflare-vývoj)

@@ -281,3 +281,10 @@
 .topbar .avatar {
   flex-shrink: 0;
 }
+
+.topbar .pj-tables-link {
+  max-width: 5rem;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.2;
+}

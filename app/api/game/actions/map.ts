@@ -9,11 +9,20 @@ import {
   remember,
   explorationAction,
 } from '../../../../lib/exploration';
-import { applyMap, playerDungeon, cellKey } from '../../../../lib/dungeon';
+import {
+  applyMap,
+  playerDungeon,
+  emptyDungeon,
+  cellKey,
+} from '../../../../lib/dungeon';
 import { EditConflict } from '../../../../lib/sheets';
 import { fail } from '../responses';
 
-function mapCommand(game: Game, levelId: string, body: Record<string, unknown>) {
+function mapCommand(
+  game: Game,
+  levelId: string,
+  body: Record<string, unknown>,
+) {
   return body.tool === 'scenery-fill'
     ? { ...body, fillBlocked: sceneryFillBlocked(game, levelId) }
     : body;
@@ -26,11 +35,28 @@ export function applyMapAction(
   library?: CatalogResolver,
 ) {
   try {
+    const clearing = body.tool === 'clear';
+    if (
+      clearing &&
+      typeof body.requestId === 'string' &&
+      game.mapOperations?.includes(body.requestId)
+    )
+      return;
     if (game.atlas) {
       const atlas = ensureAtlas(game);
       const level = getLevel(atlas, body.levelId);
+      if (
+        clearing &&
+        (atlas.location?.levelId === level.id ||
+          atlas.battle?.levelId === level.id)
+      )
+        return fail('Nejdřív přesuň družinu na jiné patro.');
       const draft = { ...game, dungeon: level.map, mapHistory: level.history };
-      applyMap(draft, mapCommand(game, level.id, body), resolvedScenery(library));
+      applyMap(
+        draft,
+        mapCommand(game, level.id, body),
+        resolvedScenery(library),
+      );
       if (
         atlas.battle?.levelId === level.id &&
         game.members.some(
@@ -43,13 +69,16 @@ export function applyMapAction(
         return fail('Nejdřív přemísti postavy z upravovaného políčka.');
       if (
         atlas.location?.levelId === level.id &&
-        !draft.dungeon!.floors.includes(cellKey(atlas.location.x, atlas.location.y))
+        !draft.dungeon!.floors.includes(
+          cellKey(atlas.location.x, atlas.location.y),
+        )
       )
         return fail('Nejdřív přemísti družinu z upravovaného políčka.');
       level.map = draft.dungeon!;
       level.history = draft.mapHistory || [];
       game.mapOperations = draft.mapOperations;
-      if (body.tool === 'reveal') remember(level, level.map.revealed);
+      if (clearing) level.memory = emptyDungeon();
+      else if (body.tool === 'reveal') remember(level, level.map.revealed);
       else if (body.tool === 'hide' || body.tool === 'undo')
         level.memory = playerDungeon({
           ...level.memory,
@@ -58,7 +87,13 @@ export function applyMapAction(
       if (!atlas.location) remember(level, level.map.revealed);
       refreshSight(game);
     } else {
-      applyMap(game, mapCommand(game, 'ground', body), resolvedScenery(library));
+      if (clearing && body.levelId !== undefined && body.levelId !== 'ground')
+        return fail('Patro neexistuje.');
+      applyMap(
+        game,
+        mapCommand(game, 'ground', body),
+        resolvedScenery(library),
+      );
     }
   } catch (error) {
     return fail(

@@ -20,7 +20,7 @@ Vedle nástrojů jako Roll20 a Foundry má projekt užší cíl. Spojit dávné 
 
 *Skutečný herní stůl z pohledu PJ. Hráčům se mapa odkrývá podle toho, kam se družina vydá.*
 
-Vydání **1.4.1** zrychluje spuštění Windows aplikace, přidává uvítání a odděluje místní správu od sdílené hry. [Co se změnilo ve verzi 1.4.1](CHANGELOG.md#141--2026-11-16)
+Vydání **1.5.0** přidává volitelnou správu více PJ na vlastním serveru, statistiky odehraných dobrodružství a přenos evidence smazaných stolů v úplné ZIP záloze. Při přípravě mapy může PJ vyčistit celé patro a začít znovu. [Co se změnilo ve verzi 1.5.0](CHANGELOG.md#150--2026-11-16)
 
 ## Jak vypadá jeden večer
 
@@ -61,7 +61,7 @@ Na vlastním serveru může správce zapnout volitelný LiveKit. Každá družin
 
 ## Přenosná aplikace pro Windows
 
-Na Windows 11 x64 stačí stáhnout a otevřít jedno `.exe`. Stůl se zobrazí ve vlastním okně a kampaně se ukládají do profilu Windows. Družina se připojuje běžným prohlížečem. Návod popisuje připojení v domácí síti, přes vlastní VPN i první společnou hru. [Stáhnout Windows 1.4.1](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.1/u-jednoho-stolu-1.4.1-windows-x64-portable.exe) · [Návod pro Windows](docs/WINDOWS.md)
+Na Windows 11 x64 stačí stáhnout a otevřít jedno `.exe`. Stůl se zobrazí ve vlastním okně a kampaně se ukládají do profilu Windows. Družina se připojuje běžným prohlížečem. Návod popisuje připojení v domácí síti, přes vlastní VPN i první společnou hru. [Stáhnout Windows 1.5.0](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.5.0/u-jednoho-stolu-1.5.0-windows-x64-portable.exe) · [Návod pro Windows](docs/WINDOWS.md)
 
 ## Vlastní server s Dockerem
 
@@ -69,7 +69,9 @@ Pro stabilní instalaci vyber tag z posledního vydání. Na Linuxu potřebuješ
 
 Pro malou družinu ber jako orientační základ 2 jádra nebo vCPU, 2 GB volné RAM a 5 GB volného místa pro instalaci a aktualizace. Místo pro kampaně a zálohy počítej zvlášť. [Požadavky a přístup pro družinu](docs/SELF_HOSTING.md#základní-požadavky)
 
-V administraci na `/admin` můžeš zkontrolovat vydání, spustit aktualizaci a stáhnout úplnou serverovou ZIP zálohu. Přenosný export jednotlivé kampaně stahuje PJ přímo u stolu. [Aktualizace z administrace](docs/SELF_HOSTING.md#aktualizace-z-administrace) · [Dvě různé zálohy](docs/SELF_HOSTING.md#dvě-různé-zálohy)
+V administraci na `/admin` můžeš zkontrolovat vydání, spustit aktualizaci a stáhnout úplnou serverovou ZIP zálohu. Přenosný export jednotlivé kampaně stahuje PJ přímo u stolu. [Aktualizace z administrace](docs/SELF_HOSTING.md#aktualizace-z-administrace) · [Úplná ZIP záloha a obnova](docs/SELF_HOSTING.md#úplná-záloha-zip)
+
+Pokud hostuješ více družin, můžeš zapnout veřejný režim. PJ ověří e-mail, správce schválí účet a hráči přijdou přes pozvánku. Správce vidí hraná i dohraná dobrodružství, aktivní dny a průměr herních dní na hraný stůl. Archivace, kvóty a úklid pomáhají udržet server přehledný. [Konfigurace veřejné instance](docs/SELF_HOSTING.md#veřejná-instance-se-schvalováním-pj)
 
 ## Dokumentace a zapojení do projektu
 

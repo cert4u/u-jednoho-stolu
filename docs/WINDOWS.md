@@ -2,10 +2,14 @@
 
 Přenosný prototyp pro Windows 11 x64 spojuje herní server a jeho rozhraní v jednom staženém souboru. Electron se při spuštění automaticky rozbalí do dočasné složky.
 
-1. [Stáhni přenosný soubor pro Windows](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.1/u-jednoho-stolu-1.4.1-windows-x64-portable.exe) a spusť ho dvojklikem. Po rozbalení se stůl otevře ve vlastním okně.
+1. [Stáhni přenosný soubor pro Windows](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.5.0/u-jednoho-stolu-1.5.0-windows-x64-portable.exe) a spusť ho dvojklikem. Po rozbalení se stůl otevře ve vlastním okně.
 2. V nabídce **Stůl** najdeš **Administrace**, **Zobrazit heslo správce**, **Otevřít složku s daty** a **Jak spustit a hrát**. Zavřením okna ukončíš také server.
 
 Aplikace při prvním spuštění vygeneruje heslo správce. V dialogu **Zobrazit heslo správce** ho lze zkopírovat do schránky. Nastavení, databáze, obrázky a zálohy jsou v `%APPDATA%\U jednoho stolu\Stul`. Před aktualizací vytvoř zálohu v administraci, zavři aplikaci a spusť nové `.exe` pod stejným uživatelem Windows. Stejnou složku s daty používá i starší varianta ze ZIPu.
+
+## Přechod z 1.4.1
+
+Stáhni úplnou ZIP zálohu z administrace, zavři stůl a spusť nové `.exe` pod stejným uživatelem Windows. Při prvním startu se databáze aktualizuje. Ověř otevření existující kampaně a zkušební připojení hráče. Správa více účtů PJ patří k veřejnému režimu na Node/Dockeru.
 
 ## Připojení družiny
 

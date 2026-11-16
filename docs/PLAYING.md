@@ -30,6 +30,12 @@ Tlačítko **Ukázat na mapě** zvýrazní uložené políčko bez přesunu dru�
 3. Každý přes avatar nahoře vpravo uloží svůj **obnovovací klíč**. Pro návrat z jiného prohlížeče použije **Vrátit se ke své postavě**. Použití klíče vydá nový klíč a odvolá předchozí herní přihlášení postavy.
 4. PJ může hráči vydat nový klíč. Samotné vydání nahrazuje starý obnovovací klíč; přihlášení se mění až jeho použitím. Archivace hráče odpojí a uvolní místo, deník zachová. Vrácení postavy vydá nový klíč.
 
+Ve veřejném režimu s účty otevři **Účet PJ a moje stoly**. O účet požádáš e-mailem nebo využiješ pozvánku správce. Po ověření a schválení zde můžeš založit a importovat vlastní stůl, stáhnout zálohu nebo stůl přesunout do archivu. Archivovaný stůl se hráčům uzavře a můžeš ho obnovit z přehledu nebo po potvrzení názvu trvale smazat. Dohranou kampaň můžeš v přehledu označit jako dohranou a označení později zrušit. Pokud správce zapnul automatický úklid, u archivu uvidíš také termín smazání. Existující stůl přiřadíš z prohlížeče, ve kterém k němu máš uložený přístup PJ.
+
+Přihlašovací e-mail změníš v **Moje stoly → Přihlašovací e-mail**. Potvrď odkaz v původní i nové schránce a pak se přihlas novou adresou. Když se do původní schránky už nedostaneš, požádej správce instance o obnovu.
+
+U stolu s účtem PJ rozbal v **Moje stoly** sekci **Pozvánka pro hráče**. **Pozastavit nové vstupy** zavře vstup pro nové hráče a **Povolit nové vstupy** ho znovu otevře. **Vystavit nový odkaz** zneplatní předchozí pozvánku. Hráči se stávajícím přihlášením nebo obnovovacím klíčem se ke své postavě dál dostanou. Po výměně pošli novým hráčům celý odkaz.
+
 Opustit stůl v prohlížeči odstraní místní přihlášení, ne kampaň. Ztracený přístup PJ potřebuje jeho obnovovací klíč nebo obnovu kampaně/instalace ze zálohy. Neexistuje společné výchozí heslo pro PJ.
 
 ## Začátek z předlohy
@@ -64,7 +70,10 @@ V **Příprava mapy** PJ kreslí na podlahu/příslušné hrany:
 | Vchod / Východ | Jeden bod každého druhu na patře. Další kliknutí značku přesune; oba body musí být na různých políčkách podlahy. |
 | Ubrat prostor | Odstraní podlahu i značky v odebraných políčkách a upraví obvod. |
 | Guma | Maže ruční hrany; středem políčka maže značky schodů, vchodu a východu. Pro změnu půdorysu použij Ubrat prostor. |
-| Zpět | Vrátí poslední uložený tah mapy z omezené historie, nikoli všechny herní akce. |
+
+| Zpět | Vrátí poslední uložený tah mapy z omezené historie. |
+
+Koš vedle šipky **Zpět** v režimu **Příprava mapy** po potvrzení smaže kresbu a objevenou mapu zobrazeného patra. Poznámky, příšery, propojení schodišť a ostatní patra zůstávají. Pokud je družina na tomto patře, nejdřív ji přesuň jinam. Šipkou **Zpět** můžeš kresbu obnovit. Automaticky zapamatovanou část potom družina prozkoumá znovu.
 
 **Generátor V2** vytvoří náhled podle stylu, počtu pater a místností, velikosti a složitosti. Hradní podzemí má pravidelné komnaty a dveře, důl protáhlé pracovní prostory a větvení, jeskyně nepravidelné půdorysy. Stejná verze, nastavení, semínko a varianta dávají stejný návrh. Tři varianty se vybírají jednotlivě, nové semínko vytvoří novou sadu. Pokročilá část nabízí i původní V1 pro opakování starých seedů. Změníš-li nastavení nebo se změní kapacita pater, vytvoř nový náhled před vložením.
 

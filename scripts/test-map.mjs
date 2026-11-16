@@ -26,4 +26,14 @@ const prior=JSON.stringify((await get(pj)).dungeon);for(const [tool,data] of [['
 await Promise.all([map(pj,'room',{from:[16,2],to:[18,4]}),map(pj,'room',{from:[20,2],to:[22,4]})]);master=await get(pj);assert(master.dungeon.edges['h:16:2']);assert(master.dungeon.edges['h:20:2']);
 const legacy=dungeonFor({cells:{'1,1':'floor','2,1':'floor','5,5':'wall'},fog:['2,1','5,5','5,4','4,5','6,5','5,6']});assert(legacy.floors.includes('2,1'));assert(!legacy.revealed.includes('2,1'));assert.equal(legacy.edges['h:1:1'],'wall');const legacyPlayer=playerDungeon(legacy);assert(!legacyPlayer.floors.includes('2,1'));assert.equal(legacyPlayer.edges['h:5:5'],undefined);
 assert.equal((await post(a,'character',{name:'Stále hráč',hp:12,maxHp:12,stats:'poznámka',inventory:'lano',dungeon:{revealed:['20,2']}})).status,200);assert.equal((await get(a)).dungeon.edges['h:20:2'],undefined);
-console.log('PASS: prázdná skrytá mapa, zdi/místnosti/dveře/podlaha/guma, odhalování a skrývání, atomické Zpět, opakování a souběh, oprávnění, soukromí v API a historie, hranice mapy a převod starších map.');
+const beforeClear = (await get(pj)).dungeon;
+const beforeClearPlayer = (await get(a)).dungeon;
+assert.equal((await map(pj, 'clear', {levelId: 'missing'})).status, 400);
+assert.deepEqual((await get(pj)).dungeon, beforeClear);
+assert.equal((await map(pj, 'clear')).status, 200);
+assert.deepEqual((await get(pj)).dungeon, {edges: {}, floors: [], revealed: []});
+assert.deepEqual((await get(a)).dungeon, {edges: {}, floors: [], revealed: []});
+assert.equal((await map(pj, 'undo')).status, 200);
+assert.deepEqual((await get(pj)).dungeon, beforeClear);
+assert.deepEqual((await get(a)).dungeon, beforeClearPlayer);
+console.log('PASS: prázdná skrytá mapa, zdi/místnosti/dveře/podlaha/guma, odhalování a skrývání, smazání kresby, atomické Zpět, opakování a souběh, oprávnění, soukromí v API a historie, hranice mapy a převod starších map.');

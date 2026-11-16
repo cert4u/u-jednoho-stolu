@@ -101,6 +101,30 @@ assert.deepEqual(
   readBrowserEntry(),
 );
 
+const protectedEntry = readBrowserEntry(
+  { getItem: () => JSON.stringify(session) },
+  '?room=INVITE',
+  '#invite=token',
+);
+assert.deepEqual(protectedEntry, {
+  session: null,
+  code: 'INVITE',
+  joining: true,
+  invitation: { room: 'INVITE', token: 'token' },
+});
+assert.deepEqual(
+  readBrowserEntry(
+    {
+      getItem() {
+        throw Error('blocked');
+      },
+    },
+    '?room=INVITE',
+    '#invite=token',
+  ),
+  protectedEntry,
+);
+
 const input = {
   token: 'secret',
   recoveryHash: 'hash',

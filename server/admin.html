@@ -3,100 +3,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <title>Správa instalace · U jednoho stolu</title>
-<style>
-:root { color-scheme: light; --ink:#38372f; --muted:#746d5d; --paper:#fffdf7; --line:#ded6c5; --brown:#76502f; --wash:#f5f0e5; }
-* { box-sizing:border-box; }
-body { margin:0; background:#f1eee5; color:var(--ink); font:15px/1.6 system-ui,sans-serif; }
-main { max-width:1380px; margin:32px auto 70px; padding:0 clamp(16px,3vw,40px); }
-h1,h2,h3,h4 { font-family:Georgia,serif; font-weight:normal; line-height:1.3; }
-h1 { font-size:32px; margin:8px 0; } h2 { margin:0 0 18px; font-size:23px; } h3 { font-size:20px; margin:0 0 14px; }
-a { color:var(--brown); text-underline-offset:3px; }
-button,input,select,textarea { font:inherit; border:1px solid #cbbda6; border-radius:6px; }
-button { padding:9px 15px; background:var(--brown); color:#fffaf0; cursor:pointer; line-height:1.4; }
-button.secondary { background:var(--paper); color:#624b33; }
-button:disabled { opacity:.48; cursor:default; } button:hover:not(:disabled) { filter:brightness(.94); }
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid #b18a5280; outline-offset:2px; }
-:where(input,select,textarea):not([hidden]) { display:block; }
-input,select,textarea { width:100%; padding:10px 12px; margin:6px 0 16px; background:#fffefb; color:var(--ink); }
-input[readonly],textarea[readonly] { background:#f7f4ed; }
-input[type=file] { font-size:13px; padding:8px; }
-label { display:block; font-size:13px; font-weight:550; color:#625846; }
-textarea { font:13px/1.65 ui-monospace,monospace; min-height:20rem; resize:vertical; tab-size:2; }
-small { color:var(--muted); font-size:12px; }
-pre { white-space:pre-wrap; overflow-wrap:anywhere; font:12px/1.7 ui-monospace,monospace; }
-[hidden] { display:none; }
-.admin-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:0 0 20px; border-bottom:1px solid var(--line); margin-bottom:20px; }
-.admin-heading .eyebrow { text-transform:uppercase; letter-spacing:.16em; font-size:10px; color:var(--muted); }
-#panel:not([hidden]) { display:grid; }
-#panel { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
-#panel>section { min-width:0; padding:24px; background:var(--paper); border:1px solid var(--line); border-radius:10px; }
-#panel>nav,#catalog-section,#logout { grid-column:1/-1; }
-#logout { justify-self:start; }
-.admin-nav { display:flex; gap:8px; flex-wrap:wrap; padding:6px 0 4px; }
-.admin-nav a { text-decoration:none; color:#756044; padding:7px 13px; border:1px solid var(--line); border-radius:6px; background:#faf7ee; font-size:13px; }
-section, #catalog-detail { scroll-margin-top:20px; }
-#login { max-width:460px; margin:70px auto; padding:32px; background:var(--paper); border:1px solid var(--line); border-radius:10px; }
-#message { color:#8a4f2b; white-space:pre-wrap; }
-#message:empty { display:none; }
-#notes { max-height:20rem; overflow:auto; }
-.actions,.backup-actions { display:flex; gap:9px; flex-wrap:wrap; align-items:center; }
-dl { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:16px; margin:0; }
-dt { font-size:11px; color:var(--muted); margin-bottom:3px; text-transform:uppercase; letter-spacing:.04em; }
-dd { margin:0; overflow-wrap:anywhere; }
-ul { list-style:none; padding:0; } li { border-top:1px solid var(--line); padding:14px 0; } li strong { overflow-wrap:anywhere; font-size:13px; }
-#catalog-section>p { color:var(--muted); margin:-8px 0 18px; }
-#catalog-section>.actions { padding-bottom:18px; border-bottom:1px solid var(--line); margin-bottom:18px; align-items:flex-start; }
-#catalog-section>.actions>label { max-width:240px; } #catalog-section>.actions>label input { margin:4px 0 0; }
-#catalog-message,#catalog-validation { white-space:pre-wrap; color:#8a4f2b; font-size:13px; }
-#catalog-message:empty { display:none; }
-.catalog-scroll { overflow:auto; }
-#catalog-list table { width:100%; border-collapse:collapse; font-size:13px; min-width:760px; }
-#catalog-list th { font-weight:550; text-transform:uppercase; letter-spacing:.06em; font-size:10px; color:var(--muted); white-space:nowrap; }
-#catalog-list td,#catalog-list th { text-align:left; vertical-align:top; padding:13px 10px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
-#catalog-list tr:last-child td { border-bottom:0; }
-#catalog-list td:first-child { font-weight:550; min-width:170px; }
-#catalog-list small { display:block; white-space:pre-line; line-height:1.5; max-width:240px; font-weight:400; margin-top:5px; }
-#catalog-list td:nth-child(5) { white-space:pre-line; min-width:110px; font-size:11px; color:var(--muted); }
-#catalog-list button { padding:6px 10px; font-size:12px; } #catalog-list .actions { gap:6px; }
-#catalog-create,#catalog-preview,#catalog-detail { margin-top:24px; padding-top:24px; border-top:1px solid var(--line); }
-#catalog-create { max-width:620px; }
-#catalog-preview { background:#f8f1e1; border:1px solid #e1d0ad; border-radius:8px; padding:20px; }
-.catalog-detail-header { display:flex; justify-content:space-between; gap:20px; align-items:flex-start; margin-bottom:20px; }
-#catalog-detail-title { font-size:28px; margin-bottom:8px; }
-#catalog-origin { margin:0; color:var(--muted); font:12px/1.7 system-ui,sans-serif; max-width:800px; }
-.catalog-workspace { display:grid; grid-template-columns:300px minmax(0,1fr); border:1px solid var(--line); border-radius:9px; overflow:hidden; }
-.catalog-browser { padding:20px; background:var(--wash); border-right:1px solid var(--line); min-width:0; }
-.catalog-browser .actions { margin-bottom:16px; } .catalog-browser .actions button { font-size:12px; padding:8px 10px; }
-#catalog-items { display:grid; align-content:start; gap:7px; min-width:0; }
-.catalog-pagination { display:flex; justify-content:space-between; align-items:center; gap:10px; padding-top:16px; margin-top:14px; border-top:1px solid var(--line); }
-.catalog-pagination button { padding:6px 12px; } #catalog-page { color:var(--muted); font-size:11px; }
-.catalog-item { width:100%; text-align:left; background:#fffdf8; color:var(--ink); border:1px solid transparent; padding:12px; }
-.catalog-item strong { display:block; font-weight:550; font-size:13px; } .catalog-item small { display:block; margin-top:3px; font-size:10px; overflow-wrap:anywhere; }
-.catalog-item.is-selected { border-color:#b99a6e; background:#eee3ce; }
-.catalog-editing { padding:26px; min-width:0; background:var(--paper); }
-#catalog-editor-empty { padding:80px 24px; text-align:center; color:var(--muted); }
-#catalog-editor-help { color:var(--muted); font-size:12px; margin:0 0 20px; }
-#catalog-item-actions { padding-bottom:16px; margin-bottom:20px; border-bottom:1px solid var(--line); }
-#catalog-item-actions button { font-size:12px; }
-.catalog-preview-layout { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; align-items:start; margin:20px 0 24px; }
-#catalog-entry-preview { white-space:pre-wrap; font:15px/1.85 system-ui,sans-serif; margin:0; }
-#catalog-visual-preview:empty { display:none; } #catalog-visual-preview img { width:150px; height:190px; object-fit:contain; border-radius:6px; }
-#catalog-visual-preview svg { width:100px; height:100px; background:var(--wash); padding:14px; border-radius:8px; }
-details { border:1px solid var(--line); border-radius:7px; margin:18px 0; padding:12px 15px; }
-summary { cursor:pointer; color:#715331; font-size:13px; } details[open]>summary { margin-bottom:14px; }
-#catalog-json { margin-bottom:0; } #catalog-editor>.actions { margin-top:18px; }
-#catalog-image-control { border-top:1px solid var(--line); padding-top:18px; margin-top:24px; }
-#catalog-history button { display:block; margin:8px 0; font-size:12px; }
-dialog { width:min(94vw,560px); max-height:90vh; overflow:auto; background:var(--paper); color:var(--ink); border:1px solid #c9b99c; border-radius:10px; padding:28px; box-shadow:0 15px 60px #352b2533; }
-dialog::backdrop { background:#35332566; } #admin-dialog-message { white-space:pre-wrap; overflow-wrap:anywhere; font-size:14px; }
-@media(max-width:900px) { #panel { grid-template-columns:minmax(0,1fr); } #panel>section { padding:18px; } .catalog-workspace { grid-template-columns:240px minmax(0,1fr); } .catalog-editing { padding:20px; } }
-@media(max-width:680px) { main { margin-top:20px; } .admin-heading { align-items:flex-start; } h1 { font-size:27px; } .catalog-workspace { grid-template-columns:minmax(0,1fr); } .catalog-browser { border-right:0; border-bottom:1px solid var(--line); } #catalog-items { grid-template-columns:repeat(2,minmax(0,1fr)); } .catalog-preview-layout { grid-template-columns:minmax(0,1fr); } #catalog-visual-preview { grid-row:1; } #catalog-visual-preview img { height:140px; width:120px; } .catalog-detail-header { flex-direction:column; } #catalog-detail-title { font-size:24px; } }
-/* Same track-free scrolling policy as app/styles/scrollbars.css; admin is a standalone document. */
-*{scrollbar-width:none}
-*::-webkit-scrollbar{display:none;width:0;height:0}
-</style>
+<link rel="stylesheet" href="/admin/style.css">
 <main>
-  <header class="admin-heading"><div><span class="eyebrow">U jednoho stolu · vlastní server</span><h1>Správa instalace</h1></div><a href="/">← Zpět ke stolu</a></header>
+  <header class="admin-heading">
+    <div class="admin-brand">
+      <img src="/favicon.svg" width="38" height="38" alt="">
+      <div><small>U jednoho stolu</small><h1>Správa instalace</h1></div>
+    </div>
+    <a href="/">Zpět ke stolu <span aria-hidden="true">↗</span></a>
+  </header>
   <p id="message" role="status" aria-live="polite"></p>
   <section id="login">
     <form id="login-form">
@@ -106,8 +21,20 @@ dialog::backdrop { background:#35332566; } #admin-dialog-message { white-space:p
     </form>
   </section>
   <div id="panel" hidden>
-    <nav class="admin-nav" aria-label="Sekce administrace"><a href="#overview">Přehled</a><a href="#updates">Aktualizace</a><a href="#catalog-section">Katalogy</a><a href="#backups">Zálohy</a><a href="#services">Nastavení</a></nav>
-    <section aria-labelledby="overview">
+    <aside class="admin-sidebar">
+      <nav class="admin-nav" aria-label="Sekce administrace">
+        <a href="#overview" aria-current="page">Přehled</a>
+        <a href="#pj-heading" data-public-link hidden>Páni jeskyně <span id="pj-nav-count" hidden></span></a>
+        <a href="#tables-heading" data-public-link hidden>Stoly a úklid</a>
+        <a href="#catalog-section">Katalogy</a>
+        <a href="#backups">Zálohy</a>
+        <a href="#updates">Aktualizace</a>
+        <a href="#services">Nastavení</a>
+      </nav>
+      <button id="logout" class="secondary" type="button">Odhlásit se</button>
+    </aside>
+    <div class="admin-content">
+    <section aria-labelledby="overview" data-admin-pane="overview" data-active>
       <h2 id="overview">Přehled instalace</h2>
       <dl>
         <div><dt>Aplikace</dt><dd id="installed"></dd></div>
@@ -118,8 +45,21 @@ dialog::backdrop { background:#35332566; } #admin-dialog-message { white-space:p
         <div><dt>Volné místo</dt><dd id="storage"></dd></div>
         <div><dt>Poslední záloha</dt><dd id="last-backup"></dd></div>
       </dl>
+      <div id="public-overview" hidden>
+        <header class="admin-section-heading">
+          <div><h3>Veřejné stoly</h3><p id="pj-sampled"></p></div>
+          <button id="pj-overview-refresh" type="button" class="secondary">Obnovit statistiky</button>
+        </header>
+        <p id="pj-overview-status" role="status"></p>
+        <div id="pj-overview" class="admin-metrics"></div>
+        <div class="admin-insight-grid">
+          <section class="admin-insight"><h4>Poslední aktivita na otevřených stolech</h4><div id="pj-activity"></div></section>
+          <section class="admin-insight"><h4>Využití kapacity</h4><div id="pj-capacity"></div></section>
+        </div>
+      </div>
+
     </section>
-    <section aria-labelledby="updates">
+    <section aria-labelledby="updates" data-admin-pane="updates">
       <h2 id="updates">Aktualizace</h2>
       <p id="latest"></p>
       <form id="development" hidden>
@@ -139,7 +79,7 @@ dialog::backdrop { background:#35332566; } #admin-dialog-message { white-space:p
       </div>
       <pre id="progress" role="status">Zatím bez aktualizace.</pre>
     </section>
-    <section id="catalog-section" aria-labelledby="catalog-title">
+    <section id="catalog-section" aria-labelledby="catalog-title" data-admin-pane="catalog-section">
       <h2 id="catalog-title">Katalogy</h2>
       <p>Místní knihovna obsahu. Instalované katalogy fungují i bez GitHubu.</p>
       <p id="catalog-message" role="status" aria-live="polite"></p>
@@ -176,14 +116,59 @@ dialog::backdrop { background:#35332566; } #admin-dialog-message { white-space:p
         </div>
       </div>
     </section>
-    <section aria-labelledby="backups">
+    <section id="pj-management" aria-labelledby="pj-heading" data-admin-pane="pj-heading" hidden>
+      <header class="admin-section-heading">
+        <div><h2 id="pj-heading">Páni jeskyně</h2><p>Žádosti, oprávnění a stoly podle vlastníků.</p></div>
+        <button id="pj-refresh" class="secondary" type="button">Obnovit přehled</button>
+      </header>
+      <p id="pj-status" role="status" aria-live="polite"></p>
+      <details>
+        <summary>Pozvat PJ</summary>
+        <form id="pj-invite" class="admin-filters">
+          <label>E-mail PJ<input name="email" type="email" maxlength="254" required></label>
+          <label>Jméno (volitelně)<input name="name" maxlength="60"></label>
+          <button type="submit">Odeslat pozvánku</button>
+        </form>
+      </details>
+      <h3>Žádosti ke schválení</h3>
+      <div id="pj-queue"></div>
+      <h3>Účty a herní statistiky PJ</h3>
+      <p class="admin-subtle">Hraný stůl má alespoň jeden evidovaný herní den. Stejný den se v součtu PJ započítá jednou i při hraní na více stolech.</p>
+      <div class="pj-report-period">
+        <label>Období herních statistik<select id="pj-period"><option value="all">Celá historie</option><option value="30">Posledních 30 dní</option><option value="90">Posledních 90 dní</option></select></label>
+        <p id="pj-period-range" class="admin-subtle" role="status"></p>
+      </div>
+      <div class="admin-filters">
+        <label>Najít PJ<input id="pj-search" type="search" placeholder="Jméno nebo e-mail"></label>
+        <label>Stav účtu<select id="pj-account-filter"><option value="">Všechny stavy</option><option value="approved">Schválený</option><option value="invited">Čeká na ověření</option><option value="suspended">Pozastavený</option><option value="rejected">Zamítnutý</option></select></label>
+        <label>Řazení<select id="pj-account-sort"><option value="played">Nejvíc hraných stolů</option><option value="playedDays">Nejvíc herních dní</option><option value="completed">Nejvíc dohraných jeskyní</option><option value="activity">Poslední aktivita</option><option value="name">Jméno</option><option value="bytes">Největší objem dat</option><option value="active">Nejvíc otevřených stolů</option></select></label>
+      </div>
+      <div id="pj-accounts"></div>
+      <details><summary>Historie správy účtů</summary><div id="pj-history"></div></details>
+    </section>
+    <section id="pj-tables" aria-labelledby="tables-heading" data-admin-pane="tables-heading" hidden>
+      <header class="admin-section-heading">
+        <div><h2 id="tables-heading">Stoly a úklid</h2><p id="pj-retention"></p></div>
+        <button id="pj-tables-refresh" class="secondary" type="button">Obnovit přehled</button>
+      </header>
+      <div class="admin-filters">
+        <label>Najít stůl<input id="pj-table-search" type="search" placeholder="Název, kód nebo PJ"></label>
+        <label>Filtr stolů<select id="pj-table-filter"><option value="">Všechny stoly</option><option value="active">Otevřené</option><option value="archived">V archivu</option><option value="completed">Dohrané</option><option value="legacy">Bez přiřazeného PJ</option><option value="cleanup">K úklidu</option></select></label>
+        <label>Řazení<select id="pj-table-sort"><option value="activity">Poslední aktivita</option><option value="bytes">Největší objem dat</option><option value="name">Název</option></select></label>
+      </div>
+      <p id="pj-tables-status" role="status"></p>
+      <p id="pj-table-results" class="admin-subtle" role="status"></p>
+      <div id="pj-room-list"></div>
+      <button id="pj-more-rooms" class="secondary" type="button" hidden>Zobrazit další stoly</button>
+    </section>
+    <section aria-labelledby="backups" data-admin-pane="backups">
       <h2 id="backups">Zálohy databáze</h2>
       <p id="retention"></p>
       <button id="snapshot" class="secondary">Vytvořit ruční zálohu</button>
       <ul id="backup-list"></ul>
-      <p><small>Pro obnovu celého serveru ulož mimo server také konfiguraci hostingu a přístupové údaje. <a href="https://github.com/cert4u/u-jednoho-stolu/blob/main/docs/SELF_HOSTING.md#data-a-zálohy" target="_blank" rel="noopener noreferrer">Návod k zálohám ↗</a></small></p>
+      <p><small>Úplný ZIP obsahuje databázi, katalogové přílohy a případnou evidenci smazaných stolů. Konfiguraci hostingu a přístupové údaje ulož zvlášť. <a href="https://github.com/cert4u/u-jednoho-stolu/blob/main/docs/SELF_HOSTING.md#data-a-zálohy" target="_blank" rel="noopener noreferrer">Návod k zálohám ↗</a></small></p>
     </section>
-    <section aria-labelledby="services">
+    <section aria-labelledby="services" data-admin-pane="services">
       <h2 id="services">Nastavení serveru</h2>
       <dl>
         <div><dt>Updater</dt><dd id="updater"></dd></div>
@@ -192,8 +177,7 @@ dialog::backdrop { background:#35332566; } #admin-dialog-message { white-space:p
       </dl>
       <p><small>Kanál, retenci, updater a hlasovou službu nastavuje správce v konfiguraci hostingu.</small></p>
     </section>
-    <button id="logout" class="secondary">Odhlásit se</button>
-
+    </div>
   </div>
 </main>
 <dialog id="admin-dialog" aria-labelledby="admin-dialog-title" aria-describedby="admin-dialog-message">
@@ -205,5 +189,7 @@ dialog::backdrop { background:#35332566; } #admin-dialog-message { white-space:p
 </dialog>
 <script src="/admin/dialogs.js" defer></script>
 <script src="/admin/app.js" defer></script>
+<script type="module" src="/admin/navigation.js"></script>
+<script type="module" src="/admin/pj.js"></script>
 <script type="module" src="/admin/catalogs.js"></script>
 </html>

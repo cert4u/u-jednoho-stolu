@@ -37,22 +37,21 @@ export function createCatalogView({ $, node, button }) {
     const scroll = node('div');
     scroll.className = 'catalog-scroll';
     const table = node('table');
-    const head = node('tr');
-    for (const label of [
-      'Název',
-      'Typ',
-      'Verze',
-      'Autor',
-      'Obsah',
-      'Stav',
-      'Akce',
-    ])
-      head.append(node('th', label));
-    table.append(head);
+    const headings = node('thead'),
+      head = node('tr'),
+      body = node('tbody');
+    const columns = ['Název', 'Typ', 'Verze', 'Autor', 'Obsah', 'Stav', 'Akce'];
+    for (const label of columns) {
+      const heading = node('th', label);
+      heading.setAttribute('scope', 'col');
+      head.append(heading);
+    }
+    headings.append(head);
+    table.append(headings, body);
     for (const c of catalogs) {
       const row = node('tr'),
         m = c.manifest;
-      for (const text of [
+      const fields = [
         m.name,
         { builtin: 'Výchozí', local: 'Vlastní', community: 'Komunitní' }[
           c.kind
@@ -70,8 +69,12 @@ export function createCatalogView({ $, node, button }) {
           : c.enabled
             ? 'Aktivní'
             : 'Zakázaný',
-      ])
-        row.append(node('td', text));
+      ];
+      for (const [index, text] of fields.entries()) {
+        const field = node('td', text);
+        field.setAttribute('data-label', columns[index]);
+        row.append(field);
+      }
       if (c.source) {
         const source = node(
           'small',
@@ -81,6 +84,7 @@ export function createCatalogView({ $, node, button }) {
       }
       const cell = node('td'),
         actions = node('div');
+      cell.setAttribute('data-label', 'Akce');
       actions.className = 'actions';
       cell.append(actions);
       actions.append(
@@ -106,7 +110,7 @@ export function createCatalogView({ $, node, button }) {
         actions.append(button('Odebrat', () => actionsForCatalog.remove(c)));
       }
       row.append(cell);
-      table.append(row);
+      body.append(row);
     }
     scroll.append(table);
     container.append(scroll);

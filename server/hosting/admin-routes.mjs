@@ -11,6 +11,10 @@ const adminFiles = new Map([
   ['/admin', '../admin.html'],
   ['/admin/', '../admin.html'],
   ['/admin/app.js', '../admin.js'],
+  ['/admin/style.css', '../admin.css'],
+  ['/admin/navigation.js', '../admin-navigation.js'],
+  ['/admin/pj.js', '../admin-pj.js'],
+  ['/admin/pj-stats.js', '../admin-pj-stats.js'],
   ['/admin/catalogs.js', '../admin-catalogs.js'],
   ['/admin/dialogs.js', '../admin-dialog.js'],
   ['/admin/admin-catalog-presentation.js', '../admin-catalog-presentation.js'],
@@ -28,22 +32,31 @@ export function serveAdminAsset(req, res, pathname) {
     json(res, 405, { error: 'Použij GET.' });
     return;
   }
-  const js = pathname.endsWith('.js');
+  const contentType = pathname.endsWith('.js')
+    ? 'text/javascript'
+    : pathname.endsWith('.css')
+      ? 'text/css'
+      : 'text/html';
   res.writeHead(200, {
-    'Content-Type': js
-      ? 'text/javascript; charset=utf-8'
-      : 'text/html; charset=utf-8',
+    'Content-Type': contentType + '; charset=utf-8',
     'Cache-Control': 'no-store',
     'X-Frame-Options': 'DENY',
     'X-Content-Type-Options': 'nosniff',
     'Content-Security-Policy':
-      "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+      "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
   });
   res.end(readFileSync(new URL(adminFiles.get(pathname), import.meta.url)));
   return;
 }
 
-export function createAdminApi({ auth, origin, info, maintenance, updater }) {
+export function createAdminApi({
+  auth,
+  origin,
+  info,
+  maintenance,
+  updater,
+  publicPj,
+}) {
   return async function handleAdminApi(req, res, url) {
     const { pathname } = url;
     if (req.method === 'POST' && req.headers.origin !== origin.origin) {
@@ -72,6 +85,11 @@ export function createAdminApi({ auth, origin, info, maintenance, updater }) {
       } finally {
         finish();
       }
+      return;
+    }
+    if (pathname === '/admin/api/pj') {
+      if (publicPj) await publicPj.admin(req, res, url);
+      else json(res, 404, { error: 'Správa účtů PJ není zapnutá.' });
       return;
     }
     if (pathname === '/admin/api/logout' && req.method === 'POST') {

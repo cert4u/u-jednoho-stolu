@@ -31,9 +31,11 @@ export function renderUtilityPanels({
             Přístup si pamatuje tento prohlížeč. Pro návrat na jiném zařízení si
             ulož osobní obnovovací klíč. Postava i její deník zůstanou stejné.
           </p>
-          <button className="primary" onClick={copy}>
-            <Copy size={17} /> Zkopírovat pozvánku
-          </button>
+          {(!game.managedInvites || pj) && (
+            <button className="primary" onClick={copy}>
+              <Copy size={17} /> Zkopírovat pozvánku
+            </button>
+          )}
           {recoveryCode && (
             <RecoveryCard
               key={recoveryCode}
