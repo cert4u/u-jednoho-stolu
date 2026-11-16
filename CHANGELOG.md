@@ -1,5 +1,11 @@
 # Změny
 
+## 1.3.1 — 2026-11-16
+
+- Katalogová administrace ověřuje formát požadavků před zápisem. Chybný identifikátor, revize nebo neplatný příznak pro zachování kampaní vrátí chybu bez změny katalogu nebo kampaně.
+- Editor katalogu, import a administrační API sdílejí typy ze stejných schémat, která používá server. Pozdní potvrzení po odhlášení neotevře zavřený editor.
+- [Postup aktualizace z 1.3.0](docs/SELF_HOSTING.md#přechod-z-130-na-131).
+
 ## 1.3.0 — 2026-11-10
 
 - **Spolehlivější synchronizace.** Po výpadku aplikace sama naváže na poslední načtený stav. Během režimu offline dotazy pozastaví a po návratu sítě se ozve hned. Zaseknutý dotaz ukončí po 30 sekundách a při opakovaných chybách postupně prodlouží čekání mezi pokusy.

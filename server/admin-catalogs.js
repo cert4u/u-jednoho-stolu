@@ -33,6 +33,7 @@ const editor = createCatalogEditor({
   state,
   view,
   api,
+  confirmDiscard: (message) => window.stulAdminDialog.confirm(message),
   controls,
   renderItems,
   onCopy: showCopy,
@@ -91,7 +92,7 @@ async function open(id, discardConfirmed = false) {
   if (!discardConfirmed && !(await canLeaveEditor())) {
     return;
   }
-  state.selected = await api('view?' + new URLSearchParams({ id }));
+  state.selected = await api(`view?${new URLSearchParams({ id })}`);
   state.selectedType = $('catalog-type').value;
   state.catalogPage = 0;
   clearEditor();
@@ -179,6 +180,7 @@ function clearPreview() {
   state.preview = undefined;
   $('catalog-preview').hidden = true;
 }
+/** @param {import('./catalog-admin-contract').CatalogImportPreview} result */
 function showPreview(result) {
   if (result.upToDate) {
     clearPreview();
@@ -276,6 +278,7 @@ $('catalog-copy').onsubmit = (e) => {
   void perform(async () => {
     const targetId = $('catalog-copy-target').value,
       target = state.catalogs.find((c) => c.manifest.id === targetId);
+    if (!state.copying || !target) return;
     await api('copy', {
       ...state.copying,
       targetId,
@@ -352,12 +355,11 @@ $('catalog-image').onchange = (e) =>
     const portrait = values.portrait;
     const id = state.selected.bundle.manifest.id;
     await api(
-      'image?' +
-        new URLSearchParams({
-          id,
-          revision: String(state.selected.revision),
-          portrait,
-        }),
+      `image?${new URLSearchParams({
+        id,
+        revision: String(state.selected.revision),
+        portrait,
+      })}`,
       undefined,
       { method: 'POST', headers: { 'Content-Type': 'image/webp' }, body: file },
     );

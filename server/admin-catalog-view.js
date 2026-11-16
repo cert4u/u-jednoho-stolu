@@ -177,6 +177,7 @@ export function createCatalogView({ $, node, button }) {
       list.append(node('p', 'Tento typ zatím neobsahuje žádné položky.'));
     }
   }
+  /** @param {import('./catalog-admin-contract').CatalogEditorView} options @returns {string} */
   function renderEditor({
     selected,
     type,

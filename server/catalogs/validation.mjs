@@ -1,4 +1,5 @@
 // Shared Zod/core boundary; keeps Node storage out of the portable schemas.
+/** @returns {Promise<typeof import('../../lib/catalogs/core')>} */
 export const loadCatalogCore = () => import('../../dist/catalog-core.mjs');
 export function validateLibrary(core, all) {
     const everything = all.map(c => ({ ...c, enabled: true }));

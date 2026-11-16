@@ -1,17 +1,19 @@
 // SQLite persistence only. Transaction callbacks must remain synchronous.
 import { openDatabase } from '../database.mjs';
 const now = () => new Date().toISOString();
+/** @typedef {import('../../lib/catalogs/model').InstalledCatalog & {checkedAt: string | null, updatedAt: string}} StoredCatalog */
+/** @returns {StoredCatalog[]} */
 export function readCatalogs(db = openDatabase()) {
     return db.prepare('SELECT * FROM catalogs ORDER BY installed_at,id').all().map(row => ({
-        kind: row.kind,
+        kind: /** @type {StoredCatalog['kind']} */ (row.kind),
         enabled: Boolean(row.enabled),
-        revision: row.revision,
-        digest: row.digest,
-        bundle: JSON.parse(row.payload),
-        source: row.source ? JSON.parse(row.source) : undefined,
-        installedAt: row.installed_at,
-        checkedAt: row.checked_at,
-        updatedAt: row.updated_at,
+        revision: /** @type {number} */ (row.revision),
+        digest: /** @type {string} */ (row.digest),
+        bundle: JSON.parse(/** @type {string} */ (row.payload)),
+        source: row.source ? JSON.parse(/** @type {string} */ (row.source)) : undefined,
+        installedAt: /** @type {string} */ (row.installed_at),
+        checkedAt: /** @type {string | null} */ (row.checked_at),
+        updatedAt: /** @type {string} */ (row.updated_at),
     }));
 }
 export function getCatalog(id) {
@@ -31,6 +33,11 @@ export function requireWritableCatalog(id, expected) {
     }
     return c;
 }
+/**
+ * @template T
+ * @param {(db: ReturnType<typeof openDatabase>) => T} fn
+ * @returns {T}
+ */
 export function inTransaction(fn) {
     const db = openDatabase();
     db.exec('BEGIN IMMEDIATE');

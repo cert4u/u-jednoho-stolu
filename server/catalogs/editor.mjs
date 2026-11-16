@@ -5,7 +5,10 @@ import { assertEntryUnused } from './usage.mjs';
 import { viewCatalog } from './queries.mjs';
 import { saveAsset } from '../catalog-files.mjs';
 import { bundleDigest, hashBytes } from '../catalog-pack.mjs';
+/** @typedef {import('../catalog-admin-contract').CatalogRequests} CatalogRequests */
+/** @template T @param {T} value */
 const clone = value => structuredClone(value);
+/** @param {unknown} manifest */
 export async function createCatalog(manifest) {
     const api = await loadCatalogCore(), bundle = api.validateCatalog({ manifest, entries: api.emptyEntries(), assets: [] }, readCatalogs());
     inTransaction(db => {
@@ -32,14 +35,16 @@ async function saveLocal(id, expected, change) {
         return { ok: true, revision: previous.revision + 1 };
     });
 }
+/** @param {string} id @param {number} expected @param {unknown} manifest */
 export async function editManifest(id, expected, manifest) {
     return saveLocal(id, expected, next => {
-        if (manifest.id !== id) {
+        if (!manifest || typeof manifest !== 'object' || !('id' in manifest) || manifest.id !== id) {
             throw new Error('Interní ID katalogu je neměnné.');
         }
         next.bundle.manifest = manifest;
     });
 }
+/** @param {CatalogRequests['entry']} request */
 export async function editEntry({ id, expectedRevision, type, entry, originalId, remove = false, validateOnly = false }) {
     const api = await loadCatalogCore();
     if (!api.catalogTypes.includes(type)) {
@@ -84,6 +89,7 @@ export async function editEntry({ id, expectedRevision, type, entry, originalId,
     }
     return saveLocal(id, expectedRevision, change);
 }
+/** @param {CatalogRequests['copy']} request */
 export async function copyEntry({ sourceId, targetId, type, itemId, newId, expectedRevision }) {
     const api = await loadCatalogCore(), source = sourceId === 'builtin' ? api.builtinCatalog : getCatalog(sourceId);
     if (!api.catalogTypes.includes(type)) {

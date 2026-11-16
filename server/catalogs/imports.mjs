@@ -1,3 +1,4 @@
+// @ts-check
 // Bounded, process-local prepared imports. ZIP and GitHub share this exact path.
 import { readCatalogs, inTransaction, saveCatalog, assertRevision, reserveAssets } from './repository.mjs';
 import { loadCatalogCore, validateLibrary } from './validation.mjs';
@@ -5,6 +6,13 @@ import { catalogUsage } from './usage.mjs';
 import { saveAsset } from '../catalog-files.mjs';
 import { unpackCatalog } from '../catalog-pack.mjs';
 const now = () => new Date().toISOString();
+/** @typedef {import('../../lib/catalogs/model').CatalogSource} CatalogSource */
+/** @typedef {Awaited<ReturnType<typeof unpackCatalog>> & {
+ *   source?: CatalogSource,
+ *   previousRevision: number | null,
+ *   expires: number,
+ * }} PendingImport */
+/** @type {Map<string, PendingImport>} */
 const previews = new Map();
 function prunePreviews() {
     for (const [key, value] of previews) {
@@ -13,6 +21,10 @@ function prunePreviews() {
         }
     }
 }
+/**
+ * @param {Uint8Array} bytes
+ * @param {{ source?: CatalogSource, updateId?: string }} [options]
+ */
 export async function prepareCatalogImport(bytes, { source, updateId } = {}) {
     const api = await loadCatalogCore();
     const prepared = await unpackCatalog(bytes, api, readCatalogs());
@@ -47,8 +59,8 @@ export async function prepareCatalogImport(bytes, { source, updateId } = {}) {
         counts: Object.fromEntries(Object.entries(prepared.bundle.entries).map(([k, v]) => [k, v.length])),
         preservedCampaigns: updateId ? catalogUsage(id).length : 0,
     };
-    if (updateId && prepared.digest === previous.digest) {
-        return { ...summary, upToDate: true };
+    if (updateId && prepared.digest === previous?.digest) {
+        return { ...summary, upToDate: /** @type {const} */ (true) };
     }
     if (updateId && catalogUsage(id).some(u => !u.preserved)) {
         throw new Error('Nejdřív zachovej podklady existujících kampaní.');
@@ -59,12 +71,14 @@ export async function prepareCatalogImport(bytes, { source, updateId } = {}) {
     }
     const token = crypto.randomUUID();
     previews.set(token, { ...prepared, source, previousRevision: previous?.revision ?? null, expires: Date.now() + 5 * 60e3 });
-    return { ...summary, token, upToDate: false };
+    return { ...summary, token, upToDate: /** @type {const} */ (false) };
 }
+/** @param {string} token */
 export function discardImport(token) {
     previews.delete(token);
     return { ok: true };
 }
+/** @param {string} token */
 export async function installPrepared(token) {
     prunePreviews();
     const prepared = previews.get(token);

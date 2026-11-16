@@ -112,6 +112,12 @@ JWT povoluje pouze publikaci zdroje `microphone`, odběr zvuku a vstup do `stul-
 
 Admin relace má nejvýše osm hodin. Odhlášení zneplatní konkrétní relaci i na serveru a restart ukončí všechny. Interní endpointy slouží pouze provoznímu updateru; nepoužívej jeho token v herním klientu ani veřejných ukázkách.
 
+### Katalogová administrace
+
+Operace pod `/admin/api/catalogs` vyžadují správcovskou relaci. Požadavky POST navíc vyžadují odpovídající `Origin` a dostupný režim zápisu. JSON musí mít pole očekávaná pro konkrétní operaci. ID používají malá písmena, číslice a pomlčky, začínají písmenem a mají nejvýše 50 znaků. `expectedRevision` a `historyId` jsou kladná celá čísla. Příznaky jako `enabled`, `validateOnly` a `preserveCampaigns` jsou booleany. Mazání položky vyžaduje `originalId`. Nahrání obrázku bere `id`, `revision` a `portrait` z URL a obrazová data z těla požadavku.
+
+Chybná data vracejí `400` bez zápisu. Platná, ale již neaktuální revize vrací `409`. Pokud katalog používá kampaň, jeho odstranění vyžaduje výslovné `preserveCampaigns: true` a uložené podklady kampaně. Importované a upravované položky se ověřují katalogovými schématy. [Provoz katalogů](CATALOG_LIBRARY.md)
+
 ## Chyby a přenos
 
 Obvyklý tvar chyby je `{error: "zpráva"}`. Zprávy jsou pro uživatele, nestav integraci na přesné shodě jejich znění.

@@ -1,14 +1,39 @@
+// @ts-check
+
 import {
   catalogEntryDescription,
   renderCatalogVisual,
 } from './admin-catalog-presentation.js';
 import { hasCatalogDraft } from './admin-catalog-state.js';
 
+/** @typedef {import('../lib/catalogs/model').CatalogType} CatalogType */
+/** @typedef {import('./catalog-admin-contract').CatalogEditorEntry} CatalogEditorEntry */
+/** @typedef {ReturnType<import('./admin-catalog-state.js').createCatalogState>} CatalogState */
+/** @typedef {import('./catalog-admin-contract').CatalogEditorView} CatalogEditorView */
+/** @typedef {(id: 'catalog-json') => HTMLTextAreaElement} FindTextarea */
+/** @typedef {(id: 'catalog-json-details') => HTMLDetailsElement} FindDetails */
+/** @typedef {(id: string) => HTMLElement} FindElement */
+
+/**
+ * @param {{
+ *   $: FindTextarea & FindDetails & FindElement,
+ *   state: Pick<CatalogState, 'selected' | 'editing' | 'editorBaseline' | 'valid' | 'validationRequest' | 'validationTimer'>,
+ *   view: Pick<ReturnType<import('./admin-catalog-view.js').createCatalogView>, 'renderEditor'>,
+ *   api: ReturnType<import('./admin-catalog-api.js').createCatalogApi>,
+ *   confirmDiscard: (message: string) => Promise<boolean>,
+ *   controls: () => void,
+ *   renderItems: () => void,
+ *   onCopy: CatalogEditorView['onCopy'],
+ *   onRemove: CatalogEditorView['onRemove'],
+ *   onSaved: (id: string) => Promise<void>,
+ * }} options
+ */
 export function createCatalogEditor({
   $,
   state,
   view,
   api,
+  confirmDiscard,
   controls,
   renderItems,
   onCopy,
@@ -21,7 +46,7 @@ export function createCatalogEditor({
   async function canLeaveEditor() {
     return (
       !isDirty() ||
-      (await window.stulAdminDialog.confirm(
+      (await confirmDiscard(
         'Máš neuložené změny položky. Opravdu je chceš zahodit?',
       ))
     );
@@ -35,23 +60,31 @@ export function createCatalogEditor({
     $('catalog-editor').hidden = true;
     $('catalog-editor-empty').hidden = false;
   }
+  /** @param {BeforeUnloadEvent} event */
   function protectDraft(event) {
     if (isDirty()) {
       event.preventDefault();
       event.returnValue = '';
     }
   }
+  /**
+   * @param {CatalogType} type
+   * @param {CatalogEditorEntry} entry
+   * @param {string} [originalId]
+   */
   function edit(type, entry, originalId) {
+    const selected = state.selected;
+    if (!selected) return;
     state.editing = { type, originalId };
     state.editorBaseline = view.renderEditor({
-      selected: state.selected,
+      selected,
       type,
       entry,
       originalId,
       onCopy,
       onRemove,
       onDuplicate: async (type, entry) => {
-        if (!(await canLeaveEditor())) return;
+        if (!(await canLeaveEditor()) || state.selected !== selected) return;
         const copy = structuredClone(entry);
         copy.id = copy.id.slice(0, 42) + '-kopie';
         edit(type, copy);
@@ -62,13 +95,16 @@ export function createCatalogEditor({
     void validate();
     controls();
   }
+  /** @param {object} entry */
   function visualPreview(entry) {
+    const { selected, editing } = state;
+    if (!selected || !editing) return;
     renderCatalogVisual(
       document,
       $('catalog-visual-preview'),
-      state.editing.type,
+      editing.type,
       entry,
-      state.selected.bundle,
+      selected.bundle,
     );
   }
   async function validate() {
@@ -76,11 +112,16 @@ export function createCatalogEditor({
     clearTimeout(state.validationTimer);
     state.valid = false;
     controls();
+    const { selected, editing } = state;
+    if (!selected || !editing) return;
+    /** @type {unknown} */
     let entry;
     try {
       entry = JSON.parse($('catalog-json').value);
     } catch (error) {
-      $('catalog-validation').textContent = 'Neplatný JSON: ' + error.message;
+      $('catalog-validation').textContent =
+        'Neplatný JSON: ' +
+        (error instanceof Error ? error.message : String(error));
       return;
     }
     if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
@@ -88,17 +129,17 @@ export function createCatalogEditor({
       return;
     }
     $('catalog-entry-preview').textContent = catalogEntryDescription(
-      state.editing.type,
+      editing.type,
       entry,
     );
     $('catalog-visual-preview').replaceChildren();
-    if (state.selected.kind !== 'local') {
+    if (selected.kind !== 'local') {
       visualPreview(entry);
       $('catalog-validation').textContent =
         'Originál je pouze pro čtení. Pro vlastní variantu použij Vlastní kopie.';
       return;
     }
-    if (state.editing.type === 'manifest') {
+    if (editing.type === 'manifest') {
       $('catalog-validation').textContent =
         'Syntaxe JSON je platná; metadata a závislosti ověří server při uložení.';
       state.valid = true;
@@ -109,10 +150,10 @@ export function createCatalogEditor({
     state.validationTimer = setTimeout(async () => {
       try {
         await api('entry', {
-          id: state.selected.bundle.manifest.id,
-          expectedRevision: state.selected.revision,
-          type: state.editing.type,
-          originalId: state.editing.originalId,
+          id: selected.bundle.manifest.id,
+          expectedRevision: selected.revision,
+          type: editing.type,
+          originalId: editing.originalId,
           entry,
           validateOnly: true,
         });
@@ -124,7 +165,8 @@ export function createCatalogEditor({
         $('catalog-validation').textContent = 'Schéma i odkazy jsou platné.';
       } catch (error) {
         if (serial === state.validationRequest) {
-          $('catalog-validation').textContent = error.message;
+          $('catalog-validation').textContent =
+            error instanceof Error ? error.message : String(error);
         }
       }
       if (serial === state.validationRequest) {
@@ -134,18 +176,20 @@ export function createCatalogEditor({
   }
 
   async function editManifest() {
-    if (!(await canLeaveEditor())) return;
+    const selected = state.selected;
+    if (
+      selected?.kind !== 'local' ||
+      !(await canLeaveEditor()) ||
+      state.selected !== selected
+    )
+      return;
     state.editing = { type: 'manifest' };
     $('catalog-editor-empty').hidden = true;
     $('catalog-item-actions').replaceChildren();
     $('catalog-json-details').open = true;
     $('catalog-editor').hidden = false;
     $('catalog-json').readOnly = false;
-    $('catalog-json').value = JSON.stringify(
-      state.selected.bundle.manifest,
-      null,
-      2,
-    );
+    $('catalog-json').value = JSON.stringify(selected.bundle.manifest, null, 2);
     state.editorBaseline = $('catalog-json').value;
     $('catalog-editor-title').textContent = 'Metadata katalogu';
     $('catalog-editor-help').textContent =
@@ -153,29 +197,44 @@ export function createCatalogEditor({
     void validate();
   }
   function canSave() {
-    return state.valid && state.selected?.kind === 'local';
+    return (
+      state.valid &&
+      state.selected?.kind === 'local' &&
+      state.editing !== undefined
+    );
   }
   async function save() {
-    const id = state.selected.bundle.manifest.id,
-      data = JSON.parse($('catalog-json').value);
-    if (state.editing.type === 'manifest') {
+    const { selected, editing } = state;
+    if (!selected || !editing || !canSave()) return;
+    const id = selected.bundle.manifest.id;
+    const submitted = $('catalog-json').value;
+    /** @type {unknown} */
+    const data = JSON.parse(submitted);
+    if (editing.type === 'manifest') {
       await api('manifest', {
         id,
-        expectedRevision: state.selected.revision,
+        expectedRevision: selected.revision,
         manifest: data,
       });
     } else {
       await api('entry', {
         id,
-        expectedRevision: state.selected.revision,
-        type: state.editing.type,
-        originalId: state.editing.originalId,
+        expectedRevision: selected.revision,
+        type: editing.type,
+        originalId: editing.originalId,
         entry: data,
       });
     }
-    state.editorBaseline = $('catalog-json').value;
-    if (state.editing.type !== 'manifest') {
-      state.editing.originalId = data.id;
+    if (state.selected !== selected || state.editing !== editing) return;
+    state.editorBaseline = submitted;
+    if (
+      editing.type !== 'manifest' &&
+      data &&
+      typeof data === 'object' &&
+      'id' in data &&
+      typeof data.id === 'string'
+    ) {
+      editing.originalId = data.id;
     }
     await onSaved(id);
   }

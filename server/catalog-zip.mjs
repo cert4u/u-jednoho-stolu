@@ -8,6 +8,7 @@ export function safeZipPath(name){
  return name;
 }
 function extraFields(data){for(let i=0;i<data.length;){if(i+4>data.length)throw new Error('Poškozená ZIP metadata.');const id=data.readUInt16LE(i),size=data.readUInt16LE(i+2);if(id===1||id===0x7075||i+4+size>data.length)throw new Error('ZIP64 a alternativní cesty nejsou podporované.');i+=4+size;}}
+/** @param {Uint8Array} input @returns {Map<string, Buffer>} */
 export function readZip(input,limits=zipLimits){
  const data=Buffer.from(input);if(data.length<22||data.length>limits.archive)throw new Error('ZIP archiv je prázdný nebo příliš velký.');
  let end=-1;
@@ -39,6 +40,7 @@ export function readZip(input,limits=zipLimits){
  ranges.sort((a,b)=>a[0]-b[0]);if(ranges[0][0]!==0||ranges.some((r,i)=>i&&r[0]<ranges[i-1][1]))throw new Error('Překrývající se data ZIP nejsou povolená.');
  return files;
 }
+/** @param {Map<string, Uint8Array>} files */
 export function writeZip(files,limits=zipLimits){
  if(!files.size||files.size>limits.files)throw new Error('Příliš mnoho souborů pro ZIP.');
  const local=[],central=[];let offset=0,total=0;

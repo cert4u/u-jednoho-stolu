@@ -93,3 +93,7 @@ Ověř skupinovou odměnu s archivovanými postavami, obnovení postavy během b
 ## Vydání 1.3.0
 
 Ověř obnovení spojení, oddělené pohledy podle rolí a pater, podmíněné odpovědi a přenos zálohy s katalogovými portréty. Testy pokrývají i obnovu odlišného obsahu se stejnou revizí a kompatibilitu původního formátu odpovědi. Marker vydání má hodnoty `migrations: false`, `updater: false`, `config: false`. [Přechod z 1.2.8](SELF_HOSTING.md#přechod-z-128-na-130) · [Synchronizace a měření](DEVELOPMENT.md#synchronizace-stolu-a-výpadky).
+
+## Vydání 1.3.1
+
+Ověř odmítnutí neplatných parametrů a těla požadavku, konflikt zastaralé revize a zachování katalogových dat i kampaní. Projdi také uložení a kopírování platné položky a odhlášení během potvrzení v editoru. Pro přechod z 1.3.0 mají všechny tři hodnoty markeru `migrations`, `updater` a `config` hodnotu `false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-130-na-131)

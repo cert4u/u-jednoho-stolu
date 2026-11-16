@@ -20,7 +20,7 @@ Vedle nástrojů jako Roll20 a Foundry má projekt užší cíl. Spojit dávné 
 
 *Skutečný herní stůl z pohledu PJ. Hráčům se mapa odkrývá podle toho, kam se družina vydá.*
 
-Ve vydání **1.3.0** se stůl po výpadku sám znovu připojí a posílá menší herní odpovědi. [Co se změnilo ve verzi 1.3.0](CHANGELOG.md#130--2026-11-10)
+Vydání **1.3.1** zpřesňuje ověřování požadavků katalogové administrace. [Co se změnilo ve verzi 1.3.1](CHANGELOG.md#131--2026-11-16)
 
 ## Jak vypadá jeden večer
 

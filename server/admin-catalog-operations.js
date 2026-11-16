@@ -1,3 +1,36 @@
+// @ts-check
+
+/** @typedef {ReturnType<import('./admin-catalog-api.js').createCatalogApi>} CatalogApi */
+/** @typedef {import('./catalog-admin-contract').CatalogImportPreview} CatalogImportPreview */
+/** @typedef {ReturnType<import('./admin-catalog-state.js').createCatalogState>} CatalogState */
+/** @typedef {Awaited<ReturnType<typeof import('./catalogs/queries.mjs').listCatalogs>>[number]} CatalogSummary */
+/** @typedef {Awaited<ReturnType<typeof import('./catalogs/queries.mjs').viewCatalog>>} CatalogDetail */
+
+/**
+ * @param {{
+ *   state: Pick<CatalogState, 'selected' | 'preview'>,
+ *   api: CatalogApi,
+ *   dialog: {
+ *     confirm: (message: string) => Promise<boolean>,
+ *     ask: (options: {
+ *       title: string,
+ *       message: string,
+ *       fields: Array<{
+ *         name: string, label: string, type?: string, required?: boolean,
+ *         value: string, readOnly?: boolean, maxLength: number,
+ *       }>,
+ *       submit: string,
+ *     }) => Promise<Record<string, string> | null>,
+ *   },
+ *   canLeaveEditor: () => Promise<boolean>,
+ *   reload: () => Promise<void>,
+ *   open: (id: string, discardConfirmed?: boolean) => Promise<void>,
+ *   message: (value: string) => void,
+ *   showPreview: (result: CatalogImportPreview) => void,
+ *   clearPreview: () => void,
+ *   hideDetail: () => void,
+ * }} dependencies
+ */
 export function createCatalogOperations({
   state,
   api,
@@ -10,6 +43,7 @@ export function createCatalogOperations({
   clearPreview,
   hideDetail,
 }) {
+  /** @param {CatalogSummary} catalog */
   async function toggle(catalog) {
     if (
       catalog.enabled &&
@@ -26,6 +60,7 @@ export function createCatalogOperations({
     await reload();
   }
 
+  /** @param {CatalogSummary} catalog */
   async function remove(catalog) {
     const { manifest, revision, usage } = catalog;
     if (
@@ -46,6 +81,7 @@ export function createCatalogOperations({
     await reload();
   }
 
+  /** @param {CatalogDetail} selected @param {{id: number}} history */
   async function rollback(selected, history) {
     if (
       !(await dialog.confirm(
@@ -54,15 +90,17 @@ export function createCatalogOperations({
     )
       return;
     const id = selected.bundle.manifest.id;
+    if (state.selected?.bundle.manifest.id !== id) return;
     await api('rollback', {
       id,
-      expectedRevision: state.selected.revision,
+      expectedRevision: selected.revision,
       historyId: history.id,
     });
     await reload();
     await open(id);
   }
 
+  /** @param {CatalogSummary} [catalog] @param {string} [initialRepository] */
   async function github(catalog, initialRepository) {
     const values = await dialog.ask({
       title: catalog
@@ -107,10 +145,11 @@ export function createCatalogOperations({
   }
 
   async function install() {
-    if (!state.preview || !(await canLeaveEditor())) {
+    const preview = state.preview;
+    if (!preview || !(await canLeaveEditor()) || preview !== state.preview) {
       return;
     }
-    const result = await api('install', { token: state.preview.token });
+    const result = await api('install', { token: preview.token });
     clearPreview();
     await reload();
     await open(result.id, true);

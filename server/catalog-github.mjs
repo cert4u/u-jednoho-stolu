@@ -34,6 +34,7 @@ export async function downloadGithubCatalog(repository,ref='HEAD',fetchImpl=fetc
  const bytes=await fetchCatalogBytes(`https://codeload.github.com/${source.slug}/zip/${metadata.sha}`,40_000_000,fetchImpl,'application/zip');
  return {bytes,source:{repository:source.repository,commit:metadata.sha}};
 }
+/** @param {import('../lib/catalogs/admin-requests').CatalogRequests['github']} request */
 export async function prepareGithubCatalog({repository,ref,updateId},fetchImpl=fetch){
  const download=await downloadGithubCatalog(repository,ref||'HEAD',fetchImpl);
  const result=await prepareCatalogImport(download.bytes,{source:download.source,updateId});

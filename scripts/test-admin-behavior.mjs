@@ -277,6 +277,18 @@ slow = undefined;
 assert.equal(run('state.selected'), undefined);
 assert.equal(run('state.busy'), false);
 assert.equal(el('catalog-detail').hidden, true);
+
+await run("open('local-test')");
+el('catalog-json').value += ' ';
+let confirmMetadata;
+confirmations.push(new Promise((resolve) => (confirmMetadata = resolve)));
+const editMetadata = run('perform(editor.editManifest)');
+listeners.get('stul-admin-logout')();
+confirmMetadata(true);
+await editMetadata;
+assert.equal(run('state.editing'), undefined);
+assert.equal(el('catalog-editor').hidden, true);
+
 console.log(
-  'PASS: actual admin controller category/editor consistency, unsaved cancel/confirm, paging, cancel editing and double click during slow fetch.',
+  'PASS: actual admin controller category/editor consistency, unsaved cancel/confirm, paging, cancel editing, double click during slow fetch and logout during confirmation.',
 );

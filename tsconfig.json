@@ -38,7 +38,14 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "server/catalog-api.mjs",
+    "server/catalog-pack.mjs",
+    "server/catalogs/imports.mjs",
+    "server/admin-catalog-api.js",
+    "server/admin-catalog-editor.js",
+    "server/admin-catalog-operations.js",
+    "server/admin-catalog-state.js"
   ],
   "exclude": [
     "node_modules",
