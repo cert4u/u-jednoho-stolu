@@ -17,5 +17,5 @@ export async function saveAsset(digest,bytes){
  const file=assetPath(digest);await mkdir(path.dirname(file),{recursive:true,mode:0o700});
  try{const old=await regularFile(file);if(!old.equals(Buffer.from(bytes)))throw new Error('Kolize nebo poškození obrázku.');return;}catch(error){if(error.code!=='ENOENT')throw error;}
  const present=await readdir(path.dirname(file),{withFileTypes:true});let used=0;for(const entry of present){if(entry.isFile())used+=(await lstat(path.join(path.dirname(file),entry.name))).size;}if(present.length>=4096||used+bytes.length>128_000_000)throw new Error('Persistentní přílohy překračují limit knihovny.');
- const temp=file+'.'+crypto.randomUUID()+'.tmp';await writeFile(temp,bytes,{mode:0o600,flag:'wx',flush:true});await rename(temp,file);const directory=await open(path.dirname(file),'r');try{await directory.sync();}finally{await directory.close();}
+ const temp=file+'.'+crypto.randomUUID()+'.tmp';await writeFile(temp,bytes,{mode:0o600,flag:'wx',flush:true});await rename(temp,file);if(process.platform!=='win32'){const directory=await open(path.dirname(file),'r');try{await directory.sync();}finally{await directory.close();}}
 }

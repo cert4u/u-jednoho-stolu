@@ -97,3 +97,7 @@ Ověř obnovení spojení, oddělené pohledy podle rolí a pater, podmíněné 
 ## Vydání 1.3.1
 
 Ověř odmítnutí neplatných parametrů a těla požadavku, konflikt zastaralé revize a zachování katalogových dat i kampaní. Projdi také uložení a kopírování platné položky a odhlášení během potvrzení v editoru. Pro přechod z 1.3.0 mají všechny tři hodnoty markeru `migrations`, `updater` a `config` hodnotu `false`. [Postup přechodu](SELF_HOSTING.md#přechod-z-130-na-131)
+
+## Vydání 1.4.0
+
+Z ověřeného commitu sestav `npm run build:windows` a k vydání přilož přenosné `u-jednoho-stolu-1.4.0-windows-x64-portable.exe`. Ověř verzi a commit v `/healthz`, načtení kampaně po výměně souboru a úplnou zálohu s katalogovými přílohami. V poznámkách k vydání uveď prostředí, ve kterém proběhl test desktopu. Binární soubor patří do příloh vydání. Docker používá dosavadní migrace, updater a konfiguraci. [Návod pro Windows](WINDOWS.md) · [Aktualizace z 1.3.1](SELF_HOSTING.md#přechod-z-131-na-140)

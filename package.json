@@ -1,6 +1,6 @@
 {
   "name": "u-jednoho-stolu",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "private": true,
   "engines": {
     "node": ">=22.15.0"
@@ -37,7 +37,8 @@
     "test:stabilization": "node scripts/test-stabilization.mjs && node scripts/test-room-admission.mjs && node scripts/test-message-hosting.mjs && node scripts/test-admin-client.mjs && node scripts/test-admin-behavior.mjs",
     "benchmark:polling": "node scripts/benchmark-polling.mjs",
     "format": "node scripts/format.mjs --write",
-    "format:check": "node scripts/format.mjs"
+    "format:check": "node scripts/format.mjs",
+    "build:windows": "node scripts/build-node.mjs && node scripts/package-windows.mjs"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",
@@ -51,6 +52,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "tailwind-merge": "3.6.0",
+    "vinext": "1.4.4",
     "zod": "4.6.7"
   },
   "devDependencies": {
@@ -71,7 +73,6 @@
     "react-server-dom-webpack": "19.3.1",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
-    "vinext": "1.4.4",
     "vite": "8.3.7",
     "wrangler": "4.159.0"
   },

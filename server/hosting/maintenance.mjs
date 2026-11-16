@@ -17,6 +17,7 @@ export function createMaintenance({ token, info }) {
   let inFlight = 0,
     draining = false;
   function syncMaintenanceFlag() {
+    if (process.platform === 'win32') return;
     const directory = openSync(dataDirectory(), 'r');
     try {
       fsyncSync(directory);

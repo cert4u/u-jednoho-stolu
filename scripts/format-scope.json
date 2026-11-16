@@ -64,6 +64,8 @@
   "lib/generator-v2.ts",
   "lib/generator-v2/*.ts",
   "server/start.mjs",
+  "deploy/desktop/main.mjs",
+  "scripts/package-windows.mjs",
   "server/hosting/*.mjs",
   "server/admin-catalog-*.js",
   "server/catalog-admin-contract.ts",

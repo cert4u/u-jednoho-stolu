@@ -1,7 +1,7 @@
 import {readZip,writeZip} from './catalog-zip.mjs';
 import {createHash} from 'node:crypto';
 import { constants, chmodSync, closeSync, fsyncSync, openSync, mkdirSync, readdirSync, renameSync, lstatSync, statSync, statfsSync, unlinkSync, readFileSync, writeFileSync } from 'node:fs';
-import { open } from 'node:fs/promises';
+import { lstat, open } from 'node:fs/promises';
 import { randomBytes } from 'node:crypto';
 import path from 'node:path';
 import { backupDatabase, dataDirectory } from './database.mjs';
@@ -43,7 +43,7 @@ export function createSnapshot(manual = false) {
   try {
     backupDatabase(temp);
     chmodSync(temp, 0o600);
-    const snapshot = openSync(temp, 'r');
+    const snapshot = openSync(temp, 'r+');
     try { fsyncSync(snapshot); } finally { closeSync(snapshot); }
     const assetDir=path.join(dataDirectory(),'catalog-assets'),assetFiles=new Map();
     if (lstatSafe(assetDir)?.isDirectory()) for(const file of readdirSync(assetDir)){
@@ -55,8 +55,11 @@ export function createSnapshot(manual = false) {
     verifySnapshotAssets(requiredSnapshotAssets(temp),assetFiles);
     if(assetFiles.size){writeFileSync(temp+'.assets',writeZip(assetFiles,snapshotZipLimits),{mode:0o600,flush:true});renameSync(temp+'.assets',path.join(dir,name+'.assets.zip'));}
     renameSync(temp, path.join(dir, name));
-    const directory = openSync(dir, 'r');
-    try { fsyncSync(directory); } finally { closeSync(directory); }
+    // Windows supports flushing the file above but Node cannot fsync a directory there.
+    if (process.platform !== 'win32') {
+      const directory = openSync(dir, 'r');
+      try { fsyncSync(directory); } finally { closeSync(directory); }
+    }
     return name;
   } finally {
     for(const candidate of [temp,temp+'.assets'])try{unlinkSync(candidate);}catch(error){if(error.code!=='ENOENT')throw error;}
@@ -80,10 +83,17 @@ export function snapshots() {
   }).sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
 }
 
+// Windows does not expose O_NOFOLLOW. Check the local backup entry before opening it.
+async function openSnapshotFile(file) {
+  if (process.platform === 'win32' && !(await lstat(file)).isFile())
+    throw Object.assign(new Error('Záloha není obyčejný soubor.'), { code: 'ELOOP' });
+  return open(file, constants.O_RDONLY | constants.O_NOFOLLOW);
+}
+
 export async function downloadSnapshot(name, res, bundle = false) {
   if (!namePattern.test(name ?? '')) return false;
   let file;
-  try { file = await open(path.join(dataDirectory(), 'backups', name), constants.O_RDONLY | constants.O_NOFOLLOW); }
+  try { file = await openSnapshotFile(path.join(dataDirectory(), 'backups', name)); }
   catch (error) { if (['ENOENT', 'ELOOP'].includes(error.code)) return false; throw error; }
   try {
     const stat = await file.stat();
@@ -92,7 +102,7 @@ export async function downloadSnapshot(name, res, bundle = false) {
       if(stat.size>128_000_000)throw new Error('Databáze překračuje limit přenosné serverové zálohy.');
       const files=new Map([['game.sqlite',await file.readFile()]]);
       let assets;
-      try{assets=await open(path.join(dataDirectory(),'backups',name+'.assets.zip'),constants.O_RDONLY|constants.O_NOFOLLOW);
+      try{assets=await openSnapshotFile(path.join(dataDirectory(),'backups',name+'.assets.zip'));
         const assetStat=await assets.stat();if(!assetStat.isFile()||assetStat.size>140_000_000)throw new Error('Neplatná záloha příloh.');
         for(const [key,value]of readZip(await assets.readFile(),snapshotZipLimits))files.set(key,value);
       }catch(error){if(error.code!=='ENOENT')throw error;}finally{await assets?.close();}

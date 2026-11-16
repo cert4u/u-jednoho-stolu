@@ -1,5 +1,12 @@
 # Změny
 
+## 1.4.0 — 2026-11-16
+
+- **Přenosný stůl pro Windows 11 x64.** Zkušební `.exe` po spuštění rozbalí Electron do dočasné složky a otevře herní stůl ve vlastním okně. Správce najde heslo, umístění dat i návod v nabídce Stůl.
+- Kampaně, přílohy katalogů a zálohy se ukládají do uživatelského profilu Windows. Po zavření stolu může hostitel vyměnit soubor aplikace a pokračovat se stejnými daty.
+- Node server umožňuje zvolit adresu naslouchání. Desktop spouští místní server na loopbacku a pro připojení družiny lze použít vlastní HTTPS adresu. Zápis záloh a katalogových obrázků zohledňuje chování souborového systému Windows.
+- [Návod pro Windows](docs/WINDOWS.md) · [Aktualizace Dockeru z 1.3.1](docs/SELF_HOSTING.md#přechod-z-131-na-140).
+
 ## 1.3.1 — 2026-11-16
 
 - Katalogová administrace ověřuje formát požadavků před zápisem. Chybný identifikátor, revize nebo neplatný příznak pro zachování kampaní vrátí chybu bez změny katalogu nebo kampaně.

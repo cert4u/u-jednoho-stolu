@@ -131,7 +131,9 @@ export function createAdminApi({ auth, origin, info, maintenance, updater }) {
           job: null,
           canRollback: false,
           releaseError:
-            'Aktualizační služba není dostupná. Pro webové aktualizace spusť Docker updater.',
+            process.env.STUL_UPDATER_URL === 'off'
+              ? 'Aktualizátor je pro tuto instalaci vypnutý.'
+              : 'Aktualizační služba není dostupná. Pro webové aktualizace spusť Docker updater.',
         });
       }
       return;

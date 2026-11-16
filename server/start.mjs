@@ -44,7 +44,7 @@ const adminApi = createAdminApi({
   updater: createUpdaterClient(token),
 });
 
-const server = createServer(async (req, res) => {
+export const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
     const { pathname } = url;
@@ -93,14 +93,25 @@ const server = createServer(async (req, res) => {
 });
 server.requestTimeout = 30000;
 server.headersTimeout = 15000;
-server.listen(Number(process.env.PORT || 8080), '0.0.0.0', () =>
-  console.log(
-    `U jednoho stolu ${info.version}: port ${process.env.PORT || 8080}, správa /admin`,
-  ),
+server.listen(
+  Number(process.env.PORT || 8080),
+  process.env.STUL_BIND_HOST || '0.0.0.0',
+  () =>
+    console.log(
+      `U jednoho stolu ${info.version}: port ${process.env.PORT || 8080}, správa /admin`,
+    ),
 );
-for (const signal of ['SIGINT', 'SIGTERM'])
+export async function stopServer() {
+  await Promise.all(
+    [server, internal.server].map(
+      (listener) => new Promise((resolve) => listener.close(resolve)),
+    ),
+  );
+}
+
+for (const signal of ['SIGINT', 'SIGTERM']) {
   process.once(signal, () => {
-    server.close();
-    internal.server.close();
+    void stopServer();
     setTimeout(() => process.exit(0), 2000).unref();
   });
+}

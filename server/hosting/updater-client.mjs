@@ -5,7 +5,10 @@ export function createUpdaterClient(token) {
     data,
     refresh = false,
   ) {
-    const url = new URL(process.env.STUL_UPDATER_URL || 'http://updater:8090');
+    const configuredUrl = process.env.STUL_UPDATER_URL;
+    if (configuredUrl === 'off')
+      throw new Error('Tato instalace nepoužívá Docker updater.');
+    const url = new URL(configuredUrl || 'http://updater:8090');
     if (url.protocol !== 'http:' || url.username || url.password)
       throw new Error('Neplatná adresa aktualizátoru.');
     url.pathname = endpoint;

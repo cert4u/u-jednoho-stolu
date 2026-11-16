@@ -11,6 +11,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 | Výzdoba mapy | [Stafáž: paleta, úpravy a viditelnost](SCENERY.md) |
 | Příprava příběhu | [Příběhová osnova a komunitní ukázka](STORY_OUTLINE.md) |
 | Návrh dalších mechanik | [Audit herního základu a priority](MECHANICS.md) |
+| Hostitel na Windows | [Přenosná aplikace, první společná hra a zálohy](WINDOWS.md) |
 | Správce serveru | [Docker, konfigurace, zálohy a aktualizace](SELF_HOSTING.md) |
 | Správce hlasového hovoru | [LiveKit: lokální a veřejné nasazení](VOICE.md) |
 | Uživatel, kterému něco nefunguje | [Řešení problémů](TROUBLESHOOTING.md) |
@@ -29,7 +30,7 @@ Dokumentace v této větvi popisuje její aktuální kód. Funkce uvedená zde n
 ## Rychlá orientace
 
 - **Chci si zahrát:** potřebuji adresu běžící instalace a pozvánku nebo obnovovací klíč. Nepotřebuji Git ani vývojové nástroje.
-- **Chci mít vlastní instalaci:** začnu Dockerem. Herní data jsou ve volume, nastavení v `.env`, správa instalace na `/admin`.
+- **Chci mít vlastní instalaci:** můžu zkusit [přenosnou verzi pro Windows](WINDOWS.md) nebo začít Dockerem na Linuxu. Herní data jsou ve volume, nastavení v `.env`, správa instalace na `/admin`.
 - **Chci vyvíjet:** začnu příkazem `npm run dev:node` podle [průvodce první změnou](DEVELOPMENT.md#první-změna-na-místním-stole). Pro původní Cloudflare variantu jsou v návodu samostatné příkazy.
 - **Chci hlásit chybu:** použiji smyšlený příklad a popíšu verzi, roli a postup. Klíče, tokeny a herní zálohy nepatří do veřejného issue.
 
@@ -58,6 +59,8 @@ Vydání **1.2.3**: [úklid nepoužívaného kódu a maska skic](CLEANUP.md), [a
 Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-úklid-css) · [přechod z 1.2.3](SELF_HOSTING.md#přechod-z-123-na-124).
 
 Vydání **1.2.8** přináší [opravy zkušeností, bojového rozestavení a záloh](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#128--2026-11-10). [Přechod z 1.2.7](SELF_HOSTING.md#přechod-z-127-na-128).
+
+Vydání **1.4.0** přidává [přenosný stůl pro Windows](WINDOWS.md) a návod k první hře včetně HTTPS a Windows Firewallu. [Aktualizace Dockeru z 1.3.1](SELF_HOSTING.md#přechod-z-131-na-140).
 
 Vydání **1.3.1** zpřesňuje [validaci katalogové administrace](API.md#katalogová-administrace) a rozšiřuje typovou kontrolu editoru. [Přechod z 1.3.0](SELF_HOSTING.md#přechod-z-130-na-131).
 

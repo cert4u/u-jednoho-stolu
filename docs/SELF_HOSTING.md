@@ -4,7 +4,7 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Tato dokumentace odpovídá vydání 1.3.1. Pro stabilní instalaci zvol zdroje vybraného vydání a jeho dokumentaci. Po běžném klonování můžeš před sestavením přepnout na konkrétní tag příkazem `git switch --detach <tag-vydání>`. Kanál Stable v updateru vybírá stabilní GitHub Releases. U vývojových sestavení porovnávej kromě verze i commit a poznámky k vydání.
+Tato dokumentace odpovídá vydání 1.4.0. Pro počítač s Windows je k dispozici [přenosná aplikace](WINDOWS.md). Pro stabilní instalaci zvol zdroje vybraného vydání a jeho dokumentaci. Po běžném klonování můžeš před sestavením přepnout na konkrétní tag příkazem `git switch --detach <tag-vydání>`. Kanál Stable v updateru vybírá stabilní GitHub Releases. U vývojových sestavení porovnávej kromě verze i commit a poznámky k vydání.
 
 ## Základní požadavky
 
@@ -15,7 +15,7 @@ Na stejném počítači můžeš začít přes `localhost`. Pro společnou hru p
 ## První spuštění
 
 ```sh
-git clone --branch v1.3.1 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.4.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -72,7 +72,7 @@ Soubor `.env` připrav podle [příkladu](https://github.com/cert4u/u-jednoho-st
 | `STUL_LIVEKIT_API_KEY`, `STUL_LIVEKIT_API_SECRET` | Volitelné hlasové klíče; tajemství alespoň 32 znaků, shodné s LiveKitem. |
 | `STUL_LIVEKIT_CONFIG` | Cesta hostitele k YAML souboru pro hlasový overlay; výchozí `./deploy/livekit/local.yaml`. |
 
-Node server mimo Docker navíc čte `PORT`, `STUL_DATA_DIR` a případně `STUL_UPDATER_URL`; Compose předává `STUL_UPDATER_URL=http://updater:8090` a Docker image má `STUL_DATA_DIR=/data`. Přidání těchto hodnot do `.env` je samo nepředá do kontejneru, pokud nejsou v jeho `environment`. Nativní server se váže na `0.0.0.0`, zatímco bezpečná výchozí hostitelská vazba `127.0.0.1` výše je vlastností Compose.
+Node server mimo Docker navíc čte `PORT`, `STUL_DATA_DIR`, `STUL_BIND_HOST` a případně `STUL_UPDATER_URL`; Compose předává `STUL_UPDATER_URL=http://updater:8090` a Docker image má `STUL_DATA_DIR=/data`. Přidání těchto hodnot do `.env` je samo nepředá do kontejneru, pokud nejsou v jeho `environment`. Nativní server ve výchozím stavu poslouchá na `0.0.0.0` a adresu lze změnit přes `STUL_BIND_HOST`, zatímco bezpečná výchozí hostitelská vazba `127.0.0.1` výše je vlastností Compose.
 
 `GET /healthz` vrací verzi, plný commit, čas sestavení a příznak údržby. `ok: true` spolu s `maintenance: true` znamená dostupný proces, ale pozastavené herní zápisy. Heslo ani interní/hlasové klíče se přes tento endpoint nevracejí.
 
@@ -322,3 +322,7 @@ Mapy v 1.2.3 lze ručně rozšířit na 56 × 40 polí. Generátor ponechává 2
 ## Přechod z 1.3.0 na 1.3.1
 
 Před přechodem vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci zvol stabilní vydání 1.3.1 nebo při ruční aktualizaci sestav aplikaci z tagu `v1.3.1`. Použij dosavadní datový volume. Vydání nevyžaduje SQL migraci, novou konfiguraci, výměnu updateru ani změny LiveKitu. Formáty katalogů a záloh zůstávají stejné.
+
+## Přechod z 1.3.1 na 1.4.0
+
+Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci zvol stabilní vydání 1.4.0 nebo při ruční aktualizaci sestav aplikaci z tagu `v1.4.0`. Použij stávající datový volume. Aktualizace aplikace nevyžaduje SQL migraci ani výměnu updateru, nastavení nebo LiveKitu.

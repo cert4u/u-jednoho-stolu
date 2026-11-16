@@ -14,13 +14,13 @@
 
 Vedle nástrojů jako Roll20 a Foundry má projekt užší cíl. Spojit dávné kamarády u jednoduchého stolu, který si jeden z nich spustí na vlastním počítači nebo serveru. Hra i data zůstávají u vás, bez cizího herního serveru.
 
-[Jak začít hrát](#jak-začít-hrát) · [Vlastní server](#vlastní-server-s-dockerem) · [Dokumentace](docs/README.md) · [Poslední vydání](https://github.com/cert4u/u-jednoho-stolu/releases/latest)
+[Jak začít hrát](#jak-začít-hrát) · [Windows](#přenosná-aplikace-pro-windows) · [Docker](#vlastní-server-s-dockerem) · [Dokumentace](docs/README.md) · [Poslední vydání](https://github.com/cert4u/u-jednoho-stolu/releases/latest)
 
 ![Herní stůl s čtverečkovanou mapou podzemí, seznamem družiny a panelem chatu a hlasového hovoru](docs/images/herni-stul.jpg)
 
 *Skutečný herní stůl z pohledu PJ. Hráčům se mapa odkrývá podle toho, kam se družina vydá.*
 
-Vydání **1.3.1** zpřesňuje ověřování požadavků katalogové administrace. [Co se změnilo ve verzi 1.3.1](CHANGELOG.md#131--2026-11-16)
+Vydání **1.4.0** přidává přenosnou zkušební aplikaci pro Windows 11 x64. Hostitel spustí jeden soubor a pošle družině pozvánku. [Co se změnilo ve verzi 1.4.0](CHANGELOG.md#140--2026-11-16)
 
 ## Jak vypadá jeden večer
 
@@ -58,6 +58,10 @@ PJ si vybere prostředí, počet pater a místností. Prohlédne si varianty, vl
 ### Hlas družiny
 
 Na vlastním serveru může správce zapnout volitelný LiveKit. Každá družina má vlastní hlasovou místnost a připojuje se s vypnutým mikrofonem. V panelu lze mikrofon zapnout, ztlumit poslech a vybrat vstupní zařízení. [Nastavení hlasového hovoru](docs/VOICE.md)
+
+## Přenosná aplikace pro Windows
+
+Na Windows 11 x64 stačí stáhnout a otevřít jedno `.exe`. Stůl se zobrazí ve vlastním okně a kampaně se ukládají do profilu Windows. Družina se připojuje běžným prohlížečem. Návod popisuje připojení v domácí síti, přes vlastní VPN i první společnou hru. [Stáhnout Windows 1.4.0](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.0/u-jednoho-stolu-1.4.0-windows-x64-portable.exe) · [Návod pro Windows](docs/WINDOWS.md)
 
 ## Vlastní server s Dockerem
 

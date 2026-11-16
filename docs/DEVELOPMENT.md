@@ -47,7 +47,7 @@ npm run build:node
 node --env-file=.env server/start.mjs
 ```
 
-`npm run start:node` spouští tentýž server, ale samo **nenačítá `.env`**. Použij je jen tehdy, máš-li proměnné již předané prostředím. `STUL_BIND` a `STUL_PORT` jsou proměnné pro Docker Compose; nativní server čte `PORT` a poslouchá na `0.0.0.0`. Při lokálním testu omez síťový přístup hostitelským prostředím/firewallem podle potřeby.
+`npm run start:node` spouští tentýž server, ale samo **nenačítá `.env`**. Použij je jen tehdy, máš-li proměnné již předané prostředím. `STUL_BIND` a `STUL_PORT` jsou proměnné pro Docker Compose; nativní server čte `PORT` a výchozí adresu `0.0.0.0` lze změnit přes `STUL_BIND_HOST`. Při lokálním testu omez síťový přístup hostitelským prostředím/firewallem podle potřeby.
 
 Pro druhou, oddělenou testovací instanci se stejným již sestaveným Node kódem můžeš v dalším terminálu použít jinou databázi a port:
 
@@ -59,6 +59,8 @@ PORT=18089 PUBLIC_ORIGIN=http://127.0.0.1:18089 STUL_DATA_DIR=/tmp/stul-dev-test
 Port musí být volný; tuto instanci pak otevři na `http://127.0.0.1:18089`. Každá testovací družina zapisuje do uvedeného adresáře, nikoli do výchozí databáze. `Ctrl+C` server ukončí; data zůstávají do jejich samostatného odstranění. Pro tento postup musí `.env` už obsahovat platné základní hodnoty.
 
 Administrace se otevře i bez updateru a vysvětlí, proč nejsou dostupné aktualizace a návrat verze. Provozní Docker instalace je popsaná v [SELF_HOSTING.md](SELF_HOSTING.md).
+
+Přenosný prototyp pro Windows se sestavuje příkazem `npm run build:windows`. [Desktopová varianta](WINDOWS.md)
 
 ## Aktualizace nativní Node instalace
 
