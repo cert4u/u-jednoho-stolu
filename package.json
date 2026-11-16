@@ -1,6 +1,6 @@
 {
   "name": "u-jednoho-stolu",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "engines": {
     "node": ">=22.15.0"
@@ -34,7 +34,7 @@
     "test:catalog-audit": "node scripts/test-catalog-audit.mjs",
     "test:catalogs": "node scripts/test-catalog-migration.mjs && node scripts/test-catalog-zip.mjs && node scripts/test-catalog-store.mjs && node scripts/test-catalog-github.mjs && node scripts/test-catalog-admin.mjs && node scripts/test-catalog-audit.mjs",
     "lint:baseline": "node scripts/check-lint.mjs",
-    "test:stabilization": "node scripts/test-stabilization.mjs && node scripts/test-room-admission.mjs && node scripts/test-message-hosting.mjs && node scripts/test-admin-client.mjs && node scripts/test-admin-behavior.mjs",
+    "test:stabilization": "node scripts/test-stabilization.mjs && node scripts/test-room-admission.mjs && node scripts/test-message-hosting.mjs && node scripts/test-admin-client.mjs && node scripts/test-admin-behavior.mjs && node scripts/test-desktop-sharing.mjs",
     "benchmark:polling": "node scripts/benchmark-polling.mjs",
     "format": "node scripts/format.mjs --write",
     "format:check": "node scripts/format.mjs",

@@ -573,3 +573,31 @@ assert.deepEqual(updates, [gameA.revision]);
 console.log(
   'PASS: polling times out, backs off, waits offline, resumes immediately, reuses its ETag and ignores obsolete responses.',
 );
+
+const { useTableSession } = load(
+  resolve('components/game-table/use-table-session.ts'),
+);
+slots = [];
+cursor = 0;
+const desktop = useTableSession(roomA);
+context.URL = URL;
+context.location = { origin: 'http://127.0.0.1:8080' };
+let copiedInvite;
+network.clipboard = { writeText: async (value) => (copiedInvite = value) };
+context.fetch = async (url) => {
+  assert.equal(url, '/desktop/invite-origin');
+  return response({ origin: 'https://zkusebni-stul.example.ts.net' });
+};
+await desktop.copyInvite();
+assert.equal(copiedInvite, 'https://zkusebni-stul.example.ts.net/?room=A');
+context.fetch = async () => response({}, 404);
+await desktop.copyInvite();
+assert.equal(copiedInvite, 'http://127.0.0.1:8080/?room=A');
+context.location.origin = 'https://hraci.example.org';
+context.fetch = async () =>
+  assert.fail('browser invite must not query desktop');
+await desktop.copyInvite();
+assert.equal(copiedInvite, 'https://hraci.example.org/?room=A');
+console.log(
+  'PASS: desktop shares its configured HTTPS address and other sessions keep their own origin.',
+);

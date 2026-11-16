@@ -4,7 +4,7 @@
 
 Tato varianta používá Node.js 22 a SQLite. Cloudflare účet není potřeba. Podporovaný je běžný Linux s rootful Docker Engine 28+ a Compose v2; rootless Docker, Swarm a více replik aplikace zatím nejsou podporované.
 
-Tato dokumentace odpovídá vydání 1.4.0. Pro počítač s Windows je k dispozici [přenosná aplikace](WINDOWS.md). Pro stabilní instalaci zvol zdroje vybraného vydání a jeho dokumentaci. Po běžném klonování můžeš před sestavením přepnout na konkrétní tag příkazem `git switch --detach <tag-vydání>`. Kanál Stable v updateru vybírá stabilní GitHub Releases. U vývojových sestavení porovnávej kromě verze i commit a poznámky k vydání.
+Tato dokumentace odpovídá vydání 1.4.1. Pro počítač s Windows je k dispozici [přenosná aplikace](WINDOWS.md). Pro stabilní instalaci zvol zdroje vybraného vydání a jeho dokumentaci. Po běžném klonování můžeš před sestavením přepnout na konkrétní tag příkazem `git switch --detach <tag-vydání>`. Kanál Stable v updateru vybírá stabilní GitHub Releases. U vývojových sestavení porovnávej kromě verze i commit a poznámky k vydání.
 
 ## Základní požadavky
 
@@ -15,7 +15,7 @@ Na stejném počítači můžeš začít přes `localhost`. Pro společnou hru p
 ## První spuštění
 
 ```sh
-git clone --branch v1.4.0 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
+git clone --branch v1.4.1 --depth 1 https://github.com/cert4u/u-jednoho-stolu.git
 cd u-jednoho-stolu
 cp .env.example .env
 openssl rand -hex 32
@@ -326,3 +326,7 @@ Před přechodem vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V
 ## Přechod z 1.3.1 na 1.4.0
 
 Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci zvol stabilní vydání 1.4.0 nebo při ruční aktualizaci sestav aplikaci z tagu `v1.4.0`. Použij stávající datový volume. Aktualizace aplikace nevyžaduje SQL migraci ani výměnu updateru, nastavení nebo LiveKitu.
+
+## Přechod z 1.4.0 na 1.4.1
+
+Před aktualizací vytvoř úplnou serverovou ZIP zálohu a uchovej konfiguraci. V administraci zvol vydání 1.4.1 nebo při ruční aktualizaci sestav aplikaci z tagu `v1.4.1`. Použij stávající datový volume. Docker aktualizace nevyžaduje SQL migraci, novou konfiguraci ani výměnu updateru nebo LiveKitu. Pokud používáš samostatné `.exe`, řiď se [postupem pro Windows](WINDOWS.md#přechod-z-140).

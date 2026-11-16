@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
+import { app, BrowserWindow, clipboard, dialog, Menu, shell } from 'electron';
 import { randomBytes } from 'node:crypto';
 import { once } from 'node:events';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -29,10 +29,12 @@ function readWebOrigin(value, port) {
 async function loadSettings(directory) {
   const settingsFile = path.join(directory, 'nastaveni.json');
   let settings;
+  let firstRun = false;
   try {
     settings = JSON.parse(await readFile(settingsFile, 'utf8'));
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
+    firstRun = true;
     settings = {
       port: 8080,
       publicOrigin: '',
@@ -43,7 +45,7 @@ async function loadSettings(directory) {
       mode: 0o600,
     });
   }
-  const { port, publicOrigin, adminPassword } = settings;
+  const { port, publicOrigin, publicPort = 8081, adminPassword } = settings;
   if (!Number.isInteger(port) || port < 1024 || port > 65535)
     throw new Error('V nastaveni.json zadej port v rozsahu 1024 až 65535.');
   if (
@@ -54,7 +56,16 @@ async function loadSettings(directory) {
     throw new Error(
       'Heslo správce v nastaveni.json musí mít 20 až 1024 znaků.',
     );
-  return { port, origin: readWebOrigin(publicOrigin, port), adminPassword };
+  const origin = `http://127.0.0.1:${port}`;
+  const configuredOrigin = readWebOrigin(publicOrigin, port);
+  return {
+    port,
+    origin,
+    shareOrigin: configuredOrigin === origin ? '' : configuredOrigin,
+    publicPort,
+    adminPassword,
+    firstRun,
+  };
 }
 
 async function openGuide(directory) {
@@ -78,13 +89,17 @@ function openExternalLink(value) {
 async function startDesktop() {
   const directory = path.join(app.getPath('userData'), 'Stul');
   await mkdir(directory, { recursive: true, mode: 0o700 });
-  const { port, origin, adminPassword } = await loadSettings(directory);
+  const { port, origin, shareOrigin, publicPort, adminPassword, firstRun } =
+    await loadSettings(directory);
   process.chdir(app.getAppPath());
   Object.assign(process.env, {
     NODE_ENV: 'production',
     PORT: String(port),
     PUBLIC_ORIGIN: origin,
     STUL_BIND_HOST: '127.0.0.1',
+    STUL_DESKTOP: '1',
+    STUL_DESKTOP_SHARE_ORIGIN: shareOrigin,
+    STUL_DESKTOP_SHARE_PORT: String(publicPort),
     STUL_DATA_DIR: path.join(directory, 'data'),
     STUL_ADMIN_PASSWORD: adminPassword,
     STUL_UPDATER_TOKEN: randomBytes(32).toString('hex'),
@@ -94,6 +109,10 @@ async function startDesktop() {
   const host = await import('../../server/start.mjs');
   if (!host.server.listening) await once(host.server, 'listening');
   stopServer = host.stopServer;
+  const sharing = await host.startDesktopSharing().then(
+    () => shareOrigin,
+    () => '',
+  );
 
   window = new BrowserWindow({
     show: false,
@@ -122,14 +141,42 @@ async function startDesktop() {
     openExternalLink(url);
     return { action: 'deny' };
   });
-  window.webContents.session.setPermissionCheckHandler(() => false);
+  const trustedClipboard = (permission, requestingUrl) =>
+    permission === 'clipboard-sanitized-write' &&
+    new URL(requestingUrl).origin === origin;
+  window.webContents.session.setPermissionCheckHandler(
+    (_webContents, permission, requestingOrigin) =>
+      requestingOrigin === origin && permission === 'clipboard-sanitized-write',
+  );
   window.webContents.session.setPermissionRequestHandler(
-    (_webContents, _name, respond) => respond(false),
+    (_webContents, permission, respond, details) =>
+      respond(
+        details.isMainFrame &&
+          trustedClipboard(permission, details.requestingUrl),
+      ),
   );
   const navigate = (page) =>
     void loadPage(page).catch((error) => {
       dialog.showErrorBox('Stůl se nepodařilo otevřít', error.message);
     });
+  function showGuide() {
+    return openGuide(directory).catch((error) =>
+      dialog.showErrorBox('Návod se nepodařilo otevřít', error.message),
+    );
+  }
+  async function showWelcome() {
+    const { response } = await dialog.showMessageBox(window, {
+      type: 'info',
+      title: 'Vítej u stolu',
+      message: 'Jak chceš začít?',
+      detail:
+        'Stůl můžeš vyzkoušet hned. Pro kamarády z jiné sítě máme návod ke sdílení.',
+      buttons: ['Vyzkoušet stůl', 'Pozvat kamarády přes internet'],
+      defaultId: 0,
+      cancelId: 0,
+    });
+    if (response === 1) await showGuide();
+  }
   Menu.setApplicationMenu(
     Menu.buildFromTemplate([
       {
@@ -139,27 +186,38 @@ async function startDesktop() {
           { label: 'Administrace', click: () => navigate('/admin') },
           {
             label: 'Zobrazit heslo správce',
-            click: () =>
-              dialog.showMessageBox(window, {
+            click: async () => {
+              const { response } = await dialog.showMessageBox(window, {
                 type: 'info',
                 title: 'Heslo správce',
                 message: 'Heslo k administraci tohoto stolu',
                 detail: adminPassword,
-              }),
+                buttons: ['Zavřít', 'Zkopírovat do schránky'],
+                defaultId: 0,
+                cancelId: 0,
+              });
+              if (response === 1) clipboard.writeText(adminPassword);
+            },
           },
           {
             label: 'Otevřít složku s daty',
             click: () => void shell.openPath(directory),
           },
+          { label: 'Jak spustit a hrát', click: () => void showGuide() },
           {
-            label: 'Jak spustit a hrát',
+            label: 'Připojení družiny',
             click: () =>
-              void openGuide(directory).catch((error) =>
-                dialog.showErrorBox(
-                  'Návod se nepodařilo otevřít',
-                  error.message,
-                ),
-              ),
+              void dialog.showMessageBox(window, {
+                type: 'info',
+                title: 'Připojení družiny',
+                message: sharing
+                  ? 'Adresa pozvánek je nastavená'
+                  : 'Stůl běží místně',
+                detail: sharing
+                  ? sharing +
+                    '\nDostupnost ověř z jiné sítě. Sdílení spravuješ v nástroji, kterým je zapínáš.'
+                  : 'Postup pro domácí síť a sdílení přes internet najdeš v návodu.',
+              }),
           },
           { type: 'separator' },
           { label: 'Ukončit stůl', role: 'quit' },
@@ -176,6 +234,16 @@ async function startDesktop() {
   );
   window.once('ready-to-show', () => window.show());
   await loadPage();
+  if (firstRun) await showWelcome();
+  if (shareOrigin && !sharing) {
+    void dialog.showMessageBox(window, {
+      type: 'warning',
+      title: 'Port pro veřejnou hru se neotevřel',
+      message: 'Stůl je dostupný místně.',
+      detail:
+        'Zkontroluj, jestli je veřejný port volný, případně změň publicPort v nastaveni.json.',
+    });
+  }
 }
 
 if (app.requestSingleInstanceLock()) {

@@ -20,7 +20,7 @@ Vedle nástrojů jako Roll20 a Foundry má projekt užší cíl. Spojit dávné 
 
 *Skutečný herní stůl z pohledu PJ. Hráčům se mapa odkrývá podle toho, kam se družina vydá.*
 
-Vydání **1.4.0** přidává přenosnou zkušební aplikaci pro Windows 11 x64. Hostitel spustí jeden soubor a pošle družině pozvánku. [Co se změnilo ve verzi 1.4.0](CHANGELOG.md#140--2026-11-16)
+Vydání **1.4.1** zrychluje spuštění Windows aplikace, přidává uvítání a odděluje místní správu od sdílené hry. [Co se změnilo ve verzi 1.4.1](CHANGELOG.md#141--2026-11-16)
 
 ## Jak vypadá jeden večer
 
@@ -61,7 +61,7 @@ Na vlastním serveru může správce zapnout volitelný LiveKit. Každá družin
 
 ## Přenosná aplikace pro Windows
 
-Na Windows 11 x64 stačí stáhnout a otevřít jedno `.exe`. Stůl se zobrazí ve vlastním okně a kampaně se ukládají do profilu Windows. Družina se připojuje běžným prohlížečem. Návod popisuje připojení v domácí síti, přes vlastní VPN i první společnou hru. [Stáhnout Windows 1.4.0](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.0/u-jednoho-stolu-1.4.0-windows-x64-portable.exe) · [Návod pro Windows](docs/WINDOWS.md)
+Na Windows 11 x64 stačí stáhnout a otevřít jedno `.exe`. Stůl se zobrazí ve vlastním okně a kampaně se ukládají do profilu Windows. Družina se připojuje běžným prohlížečem. Návod popisuje připojení v domácí síti, přes vlastní VPN i první společnou hru. [Stáhnout Windows 1.4.1](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.1/u-jednoho-stolu-1.4.1-windows-x64-portable.exe) · [Návod pro Windows](docs/WINDOWS.md)
 
 ## Vlastní server s Dockerem
 

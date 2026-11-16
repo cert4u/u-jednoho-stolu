@@ -29,7 +29,7 @@
       content="Družina při průzkumu ručně kreslené jeskyně z pohledu Pána jeskyně"
     />
     <title>U jednoho stolu — český online herní stůl</title>
-    <link rel="stylesheet" href="./style.css?v=dva-posuvniky" />
+    <link rel="stylesheet" href="./style.css?v=141" />
     <script src="./map-comparison.js?v=dva-posuvniky" defer></script>
     <!-- Privacy-friendly analytics by Plausible -->
     <script
@@ -347,36 +347,43 @@
             <p class="eyebrow"><span></span> Vlastní stůl</p>
             <h2 id="zaloz">Svolej družinu.</h2>
             <p>
-              <strong
-                >Server instaluje jen jeden člověk z družiny. Ostatním stačí
-                prohlížeč a pozvánka.</strong
-              >
+              Stůl spouští jeden člověk z družiny. Ostatním stačí prohlížeč a
+              pozvánka.
             </p>
-            <p>
-              Správce spustí stůl na vlastním počítači s Linuxem a Dockerem.
-              Hráči otevřou HTTPS adresu stolu, třeba po domácí síti nebo přes
-              vlastní VPN. Kampaň se ukládá u vás.
-            </p>
-            <div class="actions">
+            <section class="hosting-choice">
+              <h3>Spusť stůl na Windows</h3>
+              <p>
+                Zkušební verze pro Windows 11 x64 je jeden soubor. Pro vzdálené
+                hráče nastav sdílení podle návodu.
+              </p>
+              <div class="actions">
+                <a
+                  class="button"
+                  href="https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.1/u-jednoho-stolu-1.4.1-windows-x64-portable.exe"
+                  >Stáhnout pro Windows <span aria-hidden="true">↓</span></a
+                >
+                <a
+                  class="underlink"
+                  href="https://github.com/cert4u/u-jednoho-stolu/blob/v1.4.1/docs/WINDOWS.md"
+                  >Návod pro Windows <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </section>
+            <section class="hosting-choice">
+              <h3>Provozuj stůl na vlastním serveru</h3>
+              <p>
+                Docker na Linuxu pro stůl, který má být dostupný i mezi
+                sezeními. Správa zahrnuje zálohy a aktualizace.
+              </p>
               <a
-                class="button"
+                class="underlink"
                 href="https://github.com/cert4u/u-jednoho-stolu/blob/main/docs/SELF_HOSTING.md#první-spuštění"
-                >Návod k instalaci <span aria-hidden="true">↗</span></a
+                >Návod pro Docker <span aria-hidden="true">↗</span></a
               >
-              <a
-                class="underlink"
-                href="https://github.com/cert4u/u-jednoho-stolu/blob/main/docs/SELF_HOSTING.md#první-pozvánka-v-domácí-síti"
-                >První pozvánka <span aria-hidden="true">↗</span></a
-              >
-              <a
-                class="underlink"
-                href="https://github.com/cert4u/u-jednoho-stolu/releases/latest"
-                >Stabilní vydání <span aria-hidden="true">↗</span></a
-              >
-            </div>
+            </section>
           </div>
           <aside class="hardware" aria-labelledby="zelezo">
-            <h3 id="zelezo">Co stačí malé družině</h3>
+            <h3 id="zelezo">Orientační požadavky pro Docker</h3>
             <dl>
               <div>
                 <dt>Procesor</dt>

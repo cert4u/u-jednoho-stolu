@@ -1,5 +1,12 @@
 # Změny
 
+## 1.4.1 — 2026-11-16
+
+- Přenosný soubor Windows se rychleji rozbaluje. Balení používá rychlejší kompresi a přikládá jen provozní závislosti.
+- Při prvním spuštění lze vyzkoušet stůl nebo otevřít návod k pozvání kamarádů. V dialogu správce lze heslo zkopírovat do schránky.
+- Herní okno a správa zůstávají místní. Pozvánky mohou používat zadanou HTTPS adresu a oddělený port pro sdílení blokuje administraci, interní endpointy i založení a obnovu kampaně. Návod popisuje ruční pilot Tailscale Funnel.
+- Prezentace nabízí samostatné stažení Windows a návod pro Docker. [Přechod pro Windows](docs/WINDOWS.md#přechod-z-140) · [Přechod pro Docker](docs/SELF_HOSTING.md#přechod-z-140-na-141)
+
 ## 1.4.0 — 2026-11-16
 
 - **Přenosný stůl pro Windows 11 x64.** Zkušební `.exe` po spuštění rozbalí Electron do dočasné složky a otevře herní stůl ve vlastním okně. Správce najde heslo, umístění dat i návod v nabídce Stůl.

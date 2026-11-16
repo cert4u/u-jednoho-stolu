@@ -1,3 +1,4 @@
+import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { startProdServer } from 'vinext/server/prod-server';
@@ -10,6 +11,7 @@ import {
   isAdminAsset,
   serveAdminAsset,
 } from './hosting/admin-routes.mjs';
+import { createDesktopSharing } from './hosting/desktop-sharing.mjs';
 import { proxyGame, rejectLowDiskWrite } from './hosting/game-proxy.mjs';
 import { createMaintenance } from './hosting/maintenance.mjs';
 import { createUpdaterClient } from './hosting/updater-client.mjs';
@@ -28,6 +30,22 @@ if (
   origin.pathname !== '/'
 )
   throw new Error('PUBLIC_ORIGIN musí obsahovat pouze http(s) původ.');
+const desktop = process.env.STUL_DESKTOP === '1';
+const shareOrigin =
+  desktop && process.env.STUL_DESKTOP_SHARE_ORIGIN
+    ? new URL(process.env.STUL_DESKTOP_SHARE_ORIGIN)
+    : null;
+const sharePort = Number(process.env.STUL_DESKTOP_SHARE_PORT || 8081);
+if (
+  shareOrigin &&
+  (shareOrigin.protocol !== 'https:' ||
+    shareOrigin.username ||
+    shareOrigin.password ||
+    shareOrigin.pathname !== '/' ||
+    shareOrigin.search ||
+    shareOrigin.hash)
+)
+  throw new Error('Neplatné nastavení sdílení stolu.');
 const info = JSON.parse(readFileSync('dist/stul-build.json', 'utf8'));
 openDatabase();
 const internal = await startProdServer({
@@ -49,6 +67,22 @@ export const server = createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     const { pathname } = url;
 
+    if (desktop && req.headers.host !== origin.host) {
+      json(res, 404, {
+        error: 'Použij místní adresu stolu nebo port pro veřejnou hru.',
+      });
+      return;
+    }
+    if (
+      desktop &&
+      pathname === '/desktop/invite-origin' &&
+      req.method === 'GET'
+    ) {
+      json(res, 200, {
+        origin: desktopSharing?.listening ? shareOrigin.origin : null,
+      });
+      return;
+    }
     if (rejectLowDiskWrite(req, res, pathname)) return;
     if (pathname.startsWith('/catalog-assets/')) {
       await catalogAsset(req, res, pathname);
@@ -101,9 +135,30 @@ server.listen(
       `U jednoho stolu ${info.version}: port ${process.env.PORT || 8080}, správa /admin`,
     ),
 );
+export async function startDesktopSharing() {
+  if (!shareOrigin) return;
+  if (!Number.isInteger(sharePort) || sharePort < 1024 || sharePort > 65535) {
+    throw new Error('Port pro veřejnou hru musí být v rozsahu 1024 až 65535.');
+  }
+  const listener = createServer(
+    createDesktopSharing({
+      origin: shareOrigin,
+      gamePort: internal.port,
+      maintenance,
+      catalogAsset,
+    }),
+  );
+  listener.requestTimeout = server.requestTimeout;
+  listener.headersTimeout = server.headersTimeout;
+  listener.listen(sharePort, '127.0.0.1');
+  await once(listener, 'listening');
+  desktopSharing = listener;
+}
+
+let desktopSharing;
 export async function stopServer() {
   await Promise.all(
-    [server, internal.server].map(
+    [server, internal.server, ...(desktopSharing ? [desktopSharing] : [])].map(
       (listener) => new Promise((resolve) => listener.close(resolve)),
     ),
   );

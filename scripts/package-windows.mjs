@@ -20,6 +20,8 @@ const electronVersion = '45.3.3';
 const electronDigest =
   '49dd2d3875944f08de03d34595cd30093c588b9edcabb41a0ac481028a3a5a8a';
 const exeName = 'U jednoho stolu';
+// The production bundle already contains the game and its browser dependencies.
+const runtimeDependencies = ['react', 'react-dom', 'vinext', 'zod'];
 const npm = process.env.npm_execpath;
 if (!npm) throw new Error('Spusť npm run build:windows.');
 
@@ -100,17 +102,19 @@ try {
     path.join(root, 'docs/WINDOWS.md'),
     path.join(application, 'docs/WINDOWS.md'),
   );
+  const runtimeManifest = {
+    ...manifest,
+    dependencies: Object.fromEntries(
+      runtimeDependencies.map((name) => [name, manifest.dependencies[name]]),
+    ),
+    productName: exeName,
+    main: 'deploy/desktop/main.mjs',
+  };
+  delete runtimeManifest.devDependencies;
+  delete runtimeManifest.scripts;
   await writeFile(
     path.join(application, 'package.json'),
-    JSON.stringify(
-      {
-        ...manifest,
-        productName: exeName,
-        main: 'deploy/desktop/main.mjs',
-      },
-      null,
-      2,
-    ) + '\n',
+    JSON.stringify(runtimeManifest, null, 2) + '\n',
   );
 
   run(
@@ -119,7 +123,7 @@ try {
       npm,
       'ci',
       '--omit=dev',
-      '--include=optional',
+      '--omit=optional',
       '--os=win32',
       '--cpu=x64',
       '--ignore-scripts',

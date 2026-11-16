@@ -3,7 +3,8 @@ Unicode true
 Name "U jednoho stolu"
 OutFile "portable.exe"
 RequestExecutionLevel user
-SetCompressor /SOLID lzma
+; Quick extraction matters on every launch of the portable app.
+SetCompressor zlib
 ShowInstDetails nevershow
 AutoCloseWindow true
 

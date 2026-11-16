@@ -18,7 +18,7 @@ export function rejectLowDiskWrite(req, res, pathname) {
   return false;
 }
 
-export function proxyGame(req, res, port, maintenance) {
+export function proxyGame(req, res, port, maintenance, bufferedBody) {
   const mutates = !['GET', 'HEAD', 'OPTIONS'].includes(req.method);
   if (mutates && maintenance.blocksWrites()) {
     res.setHeader('Retry-After', '15');
@@ -28,13 +28,18 @@ export function proxyGame(req, res, port, maintenance) {
     return;
   }
   const finish = maintenance.trackMutation(mutates);
+  const headers = { ...req.headers };
+  if (bufferedBody) {
+    delete headers['transfer-encoding'];
+    headers['content-length'] = String(bufferedBody.length);
+  }
   const proxy = request(
     {
       hostname: '127.0.0.1',
       port,
       path: req.url,
       method: req.method,
-      headers: req.headers,
+      headers,
     },
     (upstream) => {
       // A disconnected browser does not cancel a mutation already sent to the game.
@@ -58,5 +63,6 @@ export function proxyGame(req, res, port, maintenance) {
   req.on('aborted', () => {
     if (!req.complete) proxy.destroy();
   });
-  req.pipe(proxy);
+  if (bufferedBody) proxy.end(bufferedBody);
+  else req.pipe(proxy);
 }

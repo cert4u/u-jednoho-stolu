@@ -149,12 +149,38 @@ export function useTableSession(initialSession: Session | null) {
   function leave() {
     if (isCurrentSession()) changeSession(null);
   }
+  async function inviteOrigin() {
+    if (!location.origin.startsWith('http://127.0.0.1:'))
+      return location.origin;
+    try {
+      const response = await fetch('/desktop/invite-origin', {
+        cache: 'no-store',
+      });
+      if (response.ok) {
+        const settings = await response.json();
+        if (
+          settings &&
+          typeof settings === 'object' &&
+          'origin' in settings &&
+          typeof settings.origin === 'string' &&
+          settings.origin.startsWith('https://')
+        ) {
+          return new URL(settings.origin).origin;
+        }
+      }
+    } catch {
+      // The local table still has an address when no sharing listener is configured.
+    }
+    return location.origin;
+  }
   async function copyInvite() {
     if (!session || !isCurrentSession()) return;
     try {
-      await navigator.clipboard.writeText(
-        `${location.origin}/?room=${session.room}`,
-      );
+      const origin = await inviteOrigin();
+      if (!isCurrentSession()) return;
+      const invitation = new URL('/', origin);
+      invitation.searchParams.set('room', session.room);
+      await navigator.clipboard.writeText(invitation.href);
       if (!isCurrentSession()) return;
       setCopied(true);
       setTimeout(() => {

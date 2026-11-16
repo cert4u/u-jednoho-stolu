@@ -2,19 +2,25 @@
 
 Přenosný prototyp pro Windows 11 x64 spojuje herní server a jeho rozhraní v jednom staženém souboru. Electron se při spuštění automaticky rozbalí do dočasné složky.
 
-1. [Stáhni přenosný soubor pro Windows](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.0/u-jednoho-stolu-1.4.0-windows-x64-portable.exe) a spusť ho dvojklikem. Po rozbalení se stůl otevře ve vlastním okně.
+1. [Stáhni přenosný soubor pro Windows](https://github.com/cert4u/u-jednoho-stolu/releases/download/v1.4.1/u-jednoho-stolu-1.4.1-windows-x64-portable.exe) a spusť ho dvojklikem. Po rozbalení se stůl otevře ve vlastním okně.
 2. V nabídce **Stůl** najdeš **Administrace**, **Zobrazit heslo správce**, **Otevřít složku s daty** a **Jak spustit a hrát**. Zavřením okna ukončíš také server.
 
-Aplikace při prvním spuštění vygeneruje heslo správce. Nastavení, databáze, obrázky a zálohy jsou v `%APPDATA%\U jednoho stolu\Stul`. Před aktualizací vytvoř zálohu v administraci, zavři aplikaci a spusť nové `.exe` pod stejným uživatelem Windows. Stejnou složku s daty používá i starší varianta ze ZIPu.
+Aplikace při prvním spuštění vygeneruje heslo správce. V dialogu **Zobrazit heslo správce** ho lze zkopírovat do schránky. Nastavení, databáze, obrázky a zálohy jsou v `%APPDATA%\U jednoho stolu\Stul`. Před aktualizací vytvoř zálohu v administraci, zavři aplikaci a spusť nové `.exe` pod stejným uživatelem Windows. Stejnou složku s daty používá i starší varianta ze ZIPu.
 
 ## Připojení družiny
 
-Pro první zkoušku na jednom počítači stačí spustit aplikaci. Výchozí adresa je `http://127.0.0.1:8080`. Pro více počítačů potřebuješ společnou HTTPS adresu, kterou otevře hostitel i hráči. Port **TCP 443** obsluhuje HTTPS přes Caddy. Port **8080** slouží místnímu spojení mezi Caddy a aplikací.
+### Přechod z 1.4.0
+
+Před výměnou `.exe` vytvoř úplnou zálohu v administraci a ulož si obnovovací klíč postavy. Po výměně spusť aplikaci pod stejným uživatelem Windows. Pokud jste už používali Caddy nebo jinou reverzní proxy a ta mířila na původní port `8080`, nastav její cíl na `127.0.0.1:8081` nebo vlastní `publicPort` a načti konfiguraci proxy znovu. Pro návrat k postavě v místním okně použij její obnovovací klíč, pokud jsi ji dříve otevíral přes veřejnou adresu. Pozvánky dál používají adresu z `publicOrigin`.
+
+### Místní a veřejná adresa
+
+Pro první zkoušku na jednom počítači stačí spustit aplikaci. Výchozí adresa je `http://127.0.0.1:8080`. Hráči používají společnou HTTPS adresu. Hostitel má stůl i administraci přímo v aplikaci na místním portu **8080**. Pro sdílení hra používá oddělený port **8081**, který je dostupný na stejném počítači a zpřístupňuje se přes proxy.
 
 ### Hra ve stejné domácí síti
 
 1. Na hostitelských Windows spusť `ipconfig` a zjisti IPv4 adresu připojeného adaptéru Wi-Fi nebo Ethernet. Níže je příklad `192.168.1.50`. Použij svou skutečnou adresu a domácí síť nastav ve Windows jako **Soukromou**.
-2. Stáhni a rozbal `caddy.exe` pro Windows x64. Vedle něj vytvoř soubor `Caddyfile` bez přípony a vlož následující konfiguraci. Adresu nahraď vlastní a při změně portu aplikace uprav také `8080`. [Instalace Caddy](https://caddyserver.com/docs/install#static-binaries)
+2. Stáhni a rozbal `caddy.exe` pro Windows x64. Vedle něj vytvoř soubor `Caddyfile` bez přípony a vlož následující konfiguraci. Adresu nahraď vlastní a při změně portu pro sdílení uprav také `8081`. [Instalace Caddy](https://caddyserver.com/docs/install#static-binaries)
 
    ```caddyfile
    {
@@ -25,7 +31,7 @@ Pro první zkoušku na jednom počítači stačí spustit aplikaci. Výchozí ad
        tls internal
        @internal path /internal /internal/*
        respond @internal 404
-       reverse_proxy 127.0.0.1:8080
+       reverse_proxy 127.0.0.1:8081
    }
    ```
 
@@ -44,6 +50,14 @@ Pro první zkoušku na jednom počítači stačí spustit aplikaci. Výchozí ad
 5. V aplikaci otevři **Stůl → Otevřít složku s daty**. Ukonči aplikaci, v `nastaveni.json` změň hodnotu `publicOrigin` na stejnou HTTPS adresu, například `"publicOrigin": "https://192.168.1.50"`, a znovu spusť aplikaci. Z druhého počítače otevři stejnou adresu v prohlížeči. Doma router pro tento postup nepotřebuje přesměrování portů.
 
 Na druhém počítači můžeš zkusit `Test-NetConnection 192.168.1.50 -Port 443`. Když test TCP selže, zkontroluj IP adresu, privátní profil, pravidlo firewallu a běh Caddy. **502** obvykle znamená, že Caddy běží, ale aplikace je zavřená nebo má jiný port. Varování certifikátu řeš instalací správného kořenového certifikátu.
+
+### Ruční pilot s Tailscale Funnel
+
+Tailscale nainstaluje a přihlásí pouze hostitel. Funnel potřebuje povolení v jeho Tailscale síti a vytváří veřejnou HTTPS adresu. Pro první zkoušku použij testovací kampaň. [Podmínky Funnelu](https://tailscale.com/docs/features/tailscale-funnel)
+
+1. V PowerShellu zjisti HTTPS jméno počítače příkazem `(tailscale status --json | ConvertFrom-Json).Self.DNSName.TrimEnd('.')`. Do `publicOrigin` v `nastaveni.json` ulož adresu s předponou `https://` a aplikaci znovu spusť. Volitelným polem `publicPort` lze místo výchozího `8081` nastavit jiný port.
+2. Spusť `tailscale funnel --https=443 8081` a případné povolení dokonči podle pokynů Tailscale. Ponech PowerShell otevřený. Když aplikace běží a veřejná adresa funguje z jiné sítě, zkopíruj pozvánku tlačítkem **Pozvat družinu**.
+3. Z jiné sítě ověř připojení hráče v prohlížeči a odpověď 404 na `/admin`. Sdílení ukonči přes `Ctrl+C` v PowerShellu a z jiné sítě ověř, že už veřejný stůl neodpovídá. Stav ukáže `tailscale funnel status`. Místní okno můžeš dál používat. [Příkazy Funnelu](https://tailscale.com/docs/reference/tailscale-cli/funnel)
 
 ### Kamarádi mimo domácí síť
 

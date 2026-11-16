@@ -472,6 +472,21 @@ h3 {
   max-width: 50ch;
   margin-top: 0.9rem;
 }
+.hosting-choice {
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.hosting-choice h3 {
+  margin: 0 0 0.4rem;
+}
+.hosting-choice p {
+  max-width: 50ch;
+  margin-bottom: 0.65rem;
+}
+.hosting-choice .actions {
+  margin-top: 0.7rem;
+}
 .hardware {
   padding: 1.25rem 1.4rem;
   border: 1px solid var(--line);

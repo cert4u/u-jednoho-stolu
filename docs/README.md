@@ -60,6 +60,8 @@ Vydání **1.2.4**: [údržba stylů a kontrola v CI](DEVELOPMENT.md#postupný-�
 
 Vydání **1.2.8** přináší [opravy zkušeností, bojového rozestavení a záloh](https://github.com/cert4u/u-jednoho-stolu/blob/main/CHANGELOG.md#128--2026-11-10). [Přechod z 1.2.7](SELF_HOSTING.md#přechod-z-127-na-128).
 
+Vydání **1.4.1** zrychluje start Windows aplikace a odděluje její místní správu od veřejné hry. [Přechod pro Windows](WINDOWS.md#přechod-z-140) · [Přechod pro Docker](SELF_HOSTING.md#přechod-z-140-na-141)
+
 Vydání **1.4.0** přidává [přenosný stůl pro Windows](WINDOWS.md) a návod k první hře včetně HTTPS a Windows Firewallu. [Aktualizace Dockeru z 1.3.1](SELF_HOSTING.md#přechod-z-131-na-140).
 
 Vydání **1.3.1** zpřesňuje [validaci katalogové administrace](API.md#katalogová-administrace) a rozšiřuje typovou kontrolu editoru. [Přechod z 1.3.0](SELF_HOSTING.md#přechod-z-130-na-131).

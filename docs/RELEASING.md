@@ -101,3 +101,7 @@ Ověř odmítnutí neplatných parametrů a těla požadavku, konflikt zastaral�
 ## Vydání 1.4.0
 
 Z ověřeného commitu sestav `npm run build:windows` a k vydání přilož přenosné `u-jednoho-stolu-1.4.0-windows-x64-portable.exe`. Ověř verzi a commit v `/healthz`, načtení kampaně po výměně souboru a úplnou zálohu s katalogovými přílohami. V poznámkách k vydání uveď prostředí, ve kterém proběhl test desktopu. Binární soubor patří do příloh vydání. Docker používá dosavadní migrace, updater a konfiguraci. [Návod pro Windows](WINDOWS.md) · [Aktualizace z 1.3.1](SELF_HOSTING.md#přechod-z-131-na-140)
+
+## Vydání 1.4.1
+
+V přenosném Windows `.exe` ověř spuštění, přístup ke stávající kampani, kopírování hesla a pozvánky. Veřejný port musí přijmout hráče do existující kampaně a odmítnout správu, interní cesty i založení a obnovu kampaně. Test místního portu se simuluje s veřejnou adresou. Skutečnou dostupnost přes Tailscale zaznamenej až po zkoušce ze druhé sítě. Odkaz na Windows přílohu ověř také z veřejné prezentace. [Návod pro Windows](WINDOWS.md) · [Přechod pro Docker](SELF_HOSTING.md#přechod-z-140-na-141)
