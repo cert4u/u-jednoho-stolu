@@ -579,7 +579,10 @@ const { useTableSession } = load(
 );
 slots = [];
 cursor = 0;
-const desktop = useTableSession(roomA);
+function DesktopInviteHarness() {
+  return useTableSession(roomA);
+}
+const desktop = DesktopInviteHarness();
 context.URL = URL;
 context.location = { origin: 'http://127.0.0.1:8080' };
 let copiedInvite;
